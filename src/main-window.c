@@ -465,39 +465,6 @@ GtkWidget* create_plugins_menu( FMMainWindow* main_window )
     return plug_menu;
 }
 
-/*  don't use this method because menu must be updated just after user opens it
- * due to file_browser value in xsets
-void main_window_on_plugins_change( FMMainWindow* main_window )
-{
-    if ( main_window )
-    {
-        main_window->plug_menu = create_plugins_menu( main_window );
-        // FIXME: We have to popupdown the menu first, if it's showed on screen.
-        // Otherwise, it's rare but possible that we try to replace the menu while it's in use.
-        gtk_menu_popdown( (GtkMenu*)gtk_menu_item_get_submenu ( GTK_MENU_ITEM (
-                                                main_window->plug_menu_item ) ) );
-        gtk_menu_item_set_submenu ( GTK_MENU_ITEM ( main_window->plug_menu_item ),
-                                                        main_window->plug_menu );
-    }
-    else
-    {
-        // all windows
-        FMMainWindow* a_window;
-        GList* l;
-
-        for ( l = all_windows; l; l = l->next )
-        {
-            a_window = (FMMainWindow*)l->data;
-            a_window->plug_menu = create_plugins_menu( a_window );
-            gtk_menu_popdown( (GtkMenu*)gtk_menu_item_get_submenu ( GTK_MENU_ITEM (
-                                                    a_window->plug_menu_item ) ) );
-            gtk_menu_item_set_submenu ( GTK_MENU_ITEM ( a_window->plug_menu_item ),
-                                                            a_window->plug_menu );
-        }
-    }
-}
-*/
-
 void import_all_plugins( FMMainWindow* main_window )
 {
     GDir* dir;
@@ -2084,25 +2051,6 @@ void fm_main_window_init( FMMainWindow* main_window )
     gtk_menu_shell_append( GTK_MENU_SHELL( main_window->menu_bar ), main_window->help_menu_item );
 
     rebuild_menus( main_window );
-
-/*
-#ifdef SUPER_USER_CHECKS
-    // Create warning bar for super user
-    if ( geteuid() == 0 )                 // Run as super user!
-    {
-        main_window->status_bar = gtk_event_box_new();
-        gtk_widget_modify_bg( main_window->status_bar, GTK_STATE_NORMAL,
-                              &main_window->status_bar->style->bg[ GTK_STATE_SELECTED ] );
-        label = GTK_LABEL( gtk_label_new ( _( "Warning: You are in super user mode" ) ) );
-        gtk_misc_set_padding( GTK_MISC( label ), 0, 2 );
-        gtk_widget_modify_fg( GTK_WIDGET( label ), GTK_STATE_NORMAL,
-                              &GTK_WIDGET( label ) ->style->fg[ GTK_STATE_SELECTED ] );
-        gtk_container_add( GTK_CONTAINER( main_window->status_bar ), GTK_WIDGET( label ) );
-        gtk_box_pack_start ( GTK_BOX ( main_window->main_vbox ),
-                             main_window->status_bar, FALSE, FALSE, 2 );
-    }
-#endif
-*/
 
     /* Create client area */
     main_window->task_vpane = gtk_vpaned_new();

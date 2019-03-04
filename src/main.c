@@ -30,6 +30,7 @@
 #include <unistd.h> /* for getcwd */
 
 #include <locale.h>
+#include <stdio.h>
 
 #include "main-window.h"
 
@@ -94,7 +95,6 @@ gboolean daemon_mode = FALSE;
 static char* default_files[2] = {NULL, NULL};
 static char** files = NULL;
 static gboolean no_desktop = FALSE;
-static gboolean old_show_desktop = FALSE;
 
 static gboolean new_tab = TRUE;
 static gboolean reuse_tab = FALSE;  //sfm
@@ -169,13 +169,11 @@ static void get_socket_name( char* buf, int len );
 static gboolean on_socket_event( GIOChannel* ioc, GIOCondition cond, gpointer data );
 
 static void init_folder();
-static void check_icon_theme();
 
 static gboolean handle_parsed_commandline_args();
 
 static void open_file( const char* path );
 
-static GList* get_file_info_list( char** files );
 static char* dup_to_absolute_file_path( char** file );
 void receive_socket_command( int client, GString* args );  //sfm
 
@@ -865,46 +863,6 @@ void show_socket_help()
     printf( "\n%s\n    http://ignorantguru.github.io/spacefm/spacefm-manual-en.html#sockets\n", _("For full documentation and examples see the SpaceFM User's Manual:") );
 }
 
-/*
-void check_icon_theme()
-{
-    GtkSettings * settings;
-    char* theme;
-    const char* title = N_( "GTK+ icon theme is not properly set" );
-    const char* error_msg =
-        N_( "<big><b>%s</b></big>\n\n"
-            "This usually means you don't have an XSETTINGS manager running.  "
-            "Desktop environment like GNOME or XFCE automatically execute their "
-            "XSETTING managers like gnome-settings-daemon or xfce-mcs-manager.\n\n"
-            "<b>If you don't use these desktop environments, "
-            "you have two choices:\n"
-            "1. run an XSETTINGS manager, or\n"
-            "2. simply specify an icon theme in ~/.gtkrc-2.0.</b>\n"
-            "For example to use the Tango icon theme add a line:\n"
-            "<i><b>gtk-icon-theme-name=\"Tango\"</b></i> in your ~/.gtkrc-2.0. (create it if no such file)\n\n"
-            "<b>NOTICE: The icon theme you choose should be compatible with GNOME, "
-            "or the file icons cannot be displayed correctly.</b>  "
-            "Due to the differences in icon naming of GNOME and KDE, KDE themes cannot be used.  "
-            "Currently there is no standard for this, but it will be solved by freedesktop.org in the future." );
-    settings = gtk_settings_get_default();
-    g_object_get( settings, "gtk-icon-theme-name", &theme, NULL );
-
-    // No icon theme available
-    if ( !theme || !*theme || 0 == strcmp( theme, "hicolor" ) )
-    {
-        GtkWidget * dlg;
-        dlg = gtk_message_dialog_new_with_markup( NULL,
-                                                  GTK_DIALOG_MODAL,
-                                                  GTK_MESSAGE_ERROR,
-                                                  GTK_BUTTONS_OK,
-                                                  _( error_msg ), _( title ) );
-        gtk_window_set_title( GTK_WINDOW( dlg ), _( title ) );
-        gtk_dialog_run( GTK_DIALOG( dlg ) );
-        gtk_widget_destroy( dlg );
-    }
-    g_free( theme );
-}
-*/
 #ifdef _DEBUG_THREAD
 
 G_LOCK_DEFINE(gdk_lock);
@@ -968,24 +926,6 @@ static int handle_mount( char** argv )
     return success ? 0 : 1;
 }
 #endif
-
-GList* get_file_info_list( char** file_paths )
-{
-    GList* file_list = NULL;
-    char** file;
-    VFSFileInfo* fi;
-
-    for( file = file_paths; *file; ++file )
-    {
-        fi = vfs_file_info_new();
-        if( vfs_file_info_get( fi, *file, NULL ) )
-            file_list = g_list_append( file_list, fi );
-        else
-            vfs_file_info_unref( fi );
-    }
-
-    return file_list;
-}
 
 gboolean delayed_popup( GtkWidget* popup )
 {

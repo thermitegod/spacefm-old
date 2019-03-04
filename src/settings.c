@@ -658,15 +658,6 @@ void load_settings( char* config_dir )
     // MOD extra settings
     xset_defaults();
 
-    /* load settings */   //MOD
-    /* Dirty hacks for LXDE */
-    /*
-    if( is_under_LXDE() )
-    {
-        show_desktop_default = app_settings.show_desktop = TRUE;   // show the desktop by default
-    }
-    */
-
     // set tmp dirs
     if ( !settings_tmp_dir )
         settings_tmp_dir = g_strdup( DEFAULT_TMP_DIR );
@@ -2299,82 +2290,6 @@ char* get_name_extension( char* full_name, gboolean is_dir, char** ext )
     }
 }
 
-/*
-char* get_name_extension( char* full_name, gboolean is_dir, char** ext )
-{
-    char* dot = strchr( full_name, '.' );
-    if ( !dot || is_dir )
-    {
-        *ext = NULL;
-        return g_strdup( full_name );
-    }
-    char* name = NULL;
-    char* old_name;
-    char* old_extension;
-    char* segment;
-    char* extension = NULL;
-    char* seg_start = full_name;
-    while ( seg_start )
-    {
-        if ( dot )
-            segment = g_strndup( seg_start, dot - seg_start );
-        else
-            segment = g_strdup( seg_start );
-        if ( ( seg_start == full_name || g_utf8_strlen( segment, -1 ) > 5
-                                            || !is_alphanum( segment ) )
-                        && !( seg_start != full_name && !strcmp( segment, "desktop" ) ) )
-        {
-            // segment and thus all prior segments are part of name
-            old_name = name;
-            //printf("part of name\n");
-            if ( !extension )
-            {
-                if ( !old_name )
-                    name = g_strdup( segment );
-                else
-                    name = g_strdup_printf( "%s.%s", old_name, segment );
-                //printf("\told_name=%s\n\tsegment=%s\n\tname=%s\n", old_name, segment, name );
-            }
-            else
-            {
-                name = g_strdup_printf( "%s.%s.%s", old_name, extension, segment );
-                //printf("\told_name=%s\n\text=%s\n\tsegment=%s\n\tname=%s\n", old_name, extension, segment, name );
-                g_free( extension );
-                extension = NULL;
-            }
-            g_free( old_name );
-        }
-        else
-        {
-            // segment is part of extension
-            //printf("part of extension\n");
-            if ( !extension )
-            {
-                extension = g_strdup( segment );
-                //printf ("\tsegment=%s\n\text=%s\n", segment, extension );
-            }
-            else
-            {
-                old_extension = extension;
-                extension = g_strdup_printf( "%s.%s", old_extension, segment );
-                //printf ("\told_extension=%s\n\tsegment=%s\n\text=%s\n", old_extension, segment, extension );
-                g_free( old_extension );
-            }
-        }
-        g_free( segment );
-        if ( dot )
-        {
-            seg_start = ++dot;
-            dot = strchr( seg_start, '.' );
-        }
-        else
-            seg_start = NULL;
-    }
-    *ext = extension;
-    return name;
-}
-*/
-
 void xset_free_all()
 {
     XSet* set;
@@ -2776,50 +2691,6 @@ XSet* xset_is_main_bookmark( XSet* set )
     }
     return NULL;
 }
-
-/*
-// this function finds bookmark matching cwd by examining all xsets -
-// not significantly faster and doesn't find first in desirable order
-XSet* xset_find_bookmark( const char* cwd, XSet** found_parent_set )
-{
-    GList* l;
-    char* url;
-    char* sep;
-    XSet* set;
-    XSet* set_parent = NULL;
-
-    for ( l = xsets; l; l = l->next )
-    {
-        if ( ((XSet*)l->data)->z && !((XSet*)l->data)->lock &&
-                ((XSet*)l->data)->x && !strcmp( ((XSet*)l->data)->x, "3" ) &&
-                g_str_has_prefix( ((XSet*)l->data)->z, cwd ) )
-        {
-            // found a possible match - confirm
-            set = (XSet*)l->data;
-
-            sep = strchr( set->z, ';' );
-            if ( sep )
-                sep[0] = '\0';
-            url = g_strstrip( g_strdup( set->z ) );
-            if ( sep )
-                sep[0] = ';';
-            if ( !g_strcmp0( cwd, url ) )
-            {
-                // found a bookmark matching cwd - verify is in main_book
-                if ( set_parent = xset_is_main_bookmark( set ) )
-                {
-                    // found bookmark in main_book tree
-                    *found_parent_set = set_parent;
-                    g_free( url );
-                    return set;
-                }
-            }
-            g_free( url );
-        }
-    }
-    return *found_parent_set = NULL;
-}
-*/
 
 static void xset_write_set( FILE* file, XSet* set )
 {
@@ -5406,37 +5277,6 @@ gboolean xset_custom_export_files( XSet* set, char* plug_dir )
         g_free( path_src );
         g_free( path_dest );
         return TRUE;
-        /*
-        g_mkdir_with_parents( path_dest, 0755 );
-        if ( !g_file_test( path_dest, G_FILE_TEST_EXISTS ) )
-        {
-            g_free( path_src );
-            g_free( path_dest );
-            return FALSE;
-        }
-        chmod( path_dest, 0755 );
-        if ( !set->plugin )
-        {
-            g_free( path_src );
-            g_free( path_dest );
-            return TRUE;
-        }
-        // plugin backwards compat ?
-        cscript = xset_custom_get_script( set, FALSE );
-        if ( cscript && g_file_test( cscript, G_FILE_TEST_EXISTS ) )
-        {
-            command = g_strdup_printf( "cp -a %s %s/", cscript, path_dest );
-            g_free( cscript );
-        }
-        else
-        {
-            if ( cscript )
-                g_free( cscript );
-            g_free( path_src );
-            g_free( path_dest );
-            return TRUE;
-        }
-        */
     }
     else
     {
@@ -11039,22 +10879,6 @@ void xset_defaults()
     set->s = g_strdup( "cifs curlftpfs ftpfs fuse.sshfs nfs smbfs" );
     set->z = g_strdup( set->s );
 
-    /* Removed 0.9.4
-    set = xset_set( "dev_mount_cmd", "lbl", _("Mount _Command") );
-    set->menu_style = XSET_MENU_STRING;
-    xset_set_set( set, "desc", _("Enter the command to mount a device:\n\nUse:\n\t%%v\tdevice file ( eg /dev/sda5 )\n\t%%o\tvolume-specific mount options\n\nudevil:\t/usr/bin/udevil mount -o %%o %%v\npmount:\t/usr/bin/pmount %%v\nUdisks2:\t/usr/bin/udisksctl mount -b %%v -o %%o\nUdisks1:\t/usr/bin/udisks --mount %%v --mount-options %%o\n\nLeave blank for auto-detection.") );
-    xset_set_set( set, "title", _("Mount Command") );
-    xset_set_set( set, "icn", "gtk-edit" );
-    set->line = g_strdup( "#devices-settings-mcmd" );
-
-    set = xset_set( "dev_unmount_cmd", "lbl", _("_Unmount Command") );
-    set->menu_style = XSET_MENU_STRING;
-    xset_set_set( set, "desc", _("Enter the command to unmount a device:\n\nUse:\n\t%%v\tdevice file ( eg /dev/sda5 )\n\nudevil:\t/usr/bin/udevil umount %%v\npmount:\t/usr/bin/pumount %%v\nUdisks1:\t/usr/bin/udisks --unmount %%v\nUdisks2:\t/usr/bin/udisksctl unmount -b %%v\n\nLeave blank for auto-detection.") );
-    xset_set_set( set, "title", _("Unmount Command") );
-    xset_set_set( set, "icn", "gtk-edit" );
-    set->line = g_strdup( "#devices-settings-ucmd" );
-    */
-
     set = xset_set( "dev_fs_cnf", "label", _("_Device Handlers") );
     xset_set_set( set, "icon", "gtk-preferences" );
     set->line = g_strdup( "#handlers-dev" );
@@ -11141,30 +10965,6 @@ void xset_defaults()
         set->menu_style = XSET_MENU_ICON;
         xset_set_set( set, "icn", "gtk-file" );
         set->line = g_strdup( "#devices-settings-icon" );
-
-    // Bookmark list
-    /*   Removed items config version 30
-    set = xset_get( "sep_bk1" );
-    set->menu_style = XSET_MENU_SEP;
-
-    set = xset_get( "sep_bk2" );
-    set->menu_style = XSET_MENU_SEP;
-
-    set = xset_set( "book_new", "lbl", _("_New") );
-    xset_set_set( set, "icn", "gtk-new" );
-
-    set = xset_set( "book_rename", "lbl", _("_Rename") );
-    xset_set_set( set, "icn", "gtk-edit" );
-
-    set = xset_set( "book_edit", "lbl", _("_Edit") );
-    xset_set_set( set, "icn", "gtk-edit" );
-
-    set = xset_set( "book_remove", "lbl", _("Re_move") );
-    xset_set_set( set, "icn", "gtk-remove" );
-
-    set = xset_set( "book_tab", "lbl", C_("Bookmarks|Open|", "_Tab") );
-    xset_set_set( set, "icn", "gtk-add" );
-    */
 
     set = xset_set( "book_open", "lbl", _("_Open") );
     xset_set_set( set, "icn", "gtk-open" );
@@ -12093,14 +11893,6 @@ void xset_defaults()
         set = xset_set( "arc_conf2", "label", _("Archive _Handlers") );
         xset_set_set( set, "icon", "gtk-preferences" );
         set->line = g_strdup( "#handlers-arc" );
-
-    /* used in < 0.9.4
-    set = xset_set( "iso_mount", "label", _("_Mount ISO") );
-    xset_set_set( set, "icon", "gtk-cdrom" );
-
-    set = xset_set( "iso_auto", "lbl", _("_Auto-Mount ISO") );
-    set->menu_style = XSET_MENU_CHECK;
-    */
 
     set = xset_get( "sep_o1" );
     set->menu_style = XSET_MENU_SEP;
