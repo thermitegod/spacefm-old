@@ -63,7 +63,6 @@ struct _FMPrefDlg
     /* Interface tab */
     GtkWidget* always_show_tabs;
     GtkWidget* hide_close_tab_buttons;
-    //GtkWidget* hide_folder_content_border;
 
 #ifdef DESKTOP_INTEGRATION
     //GtkWidget* show_desktop;
@@ -257,7 +256,6 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
     /* interface settings */
     gboolean always_show_tabs;
     gboolean hide_close_tab_buttons;
-    //gboolean hide_folder_content_border;
 
     /* built-in response codes of GTK+ are all negative */
     if( response >= 0 )
@@ -331,59 +329,6 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
                 }
             }
         }
-/*
-        hide_folder_content_border = gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( data->hide_folder_content_border ) );
-        if ( hide_folder_content_border != app_settings.hide_folder_content_border )
-        {
-            app_settings.hide_folder_content_border = hide_folder_content_border;
-            // update all windows/all panels/all browsers
-            for ( l = fm_main_window_get_all(); l; l = l->next )
-            {
-                a_window = FM_MAIN_WINDOW( l->data );
-                for ( p = 1; p < 5; p++ )
-                {
-                    notebook = a_window->panel[p-1];
-                    n = gtk_notebook_get_n_pages( notebook );
-                    for ( i = 0; i < n; ++i )
-                    {
-                        file_browser = PTK_FILE_BROWSER( gtk_notebook_get_nth_page(
-                                                         notebook, i ) );
-                        if ( hide_folder_content_border )
-                            ptk_file_browser_hide_shadow( file_browser );
-                        else
-                            ptk_file_browser_show_shadow( file_browser );
-                    }
-                }
-            }
-        }
-*/
-/*        hide_side_pane_buttons = gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( data->hide_side_pane_buttons ) );
-        if ( hide_side_pane_buttons != app_settings.hide_side_pane_buttons )
-        {
-            app_settings.hide_side_pane_buttons = hide_side_pane_buttons;
-            for ( l = fm_main_window_get_all(); l; l = l->next )
-            {
-                FMMainWindow* main_window = FM_MAIN_WINDOW( l->data );
-                GtkNotebook* notebook = main_window->notebook;
-                n = gtk_notebook_get_n_pages( notebook );
-
-                for ( i = 0; i < n; ++i )
-                {
-                  file_browser = PTK_FILE_BROWSER( gtk_notebook_get_nth_page( notebook, i ) );
-
-                  if ( hide_side_pane_buttons)
-                  {
-                    ptk_file_browser_hide_side_pane_buttons( file_browser );
-                  }
-                  else
-                  {
-                    ptk_file_browser_show_side_pane_buttons( file_browser );
-                  }
-
-                }
-            }
-        }
-*/
 
 #ifdef DESKTOP_INTEGRATION
         // Desktop settings =================================================
@@ -1087,14 +1032,6 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
                                                             "hide_close_tab_buttons" );
         gtk_toggle_button_set_active ( GTK_TOGGLE_BUTTON( data->hide_close_tab_buttons ),
                                        app_settings.hide_close_tab_buttons );
-
-/*        data->hide_side_pane_buttons = (GtkWidget*)gtk_builder_get_object( builder, "hide_side_pane_buttons" );
-        gtk_toggle_button_set_active ( GTK_TOGGLE_BUTTON( data->hide_side_pane_buttons ),
-                                       app_settings.hide_side_pane_buttons );
-*/
-        //data->hide_folder_content_border = (GtkWidget*)gtk_builder_get_object( builder, "hide_folder_content_border" );
-        //gtk_toggle_button_set_active ( GTK_TOGGLE_BUTTON( data->hide_folder_content_border ),
-        //                               app_settings.hide_folder_content_border );
 
         //MOD Interface
         data->confirm_delete = (GtkWidget*)gtk_builder_get_object( builder,

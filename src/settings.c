@@ -52,7 +52,6 @@
 #define DEFAULT_TMP_DIR "/tmp"
 
 AppSettings app_settings = {0};
-/* const gboolean singleInstance_default = TRUE; */
 const gboolean show_hidden_files_default = FALSE;
 const gboolean show_thumbnail_default = FALSE;
 const int max_thumb_size_default = 8 << 20;
@@ -65,13 +64,11 @@ const gboolean no_single_hover_default = FALSE;
 
 /* FIXME: temporarily disable trash since it's not finished */
 const gboolean use_trash_can_default = FALSE;
-//const int open_bookmark_method_default = 1;
 const int view_mode_default = PTK_FB_ICON_VIEW;
 const int sort_order_default = PTK_FB_SORT_BY_NAME;
 const int sort_type_default = GTK_SORT_ASCENDING;
 
 #ifdef DESKTOP_INTEGRATION
-//gboolean show_desktop_default = FALSE;
 const gboolean show_wallpaper_default = FALSE;
 const WallpaperMode wallpaper_mode_default=WPM_STRETCH;
 const GdkColor desktop_bg1_default={0, 4656, 4125, 12014};
@@ -94,8 +91,6 @@ const int margin_pad_default = 6;
 /* Default values of interface settings */
 const gboolean always_show_tabs_default = TRUE;
 const gboolean hide_close_tab_buttons_default = FALSE;
-const gboolean hide_side_pane_buttons_default = FALSE;
-//const gboolean hide_folder_content_border_default = FALSE;
 
 // MOD settings
 void xset_write( FILE* file );
@@ -227,12 +222,6 @@ static void parse_general_settings( char* line )
     *sep = '\0';
     if ( 0 == strcmp( name, "encoding" ) )
         strcpy( app_settings.encoding, value );
-    //else if ( 0 == strcmp( name, "show_hidden_files" ) )
-    //    app_settings.show_hidden_files = atoi( value );
-    //else if ( 0 == strcmp( name, "show_side_pane" ) )
-    //    app_settings.show_side_pane = atoi( value );
-    //else if ( 0 == strcmp( name, "side_pane_mode" ) )
-    //    app_settings.side_pane_mode = atoi( value );
     else if ( 0 == strcmp( name, "show_thumbnail" ) )
         app_settings.show_thumbnail = atoi( value );
     else if ( 0 == strcmp( name, "max_thumb_size" ) )
@@ -267,27 +256,18 @@ static void parse_general_settings( char* line )
         app_settings.single_click = atoi(value);
     else if ( 0 == strcmp( name, "no_single_hover" ) )
         app_settings.no_single_hover = atoi(value);
-    //else if ( 0 == strcmp( name, "view_mode" ) )
-    //    app_settings.view_mode = atoi( value );
     else if ( 0 == strcmp( name, "sort_order" ) )
         app_settings.sort_order = atoi( value );
     else if ( 0 == strcmp( name, "sort_type" ) )
         app_settings.sort_type = atoi( value );
+    /*
     else if ( 0 == strcmp( name, "open_bookmark_method" ) )
-        //app_settings.open_bookmark_method = atoi( value );
         xset_set_b( "book_newtab", atoi( value ) != 1 ); //sfm backwards compat
-/*
-    else if ( 0 == strcmp( name, "iconTheme" ) )
-    {
-        if ( value && *value )
-            app_settings.iconTheme = strdup( value );
-    }
 */
     else if ( 0 == strcmp( name, "terminal" ) ) //MOD backwards compat
     {
         if ( value && *value )
             xset_set( "main_terminal", "s", value );
-            //app_settings.terminal = strdup( value );
     }
     else if ( 0 == strcmp( name, "use_si_prefix" ) )
         app_settings.use_si_prefix = atoi( value );
@@ -301,13 +281,6 @@ static void parse_general_settings( char* line )
     }
     else if ( 0 == strcmp( name, "no_confirm" ) )
         app_settings.no_confirm = atoi( value );  //MOD
-    /*
-    else if ( 0 == strcmp( name, "singleInstance" ) )
-        app_settings.singleInstance = atoi( value );
-    */
-/*    else if ( 0 == strcmp( name, "show_location_bar" ) )
-        app_settings.show_location_bar = atoi( value );
-*/
 }
 
 #ifdef DESKTOP_INTEGRATION
@@ -335,11 +308,6 @@ static void parse_window_state( char* line )
     name = line;
     value = sep + 1;
     *sep = '\0';
-    //if ( 0 == strcmp( name, "splitter_pos" ) )
-    //{
-    //    v = atoi( value );
-    //    app_settings.splitter_pos = ( v > 0 ? v : 160 );
-    //}
     if ( 0 == strcmp( name, "width" ) )
     {
         v = atoi( value );
@@ -424,10 +392,6 @@ static void parse_interface_settings( char* line )
         app_settings.always_show_tabs = atoi( value );
     else if ( 0 == strcmp( name, "show_close_tab_buttons" ) )
         app_settings.hide_close_tab_buttons = !atoi( value );
-    //else if ( 0 == strcmp( name, "hide_side_pane_buttons" ) )
-    //    app_settings.hide_side_pane_buttons = atoi( value );
-    //else if ( 0 == strcmp( name, "hide_folder_content_border" ) )
-    //    app_settings.hide_folder_content_border = atoi( value );
 }
 
 static void parse_conf( const char* etc_path, char* line )
@@ -521,78 +485,6 @@ void swap_menu_label( const char* set_name, const char* old_name,
     }
 }
 
-void move_attached_to_builtin( const char* removed_name, const char* move_to_name )
-{
-    /* For upgrades only: A built-in menu item (removed_name) has been removed,
-     * so move custom menu items attached to the removed item to another item.
-     * Leave removed item data intact in case of downgrade. */
-
-    XSet* set_to = xset_is( move_to_name );
-    if ( !set_to )
-    {
-        g_warning( "remove_builtin_item passed invalid move_to_name '%s'",
-                                                            move_to_name );
-        return;
-    }
-
-    GList* l;
-    XSet* set_move;
-    XSet* set_to_next;
-    XSet* set_move_next;
-    for ( l = xsets; l; l = l->next )
-    {
-        if ( !g_strcmp0( removed_name, ((XSet*)l->data)->prev ) )
-        {
-            // found a set attached to removed_name
-            set_move = l->data;
-            if ( set_move->lock )  // failsafe
-                return;
-
-            while ( set_move )
-            {
-                xset_custom_remove( set_move );
-
-                g_free( set_move->prev );
-                set_move->prev = g_strdup( set_to->name );
-
-                if ( set_move->next )
-                {
-                    set_move_next = xset_get( set_move->next );
-                    if ( set_move_next->lock )  // failsafe
-                        set_move_next = NULL;
-                }
-                else
-                    set_move_next = NULL;
-                g_free( set_move->next );
-                set_move->next = g_strdup( set_to->next );
-
-                if ( set_to->next )
-                {
-                    set_to_next = xset_get( set_to->next );
-                    if ( set_to_next->prev )
-                        g_free( set_to_next->prev );
-                    set_to_next->prev = g_strdup( set_move->name );
-                }
-                g_free( set_to->next );
-                set_to->next = g_strdup( set_move->name );
-
-                if ( set_to->tool )
-                {
-                    if ( set_move->tool > XSET_TOOL_CUSTOM )
-                        g_warning( "move_attached_to_builtin moved builtin tool - changed to custom" );
-                    set_move->tool = XSET_TOOL_CUSTOM;
-                }
-                else
-                    set_move->tool = XSET_TOOL_NOT;
-
-                set_to = set_move;
-                set_move = set_move_next;
-            }
-            return;
-        }
-    }
-}
-
 void load_settings( char* config_dir )
 {
     FILE * file;
@@ -612,7 +504,6 @@ void load_settings( char* config_dir )
 
     /* General */
 #ifdef DESKTOP_INTEGRATION
-    /* app_settings.show_desktop = show_desktop_default; */
     app_settings.show_wallpaper = show_wallpaper_default;
     app_settings.wallpaper = NULL;
     app_settings.desktop_bg1 = desktop_bg1_default;
@@ -633,22 +524,13 @@ void load_settings( char* config_dir )
 #endif
 
     app_settings.encoding[ 0 ] = '\0';
-    //app_settings.show_hidden_files = show_hidden_files_default;
-    //app_settings.show_side_pane = show_side_pane_default;
-    //app_settings.side_pane_mode = side_pane_mode_default;
     app_settings.show_thumbnail = show_thumbnail_default;
     app_settings.max_thumb_size = max_thumb_size_default;
     app_settings.big_icon_size = big_icon_size_default;
     app_settings.small_icon_size = small_icon_size_default;
     app_settings.tool_icon_size = tool_icon_size_default;
     app_settings.use_trash_can = use_trash_can_default;
-    //app_settings.view_mode = view_mode_default;
-    //app_settings.open_bookmark_method = open_bookmark_method_default;
-    /* app_settings.iconTheme = NULL; */
-    //app_settings.terminal = NULL;
     app_settings.use_si_prefix = use_si_prefix_default;
-    //app_settings.show_location_bar = show_location_bar_default;
-    //app_settings.home_folder = NULL;   //MOD
     app_settings.no_execute = TRUE;   //MOD
     app_settings.no_confirm = FALSE;   //MOD
     app_settings.date_format = NULL;   //MOD
@@ -656,11 +538,8 @@ void load_settings( char* config_dir )
     /* Interface */
     app_settings.always_show_tabs = always_show_tabs_default;
     app_settings.hide_close_tab_buttons = hide_close_tab_buttons_default;
-    //app_settings.hide_side_pane_buttons = hide_side_pane_buttons_default;
-    //app_settings.hide_folder_content_border = hide_folder_content_border_default;
 
     /* Window State */
-    //app_settings.splitter_pos = 160;
     app_settings.width = 640;
     app_settings.height = 480;
 
@@ -713,9 +592,6 @@ void load_settings( char* config_dir )
             case 1:
                 path = g_build_filename( settings_config_dir, "session-old", NULL );
                 break;
-            case 2:
-                path = g_build_filename( settings_config_dir, "session-older", NULL );
-                break;
             default:
                 path = NULL;
         }
@@ -726,16 +602,13 @@ void load_settings( char* config_dir )
     {
         // copy session to session-old
         char* old = g_build_filename( settings_config_dir, "session-old", NULL );
-        char* older = g_build_filename( settings_config_dir, "session-older", NULL );
-        if ( g_file_test( older, G_FILE_TEST_EXISTS ) )
+        if ( g_file_test( old, G_FILE_TEST_EXISTS ) )
         {
-            unlink(older);
-            rename(old, older);
+            unlink(old);
         }
         xset_copy_file( path, old );
         chmod( old, S_IRUSR | S_IWUSR );
         g_free( old );
-        g_free( older );
     }
 
     if ( path )
@@ -888,11 +761,14 @@ void load_settings( char* config_dir )
 
     // config conversions
     int ver = xset_get_int( "config_version", "s" );
+
+/*
     if ( ver < 38 && !xset_is( "hand_net_+fuse" ) ) // < 1.0.6
     {
         // add missing fuse handler to bottom of list
         ptk_handler_add_new_default( HANDLER_MODE_NET, "hand_net_+fuse", FALSE );
     }
+*/
 
     // add default bookmarks
     ptk_bookmark_view_get_first_bookmark( NULL );
@@ -980,158 +856,81 @@ char* save_settings( gpointer main_window_ptr )
 
     /* save settings */
     if ( ! g_file_test( settings_config_dir, G_FILE_TEST_EXISTS ) )
-        g_mkdir_with_parents( settings_config_dir, 0700 );
+    {
+        result = g_mkdir_with_parents( settings_config_dir, 0700 );
 
-    if ( ! g_file_test( settings_config_dir, G_FILE_TEST_EXISTS ) )
-        goto _save_error;
+        if (result < 0);
+            goto _save_error;
+    }
 
     path = g_build_filename( settings_config_dir, "session.tmp", NULL );
 
-    /* Dirty hacks for LXDE */
     file = fopen( path, "w" );
 
     if ( file )
     {
         /* General */
-        result = fputs( _("# SpaceFM Session File\n\n# THIS FILE IS NOT DESIGNED TO BE EDITED\n\n"), file );
+        result = fputs( _("#SpaceFM Session File\n\n"), file );
         if ( result < 0 )
             goto _save_error;
         fputs( "[General]\n", file );
-        /*
-        if ( app_settings.singleInstance != singleInstance_default )
-            fprintf( file, "singleInstance=%d\n", !!app_settings.singleInstance );
-        */
-        if ( app_settings.encoding[ 0 ] )
-            fprintf( file, "encoding=%s\n", app_settings.encoding );
-        //if ( app_settings.show_hidden_files != show_hidden_files_default )
-        //    fprintf( file, "show_hidden_files=%d\n", !!app_settings.show_hidden_files );
-        //if ( app_settings.show_side_pane != show_side_pane_default )
-        //    fprintf( file, "show_side_pane=%d\n", app_settings.show_side_pane );
-        //if ( app_settings.side_pane_mode != side_pane_mode_default )
-        //    fprintf( file, "side_pane_mode=%d\n", app_settings.side_pane_mode );
-        if ( app_settings.show_thumbnail != show_thumbnail_default )
-            fprintf( file, "show_thumbnail=%d\n", !!app_settings.show_thumbnail );
-        if ( app_settings.max_thumb_size != max_thumb_size_default )
-            fprintf( file, "max_thumb_size=%d\n", app_settings.max_thumb_size >> 10 );
-        if ( app_settings.big_icon_size != big_icon_size_default )
-            fprintf( file, "big_icon_size=%d\n", app_settings.big_icon_size );
-        if ( app_settings.small_icon_size != small_icon_size_default )
-            fprintf( file, "small_icon_size=%d\n", app_settings.small_icon_size );
-        if ( app_settings.tool_icon_size != tool_icon_size_default )
-            fprintf( file, "tool_icon_size=%d\n", app_settings.tool_icon_size );
-        /* FIXME: temporarily disable trash since it's not finished */
+        fprintf( file, "encoding=%s\n", app_settings.encoding );
+        fprintf( file, "show_thumbnail=%d\n", !!app_settings.show_thumbnail );
+        fprintf( file, "max_thumb_size=%d\n", app_settings.max_thumb_size >> 10 );
+        fprintf( file, "big_icon_size=%d\n", app_settings.big_icon_size );
+        fprintf( file, "small_icon_size=%d\n", app_settings.small_icon_size );
+        fprintf( file, "tool_icon_size=%d\n", app_settings.tool_icon_size );
 #if 0
-        if ( app_settings.use_trash_can != use_trash_can_default )
-            fprintf( file, "use_trash_can=%d\n", app_settings.use_trash_can );
+        /* FIXME: temporarily disable trash since it's not finished */
+        fprintf( file, "use_trash_can=%d\n", app_settings.use_trash_can );
 #endif
-        if ( app_settings.single_click != single_click_default )
-            fprintf( file, "single_click=%d\n", app_settings.single_click );
-        if ( app_settings.no_single_hover != no_single_hover_default )
-            fprintf( file, "no_single_hover=%d\n", app_settings.no_single_hover );
-        //if ( app_settings.view_mode != view_mode_default )
-        //    fprintf( file, "view_mode=%d\n", app_settings.view_mode );
-        if ( app_settings.sort_order != sort_order_default )
-            fprintf( file, "sort_order=%d\n", app_settings.sort_order );
-        if ( app_settings.sort_type != sort_type_default )
-            fprintf( file, "sort_type=%d\n", app_settings.sort_type );
-        //if ( app_settings.open_bookmark_method != open_bookmark_method_default )
-        //    fprintf( file, "open_bookmark_method=%d\n", app_settings.open_bookmark_method );
-        /*
-        if ( app_settings.iconTheme )
-            fprintf( file, "iconTheme=%s\n", app_settings.iconTheme );
-        */
-        //if ( app_settings.terminal )
-        //    fprintf( file, "terminal=%s\n", app_settings.terminal );
-        if ( app_settings.use_si_prefix != use_si_prefix_default )
-            fprintf( file, "use_si_prefix=%d\n", !!app_settings.use_si_prefix );
-//        if ( app_settings.show_location_bar != show_location_bar_default )
-//            fprintf( file, "show_location_bar=%d\n", app_settings.show_location_bar );
-/*        if ( app_settings.home_folder )
-            fprintf( file, "home_folder=%s\n", app_settings.home_folder );  //MOD
-*/        if ( !app_settings.no_execute )
-            fprintf( file, "no_execute=%d\n", !!app_settings.no_execute );  //MOD
-        if ( app_settings.no_confirm )
-            fprintf( file, "no_confirm=%d\n", !!app_settings.no_confirm );  //MOD
+        fprintf( file, "single_click=%d\n", app_settings.single_click );
+        fprintf( file, "no_single_hover=%d\n", app_settings.no_single_hover );
+        fprintf( file, "sort_order=%d\n", app_settings.sort_order );
+        fprintf( file, "sort_type=%d\n", app_settings.sort_type );
+        fprintf( file, "use_si_prefix=%d\n", !!app_settings.use_si_prefix );
+        fprintf( file, "no_execute=%d\n", !!app_settings.no_execute );  //MOD
+        fprintf( file, "no_confirm=%d\n", !!app_settings.no_confirm );  //MOD
 
         fputs( "\n[Window]\n", file );
         fprintf( file, "width=%d\n", app_settings.width );
         fprintf( file, "height=%d\n", app_settings.height );
-        //fprintf( file, "splitter_pos=%d\n", app_settings.splitter_pos );
         fprintf( file, "maximized=%d\n", app_settings.maximized );
 
 #ifdef DESKTOP_INTEGRATION
         /* Desktop */
         fputs( "\n[Desktop]\n", file );
-        //if ( app_settings.show_desktop != show_desktop_default )
-        //    fprintf( file, "show_desktop=%d\n", !!app_settings.show_desktop );
-        if ( app_settings.show_wallpaper != show_wallpaper_default )
-            fprintf( file, "show_wallpaper=%d\n", !!app_settings.show_wallpaper );
-        if ( app_settings.wallpaper && app_settings.wallpaper[ 0 ] )
-            fprintf( file, "wallpaper=%s\n", app_settings.wallpaper );
-        if ( app_settings.wallpaper_mode != wallpaper_mode_default )
-            fprintf( file, "wallpaper_mode=%d\n", app_settings.wallpaper_mode );
-        if ( app_settings.desktop_sort_by != desktop_sort_by_default )
-            fprintf( file, "sort_by=%d\n", app_settings.desktop_sort_by );
-        if ( app_settings.desktop_sort_type != desktop_sort_type_default )
-            fprintf( file, "sort_type=%d\n", app_settings.desktop_sort_type );
-        if ( app_settings.show_wm_menu != show_wm_menu_default )
-            fprintf( file, "show_wm_menu=%d\n", app_settings.show_wm_menu );
-        if ( app_settings.desk_single_click != desk_single_click_default )
-            fprintf( file, "desk_single_click=%d\n", app_settings.desk_single_click );
-        if ( app_settings.desk_no_single_hover != desk_no_single_hover_default )
-            fprintf( file, "desk_no_single_hover=%d\n",
-                                            app_settings.desk_no_single_hover );
-        if ( app_settings.desk_open_mime != desk_open_mime_default )
-            fprintf( file, "desk_open_mime=%d\n", app_settings.desk_open_mime );
+        fprintf( file, "show_wallpaper=%d\n", !!app_settings.show_wallpaper );
+        fprintf( file, "wallpaper=%s\n", app_settings.wallpaper );
+        fprintf( file, "wallpaper_mode=%d\n", app_settings.wallpaper_mode );
+        fprintf( file, "sort_by=%d\n", app_settings.desktop_sort_by );
+        fprintf( file, "sort_type=%d\n", app_settings.desktop_sort_type );
+        fprintf( file, "show_wm_menu=%d\n", app_settings.show_wm_menu );
+        fprintf( file, "desk_single_click=%d\n", app_settings.desk_single_click );
+        fprintf( file, "desk_no_single_hover=%d\n", app_settings.desk_no_single_hover );
+        fprintf( file, "desk_open_mime=%d\n", app_settings.desk_open_mime );
 
-        // always save these colors in case defaults change
-        //if ( ! gdk_color_equal( &app_settings.desktop_bg1,
-        //       &desktop_bg1_default ) )
-            save_color( file, "bg1",
-                        &app_settings.desktop_bg1 );
-        //if ( ! gdk_color_equal( &app_settings.desktop_bg2,
-        //       &desktop_bg2_default ) )
-            save_color( file, "bg2",
-                        &app_settings.desktop_bg2 );
-        //if ( ! gdk_color_equal( &app_settings.desktop_text,
-        //       &desktop_text_default ) )
-            save_color( file, "text",
-                        &app_settings.desktop_text );
-        //if ( ! gdk_color_equal( &app_settings.desktop_shadow,
-        //       &desktop_shadow_default ) )
-            save_color( file, "shadow",
-                        &app_settings.desktop_shadow );
+        save_color( file, "bg1", &app_settings.desktop_bg1 );
+        save_color( file, "bg2", &app_settings.desktop_bg2 );
+        save_color( file, "text", &app_settings.desktop_text );
+        save_color( file, "shadow", &app_settings.desktop_shadow );
 
-        if ( app_settings.desk_font )
-        {
-            char* fontname = pango_font_description_to_string(
-                                                    app_settings.desk_font );
-            if ( fontname )
-                fprintf( file, "font=%s\n", fontname );
-            g_free( fontname );
-        }
-        if ( app_settings.margin_top != margin_top_default )
-            fprintf( file, "margin_top=%d\n", app_settings.margin_top );
-        if ( app_settings.margin_left != margin_left_default )
-            fprintf( file, "margin_left=%d\n", app_settings.margin_left );
-        if ( app_settings.margin_right != margin_right_default )
-            fprintf( file, "margin_right=%d\n", app_settings.margin_right );
-        if ( app_settings.margin_bottom != margin_bottom_default )
-            fprintf( file, "margin_bottom=%d\n", app_settings.margin_bottom );
-        if ( app_settings.margin_pad != margin_pad_default )
-            fprintf( file, "margin_pad=%d\n", app_settings.margin_pad );
+        char* fontname = pango_font_description_to_string( app_settings.desk_font );
+        if ( fontname )
+            fprintf( file, "font=%s\n", fontname );
+        g_free( fontname );
+
+        fprintf( file, "margin_top=%d\n", app_settings.margin_top );
+        fprintf( file, "margin_left=%d\n", app_settings.margin_left );
+        fprintf( file, "margin_right=%d\n", app_settings.margin_right );
+        fprintf( file, "margin_bottom=%d\n", app_settings.margin_bottom );
+        fprintf( file, "margin_pad=%d\n", app_settings.margin_pad );
 #endif
 
         /* Interface */
         fputs( "\n[Interface]\n", file );
-        if ( app_settings.always_show_tabs != always_show_tabs_default )
-            fprintf( file, "always_show_tabs=%d\n", app_settings.always_show_tabs );
-        if ( app_settings.hide_close_tab_buttons != hide_close_tab_buttons_default )
-            fprintf( file, "show_close_tab_buttons=%d\n", !app_settings.hide_close_tab_buttons );
-        //if ( app_settings.hide_side_pane_buttons != hide_side_pane_buttons_default )
-        //    fprintf( file, "hide_side_pane_buttons=%d\n", app_settings.hide_side_pane_buttons );
-        //if ( app_settings.hide_folder_content_border != hide_folder_content_border_default )
-        //    fprintf( file, "hide_folder_content_border=%d\n", app_settings.hide_folder_content_border );
+        fprintf( file, "always_show_tabs=%d\n", app_settings.always_show_tabs );
+        fprintf( file, "show_close_tab_buttons=%d\n", !app_settings.hide_close_tab_buttons );
 
         // MOD extra settings
         fputs( "\n[MOD]\n", file );
@@ -1176,11 +975,6 @@ _save_error:
 
 void free_settings()
 {
-/*
-    if ( app_settings.iconTheme )
-        g_free( app_settings.iconTheme );
-*/
-    //g_free( app_settings.terminal );
 #ifdef DESKTOP_INTEGRATION
     g_free( app_settings.wallpaper );
 #endif

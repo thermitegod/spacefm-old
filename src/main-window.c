@@ -2333,26 +2333,7 @@ gboolean fm_main_window_delete_event ( GtkWidget *widget,
     // save settings
     app_settings.maximized = main_window->maximized;
     xset_autosave_cancel();
-    char* err_msg = save_settings( main_window );
-    if ( err_msg )
-    {
-        char* msg = g_strdup_printf( _("Error: Unable to save session file.  Do you want to exit without saving?\n\n( %s )"), err_msg );
-        g_free( err_msg );
-        GtkWidget* dlg = gtk_message_dialog_new( GTK_WINDOW( widget ), GTK_DIALOG_MODAL,
-                                        GTK_MESSAGE_ERROR,
-                                        GTK_BUTTONS_YES_NO,
-                                        msg, NULL );
-        g_free( msg );
-        gtk_dialog_set_default_response( GTK_DIALOG( dlg ), GTK_RESPONSE_NO );
-        gtk_widget_show_all( dlg );
-        gtk_window_set_title( GTK_WINDOW( dlg ), _("SpaceFM Error") );
-        if ( gtk_dialog_run( GTK_DIALOG( dlg ) ) == GTK_RESPONSE_NO )
-        {
-            gtk_widget_destroy( dlg );
-            return TRUE;
-        }
-        gtk_widget_destroy( dlg );
-    }
+    save_settings( main_window );
 
     // tasks running?
     if ( main_tasks_running( main_window ) )

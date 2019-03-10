@@ -2849,9 +2849,6 @@ void ptk_file_browser_go_up( GtkWidget* item, PtkFileBrowser* file_browser )
 
 void ptk_file_browser_go_home( GtkWidget* item, PtkFileBrowser* file_browser )
 {
-//    if ( app_settings.home_folder )
-//        ptk_file_browser_chdir( PTK_FILE_BROWSER( file_browser ), app_settings.home_folder, PTK_FB_CHDIR_ADD_HISTORY );
-//    else
     focus_folder_view( file_browser );
         ptk_file_browser_chdir( PTK_FILE_BROWSER( file_browser ),
                                 g_get_home_dir(), PTK_FB_CHDIR_ADD_HISTORY );

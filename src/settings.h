@@ -36,9 +36,6 @@ typedef struct
 {
     /* General Settings */
     char encoding[ 32 ];
-    //gboolean show_hidden_files;
-    //gboolean show_side_pane;
-    //int side_pane_mode;
     gboolean show_thumbnail;
     int max_thumb_size;
 
@@ -50,24 +47,16 @@ typedef struct
     gboolean single_click;
     gboolean no_single_hover;
 
-    /* char* iconTheme; */
-    //char* terminal;
-
-    //gboolean show_location_bar;
-
     gboolean no_execute;    //MOD
     gboolean no_confirm;    //MOD
     gboolean sdebug;            //sfm
     gboolean load_saved_tabs;   //sfm
     char* date_format;  //MOD for speed dupe of xset
 
-    //int open_bookmark_method; /* 1: current tab, 2: new tab, 3: new window */
-    //int view_mode; /* icon view or detailed list view */
     int sort_order; /* Sort by name, size, time */
     int sort_type; /* ascending, descending */
 
     /* Window State */
-    //int splitter_pos;
     int width;
     int height;
     gboolean maximized;
@@ -101,8 +90,6 @@ typedef struct
     /* Interface */
     gboolean always_show_tabs;
     gboolean hide_close_tab_buttons;
-    //gboolean hide_side_pane_buttons;
-    //gboolean hide_folder_content_border;
 
     /* Units */
     gboolean use_si_prefix;
