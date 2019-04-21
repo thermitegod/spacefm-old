@@ -397,8 +397,8 @@ static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
     g_checksum_free(cs);
     strcpy( ( file_name + 32 ), ".png" );
 
-    thumbnail_file = g_build_filename( g_get_home_dir(),
-                                       ".thumbnails/normal",
+    thumbnail_file = g_build_filename( g_get_user_cache_dir(),
+                                       "thumbnails/normal",
                                        file_name, NULL );
 
     if( G_UNLIKELY( 0 == mtime ) )
@@ -527,7 +527,7 @@ GdkPixbuf* vfs_thumbnail_load_for_file( const char* file, int size, time_t mtime
 void vfs_thumbnail_init()
 {
     char* dir;
-    dir = g_build_filename( g_get_home_dir(), ".thumbnails/normal", NULL );
+    dir = g_build_filename( g_get_user_cache_dir(), "thumbnails/normal", NULL );
 
     if( G_LIKELY( g_file_test( dir, G_FILE_TEST_IS_DIR ) ) )
         chmod( dir, 0700 );
