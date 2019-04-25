@@ -131,10 +131,10 @@ struct _DesktopWindow
     GtkCellRenderer* icon_render;
 
     /* background image */
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     Pixmap background;
     cairo_surface_t *surface;
-#else
+#elif (GTK_MAJOR_VERSION == 2)
     GdkPixmap* background;
 #endif
     DWBgType bg_type;

@@ -889,7 +889,7 @@ void on_script_toggled( GtkWidget* item, ContextData* ctxt )
                                                         ctxt->cmd_script ) );
         load_command_script( ctxt, ctxt->set );
 
-#if GTK_CHECK_VERSION(2, 24, 0)
+#if (GTK_MAJOR_VERSION == 2)
         // update Open In Browser file count - cosmetic only
         // should probably rebuild entire list on click to avoid gtk 2.24 dep
         char* path;
@@ -1685,7 +1685,7 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
                                   xset_get_image( GTK_STOCK_OPEN,
                                                   GTK_ICON_SIZE_BUTTON ) );
     gtk_button_set_focus_on_click( GTK_BUTTON( ctxt->icon_choose_btn ), FALSE );
-#if GTK_CHECK_VERSION (3, 6, 0)
+#if (GTK_MAJOR_VERSION == 3)
     // keep this
     gtk_button_set_always_show_image( GTK_BUTTON( ctxt->icon_choose_btn ), TRUE );
 #endif
@@ -1840,7 +1840,7 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
 
     ctxt->box_value = gtk_combo_box_text_new_with_entry();
     gtk_combo_box_set_focus_on_click( GTK_COMBO_BOX( ctxt->box_value ), FALSE );
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     // see https://github.com/IgnorantGuru/spacefm/issues/43
     // this seems to have no effect
     gtk_combo_box_set_popup_fixed_width( GTK_COMBO_BOX( ctxt->box_value ), TRUE );

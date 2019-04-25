@@ -1983,7 +1983,7 @@ void fm_main_window_init( FMMainWindow* main_window )
 
     // panelbar
     main_window->panelbar = gtk_toolbar_new();
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     GtkStyleContext *style_ctx = gtk_widget_get_style_context( main_window->panelbar );
     gtk_style_context_add_class (style_ctx, GTK_STYLE_CLASS_MENUBAR);
     gtk_style_context_remove_class (style_ctx, GTK_STYLE_CLASS_TOOLBAR);
@@ -2815,7 +2815,7 @@ GtkWidget* fm_main_window_create_tab_label( FMMainWindow* main_window,
     }
 
     gtk_label_set_ellipsize( GTK_LABEL( tab_text ), PANGO_ELLIPSIZE_MIDDLE );
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     if (strlen( gtk_label_get_text( GTK_LABEL( tab_text ) ) ) < 30)
     {
         gtk_label_set_ellipsize( GTK_LABEL( tab_text ), PANGO_ELLIPSIZE_NONE );
@@ -2839,27 +2839,6 @@ GtkWidget* fm_main_window_create_tab_label( FMMainWindow* main_window,
             g_object_unref( pixbuf );
             //shorten tab since we have a 16 icon
             gtk_widget_set_size_request ( close_btn, 24, 20 );
-#if GTK_CHECK_VERSION (3, 20, 0)
-            /* code below produces Adwaita theme parse warnings on GTK >= 3.20
-             * Theme parsing error: <data>:2:28: The style property
-             * GtkButton:default-border is deprecated and shouldn't be used
-             * anymore. It will be removed in a future version  */
-#elif GTK_CHECK_VERSION (3, 0, 0)
-            /* Code modified from gedit: gedit-close-button.c */
-            static const gchar button_style[] =
-                  "* {\n"
-                  "-GtkButton-default-border : 0;\n"
-                  "-GtkButton-default-outside-border : 0;\n"
-                  "-GtkButton-inner-border: 0;\n"
-                  "-GtkWidget-focus-line-width : 0;\n"
-                  "-GtkWidget-focus-padding : 0;\n"
-                  "padding: 0;\n"
-                "}";
-            GtkCssProvider *css_prov = gtk_css_provider_new ();
-            gtk_css_provider_load_from_data(css_prov, button_style, -1, NULL);
-            GtkStyleContext *ctx = gtk_widget_get_style_context( close_btn );
-            gtk_style_context_add_provider( ctx, GTK_STYLE_PROVIDER( css_prov ), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION );
-#endif
         }
         else
         {
@@ -2918,7 +2897,7 @@ void fm_main_window_update_tab_label( FMMainWindow* main_window,
 
         name = g_path_get_basename( path );
         gtk_label_set_text( text, name );
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     gtk_label_set_ellipsize( text, PANGO_ELLIPSIZE_MIDDLE );
     if (strlen( name ) < 30)
     {

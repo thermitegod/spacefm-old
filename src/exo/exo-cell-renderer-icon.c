@@ -83,10 +83,9 @@ static void exo_cell_renderer_icon_set_property (GObject               *object,
 static void exo_cell_renderer_icon_get_size     (GtkCellRenderer       *renderer,
                                                  GtkWidget             *widget,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                                  const GdkRectangle    *cell_area,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                                  GdkRectangle          *cell_area,
 #endif
 
@@ -96,27 +95,24 @@ static void exo_cell_renderer_icon_get_size     (GtkCellRenderer       *renderer
                                                  gint                  *height);
 static void exo_cell_renderer_icon_render       (GtkCellRenderer       *renderer,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                                  cairo_t               *cr,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                                  GdkWindow             *window,
 #endif
 
                                                  GtkWidget             *widget,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                                  const GdkRectangle    *background_area,
                                                  const GdkRectangle    *cell_area,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                                  GdkRectangle          *background_area,
                                                  GdkRectangle          *cell_area,
 #endif
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
-#else
+#if (GTK_MAJOR_VERSION == 3)
+#elif (GTK_MAJOR_VERSION == 2)
                                                  GdkRectangle          *expose_area,
 #endif
 
@@ -348,10 +344,9 @@ static void
 exo_cell_renderer_icon_get_size (GtkCellRenderer    *renderer,
                                  GtkWidget          *widget,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                  const GdkRectangle *cell_area,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                  GdkRectangle       *cell_area,
 #endif
 
@@ -405,27 +400,24 @@ exo_cell_renderer_icon_get_size (GtkCellRenderer    *renderer,
 static void
 exo_cell_renderer_icon_render (GtkCellRenderer     *renderer,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                cairo_t             *cr,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                GdkWindow           *window,
 #endif
 
                                GtkWidget           *widget,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                const GdkRectangle  *background_area,
                                const GdkRectangle  *cell_area,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                GdkRectangle        *background_area,
                                GdkRectangle        *cell_area,
 #endif
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
-#else
+#if (GTK_MAJOR_VERSION == 3)
+#elif (GTK_MAJOR_VERSION == 2)
                                GdkRectangle             *expose_area,
 #endif
 
@@ -447,9 +439,7 @@ exo_cell_renderer_icon_render (GtkCellRenderer     *renderer,
     gint                              icon_size;
     gint                              n;
 
-    //sfm-gtk3
-    // This parameter isn't passed in the GTK3 call, so creating a replacement
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     GdkRectangle                     *expose_area = NULL;
 #endif
 
@@ -633,14 +623,13 @@ exo_cell_renderer_icon_render (GtkCellRenderer     *renderer,
         }
 
         /* Render the invalid parts of the icon */
-        //sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
         /* In GTK3, no expose_area is set so the intersecting draw_area is never
          * populated. icon_area is already the correct coords to output an icon
          * centred in the destination drawing area, so using that */
         gdk_cairo_set_source_pixbuf (cr, icon, icon_area.x, icon_area.y);
         cairo_paint (cr);
-#else
+#elif (GTK_MAJOR_VERSION == 2)
         gdk_draw_pixbuf (window, widget->style->black_gc, icon,
                          draw_area.x - icon_area.x, draw_area.y - icon_area.y,
                          draw_area.x, draw_area.y, draw_area.width,

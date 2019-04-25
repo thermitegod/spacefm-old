@@ -75,10 +75,9 @@ static void exo_cell_renderer_ellipsized_text_set_property  (GObject      *objec
 static void exo_cell_renderer_ellipsized_text_get_size      (GtkCellRenderer *renderer,
                                                              GtkWidget    *widget,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                                              const GdkRectangle *cell_area,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                                              GdkRectangle *cell_area,
 #endif
 
@@ -87,8 +86,7 @@ static void exo_cell_renderer_ellipsized_text_get_size      (GtkCellRenderer *re
                                                              gint         *width,
                                                              gint         *height);
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
 static void exo_cell_renderer_ellipsized_text_get_preferred_width (GtkCellRenderer *renderer,
                                                                    GtkWidget       *widget,
                                                                    gint            *minimal_size,
@@ -107,27 +105,24 @@ static void exo_cell_renderer_ellipsized_text_get_preferred_height_for_width (
 
 static void exo_cell_renderer_ellipsized_text_render        (GtkCellRenderer *renderer,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                                              cairo_t      *cr,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                                              GdkWindow    *window,
 #endif
 
                                                              GtkWidget    *widget,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                                              const GdkRectangle *background_area,
                                                              const GdkRectangle *cell_area,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                                              GdkRectangle *background_area,
                                                              GdkRectangle *cell_area,
 #endif
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
-#else
+#if (GTK_MAJOR_VERSION == 3)
+#elif (GTK_MAJOR_VERSION == 2)
                                                              GdkRectangle *expose_area,
 #endif
 
@@ -164,8 +159,7 @@ exo_cell_renderer_ellipsized_text_class_init (ExoCellRendererEllipsizedTextClass
     gtkcell_renderer_class->get_size = exo_cell_renderer_ellipsized_text_get_size;
     gtkcell_renderer_class->render = exo_cell_renderer_ellipsized_text_render;
 
-    //sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     gtkcell_renderer_class->get_preferred_width =
             exo_cell_renderer_ellipsized_text_get_preferred_width;
     gtkcell_renderer_class->get_preferred_height_for_width =
@@ -249,10 +243,9 @@ static void
 exo_cell_renderer_ellipsized_text_get_size (GtkCellRenderer *renderer,
                                             GtkWidget       *widget,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                             const GdkRectangle *cell_area,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                             GdkRectangle    *cell_area,
 #endif
 
@@ -276,11 +269,11 @@ exo_cell_renderer_ellipsized_text_get_size (GtkCellRenderer *renderer,
      * get_preferred_width and get_preferred_height_for_width - minimum_size
      * is sought in both cases */
     //sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     (*GTK_CELL_RENDERER_CLASS (exo_cell_renderer_ellipsized_text_parent_class)->get_preferred_width) (renderer, widget, &text_width, NULL);
     (*GTK_CELL_RENDERER_CLASS (exo_cell_renderer_ellipsized_text_parent_class)->get_preferred_height_for_width) (renderer, widget, text_width, &text_height,
                                   NULL);
-#else
+#elif (GTK_MAJOR_VERSION == 2)
     (*GTK_CELL_RENDERER_CLASS (exo_cell_renderer_ellipsized_text_parent_class)->get_size) (renderer, widget, NULL, NULL, NULL, &text_width, &text_height);
 #endif
 
@@ -325,8 +318,7 @@ exo_cell_renderer_ellipsized_text_get_size (GtkCellRenderer *renderer,
     }
 }
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
 static void exo_cell_renderer_ellipsized_text_get_preferred_width (GtkCellRenderer *renderer,
                                                                    GtkWidget       *widget,
                                                                    gint            *minimal_size,
@@ -373,27 +365,24 @@ static void exo_cell_renderer_ellipsized_text_get_preferred_height_for_width (
 static void
 exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                           cairo_t               *cr,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                           GdkWindow             *window,
 #endif
 
                                           GtkWidget             *widget,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                           const GdkRectangle  *background_area,
                                           const GdkRectangle  *cell_area,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                           GdkRectangle        *background_area,
                                           GdkRectangle        *cell_area,
 #endif
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
-#else
+#if (GTK_MAJOR_VERSION == 3)
+#elif (GTK_MAJOR_VERSION == 2)
                                           GdkRectangle             *expose_area,
 #endif
 
@@ -403,9 +392,8 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
     GdkRectangle                          text_area;
     GtkStateType                          state;
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
-#else
+#if (GTK_MAJOR_VERSION == 3)
+#elif (GTK_MAJOR_VERSION == 2)
     cairo_t                               *cr;
 #endif
 
@@ -416,9 +404,8 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
     gint                                  x0, x1;
     gint                                  y0, y1;
 
-    //sfm-gtk3
     // This parameter isn't passed in the GTK3 call, so creating a replacement
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     GdkRectangle                     *expose_area = NULL;
 #endif
 
@@ -467,8 +454,7 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
         if ((flags & (GTK_CELL_RENDERER_FOCUSED | GTK_CELL_RENDERER_SELECTED)) != 0)
         {
             /* Determine the real text dimensions */
-            //sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
             /* GTK3 completely breaks the GTK2 get_size call here as GtkCellRenderer
              * NULLs the function pointer in its gtk_cell_renderer_class_init
              * (doesn't set it to the available get_size function), and
@@ -479,7 +465,7 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
              * so its not different enough to warrant reworking stuff to use it */
             gtk_cell_renderer_get_size (renderer, widget, &text_area, &x0, &y0,
                                         &text_width, &text_height);
-#else
+#elif (GTK_MAJOR_VERSION == 2)
             (*GTK_CELL_RENDERER_CLASS (exo_cell_renderer_ellipsized_text_parent_class)->get_size)(
                                        renderer, widget, &text_area, &x0, &y0,
                                        &text_width, &text_height);
@@ -503,8 +489,8 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
                  * use it directly if possible
                  * In GTK3, the cairo context has already been provided */
                 //sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
-#else
+#if (GTK_MAJOR_VERSION == 3)
+#elif (GTK_MAJOR_VERSION == 2)
                 cr = gdk_cairo_create (window);
 #endif
                 cairo_move_to (cr, x0 + 5, y0);
@@ -520,8 +506,8 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
                 cairo_fill (cr);
 
                 //sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
-#else
+#if (GTK_MAJOR_VERSION == 3)
+#elif (GTK_MAJOR_VERSION == 2)
                 cairo_destroy (cr);
 #endif
             }
@@ -531,18 +517,16 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
             {
                 gtk_paint_focus (style,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                  cr,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                  window,
 #endif
 
                                  gtk_widget_get_state (widget),
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
-#else
+#if (GTK_MAJOR_VERSION == 3)
+#elif (GTK_MAJOR_VERSION == 2)
                                  NULL,
 #endif
 
@@ -561,10 +545,9 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
     (*GTK_CELL_RENDERER_CLASS (exo_cell_renderer_ellipsized_text_parent_class)->render) (
                                renderer,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                cr,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                window,
 #endif
 
@@ -572,9 +555,8 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
                                background_area,
                                &text_area,
 
-//sfm-gtk3
-#if GTK_CHECK_VERSION (3, 0, 0)
-#else
+#if (GTK_MAJOR_VERSION == 3)
+#elif (GTK_MAJOR_VERSION == 2)
                                expose_area,
 #endif
 

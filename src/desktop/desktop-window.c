@@ -42,7 +42,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <fnmatch.h>
 
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
 #include <cairo-xlib.h>
 #endif
 
@@ -76,11 +76,11 @@ static void desktop_window_class_init           (DesktopWindowClass *klass);
 static void desktop_window_init             (DesktopWindow *self);
 static void desktop_window_finalize         (GObject *object);
 
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
 static gboolean on_draw( GtkWidget* w, cairo_t* cr );
 static void desktop_window_get_preferred_width (GtkWidget *widget, gint *minimal_width, gint *natural_width);
 static void desktop_window_get_preferred_height (GtkWidget *widget, gint *minimal_height, gint *natural_height);
-#else
+#elif (GTK_MAJOR_VERSION == 2)
 static gboolean on_expose( GtkWidget* w, GdkEventExpose* evt );
 #endif
 static void on_size_allocate( GtkWidget* w, GtkAllocation* alloc );
@@ -266,11 +266,11 @@ static void desktop_window_class_init(DesktopWindowClass *klass)
 
     g_object_class->finalize = desktop_window_finalize;
 
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     wc->draw = on_draw;
     wc->get_preferred_width = desktop_window_get_preferred_width;
     wc->get_preferred_height = desktop_window_get_preferred_height;
-#else
+#elif (GTK_MAJOR_VERSION == 2)
     wc->expose_event = on_expose;
     wc->size_request = on_size_request;
 #endif
@@ -424,7 +424,7 @@ GtkWidget* desktop_window_new( gboolean transparent )
     {
         GdkScreen* screen = gdk_screen_get_default();
         gtk_widget_set_visual((GtkWidget*) w, gdk_screen_get_rgba_visual(screen));
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 2)
         gtk_widget_set_colormap((GtkWidget*) w, gdk_screen_get_rgba_colormap(screen));
 #endif
         gtk_window_stick(w);
@@ -451,13 +451,13 @@ void desktop_window_finalize(GObject *object)
                     gdk_screen_get_root_window( gtk_widget_get_screen( (GtkWidget*)object) ),
                     on_rootwin_event, self );
 
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     if( self->background )
         XFreePixmap ( xdisplay, self->background );
 
     if( self->surface )
         cairo_surface_destroy ( self->surface );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
     if( self->background )
         g_object_unref( self->background );
 #endif
@@ -481,16 +481,16 @@ void desktop_window_finalize(GObject *object)
 
 /*--------------- Signal handlers --------------*/
 
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
 gboolean on_draw( GtkWidget* w, cairo_t* cr)
-#else
+#elif (GTK_MAJOR_VERSION == 2)
 gboolean on_expose( GtkWidget* w, GdkEventExpose* evt )
 #endif
 {
     DesktopWindow* self = (DesktopWindow*)w;
     GList* l;
     GdkRectangle intersect;
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     GtkAllocation allocation;
     gtk_widget_get_allocation (w, &allocation);
 #endif
@@ -514,7 +514,7 @@ gboolean on_expose( GtkWidget* w, GdkEventExpose* evt )
 
     if ( self->transparent )
     {
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 2)
         cairo_t *cr;
         cr = gdk_cairo_create( gtk_widget_get_window( w ) );
 #endif
@@ -531,10 +531,10 @@ gboolean on_expose( GtkWidget* w, GdkEventExpose* evt )
     for( l = self->items; l; l = l->next )
     {
         DesktopItem* item = (DesktopItem*)l->data;
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
         if( gdk_rectangle_intersect( &allocation, &item->box, &intersect ) )
             paint_item( self, item, &intersect );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
         if( gdk_rectangle_intersect( &evt->area, &item->box, &intersect ) )
             paint_item( self, item, &intersect );
 #endif
@@ -563,7 +563,7 @@ void desktop_window_set_bg_color( DesktopWindow* win, GdkColor* clr )
     {
         win->bg = *clr;
 // Allocating colors is unnecessary with gtk3
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 2)
         gdk_colormap_alloc_color ( gtk_widget_get_colormap( (GtkWidget*)win ),
                             &win->bg, FALSE, TRUE );
 #endif
@@ -580,7 +580,7 @@ void desktop_window_set_text_color( DesktopWindow* win, GdkColor* clr, GdkColor*
         {
             win->fg = *clr;
 // Allocating colors is unnecessary with gtk3
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 2)
             gdk_colormap_alloc_color ( gtk_widget_get_colormap( (GtkWidget*)win ),
                                 &win->fg, FALSE, TRUE );
 #endif
@@ -589,7 +589,7 @@ void desktop_window_set_text_color( DesktopWindow* win, GdkColor* clr, GdkColor*
         {
             win->shadow = *shadow;
 // Allocating colors is unnecessary with gtk3
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 2)
             gdk_colormap_alloc_color ( gtk_widget_get_colormap( (GtkWidget*)win ),
                                 &win->shadow, FALSE, TRUE );
 #endif
@@ -607,11 +607,11 @@ void desktop_window_set_text_color( DesktopWindow* win, GdkColor* clr, GdkColor*
  */
 void desktop_window_set_background( DesktopWindow* win, GdkPixbuf* src_pix, DWBgType type )
 {
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     Pixmap pixmap = 0;
     cairo_surface_t *surface = NULL;
     cairo_pattern_t *pattern = NULL;
-#else
+#elif (GTK_MAJOR_VERSION == 2)
     GdkPixmap* pixmap = NULL;
 #endif
     Display* xdisplay;
@@ -647,12 +647,12 @@ void desktop_window_set_background( DesktopWindow* win, GdkPixbuf* src_pix, DWBg
 
         if( type == DW_BG_TILE )
         {
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
             pixmap = XCreatePixmap(xdisplay, xroot, src_w, src_h, depth);
             surface = cairo_xlib_surface_create (xdisplay, pixmap, xvisual,
                                                  src_w, src_h);
             cr = cairo_create ( surface );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
             pixmap = gdk_pixmap_new( gtk_widget_get_window( ((GtkWidget*)win) ), src_w, src_h, -1 );
             cr = gdk_cairo_create ( pixmap );
 #endif
@@ -665,12 +665,12 @@ void desktop_window_set_background( DesktopWindow* win, GdkPixbuf* src_pix, DWBg
             int dest_x = 0, dest_y = 0;
             int w = 0, h = 0;
 
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
             pixmap = XCreatePixmap(xdisplay, xroot, dest_w, dest_h, depth);
             surface = cairo_xlib_surface_create (xdisplay, pixmap, xvisual,
                                                  dest_w, dest_h);
             cr = cairo_create ( surface );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
             pixmap = gdk_pixmap_new( gtk_widget_get_window( ((GtkWidget*)win) ), dest_w, dest_h, -1 );
             cr = gdk_cairo_create ( pixmap );
 #endif
@@ -740,10 +740,10 @@ void desktop_window_set_background( DesktopWindow* win, GdkPixbuf* src_pix, DWBg
             }
             else
             {
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                 XFreePixmap ( xdisplay, pixmap );
                 pixmap = 0;
-#else
+#elif (GTK_MAJOR_VERSION == 3)
                 g_object_unref( pixmap );
                 pixmap = NULL;
 #endif
@@ -752,7 +752,7 @@ void desktop_window_set_background( DesktopWindow* win, GdkPixbuf* src_pix, DWBg
         cairo_destroy ( cr );
     }
 
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     if( win->background )
         XFreePixmap ( xdisplay, win->background );
 
@@ -760,7 +760,7 @@ void desktop_window_set_background( DesktopWindow* win, GdkPixbuf* src_pix, DWBg
         cairo_surface_destroy ( win->surface );
 
     win->surface = surface;
-#else
+#elif (GTK_MAJOR_VERSION == 2)
     if( win->background )
         g_object_unref( win->background );
 #endif
@@ -769,30 +769,20 @@ void desktop_window_set_background( DesktopWindow* win, GdkPixbuf* src_pix, DWBg
 
     if( pixmap )
     {
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
         pattern = cairo_pattern_create_for_surface( surface );
         cairo_pattern_set_extend( pattern, CAIRO_EXTEND_REPEAT );
         gdk_window_set_background_pattern( gtk_widget_get_window( ((GtkWidget*)win) ), pattern );
         cairo_pattern_destroy( pattern );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
         gdk_window_set_back_pixmap( gtk_widget_get_window( ((GtkWidget*)win) ), pixmap, FALSE );
 #endif
     }
     else
         gdk_window_set_background( gtk_widget_get_window( ((GtkWidget*)win) ), &win->bg );
 
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 2)
     gdk_window_clear( gtk_widget_get_window( ((GtkWidget*)win) ) );
-#else
-/*    cairo_t *cr2 = gdk_cairo_create( gtk_widget_get_window ((GtkWidget*)win) );
-    gdk_cairo_set_source_color( cr2, &win->bg );
-    cairo_paint( cr2 );
-    if ( surface )
-    {
-        cairo_set_source_surface( cr2, surface, 0, 0 );
-        cairo_paint( cr2 );
-    }
-    cairo_destroy(cr2);*/
 #endif
     gtk_widget_queue_draw( (GtkWidget*)win );
 
@@ -802,9 +792,9 @@ void desktop_window_set_background( DesktopWindow* win, GdkPixbuf* src_pix, DWBg
 
         if( pixmap )
         {
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
             xpixmap = pixmap;
-#else
+#elif (GTK_MAJOR_VERSION == 2)
             xpixmap = GDK_WINDOW_XID(pixmap);
 #endif
 
@@ -930,7 +920,7 @@ void on_size_request( GtkWidget* w, GtkRequisition* req )
     //printf("on_size_request  %p  w,h=%d, %d\n", w, req->width, req->height );
 }
 
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
 static void
 desktop_window_get_preferred_width (GtkWidget *widget,
                                     gint      *minimal_width,
@@ -1067,10 +1057,10 @@ void paint_rubber_banding_rect( DesktopWindow* self )
     else if( self->bg_type != DW_BG_COLOR )
     {
         if( self->background )
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
             pix = gdk_pixbuf_get_from_surface( self->surface,
                                                 rect.x, rect.y, rect.width, rect.height );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
             pix = gdk_pixbuf_get_from_drawable( NULL, self->background, gdk_drawable_get_colormap(self->background),
                                                 rect.x, rect.y, 0, 0, rect.width, rect.height );
 #endif
@@ -1130,9 +1120,9 @@ static void update_rubberbanding( DesktopWindow* self, int newx, int newy, gbool
     GList* l;
     GdkRectangle old_rect, new_rect;
 /*
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     cairo_region_t *region;
-#else
+#elif (GTK_MAJOR_VERSION == 2)
     GdkRegion *region;
 #endif
 */
@@ -2557,9 +2547,9 @@ gboolean on_focus_in( GtkWidget* w, GdkEventFocus* evt )
     DesktopWindow* self = (DesktopWindow*) w;
     //sfm gtk3 gtk_widget_grab_focus( w ) not equivalent
     //gtk_widget_grab_focus( w );
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     // TODO
-#else
+#elif (GTK_MAJOR_VERSION == 2)
     GTK_WIDGET_SET_FLAGS( w, GTK_HAS_FOCUS );
 #endif
     if( self->focus )
@@ -2573,9 +2563,9 @@ gboolean on_focus_out( GtkWidget* w, GdkEventFocus* evt )
     if( self->focus )
     {
         //sfm gtk3 restored - can GTK_WIDGET_UNSET_FLAGS be removed without changes?
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     // TODO
-#else
+#elif (GTK_MAJOR_VERSION == 2)
         GTK_WIDGET_UNSET_FLAGS( w, GTK_HAS_FOCUS );
 #endif
         redraw_item( self, self->focus );
@@ -3423,7 +3413,7 @@ void paint_item( DesktopWindow* self, DesktopItem* item, GdkRectangle* expose_ar
         return;   // empty
     const char* text = item->fi->disp_name;
     GtkWidget* widget = (GtkWidget*)self;
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 2)
     GdkDrawable* drawable = gtk_widget_get_window(widget);
 #endif
     GtkCellRendererState state = 0;
@@ -3442,10 +3432,10 @@ void paint_item( DesktopWindow* self, DesktopItem* item, GdkRectangle* expose_ar
         state = GTK_CELL_RENDERER_SELECTED;
 
     g_object_set( self->icon_render, "pixbuf", icon, NULL );
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     gtk_cell_renderer_render( self->icon_render, cr, widget,
                                                        &item->icon_rect, &item->icon_rect, state );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_cell_renderer_render( self->icon_render, drawable, widget,
                                                        &item->icon_rect, &item->icon_rect, expose_area, state );
 #endif
@@ -3508,13 +3498,13 @@ void paint_item( DesktopWindow* self, DesktopItem* item, GdkRectangle* expose_ar
 
     if( self->focus == item && gtk_widget_has_focus(widget) )
     {
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
         gtk_paint_focus( gtk_widget_get_style(widget), cr,
                         GTK_STATE_NORMAL,/*item->is_selected ? GTK_STATE_SELECTED : GTK_STATE_NORMAL,*/
                         widget, "icon_view",
                         item->text_rect.x, item->text_rect.y,
                         item->text_rect.width, item->text_rect.height);
-#else
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_paint_focus( gtk_widget_get_style(widget), gtk_widget_get_window(widget),
                         GTK_STATE_NORMAL,/*item->is_selected ? GTK_STATE_SELECTED : GTK_STATE_NORMAL,*/
                         &item->text_rect, widget, "icon_view",

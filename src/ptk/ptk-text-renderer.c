@@ -43,23 +43,23 @@ static void ptk_text_renderer_set_property ( GObject *object,
                                              GParamSpec *pspec );
 static void ptk_text_renderer_get_size ( GtkCellRenderer *cell,
                                          GtkWidget *widget,
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                                          const GdkRectangle *cell_area,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                                          GdkRectangle *cell_area,
 #endif
                                          gint *x_offset,
                                          gint *y_offset,
                                          gint *width,
                                          gint *height );
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
 static void ptk_text_renderer_render ( GtkCellRenderer *cell,
                                        cairo_t *cr,
                                        GtkWidget *widget,
                                        const GdkRectangle *background_area,
                                        const GdkRectangle *cell_area,
                                        GtkCellRendererState flags );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
 static void ptk_text_renderer_render ( GtkCellRenderer *cell,
                                        GdkWindow *window,
                                        GtkWidget *widget,
@@ -834,9 +834,9 @@ get_layout ( PtkTextRenderer *celltext,
 static void
 get_size ( GtkCellRenderer *cell,
            GtkWidget *widget,
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
            const GdkRectangle *cell_area,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
            GdkRectangle *cell_area,
 #endif
            PangoLayout *layout,
@@ -915,9 +915,9 @@ get_size ( GtkCellRenderer *cell,
 static void
 ptk_text_renderer_get_size ( GtkCellRenderer *cell,
                              GtkWidget *widget,
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                              const GdkRectangle *cell_area,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                              GdkRectangle *cell_area,
 #endif
                              gint *x_offset,
@@ -929,7 +929,7 @@ ptk_text_renderer_get_size ( GtkCellRenderer *cell,
                x_offset, y_offset, width, height );
 }
 
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
 static void
 ptk_text_renderer_render ( GtkCellRenderer *cell,
                            cairo_t *cr,
@@ -937,7 +937,7 @@ ptk_text_renderer_render ( GtkCellRenderer *cell,
                            const GdkRectangle *background_area,
                            const GdkRectangle *cell_area,
                            GtkCellRendererState flags )
-#else
+#elif (GTK_MAJOR_VERSION == 2)
 static void
 ptk_text_renderer_render ( GtkCellRenderer *cell,
                            GdkDrawable *window,
@@ -958,9 +958,9 @@ ptk_text_renderer_render ( GtkCellRenderer *cell,
     gint focus_pad, focus_width;
     gint x, y;
     gint xpad, ypad;
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     cairo_save ( cr );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
     cairo_t *cr;
 
     cr = gdk_cairo_create ( window );
@@ -987,9 +987,9 @@ ptk_text_renderer_render ( GtkCellRenderer *cell,
         if ( gtk_widget_has_focus ( widget ) )
             state = GTK_STATE_SELECTED;
         else
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
             state = GTK_STATE_SELECTED;
-#else
+#elif (GTK_MAJOR_VERSION == 2)
             state = GTK_STATE_ACTIVE;
 #endif
     }
@@ -1020,11 +1020,11 @@ ptk_text_renderer_render ( GtkCellRenderer *cell,
         if(flags & GTK_CELL_RENDERER_FOCUSED)
         {
             gtk_paint_focus( gtk_widget_get_style ( widget ),
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                            cr,
                            gtk_widget_get_state (widget),
                            widget, "icon_view",
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                            window,
                            gtk_widget_get_state (widget),
                            NULL, widget, "icon_view",
@@ -1046,11 +1046,11 @@ ptk_text_renderer_render ( GtkCellRenderer *cell,
         x_offset = -xpad / 2;
 
     gtk_paint_layout ( gtk_widget_get_style ( widget ),
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                        cr,
                        state,
                        TRUE,
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                        window,
                        state,
                        TRUE,
@@ -1063,9 +1063,9 @@ ptk_text_renderer_render ( GtkCellRenderer *cell,
                        layout );
 
     g_object_unref ( layout );
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     cairo_restore ( cr );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
     cairo_destroy ( cr );
 #endif
 }

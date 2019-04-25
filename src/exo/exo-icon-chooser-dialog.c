@@ -91,7 +91,7 @@ static void     exo_icon_chooser_dialog_combo_changed            (GtkWidget     
                                                                   ExoIconChooserDialog       *icon_chooser_dialog);
 static void     exo_icon_chooser_dialog_entry_changed            (GtkWidget                  *entry,
                                                                   ExoIconChooserDialog       *icon_chooser_dialog);
-#if GTK_CHECK_VERSION (2, 16, 0)
+#if (GTK_MAJOR_VERSION == 2)
 static void     exo_icon_chooser_dialog_entry_clear              (GtkEntry                   *entry,
                                                                   GtkEntryIconPosition        icon_pos,
                                                                   GdkEvent                   *event);
@@ -248,7 +248,7 @@ exo_icon_chooser_dialog_init (ExoIconChooserDialog *icon_chooser_dialog)
     gtk_table_attach (GTK_TABLE (table), priv->filter_entry, 1, 2, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 0);
     gtk_label_set_mnemonic_widget (GTK_LABEL (label), priv->filter_entry);
     g_signal_connect (G_OBJECT (priv->filter_entry), "changed", G_CALLBACK (exo_icon_chooser_dialog_entry_changed), icon_chooser_dialog);
-#if GTK_CHECK_VERSION (2, 16, 0)
+#if (GTK_MAJOR_VERSION == 2)
     gtk_entry_set_icon_from_stock (GTK_ENTRY (priv->filter_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
     gtk_entry_set_icon_tooltip_text (GTK_ENTRY (priv->filter_entry), GTK_ENTRY_ICON_SECONDARY, _("Clear search field"));
     gtk_entry_set_icon_sensitive (GTK_ENTRY (priv->filter_entry), GTK_ENTRY_ICON_SECONDARY, FALSE);
@@ -563,7 +563,7 @@ exo_icon_chooser_dialog_entry_changed (GtkWidget            *combo,
         g_free (normalized);
     }
 
-#if GTK_CHECK_VERSION (2, 16, 0)
+#if (GTK_MAJOR_VERSION == 2)
     gtk_entry_set_icon_sensitive (GTK_ENTRY (priv->filter_entry),
                                   GTK_ENTRY_ICON_SECONDARY,
                                   !exo_str_is_empty (text));
@@ -575,8 +575,7 @@ exo_icon_chooser_dialog_entry_changed (GtkWidget            *combo,
 }
 
 
-
-#if GTK_CHECK_VERSION (2, 16, 0)
+#if (GTK_MAJOR_VERSION == 2)
 static void
 exo_icon_chooser_dialog_entry_clear (GtkEntry             *entry,
                                      GtkEntryIconPosition  icon_pos,
@@ -652,8 +651,7 @@ exo_icon_chooser_dialog_new (const gchar *title,
     g_return_val_if_fail (parent == NULL || GTK_IS_WINDOW (parent), NULL);
 
     dialog = g_object_new (EXO_TYPE_ICON_CHOOSER_DIALOG,
-#if GTK_CHECK_VERSION (3, 0, 0)
-#else
+#if (GTK_MAJOR_VERSION == 2)
                            "has-separator", FALSE,
 #endif
                            "title", title,

@@ -1330,9 +1330,9 @@ int main ( int argc, char *argv[] )
     if ( version_opt )
     {
         printf( "spacefm %s\n", VERSION );
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
         printf( "GTK3 " );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
         printf( "GTK2 " );
 #endif
         printf( "UDEV " );

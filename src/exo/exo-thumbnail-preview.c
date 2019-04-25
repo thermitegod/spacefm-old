@@ -165,41 +165,6 @@ exo_thumbnail_preview_init (ExoThumbnailPreview *thumbnail_preview)
 }
 
 
-/* This is not needed in GTK2 or 3, and causes a loop with GTK v3.14 for
- * IgnorantGuru */
-#if 0
-static void
-exo_thumbnail_preview_style_set (GtkWidget           *ebox,
-                                 GtkStyle            *previous_style,
-                                 ExoThumbnailPreview *thumbnail_preview)
-{
-    _exo_return_if_fail (EXO_IS_THUMBNAIL_PREVIEW (thumbnail_preview));
-    _exo_return_if_fail (GTK_IS_EVENT_BOX (ebox));
-
-        /* Check if the ebox is already realized */
-//sfm-gtk3 - note that as we target v2.18, can't just move to gtk_widget_get_realized
-#if GTK_CHECK_VERSION (3, 0, 0)
-    if (gtk_widget_get_realized (ebox))
-#else
-    if (GTK_WIDGET_REALIZED (ebox))
-#endif
-    {
-        /* Set background color (using the base color) */
-        /* IgnorantGuru wants the background of the thumbnail widget to be grey/
-         * black depending on the theme, rather than the default white, which is
-         * associated with GTK_STATE_NORMAL */
-        g_signal_handlers_block_by_func (G_OBJECT (ebox),
-                                         exo_thumbnail_preview_style_set,
-                                         thumbnail_preview);
-        exo_thumbnail_preview_fix_background(thumbnail_preview);
-        g_signal_handlers_unblock_by_func (G_OBJECT (ebox),
-                                           exo_thumbnail_preview_style_set,
-                                           thumbnail_preview);
-    }
-}
-#endif
-
-
 /**
  * _exo_thumbnail_preview_new:
  *

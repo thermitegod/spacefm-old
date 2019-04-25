@@ -8336,7 +8336,7 @@ gboolean xset_text_dialog( GtkWidget* parent, const char* title, GtkWidget* imag
         gtk_button_set_focus_on_click( GTK_BUTTON( btn_icon_choose ), FALSE );
         g_signal_connect( G_OBJECT( buf ), "changed",
                     G_CALLBACK( on_icon_buffer_changed ), btn_icon_choose );
-#if GTK_CHECK_VERSION (3, 6, 0)
+#if (GTK_MAJOR_VERSION == 3)
         // keep this
         gtk_button_set_always_show_image( GTK_BUTTON( btn_icon_choose ), TRUE );
 #endif
@@ -9015,7 +9015,7 @@ gboolean on_tool_menu_button_press( GtkWidget *widget,
     return TRUE;
 }
 
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
 static void set_gtk3_widget_padding( GtkWidget* widget, int left_right,
                                                         int top_bottom )
 {
@@ -9165,7 +9165,7 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         gtk_button_set_image( GTK_BUTTON( btn ), image );
         gtk_button_set_relief( GTK_BUTTON( btn ), GTK_RELIEF_NONE );
         // These don't seem to do anything
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
         gtk_widget_set_margin_left( btn, 0 );
         gtk_widget_set_margin_right( btn, 0 );
         gtk_widget_set_margin_top( btn, 0 );
@@ -9173,16 +9173,12 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         gtk_widget_set_hexpand( btn, FALSE );
         gtk_widget_set_vexpand( btn, FALSE );
         set_gtk3_widget_padding( btn, 0, 0 );
-#else
-    gtk_widget_size_request( btn, &req );
-    gtk_widget_set_size_request( GTK_WIDGET( btn ), req.width - 4, -1 );
-#endif
-#if GTK_CHECK_VERSION (3, 6, 0)
         gtk_button_set_always_show_image( GTK_BUTTON( btn ), TRUE );
-#endif
-#if GTK_CHECK_VERSION (3, 12, 0)
         gtk_widget_set_margin_start( btn, 0 );
         gtk_widget_set_margin_end( btn, 0 );
+#elif (GTK_MAJOR_VERSION == 2)
+    gtk_widget_size_request( btn, &req );
+    gtk_widget_set_size_request( GTK_WIDGET( btn ), req.width - 4, -1 );
 #endif
 
         // create tool item containing an ebox to capture click on button
@@ -9227,7 +9223,7 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         gtk_button_set_relief( GTK_BUTTON( btn ), GTK_RELIEF_NONE );
         gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( btn ),
                                                     xset_get_b_set( set ) );
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
         gtk_widget_set_margin_left( btn, 0 );
         gtk_widget_set_margin_right( btn, 0 );
         gtk_widget_set_margin_top( btn, 0 );
@@ -9235,11 +9231,7 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         gtk_widget_set_hexpand( btn, FALSE );
         gtk_widget_set_vexpand( btn, FALSE );
         set_gtk3_widget_padding( btn, 0, 0 );
-#endif
-#if GTK_CHECK_VERSION (3, 6, 0)
         gtk_button_set_always_show_image( GTK_BUTTON( btn ), TRUE );
-#endif
-#if GTK_CHECK_VERSION (3, 12, 0)
         gtk_widget_set_margin_start( btn, 0 );
         gtk_widget_set_margin_end( btn, 0 );
 #endif
@@ -9329,7 +9321,7 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         gtk_widget_show( image );
         gtk_button_set_image( GTK_BUTTON( btn ), image );
         gtk_button_set_relief( GTK_BUTTON( btn ), GTK_RELIEF_NONE );
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
         gtk_widget_set_margin_left( btn, 0 );
         gtk_widget_set_margin_right( btn, 0 );
         gtk_widget_set_margin_top( btn, 0 );
@@ -9337,16 +9329,12 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         gtk_widget_set_hexpand( btn, FALSE );
         gtk_widget_set_vexpand( btn, FALSE );
         set_gtk3_widget_padding( btn, 0, 0 );
-#else
-        gtk_widget_size_request( btn, &req );
-        gtk_widget_set_size_request( GTK_WIDGET( btn ), req.width - 4, -1 );
-#endif
-#if GTK_CHECK_VERSION (3, 6, 0)
         gtk_button_set_always_show_image( GTK_BUTTON( btn ), TRUE );
-#endif
-#if GTK_CHECK_VERSION (3, 12, 0)
         gtk_widget_set_margin_start( btn, 0 );
         gtk_widget_set_margin_end( btn, 0 );
+#elif (GTK_MAJOR_VERSION == 2)
+        gtk_widget_size_request( btn, &req );
+        gtk_widget_set_size_request( GTK_WIDGET( btn ), req.width - 4, -1 );
 #endif
 
         // create eventbox for btn
@@ -9399,7 +9387,7 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
             gtk_widget_reparent( btn, ebox );
             gtk_button_set_relief( GTK_BUTTON( btn ), GTK_RELIEF_NONE );
         }
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
         gtk_widget_set_margin_left( btn, 0 );
         gtk_widget_set_margin_right( btn, 0 );
         gtk_widget_set_margin_top( btn, 0 );
@@ -9407,11 +9395,7 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         gtk_widget_set_hexpand( btn, FALSE );
         gtk_widget_set_vexpand( btn, FALSE );
         set_gtk3_widget_padding( btn, 0, 0 );
-#endif
-#if GTK_CHECK_VERSION (3, 6, 0)
         gtk_button_set_always_show_image( GTK_BUTTON( btn ), TRUE );
-#endif
-#if GTK_CHECK_VERSION (3, 12, 0)
         gtk_widget_set_margin_start( btn, 0 );
         gtk_widget_set_margin_end( btn, 0 );
 #endif
@@ -9531,7 +9515,7 @@ void xset_fill_toolbar( GtkWidget* parent, PtkFileBrowser* file_browser,
 
     // These don't seem to do anything
     gtk_container_set_border_width( GTK_CONTAINER( toolbar ), 0 );
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     gtk_widget_set_margin_left( toolbar, 0 );
     gtk_widget_set_margin_right( toolbar, 0 );
     gtk_widget_set_margin_top( toolbar, 0 );
@@ -9539,8 +9523,7 @@ void xset_fill_toolbar( GtkWidget* parent, PtkFileBrowser* file_browser,
 
     // remove padding from GTK3 toolbar - this works
     set_gtk3_widget_padding( toolbar, 0, 2 );
-#endif
-#if GTK_CHECK_VERSION (3, 12, 0)
+
     gtk_widget_set_margin_start( toolbar, 0 );
     gtk_widget_set_margin_end( toolbar, 0 );
 #endif

@@ -57,7 +57,7 @@ void
 _exo_gtk_widget_send_focus_change (GtkWidget *widget,
                                    gboolean   in)
 {
-#if !GTK_CHECK_VERSION (2, 22, 0)
+#if (GTK_MAJOR_VERSION == 2)
     if (in)
         GTK_WIDGET_SET_FLAGS (widget, GTK_HAS_FOCUS);
     else
@@ -71,12 +71,12 @@ _exo_gtk_widget_send_focus_change (GtkWidget *widget,
     fevent->focus_change.window = g_object_ref (gtk_widget_get_window (widget));
     fevent->focus_change.in = in;
 
-#if GTK_CHECK_VERSION (2, 22, 0)
-    gtk_widget_send_focus_change (widget, fevent);
-#else
+#if (GTK_MAJOR_VERSION == 3)
     gtk_widget_event (widget, fevent);
 
     g_object_notify (G_OBJECT (widget), "has-focus");
+#elif (GTK_MAJOR_VERSION == 2)
+    gtk_widget_send_focus_change (widget, fevent);
 #endif
 
     g_object_unref (G_OBJECT (widget));

@@ -1017,9 +1017,9 @@ void fm_find_files( const char** search_dirs )
     GtkTreeViewColumn* col;
     GtkWidget *add_folder_btn, *remove_folder_btn, *img;
 
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
     GtkBuilder* builder = _gtk_builder_new_from_file( PACKAGE_UI_DIR "/find-files2.ui", NULL );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
     GtkBuilder* builder = _gtk_builder_new_from_file( PACKAGE_UI_DIR "/find-files.ui", NULL );
 #endif
     data->win = (GtkWidget*)gtk_builder_get_object( builder, "win" );

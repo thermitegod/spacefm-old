@@ -2716,7 +2716,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                 gtk_label_set_line_wrap( GTK_LABEL( w ), wrap );
             else
             {
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
                 // gtk3 wraps labels at one char and doesn't allocate a usable width
                 // if in an hbox
                 gtk_label_set_line_wrap( GTK_LABEL( w ), !GTK_IS_HBOX( box ) );
@@ -2724,7 +2724,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                     gtk_label_set_width_chars( GTK_LABEL( w ), 20 );
                 //else
                 //    gtk_label_set_ellipsize( GTK_LABEL( w ), PANGO_ELLIPSIZE_MIDDLE );
-#else
+#elif (GTK_MAJOR_VERSION == 2)
                 gtk_label_set_line_wrap( GTK_LABEL( w ), TRUE );
 #endif
             }
@@ -3345,7 +3345,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
         {
             w = gtk_progress_bar_new();
             gtk_progress_bar_set_pulse_step( GTK_PROGRESS_BAR( w ), 0.08 );
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if (GTK_MAJOR_VERSION == 3)
             gtk_progress_bar_set_show_text( GTK_PROGRESS_BAR( w ), TRUE );
 #endif
             set_font( w, font );
