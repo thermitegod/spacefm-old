@@ -314,33 +314,16 @@ gboolean on_socket_event( GIOChannel* ioc, GIOCondition cond, gpointer data )
     return TRUE;
 }
 
-void get_socket_name_nogdk( char* buf, int len )
-{
-    char* dpy = g_strdup( g_getenv( "DISPLAY" ) );
-    if ( dpy && !strcmp( dpy, ":0.0" ) )
-    {
-        // treat :0.0 as :0 to prevent multiple instances on screen 0
-        g_free( dpy );
-        dpy = g_strdup( ":0" );
-    }
-    g_snprintf( buf, len, "%s/.spacefm-socket%s-%s", xset_get_tmp_dir(),
-                                                     dpy,
-                                                     g_get_user_name() );
-    g_free( dpy );
-}
-
 void get_socket_name( char* buf, int len )
 {
-    char* dpy = gdk_get_display();
+    char* dpy = g_strdup(g_getenv("DISPLAY"));
     if ( dpy && !strcmp( dpy, ":0.0" ) )
     {
         // treat :0.0 as :0 to prevent multiple instances on screen 0
         g_free( dpy );
         dpy = g_strdup( ":0" );
     }
-    g_snprintf( buf, len, "%s/.spacefm-socket%s-%s", xset_get_tmp_dir(),
-                                                     dpy,
-                                                     g_get_user_name() );
+    g_snprintf(buf, len, "/run/spacefm-%s%s.socket", g_get_user_name(), dpy);
     g_free( dpy );
 }
 
@@ -597,7 +580,7 @@ int send_socket_command( int argc, char* argv[], char** reply )   //sfm
 
     // open socket
     addr.sun_family = AF_UNIX;
-    get_socket_name_nogdk( addr.sun_path, sizeof( addr.sun_path ) );
+    get_socket_name( addr.sun_path, sizeof( addr.sun_path ) );
 #ifdef SUN_LEN
     addr_len = SUN_LEN( &addr );
 #else
