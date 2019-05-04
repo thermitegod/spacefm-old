@@ -354,6 +354,7 @@ static const char* su_commands[] = // order and contents must match prefdlg.ui
 {
     "/bin/su",
     "/usr/bin/sudo",
+    "/usr/bin/doas",
     "/usr/bin/su-to-root"
 };
 
@@ -370,7 +371,8 @@ static const char* gsu_commands[] = // order and contents must match prefdlg.ui
     "/usr/bin/lxsu",
     "/usr/bin/su-to-root",
     "/bin/su",
-    "/usr/bin/sudo"
+    "/usr/bin/sudo",
+    "/usr/bin/doas"
 };
 
 // These will contain the su and gsu settings from /etc/spacefm/spacefm.conf

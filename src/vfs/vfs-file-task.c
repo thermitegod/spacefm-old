@@ -1515,7 +1515,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
     // get terminal if needed
     if ( !task->exec_terminal && task->exec_as_user )
     {
-        if ( !strcmp( gsu, "/bin/su" ) || !strcmp( gsu, "/usr/bin/sudo" ) )
+        if (!strcmp(gsu, "/bin/su") || !strcmp(gsu, "/usr/bin/sudo") || !strcmp(gsu, "/usr/bin/doas"))
         {
             // using a non-GUI gsu so run in terminal
             if ( su )

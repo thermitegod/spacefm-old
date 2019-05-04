@@ -185,6 +185,9 @@
         <col id="0">/usr/bin/sudo</col>
       </row>
       <row>
+        <col id="0">/usr/bin/doas</col>
+      </row>
+      <row>
         <col id="0">/usr/bin/su-to-root</col>
       </row>
     </data>
@@ -229,6 +232,9 @@
       </row>
       <row>
         <col id="0">/usr/bin/sudo</col>
+      </row>
+      <row>
+        <col id="0">/usr/bin/doas</col>
       </row>
     </data>
   </object>
