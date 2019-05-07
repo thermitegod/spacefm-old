@@ -279,6 +279,30 @@ const Handler handlers_arc[]=
         FALSE,
         "xz -tv %x",
         FALSE
+    },
+    {
+        "hand_arc_+tar_zst",
+        "Tar Zstd",
+        "application/x-zstd",
+        "*.tar.zst",
+        "tar -I zstd -cvf %o %N",
+        FALSE,
+        "tar -I zstd -xvf %x",
+        FALSE,
+        "tar -I zstd -tvf %x",
+        TRUE
+    },
+    {
+        "hand_arc_+zst",
+        "Zstd",
+        "application/x-zstd",
+        "*.zst",
+        "zstd %N > %O",
+        FALSE,
+        "zstd -d %x > %G",
+        FALSE,
+        "zstd -tv %x",
+        FALSE
     }
 };
 

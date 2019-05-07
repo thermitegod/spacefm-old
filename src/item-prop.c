@@ -146,7 +146,7 @@ static const char* context_sub[] =
 static const char* context_sub_list[] =
 {
     "4%%%%%application/%%%%%audio/%%%%%audio/ || video/%%%%%image/%%%%%inode/directory%%%%%text/%%%%%video/%%%%%application/x-bzip||application/x-bzip-compressed-tar||application/x-gzip||application/zip||application/x-7z-compressed||application/x-bzip2||application/x-bzip2-compressed-tar||application/x-xz-compressed-tar||application/x-compressed-tar||application/x-rar",  //"MIME Type",
-    "6%%%%%archive_types || .gz || .bz2 || .7z || .xz || .txz || .tgz || .zip || .rar || .tar || .tar.gz || .tar.xz || .tar.bz2 || .tar.7z%%%%%audio_types || .mp3 || .MP3 || .m3u || .wav || .wma || .aac || .ac3 || .flac || .ram || .m4a || .ogg%%%%%image_types || .jpg || .jpeg || .gif || .png || .xpm%%%%%video_types || .mp4 || .MP4 || .avi || .AVI || .mkv || .mpeg || .mpg || .flv || .vob || .asf || .rm || .m2ts || .mov",  //"Filename",
+    "6%%%%%archive_types || .gz || .bz2 || .7z || .xz || .zst || .txz || .tgz || .zip || .rar || .tar || .tar.gz || .tar.xz || .tar.zst || .tar.bz2 || .tar.7z%%%%%audio_types || .mp3 || .MP3 || .m3u || .wav || .wma || .aac || .ac3 || .flac || .ram || .m4a || .ogg%%%%%image_types || .jpg || .jpeg || .gif || .png || .xpm%%%%%video_types || .mp4 || .MP4 || .avi || .AVI || .mkv || .mpeg || .mpg || .flv || .vob || .asf || .rm || .m2ts || .mov",  //"Filename",
     "0%%%%%",  //"Dir",
     "0%%%%%false%%%%%true",  //"Dir Write Access",
     "0%%%%%false%%%%%true",  //"File Is Text",
