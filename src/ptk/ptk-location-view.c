@@ -3425,12 +3425,6 @@ static void show_devices_menu( GtkTreeView* view, VFSVolume* vol,
         set = xset_set_cb( "dev_fmt_btrfs", on_format, vol );
             xset_set_ob1( set, "view", view );
             xset_set_ob2( set, "set", set );
-        set = xset_set_cb( "dev_fmt_reis", on_format, vol );
-            xset_set_ob1( set, "view", view );
-            xset_set_ob2( set, "set", set );
-        set = xset_set_cb( "dev_fmt_reis4", on_format, vol );
-            xset_set_ob1( set, "view", view );
-            xset_set_ob2( set, "set", set );
         set = xset_set_cb( "dev_fmt_swap", on_format, vol );
             xset_set_ob1( set, "view", view );
             xset_set_ob2( set, "set", set );

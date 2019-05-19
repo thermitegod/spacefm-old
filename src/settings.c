@@ -9877,11 +9877,6 @@ void xset_defaults()
         xset_set_set( set, "title", set->desc );
         set->line = g_strdup( "#devices-root-label" );
 
-        set = xset_get( "label_cmd_reiserfs" );
-        xset_set_set( set, "desc", "/sbin/reiserfstune -l %l %v" );
-        xset_set_set( set, "title", set->desc );
-        set->line = g_strdup( "#devices-root-label" );
-
     set = xset_set( "dev_root_check", "lbl", _("_Check") );
     xset_set_set( set, "desc", "/sbin/fsck -r %v" );
     set->line = g_strdup( "#devices-root-check" );
@@ -9896,7 +9891,7 @@ void xset_defaults()
 
     set = xset_set( "dev_menu_format", "lbl", _("_Format") );
     set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "desc", "dev_fmt_vfat dev_fmt_ntfs dev_fmt_ext2 dev_fmt_ext3 dev_fmt_ext4 dev_fmt_btrfs dev_fmt_reis dev_fmt_reis4 dev_fmt_swap dev_fmt_zero dev_fmt_urand" );
+    xset_set_set( set, "desc", "dev_fmt_vfat dev_fmt_ntfs dev_fmt_ext2 dev_fmt_ext3 dev_fmt_ext4 dev_fmt_btrfs dev_fmt_swap dev_fmt_zero dev_fmt_urand" );
     set->line = g_strdup( "#devices-root-format" );
 
         set = xset_set( "dev_fmt_vfat", "lbl", "_vfat" );
@@ -9927,16 +9922,6 @@ void xset_defaults()
         set = xset_set( "dev_fmt_btrfs", "lbl", "_btrfs" );
         xset_set_set( set, "desc", "btrfs" );
         xset_set_set( set, "title", "/sbin/mkfs -t btrfs %v" );
-        set->line = g_strdup( "#devices-root-format" );
-
-        set = xset_set( "dev_fmt_reis", "lbl", "_reiserfs" );
-        xset_set_set( set, "desc", "reiserfs" );
-        xset_set_set( set, "title", "/sbin/mkfs -t reiserfs %v" );
-        set->line = g_strdup( "#devices-root-format" );
-
-        set = xset_set( "dev_fmt_reis4", "lbl", "r_eiser4" );
-        xset_set_set( set, "desc", "reiser4" );
-        xset_set_set( set, "title", "/sbin/mkfs -t reiser4 %v" );
         set->line = g_strdup( "#devices-root-format" );
 
         set = xset_set( "dev_fmt_swap", "lbl", "_swap" );
