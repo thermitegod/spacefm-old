@@ -399,7 +399,6 @@ static char* translate_app_exec_to_command_line( VFSAppDesktop* app,
                 break;
             case '\0':
                 goto _finish;
-                break;
             }
         }
         else  /* not % escaped part */

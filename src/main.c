@@ -284,7 +284,6 @@ gboolean on_socket_event( GIOChannel* ioc, GIOCondition cond, gpointer data )
             case CMD_SOCKET_CMD:
                 g_string_free( args, TRUE );
                 return TRUE;
-                break;
             }
 
             if( args->str[ argx + 1 ] )
