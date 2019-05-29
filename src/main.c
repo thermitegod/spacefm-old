@@ -94,7 +94,6 @@ gboolean daemon_mode = FALSE;
 
 static char* default_files[2] = {NULL, NULL};
 static char** files = NULL;
-static gboolean no_desktop = FALSE;
 
 static gboolean new_tab = TRUE;
 static gboolean reuse_tab = FALSE;  //sfm
@@ -102,7 +101,6 @@ static gboolean no_tabs = FALSE;     //sfm
 static gboolean new_window = FALSE;
 static gboolean desktop_pref = FALSE;  //MOD
 static gboolean desktop = FALSE;  //MOD
-static gboolean profile = FALSE;  //MOD
 static gboolean custom_dialog = FALSE;  //sfm
 static gboolean socket_cmd = FALSE;     //sfm
 static gboolean version_opt = FALSE;     //sfm
@@ -141,8 +139,6 @@ static GOptionEntry opt_entries[] =
 #endif
     { "dialog", 'g', 0, G_OPTION_ARG_NONE, &custom_dialog, N_("Show a custom dialog (See -g help)"), NULL },
     { "socket-cmd", 's', 0, G_OPTION_ARG_NONE, &socket_cmd, N_("Send a socket command (See -s help)"), NULL },
-    { "profile", '\0', 0, G_OPTION_ARG_STRING, &profile, N_("No function - for compatibility only"), "PROFILE" },
-    { "no-desktop", '\0', 0, G_OPTION_ARG_NONE, &no_desktop, N_("No function - for compatibility only"), NULL },
     { "version", '\0', 0, G_OPTION_ARG_NONE, &version_opt, N_("Show version information"), NULL },
 
     { "sdebug", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &sdebug, NULL, NULL },
@@ -1370,17 +1366,6 @@ int main ( int argc, char *argv[] )
 
     app_settings.sdebug = sdebug;
 
-/*
-    // temporarily turn off desktop if needed
-    if( G_LIKELY( no_desktop ) )
-    {
-        // No matter what the value of show_desktop is, we don't showdesktop icons
-        // if --no-desktop argument is passed by the users.
-        old_show_desktop = app_settings.show_desktop;
-        // This config value will be restored before saving config files, if needed.
-        app_settings.show_desktop = FALSE;
-    }
-*/
     /* If we reach this point, we are the first instance.
      * Subsequent processes will exit() inside single_instance_check and won't reach here.
      */
@@ -1405,17 +1390,6 @@ int main ( int argc, char *argv[] )
 
     if( desktop && desktop_or_deamon_initialized )  // desktop was app_settings.show_desktop
         fm_turn_off_desktop_icons();
-
-/*
-    if( no_desktop )    // desktop icons is temporarily supressed
-    {
-        if( old_show_desktop )  // restore original settings
-        {
-            old_show_desktop = app_settings.show_desktop;
-            app_settings.show_desktop = TRUE;
-        }
-    }
-*/
 
 /*
     if( run && xset_get_b( "main_save_exit" ) )
