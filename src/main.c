@@ -123,9 +123,7 @@ static GOptionEntry opt_entries[] =
     { "no-saved-tabs", 'n', 0, G_OPTION_ARG_NONE, &no_tabs, N_("Don't load saved tabs"), NULL },
     { "new-window", 'w', 0, G_OPTION_ARG_NONE, &new_window, N_("Open folders in new window"), NULL },
     { "panel", 'p', 0, G_OPTION_ARG_INT, &panel, N_("Open folders in panel 'P' (1-4)"), "P" },
-    { "desktop", '\0', 0, G_OPTION_ARG_NONE, &desktop, N_("Launch desktop manager daemon"), NULL },
-    { "desktop-pref", '\0', 0, G_OPTION_ARG_NONE, &desktop_pref, N_("Show desktop settings"), NULL },
-    { "show-pref", '\0', 0, G_OPTION_ARG_INT, &show_pref, N_("Show Preferences ('N' is the Pref tab number)"), "N" },
+    { "show-pref", 'o', 0, G_OPTION_ARG_INT, &show_pref, N_("Show Preferences ('N' is the Pref tab number)"), "N" },
     { "daemon-mode", 'd', 0, G_OPTION_ARG_NONE, &daemon_mode, N_("Run as a daemon"), NULL },
     { "config-dir", 'c', 0, G_OPTION_ARG_STRING, &config_dir, N_("Use DIR as configuration directory"), "DIR" },
     { "find-files", 'f', 0, G_OPTION_ARG_NONE, &find_files, N_("Show File Search"), NULL },
@@ -135,11 +133,13 @@ static GOptionEntry opt_entries[] =
     { "set-default", '\0', 0, G_OPTION_ARG_STRING, &set_default, N_("Set default application of the specified mime-type."), NULL },
 */
 #ifdef DESKTOP_INTEGRATION
+    { "desktop", '\0', 0, G_OPTION_ARG_NONE, &desktop, N_("Launch desktop manager daemon"), NULL },
+    { "desktop-pref", '\0', 0, G_OPTION_ARG_NONE, &desktop_pref, N_("Show desktop settings"), NULL },
     { "set-wallpaper", '\0', 0, G_OPTION_ARG_NONE, &set_wallpaper, N_("Set desktop wallpaper to FILE"), NULL },
 #endif
     { "dialog", 'g', 0, G_OPTION_ARG_NONE, &custom_dialog, N_("Show a custom dialog (See -g help)"), NULL },
     { "socket-cmd", 's', 0, G_OPTION_ARG_NONE, &socket_cmd, N_("Send a socket command (See -s help)"), NULL },
-    { "version", '\0', 0, G_OPTION_ARG_NONE, &version_opt, N_("Show version information"), NULL },
+    { "version", 'v', 0, G_OPTION_ARG_NONE, &version_opt, N_("Show version information"), NULL },
 
     { "sdebug", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &sdebug, NULL, NULL },
 
