@@ -46,7 +46,10 @@
 #include "settings.h"
 #include "item-prop.h"
 #include "find-files.h"
+
+#ifdef DESKTOP_INTEGRATION
 #include "desktop.h"
+#endif
 
 #ifdef HAVE_STATVFS
 /* FIXME: statvfs support should be moved to src/vfs */
@@ -1236,7 +1239,9 @@ void main_window_toggle_thumbnails_all_windows()
         }
     }
 
+#ifdef DESKTOP_INTEGRATION
     fm_desktop_update_thumbnails();
+#endif
 
     /* Ensuring free space at the end of the heap is freed to the OS,
      * mainly to deal with the possibility thousands of large thumbnails

@@ -1591,6 +1591,7 @@ GtkWidget* ptk_file_menu_new( DesktopWindow* desktop, PtkFileBrowser* browser,
         g_free( desc );
         xset_add_menuitem( desktop, browser, popup, accel_group, set );
     }
+#ifdef DESKTOP_INTEGRATION
     else if ( desktop )
     {
         // Desktop|Devices
@@ -1672,6 +1673,7 @@ GtkWidget* ptk_file_menu_new( DesktopWindow* desktop, PtkFileBrowser* browser,
         set = xset_set_cb( "prop_info", on_popup_file_properties_activate, data );
         xset_add_menuitem( desktop, NULL, popup, accel_group, set );
     }
+#endif
 
     gtk_widget_show_all( GTK_WIDGET( popup ) );
 

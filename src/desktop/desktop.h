@@ -22,6 +22,8 @@
 #ifndef _DESKTOP_H_
 #define _DESKTOP_H_
 
+#ifdef DESKTOP_INTEGRATION
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -41,5 +43,7 @@ void fm_desktop_update_icons();
 void fm_desktop_set_single_click( gboolean single_click );
 
 G_END_DECLS
+
+#endif
 
 #endif

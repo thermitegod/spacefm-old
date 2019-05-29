@@ -13,6 +13,10 @@
 #  include <config.h>
 #endif
 
+#ifdef DESKTOP_INTEGRATION
+#include "desktop.h"
+#endif
+
 #include "pcmanfm.h"
 
 #include <string.h>
@@ -29,7 +33,6 @@
 #include "ptk-utils.h"
 #include "main-window.h"
 #include "ptk-file-browser.h"
-#include "desktop.h"
 #include "ptk-location-view.h"
 
 #include "gtk2-compat.h"
@@ -62,16 +65,19 @@ struct _FMPrefDlg
     GtkWidget* hide_close_tab_buttons;
     //GtkWidget* hide_folder_content_border;
 
+#ifdef DESKTOP_INTEGRATION
     //GtkWidget* show_desktop;
     GtkWidget* show_wallpaper;
     GtkWidget* wallpaper;
     GtkWidget* wallpaper_mode;
     GtkWidget* img_preview;
     GtkWidget* show_wm_menu;
+#endif
     GtkWidget* desk_single_click;
     GtkWidget* desk_single_hover;
     GtkWidget* desk_open_mime;
     GtkWidget* desk_font;
+#ifdef DESKTOP_INTEGRATION
     GtkWidget* margin_top;
     GtkWidget* margin_left;
     GtkWidget* margin_right;
@@ -81,6 +87,7 @@ struct _FMPrefDlg
     GtkWidget* bg_color1;
     GtkWidget* text_color;
     GtkWidget* shadow_color;
+#endif
 
     //MOD
     GtkWidget* confirm_delete;
@@ -127,6 +134,8 @@ on_show_desktop_toggled( GtkToggleButton* show_desktop, GtkWidget* desktop_page 
     gtk_widget_set_sensitive( GTK_WIDGET(show_desktop), TRUE );
 }
 */
+
+#ifdef DESKTOP_INTEGRATION
 static void set_preview_image( GtkImage* img, const char* file )
 {
     GdkPixbuf* pix = NULL;
@@ -151,6 +160,7 @@ static void on_update_img_preview( GtkFileChooser *chooser, GtkImage* img )
         gtk_image_clear( img );
     }
 }
+#endif
 
 static void
 dir_unload_thumbnails( const char* path, VFSDir* dir, gpointer user_data )
@@ -217,18 +227,24 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
     int small_icon;
     int tool_icon;
     //gboolean show_desktop;
+#ifdef DESKTOP_INTEGRATION
     gboolean show_wallpaper;
+#endif
     gboolean single_click;
     gboolean single_hover;
     //gboolean rubberband;
     gboolean root_bar;
     gboolean root_set_change = FALSE;
+#ifdef DESKTOP_INTEGRATION
     WallpaperMode wallpaper_mode;
+#endif
     GdkColor bg1;
     GdkColor bg2;
     GdkColor text;
     GdkColor shadow;
+#ifdef DESKTOP_INTEGRATION
     char* wallpaper;
+#endif
     const GList* l;
     PtkFileBrowser* file_browser;
     gboolean use_si_prefix;
@@ -369,6 +385,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
         }
 */
 
+#ifdef DESKTOP_INTEGRATION
         // Desktop settings =================================================
 
         // checkboxes
@@ -503,7 +520,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
 
         if ( update_icons )
             fm_desktop_update_icons();
-
+#endif
 
         // ===============================================================
 
@@ -537,12 +554,14 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
             if( small_icon != app_settings.small_icon_size )
                 vfs_dir_foreach( (GHFunc)dir_unload_thumbnails, GINT_TO_POINTER( 0 ) );
 
+#ifdef DESKTOP_INTEGRATION
             // update desktop icons
             if ( big_icon != app_settings.big_icon_size )
             {
                 app_settings.big_icon_size = big_icon;
                 fm_desktop_update_icons();
             }
+#endif
             app_settings.big_icon_size = big_icon;
             app_settings.small_icon_size = small_icon;
 
@@ -891,6 +910,7 @@ void on_show_thumbnail_toggled( GtkWidget* widget, FMPrefDlg* data )
                     GTK_TOGGLE_BUTTON( data->show_thumbnail ) ) );
 }
 
+#ifdef DESKTOP_INTEGRATION
 void on_wallpaper_mode_changed( GtkComboBox *combobox, FMPrefDlg* data )
 {
     gint active = gtk_combo_box_get_active(
@@ -907,6 +927,7 @@ void on_wallpaper_toggled( GtkToggleButton* show_wallpaper, FMPrefDlg* data )
                                           active != WPM_TRANSPARENT );
     gtk_widget_set_sensitive( GTK_WIDGET( data->wallpaper_mode ), enabled );
 }
+#endif
 
 gboolean fm_edit_preference( GtkWindow* parent, int page )
 {
@@ -1106,7 +1127,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
 
         gtk_toggle_button_set_active( (GtkToggleButton*)data->use_si_prefix, app_settings.use_si_prefix );
 
-
+#ifdef DESKTOP_INTEGRATION
         // Desktop Tab ====================================================
         data->show_wallpaper = (GtkWidget*)gtk_builder_get_object( builder,
                                                         "show_wallpaper" );
@@ -1215,7 +1236,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
         str = g_strdup_printf( "%d", app_settings.margin_pad );
         gtk_entry_set_text( GTK_ENTRY( data->margin_pad ), str );
         g_free( str );
-
+#endif
 
         // Advanced Tab ==================================================
 

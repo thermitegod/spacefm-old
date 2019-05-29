@@ -22,9 +22,9 @@
 #  include <config.h>
 #endif
 
-#include "desktop.h"
-
 #ifdef DESKTOP_INTEGRATION
+
+#include "desktop.h"
 
 #include <gtk/gtk.h>
 //#include "fm-desktop.h"
@@ -232,15 +232,5 @@ void fm_desktop_set_single_click( gboolean single_click )
         desktop_window_set_single_click( (DesktopWindow*)desktops[ i ], single_click );
 }
 
-#else /* ! DESKTOP_INTEGRATION */
-
-/* dummy implementations */
-void fm_turn_on_desktop_icons( gboolean transparent ) { }
-void fm_turn_off_desktop_icons() { }
-void fm_desktop_update_thumbnails() { }
-void fm_desktop_update_wallpaper( gboolean transparency_changed ) { }
-void fm_desktop_update_colors() { }
-void fm_desktop_update_icons() { }
-void fm_desktop_set_single_click( gboolean single_click ) { }
 #endif
 

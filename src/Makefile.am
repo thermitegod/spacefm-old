@@ -42,7 +42,7 @@ DESKTOP_SOURCES = \
     desktop/desktop-window.c desktop/desktop-window.h \
     desktop/desktop.c desktop/desktop.h
 else
-DESKTOP_SOURCES = desktop/desktop.c desktop/desktop.h
+DESKTOP_SOURCES =
 endif
 
 PTK_SOURCES = \

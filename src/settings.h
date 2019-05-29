@@ -72,13 +72,16 @@ typedef struct
     int height;
     gboolean maximized;
 
+#ifdef DESKTOP_INTEGRATION
     /* Desktop */
     //gboolean show_desktop;
     gboolean show_wallpaper;
     char* wallpaper;
     WallpaperMode wallpaper_mode;
+#endif
     int desktop_sort_by;
     int desktop_sort_type;
+#ifdef DESKTOP_INTEGRATION
     gboolean show_wm_menu;
     gboolean desk_single_click;
     gboolean desk_no_single_hover;
@@ -93,6 +96,7 @@ typedef struct
     int margin_right;
     int margin_bottom;
     int margin_pad;
+#endif
 
     /* Interface */
     gboolean always_show_tabs;

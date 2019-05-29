@@ -143,8 +143,8 @@ am__spacefm_SOURCES_DIST = mime-type/mime-type.c mime-type/mime-type.h \
 	exo/exo-binding.c exo/exo-binding.h \
 	exo/exo-cell-renderer-ellipsized-text.c \
 	exo/exo-cell-renderer-ellipsized-text.h exo/exo-common.h \
-	desktop/desktop.c desktop/desktop.h desktop/desktop-window.c \
-	desktop/desktop-window.h private.h main.c pcmanfm.h \
+	desktop/desktop-window.c desktop/desktop-window.h \
+	desktop/desktop.c desktop/desktop.h private.h main.c pcmanfm.h \
 	main-window.c main-window.h settings.c settings.h \
 	pref-dialog.c pref-dialog.h find-files.c find-files.h \
 	go-dialog.c go-dialog.h cust-dialog.c cust-dialog.h \
@@ -197,8 +197,6 @@ am__objects_5 = exo/spacefm-exo-icon-view.$(OBJEXT) \
 	exo/spacefm-exo-utils.$(OBJEXT) \
 	exo/spacefm-exo-binding.$(OBJEXT) \
 	exo/spacefm-exo-cell-renderer-ellipsized-text.$(OBJEXT)
-@DESKTOP_INTEGRATION_FALSE@am__objects_6 =  \
-@DESKTOP_INTEGRATION_FALSE@	desktop/spacefm-desktop.$(OBJEXT)
 @DESKTOP_INTEGRATION_TRUE@am__objects_6 = desktop/spacefm-desktop-window.$(OBJEXT) \
 @DESKTOP_INTEGRATION_TRUE@	desktop/spacefm-desktop.$(OBJEXT)
 am_spacefm_OBJECTS = $(am__objects_1) $(am__objects_3) \
@@ -549,7 +547,7 @@ VFS_SOURCES = \
     vfs/vfs-thumbnail-loader.c vfs/vfs-thumbnail-loader.h \
     vfs/vfs-utils.c vfs/vfs-utils.h
 
-@DESKTOP_INTEGRATION_FALSE@DESKTOP_SOURCES = desktop/desktop.c desktop/desktop.h
+@DESKTOP_INTEGRATION_FALSE@DESKTOP_SOURCES = 
 @DESKTOP_INTEGRATION_TRUE@DESKTOP_SOURCES = \
 @DESKTOP_INTEGRATION_TRUE@    desktop/desktop-window.c desktop/desktop-window.h \
 @DESKTOP_INTEGRATION_TRUE@    desktop/desktop.c desktop/desktop.h
@@ -841,9 +839,9 @@ exo/spacefm-exo-binding.$(OBJEXT): exo/$(am__dirstamp) \
 	exo/$(DEPDIR)/$(am__dirstamp)
 exo/spacefm-exo-cell-renderer-ellipsized-text.$(OBJEXT):  \
 	exo/$(am__dirstamp) exo/$(DEPDIR)/$(am__dirstamp)
-desktop/spacefm-desktop.$(OBJEXT): desktop/$(am__dirstamp) \
-	desktop/$(DEPDIR)/$(am__dirstamp)
 desktop/spacefm-desktop-window.$(OBJEXT): desktop/$(am__dirstamp) \
+	desktop/$(DEPDIR)/$(am__dirstamp)
+desktop/spacefm-desktop.$(OBJEXT): desktop/$(am__dirstamp) \
 	desktop/$(DEPDIR)/$(am__dirstamp)
 
 spacefm$(EXEEXT): $(spacefm_OBJECTS) $(spacefm_DEPENDENCIES) $(EXTRA_spacefm_DEPENDENCIES) 
@@ -1647,20 +1645,6 @@ exo/spacefm-exo-cell-renderer-ellipsized-text.obj: exo/exo-cell-renderer-ellipsi
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o exo/spacefm-exo-cell-renderer-ellipsized-text.obj `if test -f 'exo/exo-cell-renderer-ellipsized-text.c'; then $(CYGPATH_W) 'exo/exo-cell-renderer-ellipsized-text.c'; else $(CYGPATH_W) '$(srcdir)/exo/exo-cell-renderer-ellipsized-text.c'; fi`
 
-desktop/spacefm-desktop.o: desktop/desktop.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT desktop/spacefm-desktop.o -MD -MP -MF desktop/$(DEPDIR)/spacefm-desktop.Tpo -c -o desktop/spacefm-desktop.o `test -f 'desktop/desktop.c' || echo '$(srcdir)/'`desktop/desktop.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) desktop/$(DEPDIR)/spacefm-desktop.Tpo desktop/$(DEPDIR)/spacefm-desktop.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='desktop/desktop.c' object='desktop/spacefm-desktop.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o desktop/spacefm-desktop.o `test -f 'desktop/desktop.c' || echo '$(srcdir)/'`desktop/desktop.c
-
-desktop/spacefm-desktop.obj: desktop/desktop.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT desktop/spacefm-desktop.obj -MD -MP -MF desktop/$(DEPDIR)/spacefm-desktop.Tpo -c -o desktop/spacefm-desktop.obj `if test -f 'desktop/desktop.c'; then $(CYGPATH_W) 'desktop/desktop.c'; else $(CYGPATH_W) '$(srcdir)/desktop/desktop.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) desktop/$(DEPDIR)/spacefm-desktop.Tpo desktop/$(DEPDIR)/spacefm-desktop.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='desktop/desktop.c' object='desktop/spacefm-desktop.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o desktop/spacefm-desktop.obj `if test -f 'desktop/desktop.c'; then $(CYGPATH_W) 'desktop/desktop.c'; else $(CYGPATH_W) '$(srcdir)/desktop/desktop.c'; fi`
-
 desktop/spacefm-desktop-window.o: desktop/desktop-window.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT desktop/spacefm-desktop-window.o -MD -MP -MF desktop/$(DEPDIR)/spacefm-desktop-window.Tpo -c -o desktop/spacefm-desktop-window.o `test -f 'desktop/desktop-window.c' || echo '$(srcdir)/'`desktop/desktop-window.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) desktop/$(DEPDIR)/spacefm-desktop-window.Tpo desktop/$(DEPDIR)/spacefm-desktop-window.Po
@@ -1674,6 +1658,20 @@ desktop/spacefm-desktop-window.obj: desktop/desktop-window.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='desktop/desktop-window.c' object='desktop/spacefm-desktop-window.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o desktop/spacefm-desktop-window.obj `if test -f 'desktop/desktop-window.c'; then $(CYGPATH_W) 'desktop/desktop-window.c'; else $(CYGPATH_W) '$(srcdir)/desktop/desktop-window.c'; fi`
+
+desktop/spacefm-desktop.o: desktop/desktop.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT desktop/spacefm-desktop.o -MD -MP -MF desktop/$(DEPDIR)/spacefm-desktop.Tpo -c -o desktop/spacefm-desktop.o `test -f 'desktop/desktop.c' || echo '$(srcdir)/'`desktop/desktop.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) desktop/$(DEPDIR)/spacefm-desktop.Tpo desktop/$(DEPDIR)/spacefm-desktop.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='desktop/desktop.c' object='desktop/spacefm-desktop.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o desktop/spacefm-desktop.o `test -f 'desktop/desktop.c' || echo '$(srcdir)/'`desktop/desktop.c
+
+desktop/spacefm-desktop.obj: desktop/desktop.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT desktop/spacefm-desktop.obj -MD -MP -MF desktop/$(DEPDIR)/spacefm-desktop.Tpo -c -o desktop/spacefm-desktop.obj `if test -f 'desktop/desktop.c'; then $(CYGPATH_W) 'desktop/desktop.c'; else $(CYGPATH_W) '$(srcdir)/desktop/desktop.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) desktop/$(DEPDIR)/spacefm-desktop.Tpo desktop/$(DEPDIR)/spacefm-desktop.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='desktop/desktop.c' object='desktop/spacefm-desktop.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o desktop/spacefm-desktop.obj `if test -f 'desktop/desktop.c'; then $(CYGPATH_W) 'desktop/desktop.c'; else $(CYGPATH_W) '$(srcdir)/desktop/desktop.c'; fi`
 
 spacefm-main.o: main.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT spacefm-main.o -MD -MP -MF $(DEPDIR)/spacefm-main.Tpo -c -o spacefm-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c

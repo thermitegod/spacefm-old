@@ -31,8 +31,11 @@
 #include <errno.h>
 #include <fcntl.h>
 
-#include "settings.h"
+#ifdef DESKTOP_INTEGRATION
 #include "desktop.h"
+#endif
+
+#include "settings.h"
 #include "ptk-utils.h"
 #include "main-window.h"
 #include "vfs-app-desktop.h"
@@ -67,6 +70,7 @@ const int view_mode_default = PTK_FB_ICON_VIEW;
 const int sort_order_default = PTK_FB_SORT_BY_NAME;
 const int sort_type_default = GTK_SORT_ASCENDING;
 
+#ifdef DESKTOP_INTEGRATION
 //gboolean show_desktop_default = FALSE;
 const gboolean show_wallpaper_default = FALSE;
 const WallpaperMode wallpaper_mode_default=WPM_STRETCH;
@@ -85,6 +89,7 @@ const int margin_left_default = 6;
 const int margin_right_default = 6;
 const int margin_bottom_default = 12;
 const int margin_pad_default = 6;
+#endif
 
 /* Default values of interface settings */
 const gboolean always_show_tabs_default = TRUE;
@@ -116,9 +121,11 @@ gboolean xset_autosave_request = FALSE;
 
 typedef void ( *SettingsParseFunc ) ( char* line );
 
+#ifdef DESKTOP_INTEGRATION
 static void color_from_str( GdkColor* ret, const char* value );
 static void save_color( FILE* file, const char* name,
                  GdkColor* color );
+#endif
 void xset_free_all();
 void xset_custom_delete( XSet* set, gboolean delete_next );
 void xset_default_keys();
@@ -304,6 +311,7 @@ static void parse_general_settings( char* line )
 */
 }
 
+#ifdef DESKTOP_INTEGRATION
 static void color_from_str( GdkColor* ret, const char* value )
 {
     sscanf( value, "%hu,%hu,%hu",
@@ -315,6 +323,7 @@ static void save_color( FILE* file, const char* name, GdkColor* color )
     fprintf( file, "%s=%d,%d,%d\n", name,
              color->red, color->green, color->blue );
 }
+#endif
 
 static void parse_window_state( char* line )
 {
@@ -348,6 +357,7 @@ static void parse_window_state( char* line )
     }
 }
 
+#ifdef DESKTOP_INTEGRATION
 static void parse_desktop_settings( char* line )
 {
     char * sep = strstr( line, "=" );
@@ -399,6 +409,7 @@ static void parse_desktop_settings( char* line )
     else if ( 0 == strcmp( name, "margin_pad" ) )
         app_settings.margin_pad = atoi( value );
 }
+#endif
 
 static void parse_interface_settings( char* line )
 {
@@ -601,6 +612,7 @@ void load_settings( char* config_dir )
         settings_config_dir = g_build_filename( g_get_user_config_dir(), "spacefm", NULL );
 
     /* General */
+#ifdef DESKTOP_INTEGRATION
     /* app_settings.show_desktop = show_desktop_default; */
     app_settings.show_wallpaper = show_wallpaper_default;
     app_settings.wallpaper = NULL;
@@ -619,6 +631,7 @@ void load_settings( char* config_dir )
     app_settings.margin_right = margin_right_default;
     app_settings.margin_bottom = margin_bottom_default;
     app_settings.margin_pad = margin_pad_default;
+#endif
 
     app_settings.encoding[ 0 ] = '\0';
     //app_settings.show_hidden_files = show_hidden_files_default;
@@ -749,8 +762,10 @@ void load_settings( char* config_dir )
                     func = &parse_window_state;
                 else if ( 0 == strcmp( line + 1, "Interface" ) )
                     func = &parse_interface_settings;
+#ifdef DESKTOP_INTEGRATION
                 else if ( 0 == strcmp( line + 1, "Desktop" ) )
                     func = &parse_desktop_settings;
+#endif
                 else if ( 0 == strcmp( line + 1, "MOD" ) )  //MOD
                     func = &xset_parse;
                 else
@@ -768,6 +783,7 @@ void load_settings( char* config_dir )
         setenv( "G_FILENAME_ENCODING", app_settings.encoding, 1 );
     }
 
+#ifdef DESKTOP_INTEGRATION
     //sfm margin limits
     if ( app_settings.margin_top < 0 || app_settings.margin_top > 999 )
         app_settings.margin_top = margin_top_default;
@@ -779,6 +795,7 @@ void load_settings( char* config_dir )
         app_settings.margin_bottom = margin_bottom_default;
     if ( app_settings.margin_pad < 0 || app_settings.margin_pad > 999 )
         app_settings.margin_pad = margin_pad_default;
+#endif
 
     //MOD turn off fullscreen
     xset_set_b( "main_full", FALSE );
@@ -1043,6 +1060,7 @@ char* save_settings( gpointer main_window_ptr )
         //fprintf( file, "splitter_pos=%d\n", app_settings.splitter_pos );
         fprintf( file, "maximized=%d\n", app_settings.maximized );
 
+#ifdef DESKTOP_INTEGRATION
         /* Desktop */
         fputs( "\n[Desktop]\n", file );
         //if ( app_settings.show_desktop != show_desktop_default )
@@ -1103,6 +1121,7 @@ char* save_settings( gpointer main_window_ptr )
             fprintf( file, "margin_bottom=%d\n", app_settings.margin_bottom );
         if ( app_settings.margin_pad != margin_pad_default )
             fprintf( file, "margin_pad=%d\n", app_settings.margin_pad );
+#endif
 
         /* Interface */
         fputs( "\n[Interface]\n", file );
@@ -1163,7 +1182,9 @@ void free_settings()
         g_free( app_settings.iconTheme );
 */
     //g_free( app_settings.terminal );
+#ifdef DESKTOP_INTEGRATION
     g_free( app_settings.wallpaper );
+#endif
 
     if ( xset_cmd_history )
     {
