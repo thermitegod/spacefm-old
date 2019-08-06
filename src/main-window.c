@@ -6805,34 +6805,6 @@ _missing_arg:
             ptk_file_browser_chdir( file_browser, argv[i+1],
                                                     PTK_FB_CHDIR_ADD_HISTORY );
         }
-        else if ( !strcmp( argv[i], "edit_file" ) ) // deprecated >= 0.8.7
-        {
-            if ( ( argv[i+1] && argv[i+1][0] ) &&
-                                g_file_test( argv[i+1], G_FILE_TEST_IS_REGULAR ) )
-                xset_edit( GTK_WIDGET( file_browser ), argv[i+1], FALSE, TRUE );
-        }
-        else if ( !strcmp( argv[i], "run_in_terminal" ) ) // deprecated >= 0.8.7
-        {
-            if ( ( argv[i+1] && argv[i+1][0] ) )
-            {
-                str = g_strjoinv( " ", &argv[i+1] );
-                if ( str && str[0] )
-                {
-                    // async task
-                    PtkFileTask* task = ptk_file_exec_new( "Run In Terminal",
-                                    ptk_file_browser_get_cwd( file_browser ),
-                                    GTK_WIDGET( file_browser ),
-                                    main_window->task_view );
-                    task->task->exec_command = str;
-                    task->task->exec_terminal = TRUE;
-                    task->task->exec_sync = FALSE;
-                    task->task->exec_export = FALSE;
-                    ptk_file_task_run( task );
-                }
-                else
-                    g_free( str );
-            }
-        }
         else
         {
 _invalid_set:
