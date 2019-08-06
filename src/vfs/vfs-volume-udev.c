@@ -1071,34 +1071,6 @@ gchar* info_mount_points( device_t *device )
         if (g_strcmp0 (encoded_root, "/") != 0)
             continue;
 
-        /* Temporary work-around for btrfs, see
-        *
-        *  https://github.com/IgnorantGuru/spacefm/issues/165
-        *  http://article.gmane.org/gmane.comp.file-systems.btrfs/2851
-        *  https://bugzilla.redhat.com/show_bug.cgi?id=495152#c31
-        */
-        if ( major == 0 )
-        {
-            const gchar *sep;
-            sep = strstr( lines[n], " - " );
-            if ( sep != NULL )
-            {
-                gchar typebuf[PATH_MAX];
-                gchar mount_source[PATH_MAX];
-                struct stat statbuf;
-
-                if ( sscanf( sep + 3, "%s %s", typebuf, mount_source ) == 2 &&
-                                !g_strcmp0( typebuf, "btrfs" ) &&
-                                g_str_has_prefix( mount_source, "/dev/" ) &&
-                                stat( mount_source, &statbuf ) == 0 &&
-                                S_ISBLK( statbuf.st_mode ) )
-                {
-                    major = major( statbuf.st_rdev );
-                    minor = minor( statbuf.st_rdev );
-                }
-            }
-        }
-
         if ( major != dmajor || minor != dminor )
             continue;
 
@@ -1691,34 +1663,6 @@ void parse_mounts( gboolean report )
 
         /* mount where only a subtree of a filesystem is mounted? */
         subdir_mount = ( g_strcmp0( encoded_root, "/" ) != 0 );
-
-        /* Temporary work-around for btrfs, see
-        *
-        *  https://github.com/IgnorantGuru/spacefm/issues/165
-        *  http://article.gmane.org/gmane.comp.file-systems.btrfs/2851
-        *  https://bugzilla.redhat.com/show_bug.cgi?id=495152#c31
-        */
-        if ( major == 0 && !subdir_mount )
-        {
-            const gchar *sep;
-            sep = strstr( lines[n], " - " );
-            if ( sep != NULL )
-            {
-                gchar typebuf[PATH_MAX];
-                gchar mount_source[PATH_MAX];
-                struct stat statbuf;
-
-                if ( sscanf( sep + 3, "%s %s", typebuf, mount_source ) == 2 &&
-                                !g_strcmp0( typebuf, "btrfs" ) &&
-                                g_str_has_prefix( mount_source, "/dev/" ) &&
-                                stat( mount_source, &statbuf ) == 0 &&
-                                S_ISBLK( statbuf.st_mode ) )
-                {
-                    major = major( statbuf.st_rdev );
-                    minor = minor( statbuf.st_rdev );
-                }
-            }
-        }
 
         if ( subdir_mount )
         {
