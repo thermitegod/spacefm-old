@@ -994,7 +994,7 @@ char* save_settings( gpointer main_window_ptr )
     if ( file )
     {
         /* General */
-        result = fputs( _("# SpaceFM Session File\n\n# THIS FILE IS NOT DESIGNED TO BE EDITED - it will be read and OVERWRITTEN\n\n# If you delete all session* files, SpaceFM will be reset to factory defaults.\n\n"), file );
+        result = fputs( _("# SpaceFM Session File\n\n# THIS FILE IS NOT DESIGNED TO BE EDITED\n\n"), file );
         if ( result < 0 )
             goto _save_error;
         fputs( "[General]\n", file );
@@ -2660,6 +2660,7 @@ void read_root_settings()
 
     char* root_set_path= g_strdup_printf(
                     "%s/spacefm/%s-as-root", SYSCONFDIR, g_get_user_name() );
+    //printf("%s\n", root_set_path);
     if ( !g_file_test( root_set_path, G_FILE_TEST_EXISTS ) )
     {
         g_free( root_set_path );
@@ -3569,7 +3570,7 @@ char* xset_custom_get_help( GtkWidget* parent, XSet* set )
         if ( file )
         {
             // write default readme
-            fputs( "README\n------\n\nFill this text file with detailed information about this command.  For\ncontext-sensitive help within SpaceFM, this file must be named README,\nREADME.txt, or README.mkd.\n\nIf you plan to distribute this command as a plugin, the following information\nis recommended:\n\n\nCommand Name:\n\nRelease Version and Date:\n\nPlugin Homepage or Download Link:\n\nAuthor's Contact Information or Feedback Instructions:\n\nDependencies or Requirements:\n\nDescription:\n\nInstructions For Use:\n\nCopyright and License Information:\n\n    Copyright (C) YEAR AUTHOR <EMAIL>\n\n    This program is free software: you can redistribute it and/or modify\n    it under the terms of the GNU General Public License as published by\n    the Free Software Foundation, either version 3 of the License, or\n    (at your option) any later version.\n\n    This program is distributed in the hope that it will be useful,\n    but WITHOUT ANY WARRANTY; without even the implied warranty of\n    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n    GNU General Public License for more details.\n\n    You should have received a copy of the GNU General Public License\n    along with this program.  If not, see <http://www.gnu.org/licenses/>.\n\n", file );
+            fputs( "README\n------\n\nFill this text file with detailed information about this command.  For\ncontext-sensitive help within SpaceFM, this file must be named README,\nREADME.txt, or README.mkd.\n\nIf you plan to distribute this command as a plugin, the following information\nis recommended:\n\n\nCommand Name:\n\nRelease Version and Date:\n\nPlugin Homepage or Download Link:\n\nAuthor's Contact Information or Feedback Instructions:\n\nDependencies or Requirements:\n\nDescription:\n\nInstructions For Use:\n\nCopyright and License Information:\n\n", file );
             fclose( file );
         }
         chmod( path, S_IRUSR | S_IWUSR );
