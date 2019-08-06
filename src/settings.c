@@ -2624,7 +2624,6 @@ gboolean write_root_settings( FILE* file, const char* path )
         if ( set )
         {
             if ( !strcmp( set->name, "root_editor" )
-                    || !strcmp( set->name, "dev_back_fsarc" )
                     || !strcmp( set->name, "dev_back_part" )
                     || !strcmp( set->name, "dev_rest_file" )
                     || !strcmp( set->name, "dev_root_check" )
@@ -2688,7 +2687,6 @@ void read_root_settings()
         if ( set )
         {
             if ( !strcmp( set->name, "root_editor" )
-                    || !strcmp( set->name, "dev_back_fsarc" )
                     || !strcmp( set->name, "dev_back_part" )
                     || !strcmp( set->name, "dev_rest_file" )
                     || !strcmp( set->name, "dev_root_check" )
@@ -9840,7 +9838,7 @@ void xset_defaults()
 
     set = xset_set( "dev_menu_root", "lbl", _("_Root") );
     set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "desc", "dev_root_unmount dev_root_mount sep_mr1 dev_root_label sep_mr2 dev_root_check dev_menu_format dev_menu_backup dev_menu_restore sep_mr3 dev_root_fstab dev_root_udevil" );
+    xset_set_set( set, "desc", "dev_root_unmount dev_root_mount sep_mr1 sep_mr2 sep_mr3 dev_root_fstab dev_root_udevil" );
     xset_set_set( set, "icn", "gtk-dialog-warning" );
     set->line = g_strdup( "#devices-root" );
 
@@ -9854,55 +9852,6 @@ void xset_defaults()
     xset_set_set( set, "z", "/usr/bin/udevil umount %v" );
     set->line = g_strdup( "#devices-root-unmount" );
 
-    set = xset_set( "dev_root_label", "lbl", _("_Label") );
-    xset_set_set( set, "icn", "gtk-edit" );
-    set->line = g_strdup( "#devices-root-label" );
-
-        // set->y contains current remove label command
-        // set->z contains current set label command
-        // set->desc contains default remove label command
-        // set->title contains default set label command
-
-        // ext2,3,4
-        set = xset_get( "label_cmd_ext" );
-        xset_set_set( set, "desc", "/sbin/tune2fs -L %l %v" );
-        xset_set_set( set, "title", set->desc );
-        set->line = g_strdup( "#devices-root-label" );
-
-        set = xset_get( "label_cmd_vfat" );
-        xset_set_set( set, "desc",  "mlabel -c -i %v ::" );
-        xset_set_set( set, "title", "mlabel -i %v ::%l" );
-        set->line = g_strdup( "#devices-root-label" );
-
-        set = xset_get( "label_cmd_msdos" );
-        xset_set_set( set, "desc",  "mlabel -c -i %v ::" );
-        xset_set_set( set, "title", "mlabel -i %v ::%l" );
-        set->line = g_strdup( "#devices-root-label" );
-
-        set = xset_get( "label_cmd_fat16" );
-        xset_set_set( set, "desc",  "mlabel -c -i %v ::" );
-        xset_set_set( set, "title", "mlabel -i %v ::%l" );
-        set->line = g_strdup( "#devices-root-label" );
-
-        set = xset_get( "label_cmd_fat32" );
-        xset_set_set( set, "desc",  "mlabel -c -i %v ::" );
-        xset_set_set( set, "title", "mlabel -i %v ::%l" );
-        set->line = g_strdup( "#devices-root-label" );
-
-        set = xset_get( "label_cmd_ntfs" );
-        xset_set_set( set, "desc", "/sbin/ntfslabel -f %v %l" );
-        xset_set_set( set, "title", set->desc );
-        set->line = g_strdup( "#devices-root-label" );
-
-        set = xset_get( "label_cmd_btrfs" );
-        xset_set_set( set, "desc", "/sbin/btrfs filesystem label %v %l" );
-        xset_set_set( set, "title", set->desc );
-        set->line = g_strdup( "#devices-root-label" );
-
-    set = xset_set( "dev_root_check", "lbl", _("_Check") );
-    xset_set_set( set, "desc", "/sbin/fsck -r %v" );
-    set->line = g_strdup( "#devices-root-check" );
-
     set = xset_set( "dev_root_fstab", "lbl", _("_Edit fstab") );
     xset_set_set( set, "icn", "gtk-edit" );
     set->line = g_strdup( "#devices-root-fstab" );
@@ -9910,91 +9859,6 @@ void xset_defaults()
     set = xset_set( "dev_root_udevil", "lbl", _("Edit u_devil.conf") );
     xset_set_set( set, "icn", "gtk-edit" );
     set->line = g_strdup( "#devices-root-udevil" );
-
-    set = xset_set( "dev_menu_format", "lbl", _("_Format") );
-    set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "desc", "dev_fmt_vfat dev_fmt_ntfs dev_fmt_ext2 dev_fmt_ext3 dev_fmt_ext4 dev_fmt_btrfs dev_fmt_swap dev_fmt_zero dev_fmt_urand" );
-    set->line = g_strdup( "#devices-root-format" );
-
-        set = xset_set( "dev_fmt_vfat", "lbl", "_vfat" );
-        xset_set_set( set, "desc", "vfat" );
-        xset_set_set( set, "title", "/sbin/mkfs -t vfat %v" );
-        set->line = g_strdup( "#devices-root-format" );
-
-        set = xset_set( "dev_fmt_ntfs", "lbl", "_ntfs" );
-        xset_set_set( set, "desc", "ntfs" );
-        xset_set_set( set, "title", "/sbin/mkfs -t ntfs %v" );
-        set->line = g_strdup( "#devices-root-format" );
-
-        set = xset_set( "dev_fmt_ext2", "lbl", "ext_2" );
-        xset_set_set( set, "desc", "ext2" );
-        xset_set_set( set, "title", "/sbin/mkfs -t ext2 %v" );
-        set->line = g_strdup( "#devices-root-format" );
-
-        set = xset_set( "dev_fmt_ext3", "lbl", "ext_3" );
-        xset_set_set( set, "desc", "ext3" );
-        xset_set_set( set, "title", "/sbin/mkfs -t ext3 %v" );
-        set->line = g_strdup( "#devices-root-format" );
-
-        set = xset_set( "dev_fmt_ext4", "lbl", "ext_4" );
-        xset_set_set( set, "desc", "ext4" );
-        xset_set_set( set, "title", "/sbin/mkfs -t ext4 %v" );
-        set->line = g_strdup( "#devices-root-format" );
-
-        set = xset_set( "dev_fmt_btrfs", "lbl", "_btrfs" );
-        xset_set_set( set, "desc", "btrfs" );
-        xset_set_set( set, "title", "/sbin/mkfs -t btrfs %v" );
-        set->line = g_strdup( "#devices-root-format" );
-
-        set = xset_set( "dev_fmt_swap", "lbl", "_swap" );
-        xset_set_set( set, "desc", "swap" );
-        xset_set_set( set, "title", "/sbin/mkswap %v" );
-        set->line = g_strdup( "#devices-root-format" );
-
-        set = xset_set( "dev_fmt_zero", "lbl", "_zero" );
-        xset_set_set( set, "desc", "zero" );
-        xset_set_set( set, "title", "dd if=/dev/zero of=%v" );
-        set->line = g_strdup( "#devices-root-format" );
-
-        set = xset_set( "dev_fmt_urand", "lbl", "_urandom" );
-        xset_set_set( set, "desc", "urandom" );
-        xset_set_set( set, "title", "dd if=/dev/urandom of=%v" );
-        set->line = g_strdup( "#devices-root-format" );
-
-    set = xset_set( "dev_menu_backup", "lbl", _("_Backup") );
-    set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "desc", "dev_back_fsarc dev_back_part dev_back_mbr" );
-    set->line = g_strdup( "#devices-root-fsarc" );
-
-        set = xset_set( "dev_back_fsarc", "lbl", "_FSArchiver" );
-        xset_set_set( set, "desc", "FSArchiver" );
-        xset_set_set( set, "title", "fsarchiver -vo -z 7 savefs %s %v" );
-        set->line = g_strdup( "#devices-root-fsarc" );
-
-        set = xset_set( "dev_back_part", "lbl", "_Partimage" );
-        xset_set_set( set, "desc", "Partimage" );
-        xset_set_set( set, "title", "partimage -dbo -V 4050 save %v %s" );
-        set->line = g_strdup( "#devices-root-parti" );
-
-        set = xset_set( "dev_back_mbr", "lbl", "_MBR" );
-        xset_set_set( set, "desc", "MBR" );
-        set->line = g_strdup( "#devices-root-mbr" );
-
-    set = xset_get( "sep_mr4" );
-    set->menu_style = XSET_MENU_SEP;
-
-    set = xset_set( "dev_menu_restore", "lbl", _("_Restore") );
-    set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "desc", "dev_rest_file sep_mr4 dev_rest_info" );
-    set->line = g_strdup( "#devices-root-resfile" );
-
-        set = xset_set( "dev_rest_file", "lbl", _("_From File") );
-        xset_set_set( set, "desc", "fsarchiver -v restfs %s id=0,dest=%v" );
-        xset_set_set( set, "title", "partimage -b restore %v %s" );
-        set->line = g_strdup( "#devices-root-resfile" );
-
-        set = xset_set( "dev_rest_info", "lbl", _("File _Info") );
-        set->line = g_strdup( "#devices-root-resinfo" );
 
     set = xset_set( "dev_prop", "lbl", _("_Properties") );
     set->line = g_strdup( "#devices-menu-properties" );
