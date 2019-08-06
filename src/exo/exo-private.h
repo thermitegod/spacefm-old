@@ -20,18 +20,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
-#if !defined (EXO_COMPILATION)
-#error "Only <exo/exo.h> can be included directly, this file is not part of the public API."
-#endif
-*/
-
 #ifndef __EXO_PRIVATE_H__
 #define __EXO_PRIVATE_H__
 
 #include <gtk/gtk.h>
-
-/*#include <glib/gi18n-lib.h>*/
 #include <glib/gi18n.h>
 
 G_BEGIN_DECLS;

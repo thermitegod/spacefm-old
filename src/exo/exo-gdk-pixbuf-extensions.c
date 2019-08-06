@@ -31,20 +31,10 @@
 #include <sys/stat.h>
 #endif
 
-/* Taken from exo v0.10.2 (Debian package libexo-1-0), according to changelog
- * commit f455681554ca205ffe49bd616310b19f5f9f8ef1 Dec 27 13:50:21 2012 */
-
-#include <sys/mman.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <math.h>
-
-#if defined(__GNUC__) && defined(__MMX__)
-#include <mmintrin.h>
-#endif
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -53,6 +43,15 @@
 #ifndef GDK_PIXBUF_ENABLE_BACKEND
 #define GDK_PIXBUF_ENABLE_BACKEND
 #endif
+
+#if defined(__GNUC__) && defined(__MMX__)
+#include <mmintrin.h>
+#endif
+
+#include <sys/mman.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <math.h>
 
 #include "exo-gdk-pixbuf-extensions.h"
 #include "exo-private.h"
@@ -492,7 +491,7 @@ exo_gdk_pixbuf_scale_down (GdkPixbuf *source,
 
     /* check if we need to scale */
     if (G_UNLIKELY (source_width <= dest_width && source_height <= dest_height))
-        return g_object_ref (G_OBJECT (source));
+        return GDK_PIXBUF(g_object_ref(G_OBJECT(source)));
 
     /* check if aspect ratio should be preserved */
     if (G_LIKELY (preserve_aspect_ratio))

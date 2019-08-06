@@ -24,11 +24,8 @@
 #include <config.h>
 #endif
 
-#include <exo/exo-binding.h>
-#include <exo/exo-private.h>
-
-/* Taken from exo v0.10.2 (Debian package libexo-1-0), according to changelog
- * commit f455681554ca205ffe49bd616310b19f5f9f8ef1 Dec 27 13:50:21 2012 */
+#include "exo-binding.h"
+#include "exo-private.h"
 
 /**
  * SECTION: exo-binding
@@ -458,10 +455,10 @@ exo_mutual_binding_new_full (GObject            *object1,
     pspec2 = g_object_class_find_property (G_OBJECT_GET_CLASS (object2), property2);
 
     if (transform == NULL)
-        transform = (ExoBindingTransform) g_value_transform;
+        transform = (ExoBindingTransform) (void (*)(void)) g_value_transform;
 
     if (reverse_transform == NULL)
-        reverse_transform = (ExoBindingTransform) g_value_transform;
+        reverse_transform = (ExoBindingTransform) (void (*)(void)) g_value_transform;
 
     exo_bind_properties_transfer (object1,
                                   pspec1,

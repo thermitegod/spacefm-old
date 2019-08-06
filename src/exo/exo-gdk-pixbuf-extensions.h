@@ -24,15 +24,12 @@
 
 #include <gdk/gdk.h>
 
-/* Taken from exo v0.10.2 (Debian package libexo-1-0), according to changelog
- * commit f455681554ca205ffe49bd616310b19f5f9f8ef1 Dec 27 13:50:21 2012 */
-
 G_BEGIN_DECLS
 
 GdkPixbuf *exo_gdk_pixbuf_scale_down                (GdkPixbuf       *source,
                                                      gboolean         preserve_aspect_ratio,
                                                      gint             dest_width,
-                                                     gint             dest_height) G_GNUC_WARN_UNUSED_RESULT;
+                                                     gint             dest_height) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
 
 GdkPixbuf *exo_gdk_pixbuf_colorize                  (const GdkPixbuf *source,
                                                      const GdkColor  *color) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;

@@ -28,9 +28,6 @@
 #include <string.h>
 #endif
 
-/* Taken from exo v0.10.2 (Debian package libexo-1-0), according to changelog
- * commit f455681554ca205ffe49bd616310b19f5f9f8ef1 Dec 27 13:50:21 2012 */
-
 #include "exo-icon-chooser-model.h"
 #include "exo-private.h"
 #include "exo-string.h"
@@ -181,7 +178,7 @@ exo_icon_chooser_model_finalize (GObject *object)
     }
 
     /* release all items */
-    g_list_foreach (model->items, (GFunc) exo_icon_chooser_model_item_free, NULL);
+    g_list_foreach(model->items, (GFunc)(void (*)(void)) exo_icon_chooser_model_item_free, NULL);
     g_list_free (model->items);
 
     (*G_OBJECT_CLASS (exo_icon_chooser_model_parent_class)->finalize) (object);
@@ -671,7 +668,7 @@ _exo_icon_chooser_model_get_for_icon_theme (GtkIconTheme *icon_theme)
         g_object_set_data (G_OBJECT (icon_theme), "exo-icon-chooser-default-model", model);
 
         /* associated the model with the icon theme */
-        model->icon_theme = g_object_ref (G_OBJECT (icon_theme));
+        model->icon_theme = GTK_ICON_THEME(g_object_ref(G_OBJECT(icon_theme)));
         exo_icon_chooser_model_icon_theme_changed (icon_theme, model);
         g_signal_connect (G_OBJECT (icon_theme), "changed", G_CALLBACK (exo_icon_chooser_model_icon_theme_changed), model);
     }

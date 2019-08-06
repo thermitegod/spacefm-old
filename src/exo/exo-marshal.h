@@ -1,8 +1,8 @@
 
-#ifndef ___exo_marshal_MARSHAL_H__
-#define ___exo_marshal_MARSHAL_H__
+#ifndef ___EXO_MARSHAL_MARSHAL_H__
+#define ___EXO_MARSHAL_MARSHAL_H__
 
-#include	<glib-object.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 

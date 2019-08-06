@@ -21,12 +21,6 @@
 /* Modified by Hong Jen Yee (PCMan) <pcman.tw@gmail.com>
  * on 2008.07.13 for use in PCManFM */
 
-/*
-#if !defined (EXO_INSIDE_EXO_H) && !defined (EXO_COMPILATION)
-#error "Only <exo/exo.h> can be included directly, this file may disappear or change contents."
-#endif
-*/
-
 #ifndef __EXO_TREE_VIEW_H__
 #define __EXO_TREE_VIEW_H__
 

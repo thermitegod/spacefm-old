@@ -33,6 +33,16 @@
 
 #include "gtk2-compat.h"
 
+/* resurrect dead gdk apis for Gtk3
+ * This is easier than using #ifs everywhere
+ */
+#if (GTK_MAJOR_VERSION == 3)
+#ifdef gdk_cursor_unref
+#undef gdk_cursor_unref
+#endif
+#define gdk_cursor_unref(cursor) g_object_unref (cursor)
+#endif
+
 #if defined(G_PARAM_STATIC_NAME) && defined(G_PARAM_STATIC_NICK) && defined(G_PARAM_STATIC_BLURB)
 #define EXO_PARAM_READABLE  (G_PARAM_READABLE \
                            | G_PARAM_STATIC_NAME \
@@ -303,6 +313,7 @@ exo_tree_view_button_press_event (GtkWidget      *widget,
     GList            *lp;
     GtkTreeViewColumn* col;
     gboolean treat_as_blank = FALSE;
+    gpointer drag_data;
 
     /* by default we won't emit "row-activated" on button-release-events */
     tree_view->priv->button_release_activates = FALSE;
@@ -387,10 +398,10 @@ exo_tree_view_button_press_event (GtkWidget      *widget,
          * detailed view. If you do this, move the box up to select something
          * then down to deselect, GTK crashes as soon as 0 items are selected -
          * https://github.com/IgnorantGuru/spacefm/issues/485 */
-        if (G_LIKELY (path && !gtk_tree_selection_path_is_selected (selection, path)))
+        if (G_LIKELY(path == NULL || !gtk_tree_selection_path_is_selected(selection, path)))
         {
             /* need to disable drag and drop because we're rubberbanding now */
-            gpointer drag_data = g_object_get_data (G_OBJECT (tree_view), I_("gtk-site-data"));
+            drag_data = g_object_get_data(G_OBJECT(tree_view), I_("gtk-site-data"));
             if (G_LIKELY (drag_data != NULL))
             {
                 g_signal_handlers_block_matched (G_OBJECT (tree_view),
@@ -424,11 +435,8 @@ exo_tree_view_button_press_event (GtkWidget      *widget,
             && path != NULL && gtk_tree_selection_path_is_selected (selection, path))
     {
         /* check if we have to restore paths */
-        if (G_LIKELY (gtk_tree_selection_get_select_function (selection) == (GtkTreeSelectionFunc) exo_noop_false))
-        {
-            /* just reset the select function (previously set to exo_noop_false),
-           * there's no clean way to do this, so what the heck.
-           */
+        if (G_LIKELY(gtk_tree_selection_get_select_function(selection) != (GtkTreeSelectionFunc)(void (*)(void)) exo_noop_false))
+	{
             gtk_tree_selection_set_select_function (selection, NULL, NULL, NULL);
         }
         else
@@ -444,7 +452,7 @@ exo_tree_view_button_press_event (GtkWidget      *widget,
         gtk_tree_path_free (path);
 
     /* release the selected paths list */
-    g_list_foreach (selected_paths, (GFunc) gtk_tree_path_free, NULL);
+    g_list_foreach(selected_paths, (GFunc)(void (*)(void)) gtk_tree_path_free, NULL);
     g_list_free (selected_paths);
 
     return result;
@@ -460,6 +468,7 @@ exo_tree_view_button_release_event (GtkWidget      *widget,
     GtkTreeSelection  *selection;
     GtkTreePath       *path;
     ExoTreeView       *tree_view = EXO_TREE_VIEW (widget);
+    gpointer           drag_data;
 
     /* verify that the release event is for the internal tree view window */
     if (G_LIKELY (event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (tree_view))))
@@ -508,7 +517,7 @@ exo_tree_view_button_release_event (GtkWidget      *widget,
     /* check if we need to re-enable drag and drop */
     if (G_LIKELY (tree_view->priv->button_release_unblocks_dnd))
     {
-        gpointer drag_data = g_object_get_data (G_OBJECT (tree_view), I_("gtk-site-data"));
+        drag_data = g_object_get_data(G_OBJECT(tree_view), I_("gtk-site-data"));
         if (G_LIKELY (drag_data != NULL))
         {
             g_signal_handlers_unblock_matched (G_OBJECT (tree_view),
@@ -584,7 +593,7 @@ exo_tree_view_motion_notify_event (GtkWidget      *widget,
                 if (G_LIKELY (path != NULL))
                 {
                     /* setup the hand cursor to indicate that the row at the pointer can be activated with a single click */
-                    cursor = gdk_cursor_new (GDK_HAND2);
+                    cursor = gdk_cursor_new_for_display(gdk_window_get_display(event->window), GDK_HAND2);
                     gdk_window_set_cursor (event->window, cursor);
                     gdk_cursor_unref (cursor);
                 }
@@ -711,8 +720,6 @@ exo_tree_view_single_click_timeout (gpointer user_data)
     GList             *rows;
     GList             *lp;
 
-    //GDK_THREADS_ENTER ();  //sfm not needed because called from g_idle?
-
     /* verify that we are in single-click mode, have focus and a hover path */
     if (gtk_widget_has_focus (GTK_WIDGET (tree_view)) && tree_view->priv->single_click && tree_view->priv->hover_path != NULL)
     {
@@ -805,8 +812,6 @@ exo_tree_view_single_click_timeout (gpointer user_data)
                 gtk_tree_path_free (cursor_path);
         }
     }
-
-    //GDK_THREADS_LEAVE ();
 
     return FALSE;
 }

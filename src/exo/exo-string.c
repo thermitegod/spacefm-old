@@ -27,6 +27,7 @@
 #ifdef HAVE_MEMORY_H
 #include <memory.h>
 #endif
+
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
@@ -42,9 +43,8 @@
  * Returns a copy of @text with all mnemonic underscores
  * stripped off.
  *
- * Return value: A copy of @text without underscores. The
- *               returned string must be freed when no
- *               longer required.
+ * Returns: A copy of @text without underscores. The returned string
+ *          must be freed when no longer required.
  **/
 gchar*
 exo_str_elide_underscores (const gchar *text)
@@ -86,16 +86,14 @@ exo_str_elide_underscores (const gchar *text)
  *
  * You should always prefer this function over strcmp().
  *
- * Return value: %TRUE if @a equals @b, else %FALSE.
+ * Returns: %TRUE if @a equals @b, else %FALSE.
  **/
 gboolean
 exo_str_is_equal (const gchar *a,
                   const gchar *b)
 {
-    if (a == NULL && b == NULL)
-        return TRUE;
-    else if (a == NULL || b == NULL)
-        return FALSE;
+    if (a == NULL || b == NULL)
+        return (a == b);
 
     while (*a == *b++)
         if (*a++ == '\0')
@@ -120,19 +118,24 @@ exo_str_is_equal (const gchar *a,
  *               longer needed.
  **/
 gchar**
-exo_strndupv (gchar **strv,
-              gint    num)
-{
+exo_strndupv(gchar **strv,
+             guint num) {
     gchar **result;
+    guint i;
 
-    g_return_val_if_fail (strv != NULL, NULL);
-    g_return_val_if_fail (num >= 0, NULL);
+    /* return null when there is nothing to copy */
+    if (G_UNLIKELY(strv == NULL || num == 0))
+        return NULL;
 
-    result = g_new (gchar *, num + 1);
-    result[num--] = NULL;
-    for (; num >= 0; --num)
-        result[num] = g_strdup (strv[num]);
+    /* duplicate the first @num string */
+    result = g_new(gchar * , num + 1);
+    for (i = 0; i < num && strv[i] != NULL; i++)
+        result[i] = g_strdup(strv[i]);
+    result[i] = NULL;
+
+    /* resize the string if we allocated too much space */
+    if (G_UNLIKELY(num > i))
+        result = g_renew(gchar * , result, i + 1);
 
     return result;
 }
-

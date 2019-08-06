@@ -18,11 +18,6 @@
  * MA 02110-1301 USA
  */
 
-//sfm-gtk3
-#include <gtk/gtk.h>
-#include "gtk2-compat.h"
-#include <gdk/gdkkeysyms.h>
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -30,17 +25,19 @@
 #ifdef HAVE_MEMORY_H
 #include <memory.h>
 #endif
+
 #ifdef HAVE_STDARG_H
 #include <stdarg.h>
 #endif
+
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
 
-
-/* Taken from exo v0.10.2 (Debian package libexo-1-0), according to changelog
- * commit f455681554ca205ffe49bd616310b19f5f9f8ef1 Dec 27 13:50:21 2012 */
-
+#include <gdk/gdkkeysyms.h>
+//sfm-gtk3
+#include <gtk/gtk.h>
+#include "gtk2-compat.h"
 #include <gdk/gdkkeysyms.h>
 
 #include "exo-binding.h"
@@ -119,7 +116,7 @@ struct _ExoIconChooserDialogPrivate
 
 
 
-static const gchar CONTEXT_TITLES[][28] =
+static const gchar CONTEXT_TITLES[][80] =
 {
     /* EXO_ICON_CHOOSER_CONTEXT_ACTIONS */
     N_("Action Icons"),
@@ -143,6 +140,8 @@ static const gchar CONTEXT_TITLES[][28] =
     N_("Location Icons"),
     /* EXO_ICON_CHOOSER_CONTEXT_STATUS */
     N_("Status Icons"),
+    /* EXO_ICON_CHOOSER_CONTEXT_STOCK */
+    N_("Stock Icons"),
     /* EXO_ICON_CHOOSER_CONTEXT_OTHER */
     N_("Uncategorized Icons"),
     /* separator */
@@ -156,9 +155,7 @@ static const gchar CONTEXT_TITLES[][28] =
 };
 
 
-
-G_DEFINE_TYPE (ExoIconChooserDialog, exo_icon_chooser_dialog, GTK_TYPE_DIALOG)
-
+G_DEFINE_TYPE_WITH_PRIVATE (ExoIconChooserDialog, exo_icon_chooser_dialog, GTK_TYPE_DIALOG)
 
 
 static void
@@ -193,7 +190,7 @@ exo_icon_chooser_dialog_class_init (ExoIconChooserDialogClass *klass)
 static void
 exo_icon_chooser_dialog_init (ExoIconChooserDialog *icon_chooser_dialog)
 {
-    ExoIconChooserDialogPrivate *priv = EXO_ICON_CHOOSER_DIALOG_GET_PRIVATE (icon_chooser_dialog);
+    ExoIconChooserDialogPrivate *priv = exo_icon_chooser_dialog_get_instance_private(icon_chooser_dialog);
     ExoIconChooserContext        context;
     GtkCellRenderer             *renderer;
     GtkFileFilter               *filter;
@@ -204,55 +201,84 @@ exo_icon_chooser_dialog_init (ExoIconChooserDialog *icon_chooser_dialog)
 
     gtk_window_set_default_size (GTK_WINDOW (icon_chooser_dialog), 780, 560);
 
+#if (GTK_MAJOR_VERSION == 2)
+    /* TODO: use widget templates */
     gtk_widget_push_composite_child ();
+#endif
 
     /* add the main box */
-    vbox = gtk_vbox_new (FALSE, 6);
+#if (GTK_MAJOR_VERSION == 3)
+    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+#elif (GTK_MAJOR_VERSION == 2)
+    vbox = gtk_vbox_new(FALSE, 6);
+#endif
     gtk_container_set_border_width (GTK_CONTAINER (vbox), 6);
-    gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area(GTK_DIALOG
-                                                             (icon_chooser_dialog)
-                                                             )),
-                                 vbox, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(icon_chooser_dialog))), vbox, TRUE, TRUE, 0);
     gtk_widget_show (vbox);
 
     /* add the header table */
+#if (GTK_MAJOR_VERSION == 3)
+    table = gtk_grid_new ();
+    gtk_grid_set_row_spacing (GTK_GRID (table), 6);
+    gtk_grid_set_column_spacing (GTK_GRID (table), 12);
+#elif (GTK_MAJOR_VERSION == 2)
     table = gtk_table_new (2, 2, FALSE);
     gtk_table_set_col_spacings (GTK_TABLE (table), 12);
     gtk_table_set_row_spacings (GTK_TABLE (table), 6);
+#endif
     gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
     gtk_widget_show (table);
 
     /* setup the context combo box */
     label = gtk_label_new_with_mnemonic (_("Select _icon from:"));
-    gtk_misc_set_alignment (GTK_MISC (label), 0.0f, 0.5f);
+    g_object_set(label, "xalign", 0.0f, "yalign", 0.5f, NULL);
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_grid_attach (GTK_GRID (table), label, 0, 0, 1, 1);
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+#endif
     gtk_widget_show (label);
 
     priv->combo = gtk_combo_box_text_new ();
     for (context = 0; context < G_N_ELEMENTS (CONTEXT_TITLES); ++context)
-        gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (priv->combo),
-                                        _(CONTEXT_TITLES[context]));
+        gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (priv->combo), _(CONTEXT_TITLES[context]));
     gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (priv->combo), exo_icon_chooser_dialog_separator_func, icon_chooser_dialog, NULL);
     g_signal_connect (G_OBJECT (priv->combo), "changed", G_CALLBACK (exo_icon_chooser_dialog_combo_changed), icon_chooser_dialog);
+
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_grid_attach (GTK_GRID (table), priv->combo, 1, 0, 1, 1);
+    g_object_set (priv->combo, "hexpand", TRUE, NULL);
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_table_attach (GTK_TABLE (table), priv->combo, 1, 2, 0, 1, GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 0);
+#endif
     gtk_label_set_mnemonic_widget (GTK_LABEL (label), priv->combo);
     gtk_widget_show (priv->combo);
 
     /* search filter */
     label = gtk_label_new_with_mnemonic (_("_Search icon:"));
-    gtk_misc_set_alignment (GTK_MISC (label), 0.0f, 0.5f);
+    g_object_set(label, "xalign", 0.0f, "yalign", 0.5f, NULL);
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_grid_attach (GTK_GRID (table), label, 0, 1, 1, 1);
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
+#endif
 
     priv->filter_entry = gtk_entry_new ();
     exo_binding_new (G_OBJECT (priv->filter_entry), "visible", G_OBJECT (label), "visible");
+
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_grid_attach (GTK_GRID (table), priv->filter_entry, 1, 1, 1, 1);
+    g_object_set (priv->filter_entry, "hexpand", TRUE, NULL);
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_table_attach (GTK_TABLE (table), priv->filter_entry, 1, 2, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 0);
+#endif
     gtk_label_set_mnemonic_widget (GTK_LABEL (label), priv->filter_entry);
     g_signal_connect (G_OBJECT (priv->filter_entry), "changed", G_CALLBACK (exo_icon_chooser_dialog_entry_changed), icon_chooser_dialog);
 #if (GTK_MAJOR_VERSION == 2)
-    gtk_entry_set_icon_from_stock (GTK_ENTRY (priv->filter_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
-    gtk_entry_set_icon_tooltip_text (GTK_ENTRY (priv->filter_entry), GTK_ENTRY_ICON_SECONDARY, _("Clear search field"));
-    gtk_entry_set_icon_sensitive (GTK_ENTRY (priv->filter_entry), GTK_ENTRY_ICON_SECONDARY, FALSE);
-    g_signal_connect (G_OBJECT (priv->filter_entry), "icon-release", G_CALLBACK (exo_icon_chooser_dialog_entry_clear), NULL);
+    gtk_entry_set_icon_from_icon_name(GTK_ENTRY(priv->filter_entry), GTK_ENTRY_ICON_SECONDARY, "edit-clear");
+    gtk_entry_set_icon_tooltip_text(GTK_ENTRY(priv->filter_entry), GTK_ENTRY_ICON_SECONDARY, _("Clear search field"));
+    gtk_entry_set_icon_sensitive(GTK_ENTRY(priv->filter_entry), GTK_ENTRY_ICON_SECONDARY, FALSE);
+    g_signal_connect(G_OBJECT(priv->filter_entry), "icon-release", G_CALLBACK(exo_icon_chooser_dialog_entry_clear), NULL);
 #endif
 
     /* setup the scrolled window for the icon chooser */
@@ -265,7 +291,7 @@ exo_icon_chooser_dialog_init (ExoIconChooserDialog *icon_chooser_dialog)
     /* setup the icon chooser (shown by default) */
     priv->icon_chooser = exo_icon_view_new ();
     exo_binding_new (G_OBJECT (priv->icon_chooser), "visible", G_OBJECT (scrolled_window), "visible");
-    g_signal_connect_swapped (priv->icon_chooser, "button-press-event", G_CALLBACK (exo_icon_chooser_dialog_button_press_event), icon_chooser_dialog);
+//    g_signal_connect_swapped (priv->icon_chooser, "button-press-event", G_CALLBACK (exo_icon_chooser_dialog_button_press_event), icon_chooser_dialog);
     g_signal_connect_swapped (priv->icon_chooser, "item-activated", G_CALLBACK (gtk_window_activate_default), icon_chooser_dialog);
     g_signal_connect_swapped (priv->icon_chooser, "selection-changed", G_CALLBACK (exo_icon_chooser_dialog_selection_changed), icon_chooser_dialog);
     g_signal_connect_swapped (priv->icon_chooser, "start-interactive-search", G_CALLBACK (exo_icon_chooser_dialog_start_interactive_search), icon_chooser_dialog);
@@ -282,11 +308,12 @@ exo_icon_chooser_dialog_init (ExoIconChooserDialog *icon_chooser_dialog)
      * sets this apart from the standard GtkCellRendererText (when true the icon
      * labels are also highlighted when the icon is selected), there is no
      * ellipsizing going on */
-    renderer = g_object_new (EXO_TYPE_CELL_RENDERER_ELLIPSIZED_TEXT,
+    renderer = g_object_new (GTK_TYPE_CELL_RENDERER_TEXT,
                              "follow-state", TRUE,
                              "wrap-mode", PANGO_WRAP_WORD_CHAR,
                              "wrap-width", 104,
                              "xalign", 0.5f,
+                             "alignment", PANGO_ALIGN_CENTER,
                              "yalign", 0.0f,
                              NULL);
     gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (priv->icon_chooser), renderer, FALSE);
@@ -301,12 +328,10 @@ exo_icon_chooser_dialog_init (ExoIconChooserDialog *icon_chooser_dialog)
                                          GTK_FILE_CHOOSER (priv->file_chooser));
     gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (priv->file_chooser),
                                          DATADIR G_DIR_SEPARATOR_S "pixmaps");
-    g_signal_connect_swapped (priv->file_chooser, "file-activated",
-                              G_CALLBACK (gtk_window_activate_default),
+    g_signal_connect_swapped (priv->file_chooser, "file-activated", G_CALLBACK (gtk_window_activate_default),
                               icon_chooser_dialog);
     g_signal_connect_swapped (priv->file_chooser, "selection-changed",
-                              G_CALLBACK (exo_icon_chooser_dialog_selection_changed),
-                              icon_chooser_dialog);
+                              G_CALLBACK (exo_icon_chooser_dialog_selection_changed), icon_chooser_dialog);
     gtk_box_pack_start (GTK_BOX (vbox), priv->file_chooser, TRUE, TRUE, 0);
 
     /* add file chooser filters */
@@ -320,10 +345,11 @@ exo_icon_chooser_dialog_init (ExoIconChooserDialog *icon_chooser_dialog)
     exo_icon_chooser_dialog_set_model (icon_chooser_dialog);
 
     // Default to "All Icons"
-    gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo),
-                              EXO_ICON_CHOOSER_CONTEXT_ALL);
+    gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), EXO_ICON_CHOOSER_CONTEXT_APPLICATIONS);
 
+#if (GTK_MAJOR_VERSION == 2)
     gtk_widget_pop_composite_child ();
+#endif
 }
 
 
@@ -331,7 +357,7 @@ exo_icon_chooser_dialog_init (ExoIconChooserDialog *icon_chooser_dialog)
 static void
 exo_icon_chooser_dialog_finalize (GObject  *object)
 {
-    ExoIconChooserDialogPrivate *priv = EXO_ICON_CHOOSER_DIALOG_GET_PRIVATE (object);
+    ExoIconChooserDialogPrivate *priv = exo_icon_chooser_dialog_get_instance_private(EXO_ICON_CHOOSER_DIALOG (object));
 
     g_free (priv->casefolded_text);
 
@@ -390,7 +416,7 @@ exo_icon_chooser_dialog_close (GtkDialog *dialog)
 static void
 exo_icon_chooser_dialog_set_model (ExoIconChooserDialog *dialog)
 {
-    ExoIconChooserDialogPrivate *priv = EXO_ICON_CHOOSER_DIALOG_GET_PRIVATE (dialog);
+    ExoIconChooserDialogPrivate *priv = exo_icon_chooser_dialog_get_instance_private(EXO_ICON_CHOOSER_DIALOG (dialog));
     ExoIconChooserModel         *model;
     GtkTreeModel                *filter;
 
@@ -439,7 +465,8 @@ exo_icon_chooser_dialog_visible_func (GtkTreeModel *model,
                                       GtkTreeIter  *iter,
                                       gpointer      user_data)
 {
-    ExoIconChooserDialogPrivate *priv = EXO_ICON_CHOOSER_DIALOG_GET_PRIVATE (user_data);
+    ExoIconChooserDialogPrivate *priv = exo_icon_chooser_dialog_get_instance_private(
+            EXO_ICON_CHOOSER_DIALOG (user_data));
     guint                        icon_chooser_context;
     guint                        item_context;
     gchar                       *normalized;
@@ -486,7 +513,7 @@ exo_icon_chooser_dialog_visible_func (GtkTreeModel *model,
 static gboolean
 exo_icon_chooser_dialog_start_interactive_search (ExoIconChooserDialog *icon_chooser_dialog)
 {
-    ExoIconChooserDialogPrivate *priv = EXO_ICON_CHOOSER_DIALOG_GET_PRIVATE (icon_chooser_dialog);
+    ExoIconChooserDialogPrivate *priv = exo_icon_chooser_dialog_get_instance_private(icon_chooser_dialog);
 
     gtk_window_set_focus (GTK_WINDOW (icon_chooser_dialog), priv->filter_entry);
 
@@ -499,7 +526,7 @@ static void
 exo_icon_chooser_dialog_combo_changed (GtkWidget            *combo,
                                        ExoIconChooserDialog *icon_chooser_dialog)
 {
-    ExoIconChooserDialogPrivate *priv = EXO_ICON_CHOOSER_DIALOG_GET_PRIVATE (icon_chooser_dialog);
+    ExoIconChooserDialogPrivate *priv = exo_icon_chooser_dialog_get_instance_private(icon_chooser_dialog);
     ExoIconChooserContext        context;
     GtkTreeModel                *model;
     GList                       *selected_items;
@@ -524,7 +551,7 @@ exo_icon_chooser_dialog_combo_changed (GtkWidget            *combo,
         {
             /* make sure the selected item is visible */
             exo_icon_view_scroll_to_path (EXO_ICON_VIEW (priv->icon_chooser), selected_items->data, FALSE, 0.0f, 0.0f);
-            g_list_foreach (selected_items, (GFunc) gtk_tree_path_free, NULL);
+            g_list_foreach(selected_items, (GFunc)(void (*)(void)) gtk_tree_path_free, NULL);
             g_list_free (selected_items);
         }
     }
@@ -546,7 +573,7 @@ static void
 exo_icon_chooser_dialog_entry_changed (GtkWidget            *combo,
                                        ExoIconChooserDialog *icon_chooser_dialog)
 {
-    ExoIconChooserDialogPrivate *priv = EXO_ICON_CHOOSER_DIALOG_GET_PRIVATE (icon_chooser_dialog);
+    ExoIconChooserDialogPrivate *priv = exo_icon_chooser_dialog_get_instance_private(icon_chooser_dialog);
     const gchar                 *text;
     gchar                       *normalized;
     GtkTreeModel                *model;
@@ -692,7 +719,7 @@ exo_icon_chooser_dialog_new (const gchar *title,
 gchar*
 exo_icon_chooser_dialog_get_icon (ExoIconChooserDialog *icon_chooser_dialog)
 {
-    ExoIconChooserDialogPrivate *priv = EXO_ICON_CHOOSER_DIALOG_GET_PRIVATE (icon_chooser_dialog);
+    ExoIconChooserDialogPrivate *priv = exo_icon_chooser_dialog_get_instance_private(icon_chooser_dialog);
     GtkTreeModel                *model;
     GtkTreeIter                  iter;
     GList                       *selected_items;
@@ -713,7 +740,7 @@ exo_icon_chooser_dialog_get_icon (ExoIconChooserDialog *icon_chooser_dialog)
                 gtk_tree_model_get (model, &iter, EXO_ICON_CHOOSER_MODEL_COLUMN_ICON_NAME, &icon, -1);
 
             /* release the list of selected items */
-            g_list_foreach (selected_items, (GFunc) gtk_tree_path_free, NULL);
+            g_list_foreach(selected_items, (GFunc)(void (*)(void)) gtk_tree_path_free, NULL);
             g_list_free (selected_items);
         }
     }

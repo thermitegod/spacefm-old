@@ -28,9 +28,6 @@
 #include "exo-private.h"
 #include "exo-common.h"
 
-/* Taken from exo v0.10.2 (Debian package libexo-1-0), according to changelog
- * commit f455681554ca205ffe49bd616310b19f5f9f8ef1 Dec 27 13:50:21 2012 */
-
 /**
  * SECTION: exo-cell-renderer-ellipsized-text
  * @title: ExoCellRendererEllipsizedText
@@ -74,13 +71,11 @@ static void exo_cell_renderer_ellipsized_text_set_property  (GObject      *objec
                                                              GParamSpec   *pspec);
 static void exo_cell_renderer_ellipsized_text_get_size      (GtkCellRenderer *renderer,
                                                              GtkWidget    *widget,
-
 #if (GTK_MAJOR_VERSION == 3)
                                                              const GdkRectangle *cell_area,
 #elif (GTK_MAJOR_VERSION == 2)
                                                              GdkRectangle *cell_area,
 #endif
-
                                                              gint         *x_offset,
                                                              gint         *y_offset,
                                                              gint         *width,
@@ -104,15 +99,12 @@ static void exo_cell_renderer_ellipsized_text_get_preferred_height_for_width (
 #endif
 
 static void exo_cell_renderer_ellipsized_text_render        (GtkCellRenderer *renderer,
-
 #if (GTK_MAJOR_VERSION == 3)
                                                              cairo_t      *cr,
 #elif (GTK_MAJOR_VERSION == 2)
                                                              GdkWindow    *window,
 #endif
-
                                                              GtkWidget    *widget,
-
 #if (GTK_MAJOR_VERSION == 3)
                                                              const GdkRectangle *background_area,
                                                              const GdkRectangle *cell_area,
@@ -120,14 +112,11 @@ static void exo_cell_renderer_ellipsized_text_render        (GtkCellRenderer *re
                                                              GdkRectangle *background_area,
                                                              GdkRectangle *cell_area,
 #endif
-
-#if (GTK_MAJOR_VERSION == 3)
-#elif (GTK_MAJOR_VERSION == 2)
+#if (GTK_MAJOR_VERSION == 2)
                                                              GdkRectangle *expose_area,
 #endif
 
                                                              GtkCellRendererState flags);
-
 
 
 struct _ExoCellRendererEllipsizedTextPrivate
@@ -135,10 +124,7 @@ struct _ExoCellRendererEllipsizedTextPrivate
     gboolean follow_state;
 };
 
-
-
-G_DEFINE_TYPE (ExoCellRendererEllipsizedText, exo_cell_renderer_ellipsized_text, GTK_TYPE_CELL_RENDERER_TEXT)
-
+G_DEFINE_TYPE_WITH_PRIVATE (ExoCellRendererEllipsizedText, exo_cell_renderer_ellipsized_text, GTK_TYPE_CELL_RENDERER_TEXT)
 
 
 static void
@@ -201,7 +187,8 @@ exo_cell_renderer_ellipsized_text_get_property (GObject    *object,
                                                 GValue     *value,
                                                 GParamSpec *pspec)
 {
-    ExoCellRendererEllipsizedTextPrivate *priv = EXO_CELL_RENDERER_ELLIPSIZED_TEXT_GET_PRIVATE (object);
+    ExoCellRendererEllipsizedTextPrivate *priv = exo_cell_renderer_ellipsized_text_get_instance_private(
+            EXO_CELL_RENDERER_ELLIPSIZED_TEXT (object));
 
     switch (prop_id)
     {
@@ -223,7 +210,8 @@ exo_cell_renderer_ellipsized_text_set_property (GObject      *object,
                                                 const GValue *value,
                                                 GParamSpec   *pspec)
 {
-    ExoCellRendererEllipsizedTextPrivate *priv = EXO_CELL_RENDERER_ELLIPSIZED_TEXT_GET_PRIVATE (object);
+    ExoCellRendererEllipsizedTextPrivate *priv = exo_cell_renderer_ellipsized_text_get_instance_private(
+            EXO_CELL_RENDERER_ELLIPSIZED_TEXT (object));
 
     switch (prop_id)
     {
@@ -254,11 +242,14 @@ exo_cell_renderer_ellipsized_text_get_size (GtkCellRenderer *renderer,
                                             gint            *width,
                                             gint            *height)
 {
-    ExoCellRendererEllipsizedTextPrivate *priv = EXO_CELL_RENDERER_ELLIPSIZED_TEXT_GET_PRIVATE (renderer);
+    ExoCellRendererEllipsizedTextPrivate *priv = exo_cell_renderer_ellipsized_text_get_instance_private(
+            EXO_CELL_RENDERER_ELLIPSIZED_TEXT (renderer));
     gint                                  focus_line_width;
     gint                                  focus_padding;
     gint                                  text_height;
     gint                                  text_width;
+    gfloat                                renderer_xalign;
+    gfloat                                renderer_yalign;
 
     /* Determine the dimensions of the text from the GtkCellRendererText - see
      * in exo_cell_renderer_ellipsized_text_render for commentary on the GTK2
@@ -291,29 +282,25 @@ exo_cell_renderer_ellipsized_text_get_size (GtkCellRenderer *renderer,
     }
 
     /* Update width/height */
-    if (G_LIKELY (width))
+    if (G_LIKELY (width != NULL))
         *width = text_width;
-    if (G_LIKELY (height))
+    if (G_LIKELY (height != NULL))
         *height = text_height;
 
     /* Update the x/y offsets */
-    if (G_LIKELY (cell_area))
-    {
+    if (G_LIKELY(cell_area != NULL)){
+        if (G_LIKELY(x_offset != NULL)) {
+            *x_offset = ((gtk_widget_get_direction(widget) == GTK_TEXT_DIR_RTL) ? (1.0 - renderer_xalign) : renderer_xalign)
+                        * (cell_area->width - text_width);
         gfloat xalign, yalign;
         gtk_cell_renderer_get_alignment (renderer, &xalign, &yalign);
-
-        if (G_LIKELY (x_offset))
-        {
-            *x_offset = ((gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL) ?
-                             1.0 - xalign : xalign)
-                        * (cell_area->width - text_width);
             *x_offset = MAX (*x_offset, 0);
         }
 
-        if (G_LIKELY (y_offset))
+        if (G_LIKELY (y_offset != NULL))
         {
-            *y_offset = yalign * (cell_area->height - text_height);
-            *y_offset = MAX (*y_offset, 0);
+            *y_offset = renderer_yalign * (cell_area->height - text_height);
+            *y_offset = MAX(*y_offset, 0);
         }
     }
 }
@@ -364,15 +351,12 @@ static void exo_cell_renderer_ellipsized_text_get_preferred_height_for_width (
 
 static void
 exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
-
 #if (GTK_MAJOR_VERSION == 3)
                                           cairo_t               *cr,
 #elif (GTK_MAJOR_VERSION == 2)
                                           GdkWindow             *window,
 #endif
-
                                           GtkWidget             *widget,
-
 #if (GTK_MAJOR_VERSION == 3)
                                           const GdkRectangle  *background_area,
                                           const GdkRectangle  *cell_area,
@@ -380,23 +364,18 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
                                           GdkRectangle        *background_area,
                                           GdkRectangle        *cell_area,
 #endif
-
-#if (GTK_MAJOR_VERSION == 3)
-#elif (GTK_MAJOR_VERSION == 2)
+#if (GTK_MAJOR_VERSION == 2)
                                           GdkRectangle             *expose_area,
 #endif
-
                                           GtkCellRendererState      flags)
 {
-    ExoCellRendererEllipsizedTextPrivate *priv = EXO_CELL_RENDERER_ELLIPSIZED_TEXT_GET_PRIVATE (renderer);
+    ExoCellRendererEllipsizedTextPrivate *priv = exo_cell_renderer_ellipsized_text_get_instance_private(
+            EXO_CELL_RENDERER_ELLIPSIZED_TEXT (renderer));
     GdkRectangle                          text_area;
     GtkStateType                          state;
-
-#if (GTK_MAJOR_VERSION == 3)
-#elif (GTK_MAJOR_VERSION == 2)
+#if (GTK_MAJOR_VERSION == 2)
     cairo_t                               *cr;
 #endif
-
     gint                                  focus_line_width;
     gint                                  focus_padding;
     gint                                  text_height;
@@ -438,11 +417,8 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
                 state = GTK_STATE_NORMAL;
         }
 
-        /* Determine the focus-padding and focus-line-width style properties
-         * from the widget */
-        gtk_widget_style_get (widget, "focus-padding", &focus_padding,
-                              "focus-line-width", &focus_line_width,
-                              NULL);
+        /* Determine the focus-padding and focus-line-width style properties from the widget */
+        gtk_widget_style_get(widget, "focus-padding", &focus_padding, "focus-line-width", &focus_line_width, NULL);
 
         /* Determine the text cell area */
         text_area.x = cell_area->x + (focus_line_width + focus_padding);
@@ -463,8 +439,7 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
              * The GTK3 get_size call basically calls gtk_cell_renderer_get_preferred_size
              * and then does cell offset calculation if cell_area is specified,
              * so its not different enough to warrant reworking stuff to use it */
-            gtk_cell_renderer_get_size (renderer, widget, &text_area, &x0, &y0,
-                                        &text_width, &text_height);
+            gtk_cell_renderer_get_size (renderer, widget, &text_area, &x0, &y0, &text_width, &text_height);
 #elif (GTK_MAJOR_VERSION == 2)
             (*GTK_CELL_RENDERER_CLASS (exo_cell_renderer_ellipsized_text_parent_class)->get_size)(
                                        renderer, widget, &text_area, &x0, &y0,
@@ -480,8 +455,7 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
             /* Render the selected state indicator */
             if ((flags & GTK_CELL_RENDERER_SELECTED) == GTK_CELL_RENDERER_SELECTED)
             {
-                /* Calculate the text bounding box (including the focus padding/
-                 * width) */
+                /* Calculate the text bounding box (including the focus padding/width) */
                 x1 = x0 + text_width;
                 y1 = y0 + text_height;
 
@@ -489,8 +463,7 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
                  * use it directly if possible
                  * In GTK3, the cairo context has already been provided */
                 //sfm-gtk3
-#if (GTK_MAJOR_VERSION == 3)
-#elif (GTK_MAJOR_VERSION == 2)
+#if (GTK_MAJOR_VERSION == 2)
                 cr = gdk_cairo_create (window);
 #endif
                 cairo_move_to (cr, x0 + 5, y0);
@@ -502,7 +475,7 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
                 cairo_curve_to (cr, x0 + 5, y1, x0, y1, x0, y1 - 5);
                 cairo_line_to (cr, x0, y0 + 5);
                 cairo_curve_to (cr, x0, y0 + 5, x0, y0, x0 + 5, y0);
-                gdk_cairo_set_source_color (cr, &style->base[state]);
+                gdk_cairo_set_source_color (cr, &gtk_widget_get_style(widget)->base[state]);
                 cairo_fill (cr);
 
                 //sfm-gtk3
@@ -516,20 +489,15 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
             if ((flags & GTK_CELL_RENDERER_FOCUSED) != 0)
             {
                 gtk_paint_focus (style,
-
 #if (GTK_MAJOR_VERSION == 3)
                                  cr,
 #elif (GTK_MAJOR_VERSION == 2)
                                  window,
 #endif
-
                                  gtk_widget_get_state (widget),
-
-#if (GTK_MAJOR_VERSION == 3)
-#elif (GTK_MAJOR_VERSION == 2)
+#if (GTK_MAJOR_VERSION == 2)
                                  NULL,
 #endif
-
                                  widget,
                                  "icon_view",
                                  x0,

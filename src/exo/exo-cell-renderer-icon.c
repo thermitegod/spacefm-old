@@ -29,10 +29,8 @@
 #include "exo-gdk-pixbuf-extensions.h"
 #include "exo-private.h"
 #include "exo-common.h"
-#include "vfs-thumbnail-loader.h"
 
-/* Taken from exo v0.10.2 (Debian package libexo-1-0), according to changelog
- * commit f455681554ca205ffe49bd616310b19f5f9f8ef1 Dec 27 13:50:21 2012 */
+#include "vfs-thumbnail-loader.h"
 
 /**
  * SECTION: exo-cell-renderer-icon
@@ -82,27 +80,22 @@ static void exo_cell_renderer_icon_set_property (GObject               *object,
                                                  GParamSpec            *pspec);
 static void exo_cell_renderer_icon_get_size     (GtkCellRenderer       *renderer,
                                                  GtkWidget             *widget,
-
 #if (GTK_MAJOR_VERSION == 3)
                                                  const GdkRectangle    *cell_area,
 #elif (GTK_MAJOR_VERSION == 2)
                                                  GdkRectangle          *cell_area,
 #endif
-
                                                  gint                  *x_offset,
                                                  gint                  *y_offset,
                                                  gint                  *width,
                                                  gint                  *height);
 static void exo_cell_renderer_icon_render       (GtkCellRenderer       *renderer,
-
 #if (GTK_MAJOR_VERSION == 3)
                                                  cairo_t               *cr,
 #elif (GTK_MAJOR_VERSION == 2)
                                                  GdkWindow             *window,
 #endif
-
                                                  GtkWidget             *widget,
-
 #if (GTK_MAJOR_VERSION == 3)
                                                  const GdkRectangle    *background_area,
                                                  const GdkRectangle    *cell_area,
@@ -110,12 +103,9 @@ static void exo_cell_renderer_icon_render       (GtkCellRenderer       *renderer
                                                  GdkRectangle          *background_area,
                                                  GdkRectangle          *cell_area,
 #endif
-
-#if (GTK_MAJOR_VERSION == 3)
-#elif (GTK_MAJOR_VERSION == 2)
+#if (GTK_MAJOR_VERSION == 2)
                                                  GdkRectangle          *expose_area,
 #endif
-
                                                  GtkCellRendererState  flags);
 
 
@@ -130,7 +120,7 @@ struct _ExoCellRendererIconPrivate
 };
 
 
-G_DEFINE_TYPE (ExoCellRendererIcon, exo_cell_renderer_icon, GTK_TYPE_CELL_RENDERER)
+G_DEFINE_TYPE_WITH_PRIVATE (ExoCellRendererIcon, exo_cell_renderer_icon, GTK_TYPE_CELL_RENDERER)
 
 
 static void
@@ -246,7 +236,8 @@ exo_cell_renderer_icon_init (ExoCellRendererIcon *icon_undocked)
 static void
 exo_cell_renderer_icon_finalize (GObject *object)
 {
-    const ExoCellRendererIconPrivate *priv = EXO_CELL_RENDERER_ICON_GET_PRIVATE (object);
+    const ExoCellRendererIconPrivate *priv = exo_cell_renderer_icon_get_instance_private(
+                  EXO_CELL_RENDERER_ICON (object));
 
     /* free the icon if not static */
     if (!priv->icon_static)
@@ -267,7 +258,8 @@ exo_cell_renderer_icon_get_property (GObject    *object,
                                      GValue     *value,
                                      GParamSpec *pspec)
 {
-    const ExoCellRendererIconPrivate *priv = EXO_CELL_RENDERER_ICON_GET_PRIVATE (object);
+    const ExoCellRendererIconPrivate *priv = exo_cell_renderer_icon_get_instance_private(
+                  EXO_CELL_RENDERER_ICON (object));
 
     switch (prop_id)
     {
@@ -301,7 +293,7 @@ exo_cell_renderer_icon_set_property (GObject      *object,
                                      const GValue *value,
                                      GParamSpec   *pspec)
 {
-    ExoCellRendererIconPrivate *priv = EXO_CELL_RENDERER_ICON_GET_PRIVATE (object);
+    ExoCellRendererIconPrivate *priv = exo_cell_renderer_icon_get_instance_private(EXO_CELL_RENDERER_ICON (object));
     const gchar                *icon;
 
     switch (prop_id)
@@ -315,8 +307,7 @@ exo_cell_renderer_icon_set_property (GObject      *object,
         if (!priv->icon_static)
             g_free (priv->icon);
         icon = g_value_get_string (value);
-        priv->icon_static = (value->data[1].v_uint & G_VALUE_NOCOPY_CONTENTS) ?
-                    TRUE : FALSE;
+        priv->icon_static = (value->data[1].v_uint & G_VALUE_NOCOPY_CONTENTS) ? TRUE : FALSE;
         priv->icon = (gchar *) ((icon == NULL) ? "" : icon);
         if (!priv->icon_static)
             priv->icon = g_strdup (priv->icon);
@@ -355,20 +346,17 @@ exo_cell_renderer_icon_get_size (GtkCellRenderer    *renderer,
                                  gint               *width,
                                  gint               *height)
 {
-    const ExoCellRendererIconPrivate *priv = EXO_CELL_RENDERER_ICON_GET_PRIVATE (renderer);
+    const ExoCellRendererIconPrivate *priv = exo_cell_renderer_icon_get_instance_private(
+                  EXO_CELL_RENDERER_ICON (renderer));
 
+    gfloat xalign, yalign;
     gint xpad, ypad;
-    gtk_cell_renderer_get_padding (renderer, &xpad, &ypad);
+    gtk_cell_renderer_get_alignment(renderer, &xalign, &yalign);
 
-    if (cell_area)
-    {
-        gfloat xalign, yalign;
-        gtk_cell_renderer_get_alignment (renderer, &xalign, &yalign);
 
-        if (x_offset)
-        {
-            *x_offset = ((gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL) ?
-                             1.0 - xalign : xalign)
+    if (cell_area != NULL) {
+        if (x_offset != NULL) {
+            *x_offset = ((gtk_widget_get_direction(widget) == GTK_TEXT_DIR_RTL) ? 1.0 - xalign : xalign)
                     * (cell_area->width - priv->size);
             *x_offset = MAX (*x_offset, 0) + xpad;
         }
@@ -381,17 +369,17 @@ exo_cell_renderer_icon_get_size (GtkCellRenderer    *renderer,
     }
     else
     {
-        if (x_offset)
+        if (x_offset != NULL)
             *x_offset = 0;
 
-        if (y_offset)
+        if (y_offset != NULL)
             *y_offset = 0;
     }
 
-    if (G_LIKELY (width))
+    if (G_LIKELY (width != NULL))
         *width = (gint) xpad * 2 + priv->size;
 
-    if (G_LIKELY (height))
+    if (G_LIKELY (height != NULL))
         *height = (gint) ypad * 2 + priv->size;
 }
 
@@ -423,12 +411,13 @@ exo_cell_renderer_icon_render (GtkCellRenderer     *renderer,
 
                                GtkCellRendererState      flags)
 {
-    const ExoCellRendererIconPrivate *priv = EXO_CELL_RENDERER_ICON_GET_PRIVATE (renderer);
+    const ExoCellRendererIconPrivate *priv = exo_cell_renderer_icon_get_instance_private(
+            EXO_CELL_RENDERER_ICON (renderer));
     GtkIconSource                    *icon_source;
+    GtkStateType                      state;
     GtkIconTheme                     *icon_theme;
     GdkRectangle                      icon_area;
     GdkRectangle                      draw_area;
-    GtkStateType                      state;
     const gchar                      *filename;
     GtkIconInfo                      *icon_info = NULL;
     GdkPixbuf                        *icon = NULL;
@@ -636,7 +625,6 @@ exo_cell_renderer_icon_render (GtkCellRenderer     *renderer,
                          draw_area.height, GDK_RGB_DITHER_NORMAL, 0, 0);
 #endif
     }
-
     /* Release the file's icon */
     g_object_unref (G_OBJECT (icon));
 }

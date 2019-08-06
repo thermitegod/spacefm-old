@@ -34,9 +34,6 @@
 #include "exo-private.h"
 #include "exo-thumbnail-preview.h"
 
-/* Taken from exo v0.10.2 (Debian package libexo-1-0), according to changelog
- * commit f455681554ca205ffe49bd616310b19f5f9f8ef1 Dec 27 13:50:21 2012 */
-
 /**
  * SECTION: exo-gtk-extensions
  * @title: Extensions to Gtk+
@@ -130,8 +127,7 @@ exo_gtk_file_chooser_add_thumbnail_preview (GtkFileChooser *chooser)
      * only fires after the initial image load happens, and forcing an update
      * right now is too early, the preview URI and file URI come back NULL - the
      * only signal that seems to do the job is 'selection-changed' */
-    g_signal_connect (G_OBJECT (chooser), "selection-changed",
-                      G_CALLBACK (update_preview), thumbnail_preview);
+    g_signal_connect(G_OBJECT(chooser), "update-preview", G_CALLBACK(update_preview), thumbnail_preview);
 
     /* Initially update the preview, in case the file chooser is already set up.
      * Keeping this here inspite the above comment as this is supposed to be

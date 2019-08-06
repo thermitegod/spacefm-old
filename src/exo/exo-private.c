@@ -1,4 +1,3 @@
-/* $Id: exo-private.c 22884 2006-08-26 12:40:43Z benny $ */
 /*-
  * Copyright (c) 2004-2006 os-cillation e.K.
  *
@@ -27,31 +26,13 @@
 #ifdef HAVE_LIBINTL_H
 #include <libintl.h>
 #endif
+
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
 #endif
 
 #include "exo-private.h"
 #include "exo-string.h"
-
-/*
-void
-_exo_i18n_init (void)
-{
-  static gboolean inited = FALSE;
-
-  if (G_UNLIKELY (!inited))
-    {
-      inited = TRUE;
-
-      bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
-#ifdef HAVE_BIND_TEXTDOMAIN_CODESET
-      bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-#endif
-    }
-}
-*/
-
 
 void
 _exo_gtk_widget_send_focus_change (GtkWidget *widget,
@@ -66,6 +47,7 @@ _exo_gtk_widget_send_focus_change (GtkWidget *widget,
 
     GdkEvent *fevent;
     g_object_ref (G_OBJECT (widget));
+    gtk_widget_set_can_focus(widget, in);
     fevent = gdk_event_new (GDK_FOCUS_CHANGE);
     fevent->focus_change.type = GDK_FOCUS_CHANGE;
     fevent->focus_change.window = g_object_ref (gtk_widget_get_window (widget));
