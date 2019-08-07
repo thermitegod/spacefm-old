@@ -5637,40 +5637,15 @@ char* xset_get_manual_url()
         return g_strdup( url );
     }
 
-    // get user's locale
-    const char* locale = NULL;
-    const char* const * langs = g_get_language_names();
-    char* dot = strchr( langs[0], '.' );
-    if( dot )
-        locale = g_strndup( langs[0], (size_t)(dot - langs[0]) );
-    else
-        locale = langs[0];
-    if ( !locale || locale[0] == '\0' )
-        locale = "en";
-    char* l = g_strdup( locale );
-    char* ll = strchr( l, '_' );
-    if ( ll )
-        ll[0] = '\0';
-
-    // get potential filenames
     GList* names = NULL;
-    if ( locale && locale[0] != '\0' )
-        names = g_list_append( names, g_strdup_printf( "spacefm-manual-%s.html",
-                                                                    locale ) );
-    if ( l && l[0] != '\0' && g_strcmp0( l, locale ) )
-        names = g_list_append( names, g_strdup_printf( "spacefm-manual-%s.html", l ) );
-    if ( g_strcmp0( l, "en" ) )
-        names = g_list_append( names, g_strdup( "spacefm-manual-en.html" ) );
-    names = g_list_append( names, g_strdup( "spacefm-manual.html" ) );
-    g_free( l );
+    names = g_list_append( names, g_strdup( "spacefm-manual-en.html" ) );
 
     // get potential locations
     GList* locations = NULL;
     if ( HTMLDIR )
         locations = g_list_append( locations, g_strdup( HTMLDIR ) );
     if ( DATADIR )
-        locations = g_list_append( locations, g_build_filename( DATADIR,
-                                                            "spacefm", NULL ) );
+        locations = g_list_append( locations, g_build_filename( DATADIR, "spacefm", NULL ) );
     const gchar* const * dir = g_get_system_data_dirs();
     for( ; *dir; ++dir )
     {
@@ -5680,11 +5655,7 @@ char* xset_get_manual_url()
         else
             g_free( path );
     }
-    if ( !g_list_find_custom( locations, "/usr/local/share/spacefm",
-                                                    (GCompareFunc)g_strcmp0 ) )
-        locations = g_list_append( locations, g_strdup( "/usr/local/share/spacefm" ) );
-    if ( !g_list_find_custom( locations, "/usr/share/spacefm",
-                                                    (GCompareFunc)g_strcmp0 ) )
+    if ( !g_list_find_custom( locations, "/usr/share/spacefm", (GCompareFunc)g_strcmp0 ) )
         locations = g_list_append( locations, g_strdup( "/usr/share/spacefm" ) );
 
     GList* loc;
@@ -5781,12 +5752,6 @@ void xset_show_help( GtkWidget* parent, XSet* set, const char* anchor )
 
     if ( manual )
         g_free( manual );
-
-    if ( !xset_get_b( "main_help" ) )
-    {
-        xset_msg_dialog( dlgparent, 0, _("Manual Opened ?"), NULL, 0, _("The SpaceFM user's manual should have opened in your browser.  If it didn't open, or if you would like to use a different browser, set your browser in Help|Options|Browser.\n\nThis message will not repeat."), NULL, NULL );
-        xset_set_b( "main_help", TRUE );
-    }
 }
 
 char* xset_get_keyname( XSet* set, int key_val, int key_mod )
