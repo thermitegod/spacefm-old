@@ -4370,8 +4370,6 @@ void main_context_fill( PtkFileBrowser* file_browser, XSetContext* c )
             { old_flags = flags; flags = g_strdup_printf( "%s optical", flags ); g_free( old_flags ); }
         if ( vol->is_table )
             { old_flags = flags; flags = g_strdup_printf( "%s table", flags ); g_free( old_flags ); }
-        if ( vol->is_floppy )
-            { old_flags = flags; flags = g_strdup_printf( "%s floppy", flags ); g_free( old_flags ); }
 
         if ( !vol->is_user_visible )
             { old_flags = flags; flags = g_strdup_printf( "%s policy_hide", flags ); g_free( old_flags ); }
@@ -4744,8 +4742,6 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
                                                 vol->is_optical ? 1 : 0 );
                     fprintf( file, "fm_device_is_table=%d\n",
                                                 vol->is_table ? 1 : 0 );
-                    fprintf( file, "fm_device_is_floppy=%d\n",
-                                                vol->is_floppy ? 1 : 0 );
                     fprintf( file, "fm_device_is_removable=%d\n",
                                                 vol->is_removable ? 1 : 0 );
                     fprintf( file, "fm_device_is_audiocd=%d\n",
@@ -4797,8 +4793,6 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
                                             p, vol->is_optical ? 1 : 0 );
                 fprintf( file, "fm_panel%d_device_is_table=%d\n",
                                             p, vol->is_table ? 1 : 0 );
-                fprintf( file, "fm_panel%d_device_is_floppy=%d\n",
-                                            p, vol->is_floppy ? 1 : 0 );
                 fprintf( file, "fm_panel%d_device_is_removable=%d\n",
                                             p, vol->is_removable ? 1 : 0 );
                 fprintf( file, "fm_panel%d_device_is_audiocd=%d\n",

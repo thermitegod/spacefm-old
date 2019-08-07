@@ -106,7 +106,6 @@ struct _VFSVolume
     gboolean is_user_visible : 1;
     gboolean nopolicy : 1;
     gboolean is_optical : 1;
-    gboolean is_floppy : 1;
     gboolean is_table : 1;
     gboolean ever_mounted : 1;
     gboolean inhibit_auto : 1;

@@ -567,19 +567,6 @@ void info_drive_connection( device_t *device )
                * if it could export it */
 
             }
-          else if (strcmp (subsystem, "platform") == 0)
-            {
-              const gchar *sysfs_name;
-
-              sysfs_name = g_strrstr (s, "/");
-              if (g_str_has_prefix (sysfs_name + 1, "floppy.")
-                                            && device->drive_vendor == NULL )
-                {
-                  device->drive_vendor = g_strdup( "Floppy Drive" );
-                  connection_interface = "platform";
-                }
-            }
-
           g_free (subsystem);
         }
 
@@ -618,9 +605,6 @@ static const struct
     { "ID_DRIVE_FLASH_SD", "flash_sd" },
     { "ID_DRIVE_FLASH_SDHC", "flash_sdhc" },
     { "ID_DRIVE_FLASH_MMC", "flash_mmc" },
-    { "ID_DRIVE_FLOPPY", "floppy" },
-    { "ID_DRIVE_FLOPPY_ZIP", "floppy_zip" },
-    { "ID_DRIVE_FLOPPY_JAZ", "floppy_jaz" },
     { "ID_CDROM", "optical_cd" },
     { "ID_CDROM_CD_R", "optical_cd_r" },
     { "ID_CDROM_CD_RW", "optical_cd_rw" },
@@ -656,9 +640,6 @@ static const struct
     { "ID_DRIVE_MEDIA_FLASH_SD", "flash_sd" },
     { "ID_DRIVE_MEDIA_FLASH_SDHC", "flash_sdhc" },
     { "ID_DRIVE_MEDIA_FLASH_MMC", "flash_mmc" },
-    { "ID_DRIVE_MEDIA_FLOPPY", "floppy" },
-    { "ID_DRIVE_MEDIA_FLOPPY_ZIP", "floppy_zip" },
-    { "ID_DRIVE_MEDIA_FLOPPY_JAZ", "floppy_jaz" },
     { "ID_CDROM_MEDIA_CD", "optical_cd" },
     { "ID_CDROM_MEDIA_CD_R", "optical_cd_r" },
     { "ID_CDROM_MEDIA_CD_RW", "optical_cd_rw" },
@@ -762,10 +743,6 @@ void info_drive_properties ( device_t *device )
       drive_is_ejectable = FALSE;
       drive_is_ejectable |= ( udev_device_get_property_value(
                                     device->udevice, "ID_CDROM" ) != NULL );
-      drive_is_ejectable |= ( udev_device_get_property_value(
-                                    device->udevice, "ID_DRIVE_FLOPPY_ZIP" ) != NULL );
-      drive_is_ejectable |= ( udev_device_get_property_value(
-                                    device->udevice, "ID_DRIVE_FLOPPY_JAZ" ) != NULL );
     }
     device->drive_is_media_ejectable = drive_is_ejectable;
 
@@ -924,18 +901,13 @@ void info_device_properties( device_t *device )
         media_available = FALSE;
     else if ( device->device_is_removable )
     {
-        gboolean is_cd, is_floppy;
+        gboolean is_cd;
         if ( value = udev_device_get_property_value( device->udevice, "ID_CDROM" ) )
             is_cd = atoi( value ) != 0;
         else
             is_cd = FALSE;
 
-        if ( value = udev_device_get_property_value( device->udevice, "ID_DRIVE_FLOPPY" ) )
-            is_floppy = atoi( value ) != 0;
-        else
-            is_floppy = FALSE;
-
-        if ( !is_cd && !is_floppy )
+        if ( !is_cd )
         {
             // this test is limited for non-root - user may not have read
             // access to device file even if media is present
@@ -2273,14 +2245,6 @@ void vfs_volume_set_info( VFSVolume* volume )
             else
                 volume->icon = g_strdup_printf( "dev_icon_optical_nomedia" );
         }
-        else if ( volume->is_floppy )
-        {
-            if ( volume->is_mounted )
-                volume->icon = g_strdup_printf( "dev_icon_floppy_mounted" );
-            else
-                volume->icon = g_strdup_printf( "dev_icon_floppy_unmounted" );
-            volume->is_mountable = TRUE;
-        }
         else if ( volume->is_removable )
         {
             if ( volume->is_mounted )
@@ -2309,9 +2273,7 @@ void vfs_volume_set_info( VFSVolume* volume )
     // set disp_id using by-id
     if ( volume->device_type == DEVICE_TYPE_BLOCK )
     {
-        if ( volume->is_floppy && !volume->udi )
-            disp_id = g_strdup_printf( _(":floppy") );
-        else if ( volume->udi )
+        if ( volume->udi )
         {
             if ( lastcomma = strrchr( volume->udi, '/' ) )
             {
@@ -2484,8 +2446,6 @@ VFSVolume* vfs_volume_read_by_device( struct udev_device *udevice )
     volume->should_autounmount = FALSE;
     volume->is_optical = device->device_is_optical_disc;
     volume->is_table = device->device_is_partition_table;
-    volume->is_floppy = ( device->drive_media_compatibility
-                    && !strcmp( device->drive_media_compatibility, "floppy" ) );
     volume->is_removable = !device->device_is_system_internal;
     volume->requires_eject = device->drive_is_media_ejectable;
     volume->is_mountable = device->device_is_media_available;
@@ -2545,7 +2505,6 @@ VFSVolume* vfs_volume_read_by_device( struct udev_device *udevice )
     printf( "    is_optical=%d\n", volume->is_optical );
     printf( "    is_audiocd=%d\n", volume->is_audiocd );
     printf( "    is_blank=%d\n", volume->is_blank );
-    printf( "    is_floppy=%d\n", volume->is_floppy );
     printf( "    is_table=%d\n", volume->is_table );
     printf( "    is_removable=%d\n", volume->is_removable );
     printf( "    requires_eject=%d\n", volume->requires_eject );
@@ -3013,7 +2972,6 @@ VFSVolume* vfs_volume_read_by_device( char* device_file )
         volume->udi = NULL;
         volume->is_optical = FALSE;
         volume->is_table = FALSE;
-        volume->is_floppy = FALSE;
         volume->is_removable = FALSE;
         volume->requires_eject = FALSE;
         volume->is_mountable = FALSE;
@@ -3093,8 +3051,6 @@ VFSVolume* vfs_volume_read_by_device( char* device_file )
                     {
                         if ( strstr( value, "optical" ) != NULL )
                             volume->is_optical = TRUE;
-                        if ( !strcmp( value, "floppy" ) )
-                            volume->is_floppy = TRUE;
                     }
                     else if ( !strcmp( parameter, "  type" ) )
                         volume->fs_type = g_strdup( value );
@@ -3129,7 +3085,6 @@ VFSVolume* vfs_volume_read_by_device( char* device_file )
             printf( "    is_optical=%d\n", volume->is_optical );
             printf( "    is_audiocd=%d\n", volume->is_audiocd );
             printf( "    is_blank=%d\n", volume->is_blank );
-            printf( "    is_floppy=%d\n", volume->is_floppy );
             printf( "    is_table=%d\n", volume->is_table );
             printf( "    is_removable=%d\n", volume->is_removable );
             printf( "    requires_eject=%d\n", volume->requires_eject );
@@ -4066,7 +4021,6 @@ static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
             ((VFSVolume*)l->data)->is_user_visible = volume->is_user_visible;
             ((VFSVolume*)l->data)->size = volume->size;
             ((VFSVolume*)l->data)->is_table = volume->is_table;
-            ((VFSVolume*)l->data)->is_floppy = volume->is_floppy;
             ((VFSVolume*)l->data)->nopolicy = volume->nopolicy;
             ((VFSVolume*)l->data)->fs_type = volume->fs_type;
             ((VFSVolume*)l->data)->is_blank = volume->is_blank;

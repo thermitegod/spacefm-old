@@ -2243,8 +2243,6 @@ static void on_prop( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
         { old_flags = flags; flags = g_strdup_printf( "%s optical", flags ); g_free( old_flags ); }
     if ( vol->is_table )
         { old_flags = flags; flags = g_strdup_printf( "%s table", flags ); g_free( old_flags ); }
-    if ( vol->is_floppy )
-        { old_flags = flags; flags = g_strdup_printf( "%s floppy", flags ); g_free( old_flags ); }
 
     if ( !vol->is_user_visible )
         { old_flags = flags; flags = g_strdup_printf( "%s policy_hide", flags ); g_free( old_flags ); }
@@ -2684,8 +2682,6 @@ static void show_devices_menu( GtkTreeView* view, VFSVolume* vol,
     xset_set_cb( "dev_icon_optical_mounted", update_volume_icons, NULL );
     xset_set_cb( "dev_icon_optical_media", update_volume_icons, NULL );
     xset_set_cb( "dev_icon_optical_nomedia", update_volume_icons, NULL );
-    xset_set_cb( "dev_icon_floppy_mounted", update_volume_icons, NULL );
-    xset_set_cb( "dev_icon_floppy_unmounted", update_volume_icons, NULL );
     xset_set_cb( "dev_icon_remove_mounted", update_volume_icons, NULL );
     xset_set_cb( "dev_icon_remove_unmounted", update_volume_icons, NULL );
     xset_set_cb( "dev_icon_internal_mounted", update_volume_icons, NULL );
