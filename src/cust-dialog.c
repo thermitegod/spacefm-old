@@ -3754,58 +3754,6 @@ static void build_dialog( GList* elements )
     enable_click_event = TRUE;
 }
 
-static void show_help()
-{
-    int i, j;
-    FILE* f = stdout;
-
-    fprintf( f, _("SpaceFM Dialog creates a custom GTK dialog based on the GUI elements you\nspecify on the command line, features run-time internal/external commands which\ncan modify elements, and outputs evaluatable/parsable results.\n") );
-    fprintf( f, _("Usage:\n") );
-    fprintf( f, _("    spacefm --dialog|-g {ELEMENT [OPTIONS] [ARGUMENTS...]} ...\n") );
-    fprintf( f, _("Example:\n") );
-    fprintf( f, _("    spacefm -g --label \"A message\" --button ok\n") );
-    fprintf( f, _("\nELEMENT:       OPTIONS & ARGUMENTS:\n") );
-    fprintf( f, _(  "--------       --------------------\n") );
-
-    for ( i = 0; i < G_N_ELEMENTS( cdlg_option ) / 3; i++ )
-    {
-        fprintf( f, "--%s", cdlg_option[i*3] );
-        for ( j = 1; j <= 13 - strlen( cdlg_option[i*3] ); j++ )
-            fprintf( f, " " );
-        fprintf( f, "%s\n", cdlg_option[i*3 + 1] );
-        fprintf( f, "               %s\n", _( cdlg_option[i*3 + 2] ) );
-    }
-
-    fprintf( f, _("\nThe following arguments may be used as shown above:\n") );
-    fprintf( f, _("    STOCK    %s\n"), "ok|cancel|close|open|yes|no|apply|delete|edit|help|save|stop" );
-    fprintf( f, _("    ICON     An icon name, eg:  gtk-open\n") );
-    fprintf( f, _("    @FILE    A text file from which to read a value.  In some cases this file\n             is monitored, so writing a new value to the file will update the\n             element.  In other cases, the file specifies an initial value.\n") );
-    fprintf( f, _("    SAVEFILE A viewer's or editor's contents are saved to this file.\n") );
-    fprintf( f, _("    COMMAND  An internal command or executable followed by arguments. Separate\n             multiple commands with a -- argument.\n             The following substitutions may be used in COMMANDs:\n                 %%n           Name of the current element\n                 %%v           Value of the current element\n                 %%NAME        Value of element named NAME (eg: %%input1)\n                 %%(command)   stdout from a bash command line\n                 %%%%           %%\n") );
-    fprintf( f, _("    LABEL    The following escape sequences in LABEL are unescaped:\n                 \\n   newline\n                 \\t   tab\n                 \\\"   \"\n                 \\\\   \\\n             In --label elements only, if the first character in LABEL is a\n             tilde (~), pango markup may be used.  For example:\n                 --label '~This is plain. <b>This is bold.</b>'\n") );
-
-    fprintf( f, _("\nIn addition to the OPTIONS listed above, --compact or --expand options may be\nadded to any element.  Also, a --font option may be used with most element\ntypes to change the element's font and font size.  For example:\n    --input --font \"Times New Roman 16\" \"Default Text\"\n") );
-
-    fprintf( f, _("\nINTERNAL COMMANDS:\n") );
-
-    for ( i = 0; i < G_N_ELEMENTS( cdlg_cmd ) / 3; i++ )
-    {
-        fprintf( f, "    %s", cdlg_cmd[i*3] );
-        for ( j = 1; j <= 11 - strlen( cdlg_cmd[i*3] ); j++ )
-            fprintf( f, " " );
-        fprintf( f, "%s\n", cdlg_cmd[i*3 + 1] );
-        fprintf( f, "               %s\n", _( cdlg_cmd[i*3 + 2] ) );
-    }
-
-    fprintf( f, _("\nEXAMPLE WITH COMMANDS:\n") );
-    fprintf( f, _("    spacefm -g --label \"Enter some text and press Enter:\" \\\n               --input \"\" set label2 %%v -- echo '# %%n = %%v' \\\n               --label \\\n               --button ok\n") );
-
-    fprintf( f, _("\nEXAMPLE SCRIPT:\n") );
-    fprintf( f, _("    #!%s\n    # This script shows a Yes/No dialog\n    # Use QUOTED eval to read variables output by SpaceFM Dialog:\n    eval \"`spacefm -g --label \"Are you sure?\" --button yes --button no`\"\n    if [[ \"$dialog_pressed\" == \"button1\" ]]; then\n        echo \"User pressed Yes - take some action\"\n    else\n        echo \"User did NOT press Yes - abort\"\n    fi\n"), BASHPATH );
-    fprintf( f, _("\nFor full documentation and examples see the SpaceFM User's Manual:\n") );
-    fprintf( f, "    %s\n\n", DEFAULT_MANUAL );
-}
-
 void signal_handler()
 {
     if ( signal_dialog )
@@ -3832,12 +3780,6 @@ int custom_dialog_init( int argc, char *argv[] )
             fprintf( stderr, _("spacefm: argument is not valid UTF-8\n") );
             free_elements( elements );
             return 1;
-        }
-        else if ( ac == 2 && ( !strcmp( argv[ac], "--help" )
-                            || !strcmp( argv[ac], "help" ) ) )
-        {
-            show_help();
-            return -1;
         }
         else if ( g_str_has_prefix( argv[ac], "--" ) )
         {

@@ -145,8 +145,8 @@ static GOptionEntry opt_entries[] =
     { "desktop-pref", '\0', 0, G_OPTION_ARG_NONE, &desktop_pref, N_("Show desktop settings"), NULL },
     { "set-wallpaper", '\0', 0, G_OPTION_ARG_NONE, &set_wallpaper, N_("Set desktop wallpaper to FILE"), NULL },
 #endif
-    { "dialog", 'g', 0, G_OPTION_ARG_NONE, &custom_dialog, N_("Show a custom dialog (See -g help)"), NULL },
-    { "socket-cmd", 's', 0, G_OPTION_ARG_NONE, &socket_cmd, N_("Send a socket command (See -s help)"), NULL },
+    { "dialog", 'g', 0, G_OPTION_ARG_NONE, &custom_dialog, N_("Show a custom dialog (See, man spacefm-dialog)"), NULL },
+    { "socket-cmd", 's', 0, G_OPTION_ARG_NONE, &socket_cmd, N_("Send a socket command (See, man spacefm-socket)"), NULL },
     { "version", 'v', 0, G_OPTION_ARG_NONE, &version_opt, N_("Show version information"), NULL },
 
     { "sdebug", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &sdebug, NULL, NULL },
@@ -351,7 +351,6 @@ gboolean single_instance_check()
 #ifdef SUN_LEN
     addr_len = SUN_LEN( &addr );
 #else
-
     addr_len = strlen( addr.sun_path ) + sizeof( addr.sun_family );
 #endif
 
@@ -640,203 +639,7 @@ int send_socket_command( int argc, char* argv[], char** reply )   //sfm
     return ret;
 }
 
-void show_socket_help()
-{
-    // TRANSLATOR:  These three lines should be limited to 80 chars each
-    printf( "%s\n", _("SpaceFM socket commands permit external processes (such as command scripts)\nto read and set GUI property values and execute methods inside running SpaceFM\nwindows.  To handle events see View|Events in the main menu bar.") );
-
-    printf( "\n%s\n", _("Usage:") );
-    printf( "    spacefm --socket-cmd|-s METHOD [OPTIONS] [ARGUMENT...]\n" );
-    printf( "%s\n", _("Example:") );
-    printf( "    spacefm -s set window_size 800x600\n" );
-
-    printf( "\n%s\n", _("METHODS\n-------") );
-    printf( "spacefm -s set [OPTIONS] PROPERTY [VALUE...]\n" );
-    printf( "    %s\n", _("Sets a property") );
-
-    printf( "\nspacefm -s get [OPTIONS] PROPERTY\n" );
-    printf( "    %s\n", _("Gets a property") );
-
-    printf( "\nspacefm -s set-task [OPTIONS] TASKID TASKPROPERTY [VALUE...]\n" );
-    printf( "    %s\n", _("Sets a task property") );
-
-    printf( "\nspacefm -s get-task [OPTIONS] TASKID TASKPROPERTY\n" );
-    printf( "    %s\n", _("Gets a task property") );
-
-    printf( "\nspacefm -s run-task [OPTIONS] TASKTYPE ARGUMENTS\n" );
-    printf( "    %s\n", _("Starts a new task") );
-
-    printf( "\nspacefm -s emit-key [OPTIONS] KEYCODE [MODIFIER]\n" );
-    printf( "    %s\n", _("Activates a menu item by emitting its shortcut key") );
-
-    printf( "\nspacefm -s activate [OPTIONS] NAME\n" );
-    printf( "    %s\n", _("Runs custom command or shows submenu named NAME") );
-
-    printf( "\nspacefm -s add-event EVENT COMMAND...\n" );
-    printf( "    %s\n", _("Add asynchronous handler COMMAND to EVENT") );
-
-    printf( "\nspacefm -s replace-event EVENT COMMAND...\n" );
-    printf( "    %s\n", _("Add synchronous handler COMMAND to EVENT, replacing default handler") );
-
-    printf( "\nspacefm -s remove-event EVENT COMMAND...\n" );
-    printf( "    %s\n", _("Remove handler COMMAND from EVENT") );
-
-    printf( "\nspacefm -s help|--help\n" );
-    printf( "    %s\n", _("Shows this help reference.  (Also see manual link below.)") );
-
-    printf( "\n%s\n", _("OPTIONS\n-------") );
-    printf( "%s\n", _("Add options after METHOD to specify a specific window, panel, and/or tab.") );
-    printf( "%s\n", _("Otherwise the current tab of the current panel in the last window is used.") );
-
-    printf( "\n--window WINDOWID\n" );
-    printf( "    %s spacefm -s set --window 0x104ca80 window_size 800x600\n", _("Specify window.  eg:") );
-    printf( "--panel PANEL\n" );
-    printf( "    %s spacefm -s set --panel 2 bookmarks_visible true\n", _("Specify panel 1-4.  eg:") );
-    printf( "--tab TAB\n" );
-    printf( "    %s spacefm -s set --tab 3 selected_filenames fstab\n", _("Specify tab 1-...  eg:") );
-
-    printf( "\n%s\n", _("PROPERTIES\n----------") );
-    printf( "%s\n", _("Set properties with METHOD 'set', or get the value with 'get'.") );
-
-    printf( "\nwindow_size                     %s\n", _("eg '800x600'") );
-    printf( "window_position                 %s\n", _("eg '100x50'") );
-    printf( "window_maximized                1|true|yes|0|false|no\n" );
-    printf( "window_fullscreen               1|true|yes|0|false|no\n" );
-    printf( "screen_size                     %s\n", _("eg '1024x768'  (read-only)") );
-    printf( "window_vslider_top              %s\n", _("eg '100'") );
-    printf( "window_vslider_bottom           %s\n", _("eg '100'") );
-    printf( "window_hslider                  %s\n", _("eg '100'") );
-    printf( "window_tslider                  %s\n", _("eg '100'") );
-    printf( "focused_panel                   1|2|3|4|prev|next|hide\n" );
-    printf( "focused_pane                    filelist|devices|bookmarks|dirtree|pathbar\n" );
-    printf( "current_tab                     1|2|...|prev|next|close\n" );
-    printf( "tab_count                       1|2|...\n" );
-    printf( "new_tab                         [DIR]    %s\n", _("Open DIR or default in a new tab") );
-    printf( "devices_visible                 1|true|yes|0|false|no\n" );
-    printf( "bookmarks_visible               1|true|yes|0|false|no\n" );
-    printf( "dirtree_visible                 1|true|yes|0|false|no\n" );
-    printf( "toolbar_visible                 1|true|yes|0|false|no\n" );
-    printf( "sidetoolbar_visible             1|true|yes|0|false|no\n" );
-    printf( "hidden_files_visible            1|true|yes|0|false|no\n" );
-    printf( "panel1_visible                  1|true|yes|0|false|no\n" );
-    printf( "panel2_visible                  1|true|yes|0|false|no\n" );
-    printf( "panel3_visible                  1|true|yes|0|false|no\n" );
-    printf( "panel4_visible                  1|true|yes|0|false|no\n" );
-    printf( "panel_hslider_top               %s\n", _("eg '100'") );
-    printf( "panel_hslider_bottom            %s\n", _("eg '100'") );
-    printf( "panel_vslider                   %s\n", _("eg '100'") );
-    printf( "column_width                    name|size|type|permission|owner|modified WIDTH\n" );
-    printf( "sort_by                         name|size|type|permission|owner|modified\n" );
-    printf( "sort_ascend                     1|true|yes|0|false|no\n" );
-    printf( "sort_natural                    1|true|yes|0|false|no\n" );
-    printf( "sort_case                       1|true|yes|0|false|no\n" );
-    printf( "sort_hidden_first               1|true|yes|0|false|no\n" );
-    printf( "sort_first                      files|folders|mixed\n" );
-    printf( "show_thumbnails                 1|true|yes|0|false|no\n" );
-    printf( "large_icons                     1|true|yes|0|false|no\n" );
-    printf( "statusbar_text                  %s\n", _("eg 'Current Status: Example'") );
-    printf( "pathbar_text                    [TEXT [SELSTART [SELEND]]]\n" );
-    printf( "current_dir                     %s\n", _("DIR            eg '/etc'") );
-    printf( "selected_filenames              %s\n", _("[FILENAME...]") );
-    printf( "selected_pattern                %s\n", _("[PATTERN]      eg '*.jpg'") );
-    printf( "clipboard_text                  %s\n", _("eg 'Some\\nlines\\nof text'") );
-    printf( "clipboard_primary_text          %s\n", _("eg 'Some\\nlines\\nof text'") );
-    printf( "clipboard_from_file             %s\n", _("eg '~/copy-file-contents-to-clipboard.txt'") );
-    printf( "clipboard_primary_from_file     %s\n", _("eg '~/copy-file-contents-to-clipboard.txt'") );
-    printf( "clipboard_copy_files            %s\n", _("FILE...  Files copied to clipboard") );
-    printf( "clipboard_cut_files             %s\n", _("FILE...  Files cut to clipboard") );
-
-    printf( "\n%s\n", _("TASK PROPERTIES\n---------------") );
-    printf( "status                          %s\n", _("contents of Status task column  (read-only)") );
-    printf( "icon                            %s\n", _("eg 'gtk-open'") );
-    printf( "count                           %s\n", _("text to show in Count task column") );
-    printf( "folder                          %s\n", _("text to show in Folder task column") );
-    printf( "item                            %s\n", _("text to show in Item task column") );
-    printf( "to                              %s\n", _("text to show in To task column") );
-    printf( "progress                        %s\n", _("progress percent (1..100) or '' to pulse") );
-    printf( "total                           %s\n", _("text to show in Total task column") );
-    printf( "curspeed                        %s\n", _("text to show in Current task column") );
-    printf( "curremain                       %s\n", _("text to show in CRemain task column") );
-    printf( "avgspeed                        %s\n", _("text to show in Average task column") );
-    printf( "avgremain                       %s\n", _("text to show in Remain task column") );
-    printf( "elapsed                         %s\n", _("contents of Elapsed task column (read-only)") );
-    printf( "started                         %s\n", _("contents of Started task column (read-only)") );
-    printf( "queue_state                     run|pause|queue|stop\n" );
-    printf( "popup_handler                   %s\n", _("COMMAND  command to show a custom task dialog\n") );
-
-    printf( "\n%s\n", _("TASK TYPES\n----------") );
-    printf( "cmd [--task] [--popup] [--scroll] [--terminal] [--icon ICON] \\\n" );
-    printf( "    [--dir DIR] COMMAND...      %s\n", _("Run COMMAND in DIR") );
-    printf( "copy|move|link [--dir DIR] FILE|DIR... TARGET\n" );
-    printf( "                                %s\n", _("Copy|Move|Link FILE(s) or DIR(s) to TARGET dir") );
-    printf( "delete [--dir DIR] FILE|DIR...  %s\n", _("Recursively delete FILE(s) or DIR(s)" ) );
-    printf( "edit [--as-root] FILE           %s\n", _("Open FILE in user's or root's text editor") );
-    printf( "web URL                         %s\n", _("Open URL in user's web browser") );
-    printf( "mount DEVICE|URL                %s\n", _("Mount DEVICE or URL") );
-    printf( "unmount DEVICE|DIR              %s\n", _("Unmount DEVICE or mount point DIR") );
-
-    printf( "\n%s\n", _("EVENTS\n------") );
-    printf( "evt_start                       %s\n", _("Instance start        %e") );
-    printf( "evt_exit                        %s\n", _("Instance exit         %e") );
-    printf( "evt_win_new                     %s\n", _("Window new            %e %w %p %t") );
-    printf( "evt_win_focus                   %s\n", _("Window focus          %e %w %p %t") );
-    printf( "evt_win_move                    %s\n", _("Window move/resize    %e %w %p %t") );
-    printf( "evt_win_click                   %s\n", _("Mouse click           %e %w %p %t %b %m %f") );
-    printf( "evt_win_key                     %s\n", _("Window keypress       %e %w %p %t %k %m") );
-    printf( "evt_win_close                   %s\n", _("Window close          %e %w %p %t") );
-    printf( "evt_pnl_focus                   %s\n", _("Panel focus           %e %w %p %t") );
-    printf( "evt_pnl_show                    %s\n", _("Panel show/hide       %e %w %p %t %f %v") );
-    printf( "evt_pnl_sel                     %s\n", _("Selection changed     %e %w %p %t") );
-    printf( "evt_tab_new                     %s\n", _("Tab new               %e %w %p %t") );
-    printf( "evt_tab_chdir                   %s\n", _("Tab change dir        %e %w %p %t %d") );
-    printf( "evt_tab_focus                   %s\n", _("Tab focus             %e %w %p %t") );
-    printf( "evt_tab_close                   %s\n", _("Tab close             %e %w %p %t") );
-    printf( "evt_device                      %s\n", _("Device change         %e %f %v") );
-
-    printf( "\n%s\n", _("Event COMMAND Substitution Variables:") );
-    printf( "%%e   %s\n", _("event type (evt_start|evt_exit|...)") );
-    printf( "%%w   %s\n", _("window ID") );
-    printf( "%%p   %s\n", _("panel number (1-4)") );
-    printf( "%%t   %s\n", _("tab number (1-...)") );
-    printf( "%%d   %s\n", _("quoted directory ('/etc')") );
-    printf( "%%b   %s\n", _("mouse button (0=double 1=left 2=middle 3=right ...)") );
-    printf( "%%k   %s\n", _("key code  (eg 0x63)") );
-    printf( "%%m   %s\n", _("modifier key (eg 0x4  used with clicks and keypresses)") );
-    printf( "%%f   %s\n", _("focus element (panelN|filelist|devices|bookmarks|dirtree|pathbar)") );
-    printf( "%%v   %s\n", _("focus element is visible (0 or 1, or device state change)") );
-
-    printf( "\n%s:\n\n", _("Examples") );
-
-    printf( "    window_size=\"$(spacefm -s get window_size)\"\n" );
-    printf( "    spacefm -s set window_size 1024x768\n" );
-    printf( "    spacefm -s set column_width name 100\n" );
-    printf( "    spacefm -s set-task $fm_my_task progress 25\n" );
-    printf( "    spacefm -s run-task --window $fm_my_window cmd --task --popup ls /etc\n" );
-    printf( "    spacefm -s run-task copy --dir /etc fstab hosts /destdir\n" );
-    printf( "    spacefm -r /etc; sleep 0.3; spacefm -s set selected_filenames fstab hosts\n" );
-    printf( "    spacefm -s set clipboard_copy_files /etc/fstab /etc/hosts\n" );
-    printf( "    spacefm -s emit-key 0xffbe 0   # press F1 to show Help\n" );
-    printf( "    spacefm -s activate --window $fm_my_window \"Custom Menu\"\n" );
-    printf( "    spacefm -s add-event evt_pnl_sel 'spacefm -s set statusbar_text \"$fm_file\"'\n\n" );
-
-    printf( "    #!%s\n", BASHPATH );
-    printf( "    eval copied_files=\"$(spacefm -s get clipboard_copy_files)\"\n" );
-    printf( "    echo \"%s:\"\n", _("These files have been copied to the clipboard") );
-    printf( "    i=0\n" );
-    printf( "    while [ \"${copied_files[i]}\" != \"\" ]; do\n" );
-    printf( "        echo \"    ${copied_files[i]}\"\n" );
-    printf( "        (( i++ ))\n" );
-    printf( "    done\n" );
-    printf( "    if (( i != 0 )); then\n" );
-    printf( "        echo \"MD5SUMS:\"\n" );
-    printf( "        md5sum \"${copied_files[@]}\"\n" );
-    printf( "    fi\n" );
-
-    printf( "\n%s\n    http://ignorantguru.github.io/spacefm/spacefm-manual-en.html#sockets\n", _("For full documentation and examples see the SpaceFM User's Manual:") );
-}
-
 #ifdef _DEBUG_THREAD
-
 G_LOCK_DEFINE(gdk_lock);
 void debug_gdk_threads_enter (const char* message)
 {
@@ -1265,12 +1068,6 @@ int main ( int argc, char *argv[] )
             bindtextdomain( GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR );
             textdomain( GETTEXT_PACKAGE );
 #endif
-            if ( argv[2] && ( !strcmp( argv[2], "help" ) ||
-                                                !strcmp( argv[2], "--help" ) ) )
-            {
-                show_socket_help();
-                return 0;
-            }
             char* reply = NULL;
             int ret = send_socket_command( argc, argv, &reply );
             if ( reply && reply[0] )

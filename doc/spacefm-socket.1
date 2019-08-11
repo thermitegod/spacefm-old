@@ -1,0 +1,241 @@
+.TH spacefm-socket 1 "August 2019"
+
+.SH NAME
+.B spacefm-socket
+socket commands
+
+
+.SH Usage
+.B spacefm --socket-cmd|-s
+METHOD
+.RI [ OPTIONS... "] [" ARGUMENT... ]
+
+
+.SH Example:
+.B spacefm -s set
+window_size 800x600
+
+
+.SH DESCRIPTION
+.B Spacefm
+socket commands permit external processes (such as command scripts)
+to read and set GUI property values and execute methods inside running
+SpaceFM windows. To handle events see View|Events in the main menu bar.
+
+
+.SH METHODS
+.B spacefm -s set
+.RI [ OPTIONS ]
+PROPERTY
+.RI [ VALUE... ]
+    Sets a property
+
+.B spacefm -s get
+.RI [ OPTIONS ]
+PROPERTY
+    Gets a property
+
+.B spacefm -s set-task
+.RI [ OPTIONS ]
+TASKID TASKPROPERTY
+.RI [ VALUE... ]
+    Sets a task property
+
+.B spacefm -s get-task
+.RI [ OPTIONS ]
+TASKID TASKPROPERTY
+    Gets a task property
+
+.B spacefm -s run-task
+.RI [ OPTIONS ]
+TASKTYPE ARGUMENTS
+    Starts a new task
+
+.B spacefm -s emit-key
+.RI [ OPTIONS ]
+KEYCODE
+.RI [ MODIFIER ]
+    Activates a menu item by emitting its shortcut key
+
+.B spacefm -s activate
+.RI [ OPTIONS ]
+NAME
+    Runs custom command or shows submenu named NAME
+
+.B spacefm -s add-event
+EVENT COMMAND...
+    Add asynchronous handler COMMAND to EVENT
+
+.B spacefm -s replace-event
+EVENT COMMAND...
+    Add synchronous handler COMMAND to EVENT, replacing default handler
+
+.B spacefm -s remove-event
+EVENT COMMAND...
+    Remove handler COMMAND from EVENT
+
+
+.SH OPTIONS
+Add options after METHOD to specify a specific window, panel, and/or tab.
+Otherwise the current tab of the current panel in the last window is used.
+.TP
+.B --window WINDOWID
+    Specify window.  eg: spacefm -s set --window 0x104ca80 window_size 800x600
+.TP
+.B --panel PANEL
+    Specify panel 1-4.  eg: spacefm -s set --panel 2 bookmarks_visible true
+.TP
+.B --tab TAB
+    Specify tab 1-...  eg: spacefm -s set --tab 3 selected_filenames fstab
+.PP
+
+.SH PROPERTIES
+.P
+ Set properties with METHOD 'set', or get the value with 'get'.
+ window_size                     eg '800x600'
+ window_position                 eg '100x50'
+ window_maximized                1|true|yes|0|false|no
+ window_fullscreen               1|true|yes|0|false|no
+ screen_size                     eg '1024x768'  (read-only)
+ window_vslider_top              eg '100'
+ window_vslider_bottom           eg '100'
+ window_hslider                  eg '100'
+ window_tslider                  eg '100'
+ focused_panel                   1|2|3|4|prev|next|hide
+ focused_pane                    filelist|devices|bookmarks|dirtree|pathbar
+ current_tab                     1|2|...|prev|next|close
+ tab_count                       1|2|...
+ new_tab                         [DIR]    Open DIR or default in a new tab
+ devices_visible                 1|true|yes|0|false|no
+ bookmarks_visible               1|true|yes|0|false|no
+ dirtree_visible                 1|true|yes|0|false|no
+ toolbar_visible                 1|true|yes|0|false|no
+ sidetoolbar_visible             1|true|yes|0|false|no
+ hidden_files_visible            1|true|yes|0|false|no
+ panel1_visible                  1|true|yes|0|false|no
+ panel2_visible                  1|true|yes|0|false|no
+ panel3_visible                  1|true|yes|0|false|no
+ panel4_visible                  1|true|yes|0|false|no
+ panel_hslider_top               eg '100'
+ panel_hslider_bottom            eg '100'
+ panel_vslider                   eg '100'
+ column_width                    name|size|type|permission|owner|modified WIDTH
+ sort_by                         name|size|type|permission|owner|modified
+ sort_ascend                     1|true|yes|0|false|no
+ sort_natural                    1|true|yes|0|false|no
+ sort_case                       1|true|yes|0|false|no
+ sort_hidden_first               1|true|yes|0|false|no
+ sort_first                      files|folders|mixed
+ show_thumbnails                 1|true|yes|0|false|no
+ large_icons                     1|true|yes|0|false|no
+ statusbar_text                  eg 'Current Status: Example'
+ pathbar_text                    [TEXT [SELSTART [SELEND]]]
+ current_dir                     DIR            eg '/etc'
+ selected_filenames              [FILENAME...]
+ selected_pattern                [PATTERN]      eg '*.jpg'
+ clipboard_text                  eg 'Some\\nlines\\nof text'
+ clipboard_primary_text          eg 'Some\\nlines\\nof text'
+ clipboard_from_file             eg '~/copy-file-contents-to-clipboard.txt'
+ clipboard_primary_from_file     eg '~/copy-file-contents-to-clipboard.txt'
+ clipboard_copy_files            FILE...  Files copied to clipboard
+ clipboard_cut_files             FILE...  Files cut to clipboard
+
+.SH TASK PROPERTIES
+ status                          contents of Status task column  (read-only)
+ icon                            eg 'gtk-open'
+ count                           text to show in Count task column
+ folder                          text to show in Folder task column
+ item                            text to show in Item task column
+ to                              text to show in To task column
+ progress                        progress percent (1..100) or '' to pulse
+ total                           text to show in Total task column
+ curspeed                        text to show in Current task column
+ curremain                       text to show in CRemain task column
+ avgspeed                        text to show in Average task column
+ avgremain                       text to show in Remain task column
+ elapsed                         contents of Elapsed task column (read-only)
+ started                         contents of Started task column (read-only)
+ queue_state                     run|pause|queue|stop
+ popup_handler                   COMMAND  command to show a custom task dialog
+
+
+.SH TASK TYPES
+.B cmd
+.RI [ --task "] [" --popup "] [" --scroll "] [" --terminal "] [" --icon=ICON "] [" --dir=DIR ]
+COMMAND... <Run COMMAND in DIR>
+
+copy|move|link [--dir DIR] FILE|DIR... TARGET
+                                Copy|Move|Link FILE(s) or DIR(s) to TARGET dir
+delete [--dir DIR] FILE|DIR...  Recursively delete FILE(s) or DIR(s)
+edit [--as-root] FILE           Open FILE in user's or root's text editor
+web URL                         Open URL in user's web browser
+mount DEVICE|URL                Mount DEVICE or URL
+unmount DEVICE|DIR              Unmount DEVICE or mount point DIR
+
+.SH EVENTS
+ evt_start                       Instance start        %e
+ evt_exit                        Instance exit         %e
+ evt_win_new                     Window new            %e %w %p %t
+ evt_win_focus                   Window focus          %e %w %p %t
+ evt_win_move                    Window move/resize    %e %w %p %t
+ evt_win_click                   Mouse click           %e %w %p %t %b %m %f
+ evt_win_key                     Window keypress       %e %w %p %t %k %m
+ evt_win_close                   Window close          %e %w %p %t
+ evt_pnl_focus                   Panel focus           %e %w %p %t
+ evt_pnl_show                    Panel show/hide       %e %w %p %t %f %v
+ evt_pnl_sel                     Selection changed     %e %w %p %t
+ evt_tab_new                     Tab new               %e %w %p %t
+ evt_tab_chdir                   Tab change dir        %e %w %p %t %d
+ evt_tab_focus                   Tab focus             %e %w %p %t
+ evt_tab_close                   Tab close             %e %w %p %t
+ evt_device                      Device change         %e %f %v
+
+.SH Event COMMAND Substitution Variables
+ %e   event type (evt_start|evt_exit|...)
+ %w   window ID
+ %p   panel number (1-4)
+ %t   tab number (1-...)
+ %d   quoted directory ('/etc')
+ %b   mouse button (0=double 1=left 2=middle 3=right ...)
+ %k   key code  (eg 0x63)
+ %m   modifier key (eg 0x4  used with clicks and keypresses)
+ %f   focus element (panelN|filelist|devices|bookmarks|dirtree|pathbar)
+ %v   focus element is visible (0 or 1, or device state change)
+
+.SH Examples
+ window_size="$(spacefm -s get window_size)"
+ spacefm -s set window_size 1024x768
+ spacefm -s set column_width name 100
+ spacefm -s set-task $fm_my_task progress 25
+ spacefm -s run-task --window $fm_my_window cmd --task --popup ls /etc
+ spacefm -s run-task copy --dir /etc fstab hosts /destdir
+ spacefm -r /etc; sleep 0.3; spacefm -s set selected_filenames fstab hosts
+ spacefm -s set clipboard_copy_files /etc/fstab /etc/hosts
+ spacefm -s emit-key 0xffbe 0   # press F1 to show Help
+ spacefm -s activate --window $fm_my_window "Custom Menu"
+ spacefm -s add-event evt_pnl_sel 'spacefm -s set statusbar_text "$fm_file"'
+
+
+.SH EXAMPLE SCRIPT
+ #!/bin/bash
+ eval copied_files="$(spacefm -s get clipboard_copy_files)"
+ echo "These files have been copied to the clipboard:"
+ i=0
+ while [ "${copied_files[i]}" != "" ]; do
+     echo "    ${copied_files[i]}"
+     (( i++ ))
+ done
+ if (( i != 0 )); then
+     echo "MD5SUMS:"
+     md5sum "${copied_files[@]}"
+ fi
+
+
+.SH SEE ALSO
+.BR spacefm-dialog (1)
+.PP
+
+.SH EXTERNAL RESOURCES
+For full documentation and examples see the SpaceFM User's Manual
+.PP
+.I http://ignorantguru.github.io/spacefm/spacefm-manual-en.html#sockets
