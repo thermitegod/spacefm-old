@@ -449,14 +449,6 @@ gboolean single_instance_check()
 
     /* There is no existing server, and we are in the first instance. */
 
-    // custom config-dir
-    if ( config_dir && strpbrk( config_dir, " $%\\()&#|:;?<>{}[]*\"'" ) )
-    {
-        g_warning( _("Option --config-dir contains invalid chars - cannot start") );
-        ret = 1;
-        goto _exit;
-    }
-
     unlink( addr.sun_path ); /* delete old socket file if it exists. */
     reuse = 1;
     ret = setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof( reuse ) );
