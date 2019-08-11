@@ -164,9 +164,6 @@ void on_task_popup_errset( GtkMenuItem* item, FMMainWindow* main_window, char* n
 void show_task_dialog( GtkWidget* widget, GtkWidget* view );
 void on_about_activate ( GtkMenuItem *menuitem, gpointer user_data );
 void on_main_help_activate ( GtkMenuItem *menuitem, FMMainWindow* main_window );
-void on_main_faq ( GtkMenuItem *menuitem, FMMainWindow* main_window );
-void on_homepage_activate ( GtkMenuItem *menuitem, FMMainWindow* main_window );
-void on_news_activate ( GtkMenuItem *menuitem, FMMainWindow* main_window );
 void on_getplug_activate ( GtkMenuItem *menuitem, FMMainWindow* main_window );
 void update_window_title( GtkMenuItem* item, FMMainWindow* main_window );
 void on_toggle_panelbar( GtkWidget* widget, FMMainWindow* main_window );
@@ -1908,13 +1905,10 @@ void rebuild_menus( FMMainWindow* main_window )
 
     // Help
     newmenu = gtk_menu_new();
-    xset_set_cb( "main_faq", on_main_faq, main_window );
     xset_set_cb( "main_about", on_about_activate, main_window );
     xset_set_cb( "main_help", on_main_help_activate, main_window );
-    xset_set_cb( "main_homepage", on_homepage_activate, main_window );
-    xset_set_cb( "main_news", on_news_activate, main_window );
     xset_set_cb( "main_getplug", on_getplug_activate, main_window );
-    menu_elements = g_strdup_printf( "main_faq main_help sep_h1 main_homepage main_news main_getplug sep_h2 main_help_opt sep_h3 main_about" );
+    menu_elements = g_strdup_printf( "main_help sep_h1 main_getplug sep_h2 main_help_opt sep_h3 main_about" );
     xset_add_menu( NULL, file_browser, newmenu, accel_group, menu_elements );
     g_free( menu_elements );
     gtk_widget_show_all( GTK_WIDGET(newmenu) );
@@ -3096,21 +3090,6 @@ void on_main_help_activate ( GtkMenuItem *menuitem, FMMainWindow* main_window )
     xset_show_help( GTK_WIDGET( main_window ), NULL, help );
 }
 
-void on_main_faq ( GtkMenuItem *menuitem, FMMainWindow* main_window )
-{
-    xset_show_help( GTK_WIDGET( main_window ), NULL, "#quickstart-faq" );
-}
-
-void on_homepage_activate ( GtkMenuItem *menuitem, FMMainWindow* main_window )
-{
-    xset_open_url( GTK_WIDGET( main_window ), NULL );
-}
-
-void on_news_activate ( GtkMenuItem *menuitem, FMMainWindow* main_window )
-{
-    xset_open_url( GTK_WIDGET( main_window ), "http://ignorantguru.github.io/spacefm/news.html" );
-}
-
 void on_getplug_activate ( GtkMenuItem *menuitem, FMMainWindow* main_window )
 {
     xset_open_url( GTK_WIDGET( main_window ), "https://github.com/IgnorantGuru/spacefm/wiki/plugins/" );
@@ -4007,12 +3986,6 @@ _key_found:
                     on_about_activate( NULL, main_window );
                 else if ( !strcmp( xname, "help" ) )
                     on_main_help_activate( NULL, main_window );
-                else if ( !strcmp( xname, "faq" ) )
-                    on_main_faq( NULL, main_window );
-                else if ( !strcmp( xname, "homepage" ) )
-                    on_homepage_activate( NULL, main_window );
-                else if ( !strcmp( xname, "news" ) )
-                    on_news_activate( NULL, main_window );
                 else if ( !strcmp( xname, "getplug" ) )
                     on_getplug_activate( NULL, main_window );
             }

@@ -144,7 +144,6 @@ XSet* xset_custom_copy( XSet* set, gboolean copy_next, gboolean delete_set );
 void xset_free( XSet* set );
 
 const char* user_manual_url = "http://ignorantguru.github.io/spacefm/spacefm-manual-en.html";
-const char* homepage = "http://ignorantguru.github.io/spacefm/"; //also in aboutdlg.ui
 
 const char* enter_command_line = N_("Enter program or bash command line:\n\nUse:\n\t%%F\tselected files  or  %%f first selected file\n\t%%N\tselected filenames  or  %%n first selected filename\n\t%%d\tcurrent directory\n\t%%v\tselected device (eg /dev/sda1)\n\t%%m\tdevice mount point (eg /media/dvd);  %%l device label\n\t%%b\tselected bookmark\n\t%%t\tselected task directory;  %%p task pid\n\t%%a\tmenu item value\n\t$fm_panel, $fm_tab, $fm_command, etc");
 
@@ -5568,9 +5567,6 @@ void xset_open_url( GtkWidget* parent, const char* url )
     const char* browser;
     char* command = NULL;
 
-    if ( !url )
-        url = homepage;
-
     browser = xset_get_s( "main_help_browser" );
     if ( browser )
     {
@@ -10516,15 +10512,6 @@ void xset_defaults()
 
     set = xset_set( "main_help", "lbl", _("_User's Manual") );
     xset_set_set( set, "icn", "gtk-help" );
-
-    set = xset_set( "main_faq", "lbl", _("_FAQ") );
-    xset_set_set( set, "icn", "gtk-help" );
-
-    set = xset_set( "main_homepage", "lbl", _("_Homepage") );
-    xset_set_set( set, "icn", "spacefm" );
-
-    set = xset_set( "main_news", "lbl", _("SpaceFM _News") );
-    xset_set_set( set, "icn", "spacefm" );
 
     set = xset_set( "main_getplug", "lbl", _("_Get Plugins") );
     xset_set_set( set, "icn", "spacefm" );
