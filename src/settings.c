@@ -3412,8 +3412,6 @@ _next_item:
 char* xset_custom_get_script( XSet* set, gboolean create )
 {
     char* path;
-    char* old_path;
-    char* cscript;
 
     if ( ( strncmp( set->name, "cstm_", 5 ) && strncmp( set->name, "cust", 4 )
                                             && strncmp( set->name, "hand", 4 ) )
@@ -3437,72 +3435,29 @@ char* xset_custom_get_script( XSet* set, gboolean create )
     }
     else
     {
-        path = g_build_filename( settings_config_dir, "scripts", set->name,
-                                                                "exec.sh", NULL );
-    }
-
-    if ( !g_file_test( path, G_FILE_TEST_EXISTS ) )
-    {
-        // backwards compatible < 0.7.0
-        if ( set->plugin )
-        {
-            cscript = g_strdup_printf( "%s.sh", set->plug_name );
-            old_path = g_build_filename( set->plug_dir, "files", cscript, NULL );
-            g_free( cscript );
-            g_free( path );
-            return old_path;
-        }
-        else
-        {
-            cscript = g_strdup_printf( "%s.sh", set->name );
-            old_path = g_build_filename( settings_config_dir, "scripts",
-                                                            cscript, NULL );
-        }
-        g_free( cscript );
-        if ( g_file_test( old_path, G_FILE_TEST_EXISTS ) )
-        {
-            // copy old location to new
-            char* new_dir = g_build_filename( settings_config_dir, "scripts",
-                                                                set->name, NULL );
-            if ( !g_file_test( new_dir, G_FILE_TEST_EXISTS ) )
-            {
-                g_mkdir_with_parents( new_dir, 0700 );
-                chmod( new_dir, 0700 );
-            }
-            g_free( new_dir );
-            xset_copy_file( old_path, path );
-            chmod( path, S_IRUSR | S_IWUSR | S_IXUSR );
-        }
-        g_free( old_path );
+        path = g_build_filename(settings_config_dir, "scripts", set->name, "exec.sh", NULL);
     }
 
     if ( create && !g_file_test( path, G_FILE_TEST_EXISTS ) )
     {
-        old_path = g_build_filename( settings_config_dir, "scripts",
-                                                        "default-script", NULL );
-        if ( g_file_test( old_path, G_FILE_TEST_EXISTS ) )
-            xset_copy_file( old_path, path );
-        else
-        {
-            FILE* file;
-            int i;
-            char* script_head = g_strdup_printf("#!%s\n$fm_import #import file manager variables\n#\n#Script goes here\n", BASHPATH);
-            const char* script_tail = "exit $?\n#for all spacefm variables run, man spacefm-scripts";
-            file = fopen( path, "w" );
+        FILE* file;
+        int i;
+        char* script_head = g_strdup_printf("#!%s\n$fm_import #import file manager variables\n#\n#Script goes here\n", BASHPATH);
+        const char* script_tail = "exit $?\n#for all spacefm variables run, man spacefm-scripts";
+        file = fopen( path, "w" );
 
-            if ( file )
-            {
-                // write default script
-                fputs( script_head, file );
-                for ( i = 0; i < 14; i++ )
-                    fputs( "\n", file );
-                fputs( script_tail, file );
-                fclose( file );
-            }
-            g_free( script_head );
+        if ( file )
+        {
+            // write default script
+            fputs( script_head, file );
+            for ( i = 0; i < 14; i++ )
+                fputs( "\n", file );
+            fputs( script_tail, file );
+            fclose( file );
         }
+        g_free( script_head );
+
         chmod( path, S_IRUSR | S_IWUSR | S_IXUSR );
-        g_free( old_path );
     }
     return path;
 }
@@ -3620,8 +3575,6 @@ char* xset_custom_new_name()
     char* setname;
     char* path1;
     char* path2;
-    char* path3;
-    char* str;
 
     do
     {
@@ -3636,21 +3589,15 @@ char* xset_custom_new_name()
         }
         else
         {
-            path1 = g_build_filename( settings_config_dir, "scripts", setname, NULL );
-            str = g_strdup_printf( "%s.sh", setname );  //backwards compat < 0.7.0
-            path2 = g_build_filename( settings_config_dir, "scripts", str, NULL );
-            g_free( str );
-            path3 = g_build_filename( settings_config_dir, "plugin-data", setname, NULL );
-            if ( g_file_test( path1, G_FILE_TEST_EXISTS )
-                                || g_file_test( path2, G_FILE_TEST_EXISTS )
-                                || g_file_test( path3, G_FILE_TEST_EXISTS ) )
+            path1 = g_build_filename(settings_config_dir, "scripts", setname, NULL);
+            path2 = g_build_filename(settings_config_dir, "plugin-data", setname, NULL);
+            if (g_file_test(path1, G_FILE_TEST_EXISTS) || g_file_test(path2, G_FILE_TEST_EXISTS))
             {
-                g_free( setname );
+                g_free(setname);
                 setname = NULL;
             }
-            g_free( path1 );
-            g_free( path2 );
-            g_free( path3 );
+            g_free(path1);
+            g_free(path2);
         }
     }
     while ( !setname );
@@ -3659,7 +3606,6 @@ char* xset_custom_new_name()
 
 void xset_custom_copy_files( XSet* src, XSet* dest )
 {
-    char* cscript;
     char* path_src;
     char* path_dest;
     char* command = NULL;
@@ -3673,58 +3619,20 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
 
     // copy command dir
 
-    // do this for backwards compat - will copy old script
-    cscript = xset_custom_get_script( src, FALSE );
-    if ( cscript )
-        g_free( cscript );
-
     if ( src->plugin )
         path_src = g_build_filename( src->plug_dir, src->plug_name, NULL );
     else
         path_src = g_build_filename( settings_config_dir, "scripts", src->name, NULL );
 //printf("    path_src=%s\n", path_src );
 
-    if ( !g_file_test( path_src, G_FILE_TEST_EXISTS ) )
-    {
-//printf("    path_src !EXISTS\n");
-        if ( !src->plugin )
-        {
-            command = NULL;
-        }
-        else
-        {
-            // plugin backwards compat ?
-            cscript = xset_custom_get_script( src, FALSE );
-            if ( cscript && g_file_test( cscript, G_FILE_TEST_EXISTS ) )
-            {
-                path_dest = g_build_filename( settings_config_dir, "scripts",
-                                                                dest->name, NULL );
-                g_mkdir_with_parents( path_dest, 0700 );
-                chmod( path_dest, 0700 );
-                g_free( path_dest );
-                path_dest = g_build_filename( settings_config_dir, "scripts",
-                                                        dest->name, "exec.sh", NULL );
-                command = g_strdup_printf( "cp %s %s", cscript, path_dest );
-                g_free( cscript );
-            }
-            else
-            {
-                if ( cscript )
-                    g_free( cscript );
-                command = NULL;
-            }
-        }
-    }
-    else
-    {
 //printf("    path_src EXISTS\n");
-        path_dest = g_build_filename( settings_config_dir, "scripts", NULL );
-        g_mkdir_with_parents( path_dest, 0700 );
-        chmod( path_dest, 0700 );
-        g_free( path_dest );
-        path_dest = g_build_filename( settings_config_dir, "scripts", dest->name, NULL );
-        command = g_strdup_printf( "cp -a %s %s", path_src, path_dest );
-    }
+    path_dest = g_build_filename(settings_config_dir, "scripts", NULL);
+    g_mkdir_with_parents(path_dest, 0700);
+    chmod(path_dest, 0700);
+    g_free(path_dest);
+    path_dest = g_build_filename(settings_config_dir, "scripts", dest->name, NULL);
+    command = g_strdup_printf("cp -a %s %s", path_src, path_dest);
+
     g_free( path_src );
 
     if ( command )
@@ -4547,17 +4455,11 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
 
 gboolean xset_custom_export_files( XSet* set, char* plug_dir )
 {
-    char* cscript;
     char* path_src;
     char* path_dest;
     char* command;
     char* stdout = NULL;
     char* stderr = NULL;
-
-    // do this for backwards compat - will copy old script
-    cscript = xset_custom_get_script( set, FALSE );
-    if ( cscript )
-        g_free( cscript );
 
     if ( set->plugin )
     {
@@ -5151,10 +5053,8 @@ void xset_custom_activate( GtkWidget* item, XSet* set )
 
 void xset_custom_delete( XSet* set, gboolean delete_next )
 {
-    char* cscript;
     char* path1;
     char* path2;
-    char* path3;
     char* command;
 
     if ( set->menu_style == XSET_MENU_SUBMENU && set->child )
@@ -5172,21 +5072,15 @@ void xset_custom_delete( XSet* set, gboolean delete_next )
     if ( set == set_clipboard )
         set_clipboard = NULL;
 
-    cscript = g_strdup_printf( "%s.sh", set->name );  //backwards compat
-    path1 = g_build_filename( settings_config_dir, "scripts", cscript, NULL );
-    path2 = g_build_filename( settings_config_dir, "scripts", set->name, NULL );
-    path3 = g_build_filename( settings_config_dir, "plugin-data", set->name, NULL );
-    if ( g_file_test( path1, G_FILE_TEST_EXISTS ) ||
-                    g_file_test( path2, G_FILE_TEST_EXISTS ) ||
-                    g_file_test( path3, G_FILE_TEST_EXISTS ) )
-        command = g_strdup_printf( "rm -rf %s %s %s", path1, path2, path3 );
+    path1 = g_build_filename(settings_config_dir, "scripts", set->name, NULL);
+    path2 = g_build_filename(settings_config_dir, "plugin-data", set->name, NULL);
+    if (g_file_test(path1, G_FILE_TEST_EXISTS) || g_file_test(path2, G_FILE_TEST_EXISTS))
+        command = g_strdup_printf("rm -rf %s %s", path1, path2);
     else
         command = NULL;
-    g_free( path1 );
-    g_free( path2 );
-    g_free( path3 );
-    g_free( cscript );
-    if ( command )
+    g_free(path1);
+    g_free(path2);
+    if (command)
     {
         printf( "COMMAND=%s\n", command );
         g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
@@ -6642,11 +6536,7 @@ void xset_design_job( GtkWidget* item, XSet* set )
         }
         else
         {
-            cscript = xset_custom_get_script( set, FALSE );  //backwards compat copy
-            if ( cscript )
-                g_free( cscript );
-            folder = g_build_filename( settings_config_dir, "scripts",
-                                                            set->name, NULL );
+            folder = g_build_filename(settings_config_dir, "scripts", set->name, NULL);
         }
         if ( !g_file_test( folder, G_FILE_TEST_EXISTS ) && !set->plugin )
         {
