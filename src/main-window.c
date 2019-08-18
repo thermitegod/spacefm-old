@@ -2278,22 +2278,6 @@ void fm_main_window_store_positions( FMMainWindow* main_window )
                 xset_set( "panel_sliders", "s", posa );
                 g_free( posa );
             }
-            if ( gtk_widget_get_visible( main_window->task_scroll ) )
-            {
-                pos = gtk_paned_get_position( GTK_PANED( main_window->task_vpane ) );
-                if ( pos )
-                {
-                    // save slider pos for version < 0.9.2 (in case of downgrade)
-                    posa = g_strdup_printf( "%d", pos );
-                    xset_set( "panel_sliders", "z", posa );
-                    g_free( posa );
-                    // save absolute height introduced v0.9.2
-                    posa = g_strdup_printf( "%d", allocation.height - pos );
-                    xset_set( "task_show_manager", "x", posa );
-                    g_free( posa );
-//printf("CLOS  win %dx%d    task height %d   slider %d\n", allocation.width, allocation.height, allocation.height - pos, pos );
-                }
-            }
         }
 
         // store task columns
@@ -7790,8 +7774,7 @@ _invalid_get:
         }
         gdk_event_free( (GdkEvent*)event );
     }
-    else if ( !strcmp( argv[0], "activate" ) ||
-              !strcmp( argv[0], "show-menu" ) /* backwards compat <1.0.4 */ )
+    else if ( !strcmp( argv[0], "activate" ))
     {
         if ( !argv[i] )
         {

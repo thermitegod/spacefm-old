@@ -260,25 +260,10 @@ static void parse_general_settings( char* line )
         app_settings.sort_order = atoi( value );
     else if ( 0 == strcmp( name, "sort_type" ) )
         app_settings.sort_type = atoi( value );
-    /*
-    else if ( 0 == strcmp( name, "open_bookmark_method" ) )
-        xset_set_b( "book_newtab", atoi( value ) != 1 ); //sfm backwards compat
-*/
-    else if ( 0 == strcmp( name, "terminal" ) ) //MOD backwards compat
-    {
-        if ( value && *value )
-            xset_set( "main_terminal", "s", value );
-    }
     else if ( 0 == strcmp( name, "use_si_prefix" ) )
         app_settings.use_si_prefix = atoi( value );
     else if ( 0 == strcmp( name, "no_execute" ) )
         app_settings.no_execute = atoi( value );  //MOD
-    else if ( 0 == strcmp( name, "home_folder" ) )
-    {
-        // backwards compat
-        if ( value && *value )
-            xset_set( "go_set_default", "s", value );
-    }
     else if ( 0 == strcmp( name, "no_confirm" ) )
         app_settings.no_confirm = atoi( value );  //MOD
 }
