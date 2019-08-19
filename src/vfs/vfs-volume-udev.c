@@ -4076,7 +4076,6 @@ static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
             // refresh tabs containing changed mount point
             if ( changed_mount_point )
             {
-                main_window_refresh_all_tabs_matching( changed_mount_point );
                 g_free( changed_mount_point );
             }
             return;
@@ -4093,9 +4092,6 @@ static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
         if ( volume->is_audiocd )
             vfs_volume_autoexec( volume );
     }
-    // refresh tabs containing changed mount point
-    if ( volume->is_mounted && volume->mount_point )
-        main_window_refresh_all_tabs_matching( volume->mount_point );
 }
 
 static gboolean vfs_volume_nonblock_removed( dev_t devnum )
@@ -4149,8 +4145,6 @@ static void vfs_volume_device_removed( struct udev_device* udevice )
                 unmount_if_mounted( volume );
             volumes = g_list_remove( volumes, volume );
             call_callbacks( volume, VFS_VOLUME_REMOVED );
-            if ( volume->is_mounted && volume->mount_point )
-                main_window_refresh_all_tabs_matching( volume->mount_point );
             vfs_free_volume_members( volume );
             g_slice_free( VFSVolume, volume );
             break;
