@@ -3396,6 +3396,8 @@ void on_file_browser_open_item( PtkFileBrowser* file_browser,
             //fm_main_window_start_busy_task( main_window );
             //g_timeout_add( 1000, ( GSourceFunc ) fm_main_window_stop_busy_task, main_window );
             break;
+        default:
+            break;
         }
     }
 }
@@ -5111,6 +5113,8 @@ void on_task_stop( GtkMenuItem* item, GtkWidget* view, XSet* set2,
                         break;
                     case JOB_RESUME:
                         ptk_file_task_pause( ptask, VFS_FILE_TASK_RUNNING );
+                        break;
+                    default:
                         break;
                 }
             }

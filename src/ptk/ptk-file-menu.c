@@ -2096,6 +2096,8 @@ void app_job( GtkWidget* item, GtkWidget* app_item )
                                             GTK_WIDGET( data->desktop ),
                             NULL, "#designmode-mime" );
         break;
+    default:
+        break;
     }
     if ( mime_type )
         vfs_mime_type_unref( mime_type );
@@ -2169,6 +2171,8 @@ gboolean app_menu_keypress( GtkWidget* menu, GdkEventKey* event,
                 case APP_JOB_VIEW_OVER:
                 case APP_JOB_BROWSE_MIME_USR:
                     help = "#designmode-mime-usr";
+                    break;
+                default:
                     break;
                 }
             }

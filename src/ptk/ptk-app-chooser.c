@@ -484,6 +484,8 @@ static void on_dlg_response( GtkDialog* dlg, int id, gpointer user_data )
             g_object_unref( task );
         }
         break;
+    default:
+        break;
     }
 }
 

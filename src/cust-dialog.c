@@ -240,6 +240,8 @@ char* get_column_value( GtkTreeModel* model, GtkTreeIter* iter, int col_index )
             break;
         case G_TYPE_STRING:
             gtk_tree_model_get( model, iter, col_index, &str, -1 );
+        default:
+            break;
     }
     return str;
 }
@@ -453,6 +455,8 @@ static void fill_tree_view( CustomElement* el, GList* arglist )
                     gtk_tree_view_column_pack_start( col, renderer, TRUE );
                     gtk_tree_view_column_set_attributes( col, renderer,
                                          "value", colcount - 1, NULL );
+                default:
+                    break;
             }
         }
     }
@@ -1045,6 +1049,8 @@ static void set_element_value( CustomElement* el, const char* name,
                                                                     value );
         }
         break;
+    default:
+        break;
     }
 }
 
@@ -1147,6 +1153,8 @@ static char* get_element_value( CustomElement* el, const char* name )
         else
             ret = g_strdup( gtk_file_chooser_get_filename( GTK_FILE_CHOOSER (
                                                 el_name->widgets->next->data ) ) );
+        break;
+    default:
         break;
     }
     return ret ? ret : g_strdup( "" );
@@ -1376,6 +1384,8 @@ static void internal_command( CustomElement* el, int icmd, GList* args, char* xv
         case CMD_ENABLE:
             icmd = CMD_DISABLE;
             break;
+        default:
+            break;
         }
     }
 
@@ -1470,6 +1480,8 @@ static void internal_command( CustomElement* el, int icmd, GList* args, char* xv
         write_source( el->widgets->data, NULL, out, FALSE );
         if ( out != stderr )
             fclose( out );
+        break;
+    default:
         break;
     }
     g_free( cname );
@@ -2261,6 +2273,8 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
                 write_file_value( (char*)el->args->data + 1, str );
             }
             g_free( str );
+            break;
+        default:
             break;
         }
     }
@@ -3597,6 +3611,8 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             el->cmd_args = args;
             if ( radio ) *radio = NULL;
         }
+        break;
+    default:
         break;
     }
 }

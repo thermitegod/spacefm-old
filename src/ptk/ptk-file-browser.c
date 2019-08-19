@@ -2639,6 +2639,8 @@ static void on_sort_col_changed( GtkTreeSortable* sortable,
     case COL_FILE_OWNER:
         col = PTK_FB_SORT_BY_OWNER;
         break;
+    default:
+        break;
     }
     file_browser->sort_order = col;
     //MOD enable following to make column click permanent sort
@@ -4328,6 +4330,8 @@ static GtkWidget* create_folder_view( PtkFileBrowser* file_browser,
         g_signal_connect ( ( gpointer ) folder_view, "destroy",
                            G_CALLBACK ( on_folder_view_destroy ),
                            file_browser );
+        break;
+    default:
         break;
     }
 

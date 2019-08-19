@@ -465,6 +465,8 @@ static char** compose_command( FindFile* data )
             case 4: /* within one year */
                 arg = g_strdup( "-365" );
                 break;
+            default:
+                break;
             }
             g_array_append_val( argv, arg );
         }

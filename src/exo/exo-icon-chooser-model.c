@@ -213,10 +213,10 @@ exo_icon_chooser_model_get_column_type (GtkTreeModel *tree_model,
 
     case EXO_ICON_CHOOSER_MODEL_COLUMN_ICON_NAME:
         return G_TYPE_STRING;
+    default:
+	_exo_assert_not_reached ();
+        return G_TYPE_INVALID;
     }
-
-    _exo_assert_not_reached ();
-    return G_TYPE_INVALID;
 }
 
 

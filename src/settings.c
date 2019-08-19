@@ -6457,6 +6457,8 @@ void xset_design_job( GtkWidget* item, XSet* set )
         set_next = xset_get_panel( 1, "tool_l" );
         set_next->b = set_next->b == XSET_B_TRUE ? XSET_B_UNSET : XSET_B_TRUE;
         break;
+    default:
+        break;
     }
 
     if ( set && ( !set->lock || !strcmp( set->name, "main_book" ) ) )
@@ -6547,6 +6549,8 @@ gboolean xset_job_is_valid( XSet* set, int job )
         return TRUE;
     case XSET_JOB_HELP:
         return ( !set->lock || ( set->lock && set->line ) );
+    default:
+        break;
     }
     return FALSE;
 }
@@ -6710,6 +6714,8 @@ gboolean xset_design_menu_keypress( GtkWidget* widget, GdkEventKey* event,
                 break;
             case XSET_JOB_TOOLTIPS:
                 help = "#designmode-designmenu-tooltips";
+                break;
+            default:
                 break;
             }
             if ( !help )

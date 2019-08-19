@@ -292,6 +292,8 @@ gboolean on_socket_event( GIOChannel* ioc, GIOCondition cond, gpointer data )
                 socket_daemon_or_desktop = desktop = TRUE;
                 break;
 #endif
+            default:
+                break;
             }
 
             if( args->str[ argx + 1 ] )

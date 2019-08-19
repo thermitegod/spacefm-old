@@ -717,6 +717,8 @@ void on_progress_dlg_response( GtkDialog* dlg, int response, PtkFileTask* ptask 
         gtk_widget_destroy( ptask->progress_dlg );
         ptask->progress_dlg = NULL;
         break;
+    default:
+        break;
     }
 }
 
@@ -1919,6 +1921,8 @@ gboolean on_vfs_file_task_state_cb( VFSFileTask* task,
             gdk_threads_leave();
         }
         break;
+    default:
+        break;
     }
 
     return ret;    /* return TRUE to continue */
@@ -2047,6 +2051,8 @@ void query_overwrite_response( GtkDialog *dlg, gint response, PtkFileTask* ptask
     case GTK_RESPONSE_DELETE_EVENT: // escape was pressed or window closed
     case GTK_RESPONSE_CANCEL:
         ptask->task->abort = TRUE;
+        break;
+    default:
         break;
     }
 
