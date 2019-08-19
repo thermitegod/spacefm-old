@@ -1908,7 +1908,7 @@ GtkWidget* ptk_file_browser_new( int curpanel, GtkWidget* notebook,
     //gtk_widget_show_all( file_browser->folder_view_scroll );
 
     // set status bar icon
-    char* icon_name;
+    const char* icon_name;
     XSet* set = xset_get_panel( curpanel, "icon_status" );
     if ( set->icon && set->icon[0] != '\0' )
         icon_name = set->icon;
@@ -6373,8 +6373,8 @@ void ptk_file_browser_on_permission( GtkMenuItem* item,
     char* cmd;
     const char* prog;
     gboolean as_root = FALSE;
-    char* user1 = "1000";
-    char* user2 = "1001";
+    const char* user1 = "1000";
+    const char* user2 = "1001";
     char* myuser = g_strdup_printf( "%d", geteuid() );
 
     if ( !sel_files )

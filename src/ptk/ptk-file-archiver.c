@@ -220,7 +220,8 @@ static char* generate_bash_error_function( gboolean run_in_terminal,
      * the user can review the situation. Even outside a terminal, IG
      * has requested text is output
      * No translation for security purposes */
-    char *error_pause = NULL, *finished_with_errors = NULL;
+    const char *error_pause = NULL;
+    const char *finished_with_errors = NULL;
     if (run_in_terminal)
     {
         error_pause = "       read\n";

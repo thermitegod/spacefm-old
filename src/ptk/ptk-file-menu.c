@@ -2133,7 +2133,7 @@ gboolean app_menu_keypress( GtkWidget* menu, GdkEventKey* event,
     {
         if ( event->keyval == GDK_KEY_F1 )
         {
-            char* help = NULL;
+            const char* help = NULL;
             if ( app_data )
             {
                 job = GPOINTER_TO_INT( g_object_get_data( G_OBJECT(item), "job" ) );
@@ -2250,7 +2250,7 @@ static void show_app_menu( GtkWidget* menu, GtkWidget* app_item, PtkFileMenu* da
     char* str;
     char* str2;
     char* path;
-    char* icon;
+    const char* icon;
     const char* type;
 
     if ( !( data && data->info ) )

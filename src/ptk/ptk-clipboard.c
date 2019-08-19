@@ -30,7 +30,7 @@ static void clipboard_get_data ( GtkClipboard *clipboard,
     GdkAtom gnome_target = gdk_atom_intern( "x-special/gnome-copied-files", FALSE );
     GList* l;
     gchar* file_name;
-    gchar* action;
+    const gchar* action;
     gboolean use_uri = FALSE;
 
     GString* list;

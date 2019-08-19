@@ -2012,7 +2012,7 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
     GList* l;
     CustomElement* el;
     char* str;
-    char* prefix = "dialog";
+    const char* prefix = "dialog";
     int width, height, pad = -1;
 
     GList* elements = (GList*)g_object_get_data( G_OBJECT( dlg ), "elements" );

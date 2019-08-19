@@ -630,11 +630,11 @@ static char* get_default_action( const char* dir, const char* type, gpointer use
 
 //g_print( "get_default_action( %s, %s )\n", dir, type );
     // search these files in dir for the first existing default app
-    char* names[] = {
+    const char* names[] = {
         "mimeapps.list",
         "defaults.list"
     };
-    char* groups[] = {
+    const char* groups[] = {
         "Default Applications",
         "Added Associations"
     };

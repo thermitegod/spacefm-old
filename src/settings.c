@@ -3261,7 +3261,7 @@ char* xset_custom_get_help( GtkWidget* parent, XSet* set )
         }
     }
 
-    char* names[] = { "README", "readme", "README.TXT", "README.txt", "readme.txt", "README.MKD", "README.mkd", "readme.mkd" };
+    const char* names[] = { "README", "readme", "README.TXT", "README.txt", "readme.txt", "README.MKD", "README.mkd", "readme.mkd" };
     int i;
     for ( i = 0; i < G_N_ELEMENTS( names ); ++i )
     {
@@ -4132,7 +4132,7 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
     char* file_path_q;
     char* own;
     char* rem = g_strdup( "" );
-    char* compression = "z";
+    const char* compression = "z";
 
     FMMainWindow* main_window = (FMMainWindow*)main_win;
     // task
@@ -4184,7 +4184,7 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
         own = g_strdup_printf( "chmod -R go+rX-w %s", plug_dir_q );
     }
 
-    char* book = "";
+    const char* book = "";
     if ( insert_set && !strcmp( insert_set->name, "main_book" ) )
     {
         // import bookmarks to end
@@ -4308,7 +4308,7 @@ gboolean xset_custom_export_write( FILE* file, XSet* set, char* plug_dir )
 void xset_custom_export( GtkWidget* parent, PtkFileBrowser* file_browser,
                                                                     XSet* set )
 {
-    char* deffolder;
+    const char* deffolder;
     char* deffile;
     char* s1;
     char* s2;
@@ -5260,7 +5260,7 @@ void xset_open_url( GtkWidget* parent, const char* url )
             if ( g_str_has_prefix( url, "file://" )
                                             || g_str_has_prefix( url, "/" ) )
                 ii = 3;  // xdg,gnome,exo-open use editor for html files so skip at start
-            char* programs[] = { "xdg-open", "gnome-open", "exo-open" };
+            const char* programs[] = { "xdg-open", "gnome-open", "exo-open" };
             int i;
             for(  i = ii; i < G_N_ELEMENTS(programs); ++i)
             {
@@ -6573,7 +6573,7 @@ gboolean xset_design_menu_keypress( GtkWidget* widget, GdkEventKey* event,
     {
         if ( event->keyval == GDK_KEY_F1 )
         {
-            char* help = NULL;
+            const char* help = NULL;
             job = GPOINTER_TO_INT( g_object_get_data( G_OBJECT(item), "job" ) );
             switch ( job ) {
             case XSET_JOB_KEY:
@@ -9202,7 +9202,7 @@ void open_in_prog( const char* path )
 
 void xset_set_window_icon( GtkWindow* win )
 {
-    char* name;
+    const char* name;
     XSet* set = xset_get( "main_icon" );
     if ( set->icon )
         name = set->icon;
@@ -11283,7 +11283,7 @@ void xset_defaults()
     }
 }
 
-void def_key( char* name, int key, int keymod )
+void def_key( const char* name, int key, int keymod )
 {
     XSet* set = xset_get( name );
 

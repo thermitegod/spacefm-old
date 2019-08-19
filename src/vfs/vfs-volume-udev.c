@@ -4166,7 +4166,7 @@ void unmount_if_mounted( VFSVolume* vol )
 
     char* mtab_path = g_build_filename( SYSCONFDIR, "mtab", NULL );
 
-    char* mtab = MTAB;
+    const char* mtab = MTAB;
     if ( !g_file_test( mtab, G_FILE_TEST_EXISTS ) )
         mtab = mtab_path;
 

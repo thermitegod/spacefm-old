@@ -527,8 +527,8 @@ gboolean ptk_file_task_cancel( PtkFileTask* ptask )
 
 void set_button_states( PtkFileTask* ptask )
 {
-    char* icon;
-    char* iconset;
+    const char* icon;
+    const char* iconset;
     char* label;
     gboolean sens = !ptask->complete;
 
@@ -833,7 +833,7 @@ void ptk_file_task_progress_open( PtkFileTask* ptask )
     // Buttons
     // Pause
     XSet* set = xset_get( "task_pause" );
-    char* pause_icon = set->icon;
+    const char* pause_icon = set->icon;
     if ( !pause_icon )
         pause_icon = GTK_STOCK_MEDIA_PAUSE;
     ptask->progress_btn_pause = gtk_button_new_with_mnemonic( _("Pa_use") );
@@ -2340,7 +2340,7 @@ static void query_overwrite( PtkFileTask* ptask )
                             NULL );
 
     XSet* set = xset_get( "task_pause" );
-    char* pause_icon = set->icon;
+    const char* pause_icon = set->icon;
     if ( !pause_icon )
         pause_icon = GTK_STOCK_MEDIA_PAUSE;
     gtk_button_set_image( GTK_BUTTON( btn_pause ),

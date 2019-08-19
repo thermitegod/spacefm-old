@@ -1226,7 +1226,7 @@ void on_opt_toggled( GtkMenuItem* item, MoveSet* mset )
 {
     const char* action;
     char* btn_label = NULL;
-    char* root_msg;
+    const char* root_msg;
     char* title;
     GtkTextIter iter, siter;
 
@@ -2128,7 +2128,7 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
 
 
     // Dialog
-    char* root_msg;
+    const char* root_msg;
     if ( mset->is_link )
         mset->desc = _("Link");
     else if ( mset->is_dir )
