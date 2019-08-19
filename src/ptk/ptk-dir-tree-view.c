@@ -69,13 +69,11 @@ struct _DirTreeNode
     int n_expand;
 };
 
-//MOD #if 0
 /*  Drag & Drop/Clipboard targets  */
 static GtkTargetEntry drag_targets[] =
     {
         { "text/uri-list", 0 , 0 }
     };
-// #endif
 
 //MOD drag n drop...
 static void
@@ -565,35 +563,6 @@ gboolean on_dir_tree_view_key_press( GtkWidget* view,
                 gtk_menu_popup( GTK_MENU( popup ), NULL, NULL,
                             NULL, NULL, 3, 0 );
         }
-
-        /* this old method operates on the wrong files
-        gtk_tree_model_get( gtk_tree_view_get_model( GTK_TREE_VIEW( view ) ),
-                            &iter,
-                            COL_DIR_TREE_INFO,
-                            &file, -1 );
-        if ( file )
-        {
-            GtkWidget * popup;
-            char* file_path;
-            GList* sel_files;
-            char* dir_name;
-            file_path = ptk_dir_view_get_dir_path(
-                    gtk_tree_view_get_model( GTK_TREE_VIEW( view ) ), &iter );
-
-            sel_files = g_list_prepend( NULL, vfs_file_info_ref(file) );
-            dir_name = g_path_get_dirname( file_path );
-            popup = ptk_file_menu_new( NULL, browser,
-                        file_path, file,
-                        dir_name, sel_files );
-            g_free( dir_name );
-            g_free( file_path );
-            if ( popup )
-                gtk_menu_popup( GTK_MENU( popup ), NULL, NULL,
-                            NULL, NULL, 3, evt->time );
-
-            vfs_file_info_unref( file );
-        }
-        */
         break;
     default:
         gtk_tree_path_free( path );

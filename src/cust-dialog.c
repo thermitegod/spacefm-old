@@ -2312,23 +2312,6 @@ static gboolean on_timeout_timer( CustomElement* el )
     return TRUE;
 }
 
-/*
-static gboolean on_status_button_press( GtkWidget *widget,
-                                        GdkEventButton *evt,
-                                        CustomElement* el )
-{
-    if ( evt->type == GDK_BUTTON_PRESS && evt->button < 4 && el->args
-                                                            && el->args->next )
-    {
-        char* num = g_strdup_printf( "%d", evt->button );
-        run_command( el->args->next, el->name, num );
-        g_free( num );
-        return TRUE;
-    }
-    return TRUE;
-}
-*/
-
 void on_widget_grab_focus( GtkWidget *widget, CustomElement* el )
 {
     GList* l;
@@ -2369,20 +2352,6 @@ void on_combo_changed( GtkComboBox* box, CustomElement* el )
     run_command( el, el->cmd_args, NULL );
 }
 
-/*
-gboolean on_list_button_press( GtkTreeView* view, GdkEventButton* evt,
-                                CustomElement* el )
-{
-    g_printf("on_list_button_press\n");
-    if ( evt->type == GDK_2BUTTON_PRESS && evt->button == 1 )
-    {
-        gtk_tree_view_row_activated( view, NULL, NULL );
-        return TRUE;
-    }
-    return FALSE;
-}
-*/
-
 static void on_list_row_activated( GtkTreeView *view,
                                    GtkTreePath *tree_path,
                                    GtkTreeViewColumn* col,
@@ -2401,25 +2370,6 @@ static void on_list_row_activated( GtkTreeView *view,
     if ( !gtk_tree_model_get_iter( model, &iter, tree_path ) )
         return;
 
-/*
-    // get clicked column index
-    int colx = 0;
-    int x = -1;
-    GList* l;
-    GList* cols = gtk_tree_view_get_columns( GTK_TREE_VIEW( view ) );
-    for ( l = cols; l; l = l->next )
-    {
-        if ( l->data == col )
-        {
-            x = colx;
-            break;
-        }
-        colx++;
-    }
-    g_list_free( cols );
-    if ( x == -1 )
-        return;
-*/
     run_command( el, el->cmd_args, NULL );
 }
 
@@ -3340,35 +3290,6 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
         }
 
         break;
-/*
-    case CDLG_STATUS:
-        if ( !el->widgets->next && box )
-        {
-            w =  gtk_statusbar_new();
-            //gtk_box_pack_start( GTK_BOX( GTK_DIALOG( dlg )->action_area ),
-            //                                GTK_WIDGET( w ), TRUE, TRUE, pad );
-            gtk_box_pack_start( GTK_BOX( box ), w, FALSE, FALSE, pad );
-            el->widgets = g_list_append( el->widgets, w );
-            GList* children = gtk_container_get_children(
-                                GTK_CONTAINER( gtk_statusbar_get_message_area(
-                                    GTK_STATUSBAR( w ) ) ) );
-            w = children->data; // status bar label
-            el->widgets = g_list_append( el->widgets, w );
-            g_list_free( children );
-            gtk_label_set_selectable( GTK_LABEL( w ), TRUE ); // required for button event
-            gtk_widget_set_can_focus( w, FALSE );
-            g_signal_connect( G_OBJECT( w ), "button-press-event",
-                                G_CALLBACK( on_status_button_press ), el );
-            //g_signal_connect( G_OBJECT( w ), "populate-popup",
-            //                  G_CALLBACK( on_status_bar_popup ), el );
-        }
-        if ( el->widgets->next && args )
-        {
-            get_text_value( el, (char*)args->data, FALSE, TRUE );
-            gtk_statusbar_push( GTK_STATUSBAR( el->widgets->next->data ), 0, el->val );
-        }
-        break;
-*/
     case CDLG_PROGRESS:
         if ( !el->widgets->next && box )
         {

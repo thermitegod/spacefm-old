@@ -714,13 +714,6 @@ static uid_t uid_from_name( const char* user_name )
             uid *= 10;
             uid += ( *p - '0' );
         }
-#if 0 /* This is not needed */
-        /* Check the existance */
-        pw = getpwuid( uid );
-        if ( !pw )     /* Invalid uid */
-            return -1;
-#endif
-
     }
     return uid;
 }
@@ -746,13 +739,6 @@ gid_t gid_from_name( const char* group_name )
             gid *= 10;
             gid += ( *p - '0' );
         }
-#if 0 /* This is not needed */
-        /* Check the existance */
-        grp = getgrgid( gid );
-        if ( !grp )     /* Invalid gid */
-            return -1;
-#endif
-
     }
     return gid;
 }
@@ -773,7 +759,6 @@ on_dlg_response ( GtkDialog *dialog,
     GList* l;
     GList* file_list;
     char* file_path;
-    //GtkWidget* ask_recursive;
     VFSFileInfo* file;
     GtkAllocation allocation;
 
@@ -947,25 +932,6 @@ on_dlg_response ( GtkDialog *dialog,
                 ptk_file_task_set_recursive( task,
                                         gtk_toggle_button_get_active(
                                         GTK_TOGGLE_BUTTON( data->recurse ) ) );
-                /*
-                for ( l = data->file_list; l; l = l->next )
-                {
-                    file = ( VFSFileInfo* ) l->data;
-                    if ( vfs_file_info_is_dir( file ) )
-                    {
-                        ask_recursive = gtk_message_dialog_new(
-                                            GTK_WINDOW( data->dlg ),
-                                            GTK_DIALOG_MODAL,
-                                            GTK_MESSAGE_QUESTION,
-                                            GTK_BUTTONS_YES_NO,
-                                            _( "Do you want to recursively apply these changes to all files and sub-folders?" ) );
-                        ptk_file_task_set_recursive( task,
-                                ( GTK_RESPONSE_YES == gtk_dialog_run( GTK_DIALOG( ask_recursive ) ) ) );
-                        gtk_widget_destroy( ask_recursive );
-                        break;
-                    }
-                }
-                */
                 if ( mod_change )
                 {
                      /* If the permissions of file has been changed by the user */

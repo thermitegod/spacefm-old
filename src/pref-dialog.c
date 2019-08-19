@@ -123,16 +123,6 @@ static const char* date_formats[] =
     "%Y-%m-%d %H:%M:%S"
 };
 static const int drag_actions[] = { 0, 1, 2, 3 };
-/*
-static void
-on_show_desktop_toggled( GtkToggleButton* show_desktop, GtkWidget* desktop_page )
-{
-    gtk_container_foreach( GTK_CONTAINER(desktop_page),
-                           (GtkCallback) gtk_widget_set_sensitive,
-                           (gpointer) gtk_toggle_button_get_active( show_desktop ) );
-    gtk_widget_set_sensitive( GTK_WIDGET(show_desktop), TRUE );
-}
-*/
 
 #ifdef DESKTOP_INTEGRATION
 static void set_preview_image( GtkImage* img, const char* file )
@@ -264,22 +254,6 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
 
     if ( response == GTK_RESPONSE_OK )
     {
-        /* file name encoding */
-        //filename_encoding = gtk_entry_get_text( GTK_ENTRY( data->encoding ) );
-        //if ( filename_encoding
-        //    && g_ascii_strcasecmp ( filename_encoding, "UTF-8" ) )
-        //{
-        //    strcpy( app_settings.encoding, filename_encoding );
-        //    setenv( "G_FILENAME_ENCODING", app_settings.encoding, 1 );
-        //}
-        //else
-        //{
-        //    app_settings.encoding[ 0 ] = '\0';
-        //    unsetenv( "G_FILENAME_ENCODING" );
-        //}
-
-        //app_settings.open_bookmark_method = gtk_combo_box_get_active( GTK_COMBO_BOX( data->bm_open_method ) ) + 1;
-
         show_thumbnail = gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( data->show_thumbnail ) );
         max_thumb = ( ( int ) gtk_spin_button_get_value( GTK_SPIN_BUTTON( data->max_thumb_size ) ) ) << 10;
 
@@ -628,16 +602,6 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
         app_settings.no_confirm = !gtk_toggle_button_get_active(
                                             (GtkToggleButton*)data->confirm_delete );
 
-        /*
-        rubberband = gtk_toggle_button_get_active(
-                                            (GtkToggleButton*)data->rubberband );
-        if ( !!rubberband != !!xset_get_b( "rubberband" ) )
-        {
-            xset_set_b( "rubberband", rubberband );
-            main_window_rubberband_all();
-        }
-        */
-
         root_bar = gtk_toggle_button_get_active(
                                             (GtkToggleButton*)data->root_bar );
         if ( !!root_bar != !!xset_get_b( "root_bar" ) )
@@ -783,18 +747,6 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
         // root settings saved?
         if ( geteuid() != 0 )
         {
-            /*
-            char* root_set_path= g_strdup_printf(
-                                    "/etc/spacefm/%s-as-root", g_get_user_name() );
-            if ( !g_file_test( root_set_path, G_FILE_TEST_EXISTS ) )
-            {
-                g_free( root_set_path );
-                root_set_path= g_strdup_printf(
-                                            "/etc/spacefm/%d-as-root", geteuid() );
-                if ( !g_file_test( root_set_path, G_FILE_TEST_EXISTS ) )
-                    root_set_change = TRUE;
-            }
-            */
             if ( root_set_change )
             {
                 // task
@@ -925,7 +877,6 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
         data->single_click = (GtkWidget*)gtk_builder_get_object( builder, "single_click" );
         data->single_hover = (GtkWidget*)gtk_builder_get_object( builder, "single_hover" );
         data->use_si_prefix = (GtkWidget*)gtk_builder_get_object( builder, "use_si_prefix" );
-        //data->rubberband = (GtkWidget*)gtk_builder_get_object( builder, "rubberband" );
         data->root_bar = (GtkWidget*)gtk_builder_get_object( builder, "root_bar" );
         data->drag_action = (GtkWidget*)gtk_builder_get_object( builder, "drag_action" );
 
@@ -933,24 +884,6 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
         gtk_combo_box_set_model( GTK_COMBO_BOX( data->terminal ), model );
         gtk_combo_box_set_entry_text_column( GTK_COMBO_BOX( data->terminal ), 0 );
         g_object_unref( model );
-
-        //if ( '\0' == ( char ) app_settings.encoding[ 0 ] )
-        //    gtk_entry_set_text( GTK_ENTRY( data->encoding ), "UTF-8" );
-        //else
-        //    gtk_entry_set_text( GTK_ENTRY( data->encoding ), app_settings.encoding );
-
-        /*
-        if ( app_settings.open_bookmark_method >= 1 &&
-                app_settings.open_bookmark_method <= 2 )
-        {
-            gtk_combo_box_set_active( GTK_COMBO_BOX( data->bm_open_method ),
-                                      app_settings.open_bookmark_method - 1 );
-        }
-        else
-        {
-            gtk_combo_box_set_active( GTK_COMBO_BOX( data->bm_open_method ), 0 );
-        }
-        */
 
         gtk_spin_button_set_value ( GTK_SPIN_BUTTON( data->max_thumb_size ),
                                     app_settings.max_thumb_size >> 10 );
@@ -1045,9 +978,6 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
                                                                 "click_exec" );
         gtk_toggle_button_set_active ( GTK_TOGGLE_BUTTON( data->click_exec ),
                                                         !app_settings.no_execute );
-
-        //gtk_toggle_button_set_active ( GTK_TOGGLE_BUTTON( data->rubberband ),
-        //                                                xset_get_b( "rubberband" ) );
 
         gtk_toggle_button_set_active ( GTK_TOGGLE_BUTTON( data->root_bar ),
                                                         xset_get_b( "root_bar" ) );

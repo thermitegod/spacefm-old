@@ -1669,20 +1669,6 @@ static void on_configure_drag_end( GtkWidget* widget,
 
     // Saving settings
     xset_autosave( FALSE, FALSE );
-
-#if 0
-    /* Ensuring first handler is selected (otherwise none are)
-     * It seems the last selected row is re-selected if this code is not used. */
-    if ( widget )
-    {
-        GtkTreeSelection *selection = gtk_tree_view_get_selection(
-                                            GTK_TREE_VIEW( widget ) );
-        GtkTreePath *new_path = gtk_tree_path_new_first();
-        gtk_tree_selection_select_path( GTK_TREE_SELECTION( selection ),
-                                new_path );
-        gtk_tree_path_free( new_path );
-    }
-#endif
 }
 
 static void on_configure_button_press( GtkButton* widget, HandlerData* hnd )
@@ -2244,46 +2230,6 @@ static gboolean on_handlers_button_press( GtkWidget* view,
         gtk_tree_path_free( tree_path );
     return ret;
 }
-
-#if 0
-/*igcr some duplication here with on_configure_changed() - can you call
- * on_configure_changed(), or can a single event be used for selection
- * changed?  row-activated is when a row is activated by clicking
- * or double-clicking, or via keypress space/enter, not merely selected.  */
-static void on_configure_row_activated( GtkTreeView* view,
-                                        GtkTreePath* tree_path,
-                                        GtkTreeViewColumn* col,
-                                        HandlerData* hnd )
-{
-    // This event is triggered when the selected row is changed by the
-    // mouse
-
-    // Fetching the model from the view
-    GtkTreeModel* model = gtk_tree_view_get_model( GTK_TREE_VIEW( view ) );
-
-    // Obtaining an iterator based on the view position
-    GtkTreeIter it;
-    if ( !gtk_tree_model_get_iter( model, &it, tree_path ) )
-        return;
-
-    // Fetching data from the model based on the iterator.
-    gchar* xset_name;
-    gtk_tree_model_get( model, &it,
-                        COL_XSET_NAME, &xset_name,
-                        -1 );
-
-    // Loading new archive handler values
-    config_load_handler_settings( NULL, xset_name, NULL, hnd );
-    g_free( xset_name );
-
-    // Focussing archive handler name
-    // Selects the text rather than just placing the cursor at the start
-    // of the text...
-    /*GtkWidget* entry_handler_name = (GtkWidget*)g_object_get_data( G_OBJECT( dlg ),
-                                                "entry_handler_name" );
-    gtk_widget_grab_focus( entry_handler_name );*/
-}
-#endif
 
 static void restore_defaults( HandlerData* hnd, gboolean all )
 {
@@ -3112,9 +3058,6 @@ void ptk_handler_show_config( int mode, DesktopWindow* desktop,
     g_signal_connect( G_OBJECT( hnd->view_handlers ), "drag-end",
                         G_CALLBACK( on_configure_drag_end ),
                         hnd );
-//    g_signal_connect( G_OBJECT( hnd->view_handlers ), "row-activated",
-//                        G_CALLBACK( on_configure_row_activated ),
-//                        hnd );
     g_signal_connect( G_OBJECT( gtk_tree_view_get_selection(
                                     GTK_TREE_VIEW( hnd->view_handlers ) ) ),
                         "changed",

@@ -2580,41 +2580,6 @@ GtkWidget* xset_new_menuitem( const char* label, const char* icon )
     return item;
 }
 
-/*
-gboolean xset_design_event_cb (GtkWidget *widget, GdkEvent  *gdk_event , XSet* set)
-{
-    GdkEventButton* event = (GdkEventButton*)gdk_event;
-printf("xset_design_event_cb type=%d button=%d state=%d\n", event->type, event->button, event->state );
-    if ( event->type == 10 )
-    {
-        //return TRUE;
-    }
-    else if ( event->type == GDK_BUTTON_PRESS )
-    {
-//        printf("    button_press\n");
-        if ( ((GdkEventButton*)event)->state & GDK_CONTROL_MASK
-                                || ((GdkEventButton*)event)->button == 2 )
-        {
-            printf("    DESIGN\n");
-            return TRUE;
-        }
-    }
-    return FALSE;  // pass through
-}
-*/
-
-/*
-void xset_design_activate_item( GtkMenuItem* item, XSet* set )
-{
-    if ( design_mode )
-    {
-        g_signal_stop_emission_by_name( item, "activate" );
-        //g_signal_stop_emission_by_name( item, "activate-item" );
-        printf("design_mode_activate\n");
-    }
-}
-*/
-
 char* xset_custom_get_app_name_icon( XSet* set, GdkPixbuf** icon, int icon_size )
 {
     char* menu_label = NULL;
@@ -4649,81 +4614,6 @@ g_printf("    set->next = %s\n", set->next );
     }
     return NULL;
 }
-
-#if 0
-void xset_custom_insert_before( XSet* target, XSet* set )
-{
-    XSet* target_prev;
-    XSet* target_next;
-    XSet* target_parent;
-
-    if ( !set )
-    {
-        g_warning( "xset_custom_insert_before set == NULL" );
-        return;
-    }
-    if ( !target )
-    {
-        g_warning( "xset_custom_insert_before target_set == NULL" );
-        return;
-    }
-
-    if ( target->prev )
-    {
-        target_prev = xset_get( target->prev );
-        g_free( set->prev );
-        g_free( set->next );
-        set->prev = target->prev;       // steal string
-        set->next = target_prev->next;  // steal string or NULL
-        // replace stolen strings
-        target->prev = g_strdup( set->name );
-        target_prev->next = g_strdup( set->name );
-
-        if ( set->parent )
-        {
-            g_free( set->parent );
-            set->parent = NULL;
-        }
-    }
-    else if ( target->parent )
-    {
-        // target is first item in submenu
-        target_parent = xset_get( target->parent );
-        g_free( set->parent );
-        set->parent = target->parent;       // steal string
-        target->parent = NULL;
-        target->prev = g_strdup( set->name );
-        g_free( set->next );
-        set->next = target_parent->child;   // steal string
-        target_parent->child = g_strdup( set->name );
-
-        if ( !set->next )
-            set->next = g_strdup( target->name );  // failsafe
-        if ( set->prev )
-        {
-            g_free( set->prev );
-            set->prev = NULL;
-        }
-    }
-    else
-    {
-        g_warning( "xset_custom_insert_before target has no prev or parent" );
-        return;
-    }
-
-    if ( target->tool )
-    {
-        if ( set->tool < XSET_TOOL_CUSTOM )
-            set->tool = XSET_TOOL_CUSTOM;
-    }
-    else
-    {
-        if ( set->tool > XSET_TOOL_CUSTOM )
-            g_warning( "xset_custom_insert_before builtin tool inserted after non-tool" );
-        set->tool = XSET_TOOL_NOT;
-    }
-}
-#endif
 
 void xset_custom_insert_after( XSet* target, XSet* set )
 {   // inserts single set 'set', no next

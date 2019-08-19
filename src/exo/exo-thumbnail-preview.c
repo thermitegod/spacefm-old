@@ -55,19 +55,12 @@
  *
  * Thumbnail sizes used by the thumbnail database.
  **/
+
 typedef enum /*< skip >*/
 {
     EXO_THUMBNAIL_SIZE_NORMAL = 128,
     EXO_THUMBNAIL_SIZE_LARGE  = 256,
 } ExoThumbnailSize;
-
-
-#if 0
-static void exo_thumbnail_preview_style_set (GtkWidget           *ebox,
-                                             GtkStyle            *previous_style,
-                                             ExoThumbnailPreview *thumbnail_preview);
-#endif
-
 
 struct _ExoThumbnailPreviewClass
 {
@@ -81,7 +74,6 @@ struct _ExoThumbnailPreview
     GtkWidget *name_label;
     GtkWidget *size_label;
 };
-
 
 
 G_DEFINE_TYPE (ExoThumbnailPreview, exo_thumbnail_preview, GTK_TYPE_FRAME)
@@ -116,8 +108,6 @@ exo_thumbnail_preview_init(ExoThumbnailPreview *thumbnail_preview) {
      * Note that this event box is what defines the colour, not thumbnail_preview */
     gtk_widget_modify_bg (ebox, GTK_STATE_NORMAL, &gtk_widget_get_style (ebox)->base[GTK_STATE_INSENSITIVE]);
 #endif
-    /* This function has been demonstrated to be unnecessary and causes loops for IgnorantGuru */
-    //g_signal_connect(G_OBJECT(ebox), "style-set", G_CALLBACK(exo_thumbnail_preview_style_set), thumbnail_preview);
     gtk_container_add(GTK_CONTAINER(thumbnail_preview), ebox);
     gtk_widget_show(ebox);
 

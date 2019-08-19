@@ -874,37 +874,7 @@ void on_file_monitor_event ( VFSFileMonitor* fm,
             ptk_dir_tree_delete_child( node->tree, child );
         }
         break;
-/* //MOD Change isn't needed?  Creates this warning and triggers subsequent
- * errors and causes visible redrawing problems:
-Gtk-CRITICAL **: /tmp/buildd/gtk+2.0-2.24.3/gtk/gtktreeview.c:6072 (validate_visible_area): assertion `has_next' failed.
-There is a disparity between the internal view of the GtkTreeView,
-and the GtkTreeModel.  This generally means that the model has changed
-without letting the view know.  Any display from now on is likely to
-be incorrect.
-*/
     case VFS_FILE_MONITOR_CHANGE:
-/*        if( G_LIKELY( child && child->file ) )
-        {
-            file_path = g_build_filename( fm->path, file_name, NULL );
-            if( ! g_file_test( file_path, G_FILE_TEST_IS_DIR ) )
-            {
-                g_free( file_path );
-                break;
-            }
-            vfs_file_info_get( child->file, file_path, file_name );
-            g_free( file_path );
-            it.stamp = node->tree->stamp;
-            it.user_data = child;
-            it.user_data2 = it.user_data3 = NULL;
-            tree_path = ptk_dir_tree_get_path(GTK_TREE_MODEL(node->tree), &it);
-
-            gtk_tree_model_row_changed( GTK_TREE_MODEL( node->tree ),
-                                        tree_path, &it );
-            gtk_tree_model_row_has_child_toggled( GTK_TREE_MODEL( node->tree ),
-                                                  tree_path, &it );
-            gtk_tree_path_free( tree_path );
-        }
-*/
         break;
     default:
         break;

@@ -50,10 +50,6 @@ static void vfs_dir_monitor_callback( VFSFileMonitor* fm,
                                       const char* file_name,
                                       gpointer user_data );
 
-#if 0
-static gpointer load_thumbnail_thread( gpointer user_data );
-#endif
-
 static void on_mime_type_reload( gpointer user_data );
 
 
@@ -61,10 +57,6 @@ static void update_changed_files( gpointer key, gpointer data,
                                   gpointer user_data );
 static gboolean notify_file_change( gpointer user_data );
 static gboolean update_file_info( VFSDir* dir, VFSFileInfo* file );
-
-#if 0
-static gboolean is_dir_desktop( const char* path );
-#endif
 
 static void on_list_task_finished( VFSAsyncTask* task, gboolean is_cancelled, VFSDir* dir );
 
@@ -507,13 +499,6 @@ void vfs_dir_load( VFSDir* dir )
     }
 }
 
-#if 0
-gboolean is_dir_desktop( const char* path )
-{
-    return (desktop_dir && 0 == strcmp(path, desktop_dir));
-}
-#endif
-
 gpointer vfs_dir_load_thread(  VFSAsyncTask* task, VFSDir* dir )
 {
     const gchar * file_name;
@@ -594,7 +579,6 @@ gboolean update_file_info( VFSDir* dir, VFSFileInfo* file )
     char* full_path;
     char* file_name;
     gboolean ret = FALSE;
-    /* gboolean is_desktop = is_dir_desktop(dir->path); */
 
     /* FIXME: Dirty hack: steal the string to prevent memory allocation */
     file_name = file->name;

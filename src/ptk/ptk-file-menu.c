@@ -58,11 +58,6 @@ on_popup_open_activate ( GtkMenuItem *menuitem,
 static void
 on_popup_open_with_another_activate ( GtkMenuItem *menuitem,
                                       PtkFileMenu* data );
-#if 0
-static void
-on_file_properties_activate ( GtkMenuItem *menuitem,
-                              PtkFileMenu* data );
-#endif
 static void
 on_popup_run_app ( GtkMenuItem *menuitem,
                    PtkFileMenu* data );

@@ -503,10 +503,7 @@ void vfs_mime_type_set_default_action( VFSMimeType* mime_type,
                                        const char* desktop_id )
 {
     char* cust_desktop = NULL;
-/*
-    if( ! g_str_has_suffix( desktop_id, ".desktop" ) )
-        return;
-*/
+
     vfs_mime_type_add_action( mime_type, desktop_id, &cust_desktop );
     if( cust_desktop )
         desktop_id = cust_desktop;
@@ -542,15 +539,6 @@ void vfs_mime_type_add_action( VFSMimeType* mime_type,
 * The returned string array contains a list of *.desktop file names,
 * and should be freed when no longer needed.
 */
-
-#if 0
-static void hash_to_strv ( gpointer key, gpointer value, gpointer user_data )
-{
-    char***all_apps = ( char*** ) user_data;
-    **all_apps = ( char* ) key;
-    ++*all_apps;
-}
-#endif
 
 void on_icon_theme_changed( GtkIconTheme *icon_theme,
                             gpointer user_data )

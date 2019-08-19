@@ -681,46 +681,6 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
                 continue;
             }
 
-#if 0   // I don't like this warning here - users may have custom ways of doing
-            /* This is duplicating GUI validation code but it is just
-             * not worth spinning out a series of validation functions
-             * for this
-             * Checking to see if the archive handler compression command
-             * has been deleted or has invalid placeholders - not
-             * required to only have one of the particular type */
-            if (g_strcmp0( command, "" ) <= 0 ||
-                (
-                    !g_strstr_len( command, -1, "%o" ) &&
-                    !g_strstr_len( command, -1, "%O" )
-                )
-                ||
-                (
-                    !g_strstr_len( command, -1, "%n" ) &&
-                    !g_strstr_len( command, -1, "%N" )
-                )
-            )
-            {
-                // It has/is - warning user
-/* this looks like a very tall dialog - will fit on smaller (600) screens? */
-                xset_msg_dialog( GTK_WIDGET( dlg ), GTK_MESSAGE_WARNING,
-                                _("Create Archive"), NULL, FALSE,
-                                _("The following variables "
-                                "should be in the archive creation"
-                                " command:\n\n"
-                                "One of the following:\n\n"
-                                "%%%%n: First selected file/directory to"
-                                " archive\n"
-                                "%%%%N: All selected files/directories to"
-                                " archive\n\n"
-                                "and one of the following:\n\n"
-                                "%%%%o: Resulting single archive\n"
-                                "%%%%O: Resulting archive per source "
-                                "file/directory (see %%%%n/%%%%N)\n"),
-                                NULL, NULL );
-                gtk_widget_grab_focus( GTK_WIDGET( view ) );
-            }
-#endif
-
             // Getting prior command for comparison
             char* compress_cmd = NULL;
             char* err_msg = ptk_handler_load_script( HANDLER_MODE_ARC,

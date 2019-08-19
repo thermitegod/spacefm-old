@@ -760,55 +760,6 @@ static gint ptk_file_list_compare( gconstpointer a,
     return list->sort_order == GTK_SORT_ASCENDING ? result : -result;
 }
 
-#if 0
-static gint ptk_file_list_compare( gconstpointer a,
-                                   gconstpointer b,
-                                   gpointer user_data)
-{
-    VFSFileInfo* file1 = (VFSFileInfo*)a;
-    VFSFileInfo* file2 = (VFSFileInfo*)b;
-    PtkFileList* list = (PtkFileList*)user_data;
-    int ret;
-    /* put folders before files */
-    ret = vfs_file_info_is_dir(file1) - vfs_file_info_is_dir(file2);
-    if( ret )
-        return -ret;
-    /* FIXME: strings should not be treated as ASCII when sorted  */
-    switch( list->sort_col )
-    {
-    case COL_FILE_NAME:
-        ret = g_ascii_strcasecmp( vfs_file_info_get_disp_name(file1),
-                                  vfs_file_info_get_disp_name(file2) );
-        break;
-    case COL_FILE_SIZE:
-        if ( file1->size > file2->size )
-            ret = 1;
-        else if ( file1->size == file2->size )
-            ret = 0;
-        else
-            ret = -1;
-        //ret = file1->size - file2->size;
-        break;
-    case COL_FILE_DESC:
-        ret = g_ascii_strcasecmp( vfs_file_info_get_mime_type_desc(file1),
-                                  vfs_file_info_get_mime_type_desc(file2) );
-        break;
-    case COL_FILE_PERM:
-        ret = g_ascii_strcasecmp( vfs_file_info_get_disp_perm(file1),
-                                  vfs_file_info_get_disp_perm(file2) );
-        break;
-    case COL_FILE_OWNER:
-        ret = g_ascii_strcasecmp( vfs_file_info_get_disp_owner(file1),
-                                  vfs_file_info_get_disp_owner(file2) );
-        break;
-    case COL_FILE_MTIME:
-        ret = file1->mtime - file2->mtime;
-        break;
-    }
-    return list->sort_order == GTK_SORT_ASCENDING ? ret : -ret;
-}
-#endif
-
 void ptk_file_list_sort ( PtkFileList* list )
 {
     GHashTable* old_order;

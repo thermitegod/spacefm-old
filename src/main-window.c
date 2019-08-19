@@ -88,9 +88,6 @@ static void fm_main_window_set_property ( GObject *obj,
                                           GParamSpec *pspec );
 static gboolean fm_main_window_delete_event ( GtkWidget *widget,
                                               GdkEvent *event );
-#if 0
-static void fm_main_window_destroy ( GtkObject *object );
-#endif
 
 //static gboolean fm_main_window_key_press_event ( GtkWidget *widget,
 //                                                 GdkEventKey *event );
@@ -102,8 +99,6 @@ static void on_folder_notebook_switch_pape ( GtkNotebook *notebook,
                                              GtkWidget *page,
                                              guint page_num,
                                              gpointer user_data );
-//static void on_close_tab_activate ( GtkMenuItem *menuitem,
-//                                    gpointer user_data );
 
 //static void on_file_browser_before_chdir( PtkFileBrowser* file_browser,
 //                                          const char* path, gboolean* cancel,
@@ -119,8 +114,6 @@ static void on_file_browser_content_change( PtkFileBrowser* file_browser,
                                             FMMainWindow* main_window );
 static void on_file_browser_sel_change( PtkFileBrowser* file_browser,
                                         FMMainWindow* main_window );
-//static void on_file_browser_pane_mode_change( PtkFileBrowser* file_browser,
-//                                              FMMainWindow* main_window );
 void on_file_browser_panel_change( PtkFileBrowser* file_browser,
                                  FMMainWindow* main_window );
 static gboolean on_tab_drag_motion ( GtkWidget *widget,
@@ -135,8 +128,6 @@ static gboolean on_main_window_focus( GtkWidget* main_window,
 
 static gboolean on_main_window_keypress( FMMainWindow* main_window,
                                          GdkEventKey* event, XSet* known_set );
-//static gboolean on_main_window_keyrelease( FMMainWindow* widget,
-//                                        GdkEventKey* event, gpointer data);
 static gboolean on_window_button_press_event( GtkWidget* widget,
                                        GdkEventButton *event,
                                        FMMainWindow* main_window );     //sfm
@@ -585,20 +576,6 @@ void on_open_url( GtkWidget* widget, FMMainWindow* main_window )
     char* url = xset_get_s( "main_save_session" );
     if ( file_browser && url && url[0] )
         ptk_location_view_mount_network( file_browser, url, TRUE, TRUE );
-#if 0
-    /* was on_save_session */
-    xset_autosave_cancel();
-    char* err_msg = save_settings( main_window );
-    if ( err_msg )
-    {
-        char* msg = g_strdup_printf( _("Error: Unable to save session file\n\n( %s )"), err_msg );
-        g_free( err_msg );
-        xset_msg_dialog( GTK_WIDGET( main_window ), GTK_MESSAGE_ERROR, _("Save Session Error"),
-                                                    NULL, 0, msg, NULL,
-                                                    "#programfiles-home-session" );
-        g_free( msg );
-    }
-#endif
 }
 
 void on_find_file_activate ( GtkMenuItem *menuitem, gpointer user_data )
@@ -1932,8 +1909,7 @@ void fm_main_window_init( FMMainWindow* main_window )
     // Create menu bar
     main_window->accel_group = gtk_accel_group_new ();
     main_window->menu_bar = gtk_menu_bar_new();
-    //gtk_box_pack_start ( GTK_BOX ( main_window->main_vbox ),
-    //                     main_window->menu_bar, FALSE, FALSE, 0 );
+
     GtkWidget* menu_hbox = gtk_hbox_new ( FALSE, 0 );
     gtk_box_pack_start ( GTK_BOX ( menu_hbox ),
                          main_window->menu_bar, TRUE, TRUE, 0 );
@@ -1948,10 +1924,7 @@ void fm_main_window_init( FMMainWindow* main_window )
     gtk_toolbar_set_show_arrow( GTK_TOOLBAR( main_window->panelbar ), FALSE );
     gtk_toolbar_set_style( GTK_TOOLBAR( main_window->panelbar ), GTK_TOOLBAR_ICONS );
     gtk_toolbar_set_icon_size( GTK_TOOLBAR( main_window->panelbar ), GTK_ICON_SIZE_MENU );
-    // set pbar background to menu bar background
-    //gtk_widget_modify_bg( main_window->panelbar, GTK_STATE_NORMAL,
-    //                                    &GTK_WIDGET( main_window )
-    //                                    ->style->bg[ GTK_STATE_NORMAL ] );
+
     for ( i = 0; i < 4; i++ )
     {
         main_window->panel_btn[i] = GTK_WIDGET( gtk_toggle_tool_button_new() );
@@ -2051,18 +2024,6 @@ void fm_main_window_init( FMMainWindow* main_window )
 
     main_window->notebook = main_window->panel[0];
     main_window->curpanel = 1;
-
-/*    GTK_NOTEBOOK( gtk_notebook_new() );
-    gtk_notebook_set_show_border( main_window->notebook, FALSE );
-    gtk_notebook_set_scrollable ( main_window->notebook, TRUE );
-    gtk_box_pack_start ( GTK_BOX ( main_window->main_vbox ), GTK_WIDGET( main_window->notebook ), TRUE, TRUE, 0 );
-*/
-/*
-    // Create Status bar
-    main_window->status_bar = gtk_statusbar_new ();
-    gtk_box_pack_start ( GTK_BOX ( main_window->main_vbox ),
-                         main_window->status_bar, FALSE, FALSE, 0 );
-*/
 
     // Task View
     gtk_scrolled_window_set_policy ( GTK_SCROLLED_WINDOW ( main_window->task_scroll ),
@@ -2963,17 +2924,6 @@ void fm_main_window_preference( FMMainWindow* main_window )
     fm_edit_preference( (GtkWindow*)main_window, PREF_GENERAL );
 }
 
-
-#if 0
-void
-on_file_assoc_activate ( GtkMenuItem *menuitem,
-                         gpointer user_data )
-{
-    GtkWindow * main_window = GTK_WINDOW( user_data );
-    edit_file_associations( main_window );
-}
-#endif
-
 void on_main_help_activate ( GtkMenuItem *menuitem, FMMainWindow* main_window )
 {
     const char* help;
@@ -3036,32 +2986,6 @@ on_about_activate ( GtkMenuItem *menuitem,
     gtk_window_set_transient_for( GTK_WINDOW( about_dlg ), GTK_WINDOW( user_data ) );
     gtk_window_present( (GtkWindow*)about_dlg );
 }
-
-
-#if 0
-gboolean
-on_back_btn_popup_menu ( GtkWidget *widget,
-                         gpointer user_data )
-{
-
-    //GtkWidget* file_browser = fm_main_window_get_current_file_browser( widget );
-
-    return FALSE;
-}
-#endif
-
-
-#if 0
-gboolean
-on_forward_btn_popup_menu ( GtkWidget *widget,
-                            gpointer user_data )
-{
-
-    //GtkWidget* file_browser = fm_main_window_get_current_file_browser( widget );
-
-    return FALSE;
-}
-#endif
 
 void fm_main_window_add_new_window( FMMainWindow* main_window )
 {

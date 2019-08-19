@@ -351,26 +351,6 @@ void update_file_display( const char* path )
     GDK_THREADS_LEAVE();
 }
 
-/*
-void update_file_display( const char* path )
-{
-    // for devices like nfs, emit instant changed
-    GDK_THREADS_ENTER();
-    char* dir_path = g_path_get_dirname( path );
-    VFSDir* vdir = vfs_dir_get_by_path_soft( dir_path );
-    g_free( dir_path );
-    if ( vdir && vdir->avoid_changes )
-    {
-        char* filename = g_path_get_basename( path );
-        vfs_dir_emit_file_changed( vdir, filename, NULL, TRUE );
-        g_free( filename );
-    }
-    if ( vdir )
-        g_object_unref( vdir );
-    GDK_THREADS_LEAVE();
-}
-*/
-
 static gboolean
 vfs_file_task_do_copy( VFSFileTask* task,
                        const char* src_file,
@@ -1281,84 +1261,26 @@ if ( !( cond & G_IO_NVAL ) )
         goto _unref_channel;
     }
 
-    //GError *error = NULL;
     gchar buf[2048];
     if ( g_io_channel_read_chars( channel, buf, sizeof( buf ), &size, NULL ) ==
                                                 G_IO_STATUS_NORMAL && size > 0 )
     {
-        //gtk_text_buffer_get_iter_at_mark( task->exec_err_buf, &iter,
-        //                                                    task->exec_mark_end );
         if ( task->exec_type == VFS_EXEC_UDISKS
                                     && task->exec_show_error //prevent progress_cb opening taskmanager
                                     && g_strstr_len( buf, size, "ount failed:" ) )
         {
             // bug in udisks - exit status not set
             if ( size > 81 && !strncmp( buf, "Mount failed: Error mounting: mount exited with exit code 1: helper failed with:\n", 81 ) )  //cleanup output - useless line
-                //gtk_text_buffer_insert( task->exec_err_buf, &iter, buf + 81, size - 81 );
                 append_add_log( task, buf + 81, size - 81 );
             else
-                //gtk_text_buffer_insert( task->exec_err_buf, &iter, buf, size );
                 append_add_log( task, buf, size );
             call_state_callback( task, VFS_FILE_TASK_ERROR );
         }
         else  // no error
-            //gtk_text_buffer_insert( task->exec_err_buf, &iter, buf, size );
             append_add_log( task, buf, size );
-        //task->err_count++;   //notify of new output - does not indicate error for exec
     }
     else
         g_printf("cb_exec_out_watch: g_io_channel_read_chars != G_IO_STATUS_NORMAL\n");
-
-/*
-    // this hangs ????
-    GError *error = NULL;
-    gchar* buf;
-    g_printf("g_io_channel_read_to_end\n");
-    if ( g_io_channel_read_to_end( channel, &buf, &size, &error ) ==
-                                                        G_IO_STATUS_NORMAL )
-    {
-        gtk_text_buffer_get_iter_at_mark( task->exec_err_buf, &iter,
-                                                            task->exec_mark_end );
-        gtk_text_buffer_insert( task->exec_err_buf, &iter, buf, size );
-        g_free(buf );
-        task->err_count++;
-        task->ticks = 10000;
-    }
-    else
-        g_printf("cb_exec_out_watch: g_io_channel_read_to_end != G_IO_STATUS_NORMAL\n");
-    g_printf("g_io_channel_read_to_end DONE\n");
-*/
-
-/*
-    // this works except that it blocks when a linefeed is not in buffer
-    //   eg echo -n aaaa  unless NONBLOCK set
-    if ( g_io_channel_read_line( channel, &line, &size, NULL, NULL ) ==
-                                                    G_IO_STATUS_NORMAL )
-    {
-        //g_printf("    line=%s", line );
-        gtk_text_buffer_get_iter_at_mark( task->exec_err_buf, &iter,
-                                                            task->exec_mark_end );
-        if ( task->exec_type == VFS_EXEC_UDISKS && strstr( line, "ount failed:" ) )
-        {
-            // bug in udisks - exit status not set
-            call_state_callback( task, VFS_FILE_TASK_ERROR );
-            if ( !strstr( line, "helper failed with:" ) ) //cleanup udisks output
-                gtk_text_buffer_insert( task->exec_err_buf, &iter, line, -1 );
-        }
-        else
-            gtk_text_buffer_insert( task->exec_err_buf, &iter, line, -1 );
-
-        g_free(line );
-        task->err_count++; //signal new output
-        task->ticks = 10000;
-    }
-    else
-        g_printf("cb_exec_out_watch: g_io_channel_read_line != G_IO_STATUS_NORMAL\n");
-*/
-
-    // don't enable this or last lines are lost
-    //if ( ( cond & G_IO_HUP ) )  // put here in case both G_IO_IN and G_IO_HUP
-    //    goto _unref_channel;
 
     return TRUE;
 
@@ -1998,16 +1920,6 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
     // running
     task->state = VFS_FILE_TASK_RUNNING;
 
-/* enable if this function is not in main loop thread
-    // wait
-    task->exec_cond = g_cond_new();
-    vfs_file_task_lock(task);
-    g_cond_wait( task->exec_cond, task->mutex );
-    g_cond_free( task->exec_cond );
-    task->exec_cond = NULL;
-    g_source_remove( child_watch );
-    vfs_file_task_unlock(task);
-*/
 //g_printf("vfs_file_task_exec DONE\n");
     return;  // exit thread
 

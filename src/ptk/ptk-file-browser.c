@@ -2438,53 +2438,6 @@ void ptk_file_browser_show_history_menu( PtkFileBrowser* file_browser,
         gtk_widget_destroy( menu );
 }
 
-#if 0
-static gboolean
-ptk_file_browser_delayed_content_change( PtkFileBrowser* file_browser )
-{
-    GTimeVal t;
-    g_get_current_time( &t );
-    file_browser->prev_update_time = t.tv_sec;
-    g_signal_emit( file_browser, signals[ CONTENT_CHANGE_SIGNAL ], 0 );
-    file_browser->update_timeout = 0;
-    return FALSE;
-}
-#endif
-
-#if 0
-void on_folder_content_update ( FolderContent* content,
-                                PtkFileBrowser* file_browser )
-{
-    /*  FIXME: Newly added or deleted files should not be delayed.
-        This must be fixed before 0.2.0 release.  */
-    GTimeVal t;
-    g_get_current_time( &t );
-    /*
-      Previous update is < 5 seconds before.
-      Queue the update, and don't update the view too often
-    */
-    if ( ( t.tv_sec - file_browser->prev_update_time ) < 5 )
-    {
-        /*
-          If the update timeout has been set, wait until the timeout happens, and
-          don't do anything here.
-        */
-        if ( 0 == file_browser->update_timeout )
-        { /* No timeout callback. Add one */
-            /* Delay the update */
-            file_browser->update_timeout = g_timeout_add( 5000,
-                      (GSourceFunc)ptk_file_browser_delayed_content_change,
-                      file_browser );
-        }
-    }
-    else if ( 0 == file_browser->update_timeout )
-    { /* No timeout callback. Add one */
-        file_browser->prev_update_time = t.tv_sec;
-        g_signal_emit( file_browser, signals[ CONTENT_CHANGE_SIGNAL ], 0 );
-    }
-}
-#endif
-
 static gboolean ptk_file_browser_content_changed( PtkFileBrowser* file_browser )
 {
     //gdk_threads_enter();  not needed because g_idle_add runs in main loop thread
@@ -5284,19 +5237,10 @@ gboolean ptk_file_browser_can_paste( PtkFileBrowser* file_browser )
 void ptk_file_browser_paste( PtkFileBrowser* file_browser )
 {
     GList * sel_files;
-    //VFSFileInfo* file;
     gchar* dest_dir = NULL;
 
     sel_files = ptk_file_browser_get_selected_files( file_browser );
-//MOD removed - if you want this then at least make sure src != dest
-/*    if ( sel_files && sel_files->next == NULL &&
-            ( file = ( VFSFileInfo* ) sel_files->data ) &&
-            vfs_file_info_is_dir( ( VFSFileInfo* ) sel_files->data ) )
-    {
-        dest_dir = g_build_filename( ptk_file_browser_get_cwd( file_browser ),
-                                     vfs_file_info_get_name( file ), NULL );
-    }
-*/
+
     ptk_clipboard_paste_files(
         GTK_WINDOW( gtk_widget_get_toplevel( GTK_WIDGET( file_browser ) ) ),
         dest_dir ? dest_dir : ptk_file_browser_get_cwd( file_browser ),
@@ -6065,83 +6009,6 @@ void ptk_file_browser_show_thumbnails( PtkFileBrowser* file_browser,
                          max_file_size );
     }
 }
-
-#if 0
-// no longer used because icon size changes required a rebuild of folder_view
-// due to text renderer not resizing
-void ptk_file_browser_update_display( PtkFileBrowser* file_browser )
-{
-    GtkTreeSelection * tree_sel;
-    GList *sel = NULL, *l;
-    GtkTreePath* tree_path;
-    int big_icon_size, small_icon_size;
-
-    if ( ! file_browser->file_list )
-        return ;
-    g_object_ref( G_OBJECT( file_browser->file_list ) );
-
-    if ( file_browser->max_thumbnail )
-        show_thumbnails( file_browser, PTK_FILE_LIST( file_browser->file_list ),
-                         file_browser->large_icons,
-                         file_browser->max_thumbnail );
-
-    vfs_mime_type_get_icon_size( &big_icon_size, &small_icon_size );
-
-    if ( file_browser->view_mode == PTK_FB_ICON_VIEW ||
-         file_browser->view_mode == PTK_FB_COMPACT_VIEW )
-    {
-        sel = exo_icon_view_get_selected_items(
-                                EXO_ICON_VIEW( file_browser->folder_view ) );
-
-        exo_icon_view_set_model( EXO_ICON_VIEW( file_browser->folder_view ),
-                                                                    NULL );
-        if( file_browser->view_mode == PTK_FB_ICON_VIEW )
-            gtk_cell_renderer_set_fixed_size( file_browser->icon_render,
-                                    big_icon_size, big_icon_size );
-        else if( file_browser->view_mode == PTK_FB_COMPACT_VIEW )
-            gtk_cell_renderer_set_fixed_size( file_browser->icon_render,
-                                    file_browser->large_icons ? big_icon_size :
-                                                            small_icon_size,
-                                    file_browser->large_icons ? big_icon_size :
-                                                            small_icon_size );
-        exo_icon_view_set_model( EXO_ICON_VIEW( file_browser->folder_view ),
-                                 GTK_TREE_MODEL( file_browser->file_list ) );
-
-        for ( l = sel; l; l = l->next )
-        {
-            tree_path = ( GtkTreePath* ) l->data;
-            exo_icon_view_select_path( EXO_ICON_VIEW( file_browser->folder_view ),
-                                       tree_path );
-            gtk_tree_path_free( tree_path );
-        }
-    }
-    else if ( file_browser->view_mode == PTK_FB_LIST_VIEW )
-    {
-        tree_sel = gtk_tree_view_get_selection(
-                                GTK_TREE_VIEW( file_browser->folder_view ) );
-        sel = gtk_tree_selection_get_selected_rows( tree_sel, NULL );
-
-        gtk_tree_view_set_model( GTK_TREE_VIEW( file_browser->folder_view ),
-                                                                    NULL );
-        gtk_cell_renderer_set_fixed_size( file_browser->icon_render,
-                                    file_browser->large_icons ? big_icon_size :
-                                                            small_icon_size,
-                                    file_browser->large_icons ? big_icon_size :
-                                                            small_icon_size );
-        gtk_tree_view_set_model( GTK_TREE_VIEW( file_browser->folder_view ),
-                                 GTK_TREE_MODEL( file_browser->file_list ) );
-
-        for ( l = sel; l; l = l->next )
-        {
-            tree_path = ( GtkTreePath* ) l->data;
-            gtk_tree_selection_select_path( tree_sel, tree_path );
-            gtk_tree_path_free( tree_path );
-        }
-    }
-    g_list_free( sel );
-    g_object_unref( G_OBJECT( file_browser->file_list ) );
-}
-#endif
 
 void ptk_file_browser_emit_open( PtkFileBrowser* file_browser,
                                  const char* path,

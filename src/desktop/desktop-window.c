@@ -151,11 +151,6 @@ static void desktop_item_free( DesktopItem* item );
 GList* desktop_window_get_selected_items( DesktopWindow* win,
                                           gboolean current_first );
 
-/*
-static GdkPixmap* get_root_pixmap( GdkWindow* root );
-static gboolean set_root_pixmap(  GdkWindow* root , GdkPixmap* pix );
-*/
-
 static DesktopItem* hit_test( DesktopWindow* self, int x, int y );
 static DesktopItem* hit_test_icon( DesktopWindow* self, int x, int y );
 static gboolean hit_test_text( DesktopWindow* self, int x, int y,
@@ -1979,22 +1974,6 @@ void on_drag_data_received( GtkWidget* w, GdkDragContext* ctx, gint x, gint y,
             if ( !hit_test_text( self, x, y, &item ) )
                 item = hit_test_box( self, x, y );
             move_desktop_items( self, ctx, item );
-
-            /*
-            GList* sels = desktop_window_get_selected_items(self), *l;
-            int x_off = x - self->drag_start_x;
-            int y_off = y - self->drag_start_y;
-            for( l = sels; l; l = l->next )
-            {
-                DesktopItem* item = l->data;
-                #if 0   // temporarily turn off
-                move_item( self, item, x_off, y_off, TRUE );
-                #endif
-                DesktopItem* hit_item = hit_test_box( self, x, y );
-                g_printf( "    move: %s, %d (%d), %d (%d) -> %s\n", item->fi ? vfs_file_info_get_name( item->fi ) : "Empty", x, x_off, y, y_off, hit_item ? hit_item->fi ? vfs_file_info_get_name( hit_item->fi ) : "EMPTY" : "MISS" );
-            }
-            g_list_free( sels );
-            */
         }
         gtk_grab_remove(w);
         self->rubber_bending = FALSE;
@@ -3964,41 +3943,6 @@ void desktop_window_sort_items( DesktopWindow* win, DWSortType sort_by,
 
     // layout
     layout_items( win );
-
-    /* //sfm 0.9.0 no longer using special items
-    // skip the special items since they always appears first
-    GList* items = NULL;
-    gboolean special = FALSE;    //MOD added - otherwise caused infinite loop in layout items once My Documents was removed
-    GList* special_items = win->items;
-    for( items = special_items; items; items = items->next )
-    {
-        DesktopItem* item = (DesktopItem*)items->data;
-        if( ! (item->fi->flags & VFS_FILE_INFO_VIRTUAL) )
-            break;
-        else
-            special = TRUE;
-    }
-
-    if( ! items )
-        return;
-
-    // the previous item of the first non-special item is the last special item
-    if( special && items->prev )
-    {
-        items->prev->next = NULL;
-        items->prev = NULL;
-    }
-
-    GCompareDataFunc comp_func = get_sort_func( win );
-    if ( comp_func )
-        items = g_list_sort_with_data( items, comp_func, win );
-    if ( special )
-        win->items = g_list_concat( special_items, items );
-    else
-        win->items = items;
-
-    layout_items( win );
-    */
 }
 
 GList* desktop_window_get_selected_items( DesktopWindow* win,
@@ -4200,31 +4144,11 @@ GdkFilterReturn on_rootwin_event ( GdkXEvent *xevent,
             //g_printf("working area is resized   x,y=%d, %d   w,h=%d, %d\n",
             //        self->wa.x, self->wa.y, self->wa.width, self->wa.height);
 
-            /* This doesn't seem to have the desired effect, and also
-             * desktop window size should be based on screen size not WA
-             * https://github.com/IgnorantGuru/spacefm/issues/300
-            // resize desktop window
-            GdkScreen* screen = gtk_widget_get_screen( GTK_WIDGET( self ) );
-            int width = gdk_screen_get_width( screen );
-            int height = gdk_screen_get_height( screen );
-            if ( width && height )
-                g_printf( "    screen size   w,h=%d, %d\n", width, height );
-            gtk_window_resize( GTK_WINDOW( self ), self->wa.width, self->wa.height );
-            gtk_window_move( GTK_WINDOW( self ), 0, 0 );
-            // update wallpaper
-            fm_desktop_update_wallpaper();
-            */
             // layout icons
             if ( self->sort_by == DW_SORT_CUSTOM )
                 self->order_rows = self->row_count; // possible change of row count in new layout
             layout_items( self );
         }
-#if 0
-        else if( evt->atom == ATOM_XROOTMAP_ID )
-        {
-            /* wallpaper was changed by other programs */
-        }
-#endif
     }
     return GDK_FILTER_TRANSLATE;
 }
@@ -4323,43 +4247,6 @@ void desktop_window_set_single_click( DesktopWindow* win, gboolean single_click 
             gdk_window_set_cursor( gtk_widget_get_window((GtkWidget*)win), NULL );
     }
 }
-
-#if 0
-GdkPixmap* get_root_pixmap( GdkWindow* root )
-{
-    Pixmap root_pix = None;
-
-    Atom type;
-    int format;
-    long bytes_after;
-    Pixmap *data = NULL;
-    long n_items;
-    int result;
-
-    result =  XGetWindowProperty(
-                            GDK_WINDOW_XDISPLAY( root ),
-                            GDK_WINDOW_XID( root ),
-                            ATOM_XROOTMAP_ID,
-                            0, 16L,
-                            False, XA_PIXMAP,
-                            &type, &format, &n_items,
-                            &bytes_after, (unsigned char **)&data);
-
-    if (result == Success && n_items)
-        root_pix = *data;
-
-    if (data)
-        XFree(data);
-
-    return root_pix ? gdk_pixmap_foreign_new( root_pix ) : NULL;
-}
-
-gboolean set_root_pixmap(  GdkWindow* root, GdkPixmap* pix )
-{
-    return TRUE;
-}
-
-#endif
 
 void desktop_context_fill( DesktopWindow* win, gpointer context )
 {
