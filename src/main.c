@@ -1110,12 +1110,29 @@ int main ( int argc, char *argv[] )
 #endif
         printf( "UDEV " );
         printf( "INOTIFY " );
-
 #ifdef DESKTOP_INTEGRATION
         printf( "DESKTOP " );
 #endif
 #ifdef HAVE_SN
         printf( "SNOTIFY " );
+#endif
+#ifdef HAVE_STATVFS
+        printf( "STATVFS " );
+#endif
+#ifdef HAVE_FFMPEG
+        printf( "FFMPEG " );
+#endif
+#ifdef ENABLE_NLS
+        printf( "NLS " );
+#endif
+#ifdef HAVE_MMAP
+        printf( "MMAP " );
+#endif
+#ifdef SUN_LEN
+        printf( "SUN_LEN " );
+#endif
+#ifdef _DEBUG_THREAD
+        printf( "DEBUG_THREAD " );
 #endif
         printf( "\n" );
         return 0;
