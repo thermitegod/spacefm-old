@@ -66,6 +66,8 @@
 
 #include "gtk2-compat.h"
 
+#include <linux/limits.h> //PATH_MAX
+
 extern char* run_cmd;  //MOD
 
 static void ptk_file_browser_class_init( PtkFileBrowserClass* klass );

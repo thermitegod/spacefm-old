@@ -58,6 +58,8 @@
 
 #include "cust-dialog.h"
 
+#include <linux/limits.h> //PATH_MAX
+
 //gboolean startup_mode = TRUE;  //MOD
 //gboolean design_mode = TRUE;  //MOD
 

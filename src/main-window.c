@@ -67,6 +67,8 @@
 
 #include "gtk2-compat.h"
 
+#include <linux/limits.h> //PATH_MAX
+
 void rebuild_menus( FMMainWindow* main_window );
 
 static void fm_main_window_class_init( FMMainWindowClass* klass );

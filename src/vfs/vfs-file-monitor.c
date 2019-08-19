@@ -29,6 +29,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <linux/limits.h> //PATH_MAX
+
 typedef struct
 {
     VFSFileMonitorCallback callback;

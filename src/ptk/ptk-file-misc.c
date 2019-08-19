@@ -40,6 +40,8 @@
 #include "ptk-handler.h"
 #include "gtk2-compat.h"
 
+#include <linux/limits.h> //PATH_MAX
+
 typedef struct
 {
     PtkFileBrowser* file_browser;
