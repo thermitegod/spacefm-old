@@ -5260,7 +5260,7 @@ void xset_open_url( GtkWidget* parent, const char* url )
             if ( g_str_has_prefix( url, "file://" )
                                             || g_str_has_prefix( url, "/" ) )
                 ii = 3;  // xdg,gnome,exo-open use editor for html files so skip at start
-            char* programs[] = { "xdg-open", "gnome-open", "exo-open", "firefox", "iceweasel", "arora", "konqueror", "opera", "epiphany", "midori", "chrome", "xdg-open", "gnome-open", "exo-open" };
+            char* programs[] = { "xdg-open", "gnome-open", "exo-open" };
             int i;
             for(  i = ii; i < G_N_ELEMENTS(programs); ++i)
             {

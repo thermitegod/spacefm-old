@@ -3009,29 +3009,6 @@ on_file_assoc_activate ( GtkMenuItem *menuitem,
 }
 #endif
 
-/* callback used to open default browser when URLs got clicked */
-static void open_url( GtkAboutDialog *dlg, const gchar *url, gpointer data)
-{
-    xset_open_url( GTK_WIDGET( dlg ), url );
-#if 0
-    /* FIXME: is there any better way to do this? */
-    char* programs[] = { "xdg-open", "gnome-open" /* Sorry, KDE users. :-P */, "exo-open" };
-    int i;
-    for(  i = 0; i < G_N_ELEMENTS(programs); ++i)
-    {
-        char* open_cmd = NULL;
-        if( (open_cmd = g_find_program_in_path( programs[i] )) )
-        {
-             char* cmd = g_strdup_printf( "%s \'%s\'", open_cmd, url );
-             g_spawn_command_line_async( cmd, NULL );
-             g_free( cmd );
-             g_free( open_cmd );
-             break;
-        }
-    }
-#endif
-}
-
 void on_main_help_activate ( GtkMenuItem *menuitem, FMMainWindow* main_window )
 {
     const char* help;
@@ -3089,7 +3066,7 @@ on_about_activate ( GtkMenuItem *menuitem,
         g_object_add_weak_pointer( G_OBJECT(about_dlg), (gpointer)&about_dlg );
         g_signal_connect( about_dlg, "response", G_CALLBACK(gtk_widget_destroy), NULL );
         g_signal_connect( about_dlg, "destroy", G_CALLBACK(pcmanfm_unref), NULL );
-        g_signal_connect( about_dlg, "activate-link", G_CALLBACK(open_url), NULL );
+        g_signal_connect( about_dlg, "activate-link", G_CALLBACK(xset_open_url), NULL );
     }
     gtk_window_set_transient_for( GTK_WINDOW( about_dlg ), GTK_WINDOW( user_data ) );
     gtk_window_present( (GtkWindow*)about_dlg );
