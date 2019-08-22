@@ -203,7 +203,7 @@ void vfs_dir_class_init( VFSDirClass* klass )
 /* constructor */
 void vfs_dir_init( VFSDir* dir )
 {
-    dir->mutex = g_mutex_new();
+    g_mutex_init(&dir->mutex);
 }
 
 /* destructor */
@@ -290,7 +290,7 @@ void vfs_dir_finalize( GObject *obj )
         dir->created_files = NULL;
     }
 
-    g_mutex_free( dir->mutex );
+    g_mutex_clear(&dir->mutex);
     G_OBJECT_CLASS( parent_class ) ->finalize( obj );
 }
 

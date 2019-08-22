@@ -2280,7 +2280,7 @@ VFSFileTask* vfs_task_new ( VFSFileTaskType type,
     task->queue_start = FALSE;
     task->devs = NULL;
 
-    task->mutex = g_mutex_new();
+    g_mutex_init(&task->mutex);
 
     GtkTextIter iter;
     task->add_log_buf = gtk_text_buffer_new( NULL );
@@ -2397,7 +2397,7 @@ void vfs_file_task_free ( VFSFileTask* task )
     if ( task->exec_script )
         g_free(task->exec_script );
 
-    g_mutex_free( task->mutex );
+    g_mutex_clear(&task->mutex);
 
     gtk_text_buffer_set_text( task->add_log_buf, "", -1 );
     g_object_unref( task->add_log_buf );
