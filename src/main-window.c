@@ -5953,16 +5953,9 @@ GtkWidget* main_task_view_new( FMMainWindow* main_window )
             if ( cols[j] == TASK_COL_FILE || cols[j] == TASK_COL_PATH
                                                     || cols[j] == TASK_COL_TO )
             {
-                /* wrap to multiple lines
-                GValue val = G_VALUE_INIT;
-                g_value_init (&val, G_TYPE_CHAR);
-                g_value_set_char (&val, 100);  // set to width of cell?
-                g_object_set_property (G_OBJECT (renderer), "wrap-width", &val);
-                g_value_unset (&val);
-                */
                 GValue val = { 0 };   // G_VALUE_INIT (glib>=2.30) caused to slackware issue ?
                 g_value_init (&val, G_TYPE_CHAR);
-                g_value_set_char (&val, PANGO_ELLIPSIZE_MIDDLE);
+                g_value_set_schar(&val, PANGO_ELLIPSIZE_MIDDLE);
                 g_object_set_property (G_OBJECT (renderer), "ellipsize", &val);
                 g_value_unset (&val);
 
