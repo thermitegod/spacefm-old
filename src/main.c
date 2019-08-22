@@ -1039,7 +1039,6 @@ int main ( int argc, char *argv[] )
         // dialog mode?
         if ( !strcmp( argv[1], "-g" ) || !strcmp( argv[1], "--dialog" ) )
         {
-            g_thread_init( NULL );
             gdk_threads_init ();
             /* initialize the file alteration monitor */
             if( G_UNLIKELY( ! vfs_file_monitor_init() ) )
@@ -1154,7 +1153,6 @@ int main ( int argc, char *argv[] )
 #ifdef _DEBUG_THREAD
     gdk_threads_set_lock_functions(_debug_gdk_threads_enter, _debug_gdk_threads_leave);
 #endif
-    g_thread_init( NULL );
     gdk_threads_init ();
 
     /* ensure that there is only one instance of spacefm.
