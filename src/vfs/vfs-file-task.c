@@ -2326,12 +2326,7 @@ void vfs_file_task_run ( VFSFileTask* task )
         }
         else
             task->avoid_changes = vfs_volume_dir_avoid_changes( task->dest_dir );
-        task->thread = g_thread_create( ( GThreadFunc ) vfs_file_task_thread,
-                                        task, TRUE, NULL );
-        //task->thread = g_thread_create_full( ( GThreadFunc ) vfs_file_task_thread,
-        //                    task, 0, TRUE, TRUE, G_THREAD_PRIORITY_NORMAL, NULL );
-        //pthread_t tid;
-        //task->thread = pthread_create( &tid, NULL, vfs_file_task_thread, task );
+        task->thread = g_thread_new("task_run", vfs_file_task_thread, task);
     }
     else
     {
