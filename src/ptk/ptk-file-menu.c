@@ -1896,8 +1896,11 @@ void app_job( GtkWidget* item, GtkWidget* app_item )
             }
             g_free( msg );
 
+            char* command = NULL;
             // need to copy
-            xset_copy_file( share_desktop, path );
+            command = g_strdup_printf("cp -a  %s %s", share_desktop, path);
+            g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
+            g_free(command);
             g_free( share_desktop );
             if ( !g_file_test( path, G_FILE_TEST_EXISTS ) )
             {

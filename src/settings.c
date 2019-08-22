@@ -586,13 +586,15 @@ void load_settings( char* config_dir )
     if ( x == 1 )
     {
         // copy session to session-old
+        char* command = NULL;
         char* old = g_build_filename( settings_config_dir, "session-old", NULL );
         if ( g_file_test( old, G_FILE_TEST_EXISTS ) )
         {
             unlink(old);
         }
-        xset_copy_file( path, old );
-        chmod( old, S_IRUSR | S_IWUSR );
+        command = g_strdup_printf("cp -a  %s %s", path, old);
+        g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
+        g_free(command);
         g_free( old );
     }
 
@@ -3313,39 +3315,6 @@ char* xset_custom_get_help( GtkWidget* parent, XSet* set )
                 _("An error occured creating a README file for this command."),
                 NULL, NULL );
     return NULL;
-}
-
-gboolean xset_copy_file( char* src, char* dest )
-{   // overwrites!
-    int inF, ouF, bytes;
-    char line[ 1024 ];
-
-    if ( !g_file_test( src, G_FILE_TEST_EXISTS ) )
-        return FALSE;
-
-    if ( ( inF = open( src, O_RDONLY ) ) == -1 )
-        return FALSE;
-
-    unlink( dest );
-    if ( ( ouF = open( dest, O_CREAT | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR ) ) == -1 )
-    {
-        close(inF);
-        return FALSE;
-    }
-
-    while ( ( bytes = read( inF, line, sizeof( line ) ) ) > 0 )
-    {
-        if ( write(ouF, line, bytes) <= 0 )
-        {
-            close(inF);
-            close(ouF);
-            unlink( dest );
-            return FALSE;
-        }
-    }
-    close(inF);
-    close(ouF);
-    return TRUE;
 }
 
 char* xset_custom_new_name()
