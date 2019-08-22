@@ -1479,8 +1479,11 @@ static void on_eject( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
             return;
         }
 
-        if ( vol->device_type == DEVICE_TYPE_BLOCK &&
-                                        ( vol->is_optical || vol->requires_eject ) )
+#ifdef DEPRECATED_HW
+        if (vol->device_type == DEVICE_TYPE_BLOCK && (vol->is_optical || vol->requires_eject))
+#else
+        if (vol->device_type == DEVICE_TYPE_BLOCK && (vol->requires_eject))
+#endif
             eject = g_strdup_printf( "\neject %s", vol->device_file );
         else
             eject = g_strdup( "\nexit 0" );
@@ -1534,8 +1537,11 @@ static void on_eject( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
         task->task->exec_terminal = run_in_terminal;
         task->task->exec_icon = g_strdup( vfs_volume_get_icon( vol ) );
     }
-    else if ( vol->device_type == DEVICE_TYPE_BLOCK &&
-                            ( vol->is_optical || vol->requires_eject ) )
+#ifdef DEPRECATED_HW
+    else if (vol->device_type == DEVICE_TYPE_BLOCK && (vol->is_optical || vol->requires_eject))
+#else
+    else if (vol->device_type == DEVICE_TYPE_BLOCK && (vol->requires_eject))
+#endif
     {
         // task
         line = g_strdup_printf( "eject %s", vol->device_file );
@@ -1909,7 +1915,11 @@ static void on_reload( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
             return;
         }
 
+#ifdef DEPRECATED_HW
         if ( vol->is_optical || vol->requires_eject )
+#else
+        if ( vol->requires_eject )
+#endif
             eject = g_strdup_printf( "\nelse\n    eject %s\n    sleep 0.3\n    eject -t %s", vol->device_file, vol->device_file );
         else
             eject = g_strdup( "" );
@@ -1936,7 +1946,11 @@ static void on_reload( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
         task->task->exec_terminal = run_in_terminal;
         task->task->exec_icon = g_strdup( vfs_volume_get_icon( vol ) );
     }
+#ifdef DEPRECATED_HW
     else if ( vol->is_optical || vol->requires_eject )
+#else
+    else if ( vol->requires_eject )
+#endif
     {
         // task
         line = g_strdup_printf( "eject %s; sleep 0.3; eject -t %s",
@@ -2221,8 +2235,10 @@ static void on_prop( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
     if ( vol->requires_eject )
         { old_flags = flags; flags = g_strdup_printf( "%s ejectable", flags ); g_free( old_flags ); }
 
+#ifdef DEPRECATED_HW
     if ( vol->is_optical )
         { old_flags = flags; flags = g_strdup_printf( "%s optical", flags ); g_free( old_flags ); }
+#endif
     if ( vol->is_table )
         { old_flags = flags; flags = g_strdup_printf( "%s table", flags ); g_free( old_flags ); }
 
@@ -2238,12 +2254,14 @@ static void on_prop( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
     else
         { old_flags = flags; flags = g_strdup_printf( "%s no_media", flags ); g_free( old_flags ); }
 
+#ifdef DEPRECATED_HW
     if ( vol->is_blank )
         { old_flags = flags; flags = g_strdup_printf( "%s blank", flags ); g_free( old_flags ); }
     if ( vol->is_audiocd )
         { old_flags = flags; flags = g_strdup_printf( "%s audiocd", flags ); g_free( old_flags ); }
     if ( vol->is_dvd )
         { old_flags = flags; flags = g_strdup_printf( "%s dvd", flags ); g_free( old_flags ); }
+#endif
 
     if ( vol->is_mounted )
     {
@@ -2519,7 +2537,9 @@ void ptk_location_view_on_action( GtkWidget* view, XSet* set )
             || !strcmp( set->name, "dev_show_file" )
             || !strcmp( set->name, "dev_ignore_udisks_hide" )
             || !strcmp( set->name, "dev_show_hide_volumes" )
+#ifdef DEPRECATED_HW
             || !strcmp( set->name, "dev_automount_optical" )
+#endif
             || !strcmp( set->name, "dev_automount_removable" )
             || !strcmp( set->name, "dev_ignore_udisks_nopolicy" ) )
         update_all();
@@ -2632,8 +2652,10 @@ static void show_devices_menu( GtkTreeView* view, VFSVolume* vol,
     //    set->disable = xset_get_b( "dev_show_internal_drives" );
     xset_set_cb( "dev_ignore_udisks_hide", update_all, NULL );
     xset_set_cb( "dev_show_hide_volumes", on_showhide, vol );
+#ifdef DEPRECATED_HW
     set = xset_set_cb( "dev_automount_optical", update_all, NULL );
     gboolean auto_optical = set->b == XSET_B_TRUE;
+#endif
     set = xset_set_cb( "dev_automount_removable", update_all, NULL );
     gboolean auto_removable = set->b == XSET_B_TRUE;
     xset_set_cb( "dev_ignore_udisks_nopolicy", update_all, NULL );
@@ -2660,10 +2682,12 @@ static void show_devices_menu( GtkTreeView* view, VFSVolume* vol,
 
     xset_set_cb_panel( file_browser->mypanel, "font_dev", main_update_fonts,
                                                                 file_browser );
+#ifdef DEPRECATED_HW
     xset_set_cb( "dev_icon_audiocd", update_volume_icons, NULL );
     xset_set_cb( "dev_icon_optical_mounted", update_volume_icons, NULL );
     xset_set_cb( "dev_icon_optical_media", update_volume_icons, NULL );
     xset_set_cb( "dev_icon_optical_nomedia", update_volume_icons, NULL );
+#endif
     xset_set_cb( "dev_icon_remove_mounted", update_volume_icons, NULL );
     xset_set_cb( "dev_icon_remove_unmounted", update_volume_icons, NULL );
     xset_set_cb( "dev_icon_internal_mounted", update_volume_icons, NULL );
@@ -2672,12 +2696,17 @@ static void show_devices_menu( GtkTreeView* view, VFSVolume* vol,
     xset_set_cb( "dev_dispname", update_names, NULL );
     xset_set_cb( "dev_change", update_change_detection, NULL );
 
+#ifdef DEPRECATED_HW
     set = xset_get( "dev_exec_fs" );
     set->disable = !auto_optical && !auto_removable;
     set = xset_get( "dev_exec_audio" );
     set->disable = !auto_optical;
     set = xset_get( "dev_exec_video" );
     set->disable = !auto_optical;
+#else
+    set = xset_get( "dev_exec_fs" );
+    set->disable = !auto_removable;
+#endif
 
     set = xset_set_cb( "dev_fs_cnf", on_handler_show_config, view );
         xset_set_ob1( set, "set", set );
@@ -3120,8 +3149,10 @@ void ptk_location_view_dev_menu( GtkWidget* parent, PtkFileBrowser* file_browser
     //    set->disable = xset_get_b( "dev_show_internal_drives" );
     xset_set_cb( "dev_ignore_udisks_hide", update_all, NULL );
     xset_set_cb( "dev_show_hide_volumes", on_showhide, vol );
+#ifdef DEPRECATED_HW
     set = xset_set_cb( "dev_automount_optical", update_all, NULL );
     gboolean auto_optical = set->b == XSET_B_TRUE;
+#endif
     set = xset_set_cb( "dev_automount_removable", update_all, NULL );
     gboolean auto_removable = set->b == XSET_B_TRUE;
     xset_set_cb( "dev_ignore_udisks_nopolicy", update_all, NULL );

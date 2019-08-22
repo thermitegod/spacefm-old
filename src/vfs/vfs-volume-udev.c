@@ -107,7 +107,9 @@ typedef struct device_t  {
     gboolean device_is_media_available;
     gboolean device_is_read_only;
     gboolean device_is_drive;
+#ifdef DEPRECATED_HW
     gboolean device_is_optical_disc;
+#endif
     gboolean device_is_mounted;
     char *device_presentation_hide;
     char *device_presentation_nopolicy;
@@ -148,12 +150,14 @@ typedef struct device_t  {
     char *partition_table_scheme;
     char *partition_table_count;
 
+#ifdef DEPRECATED_HW
     gboolean optical_disc_is_blank;
     gboolean optical_disc_is_appendable;
     gboolean optical_disc_is_closed;
     char *optical_disc_num_tracks;
     char *optical_disc_num_audio_tracks;
     char *optical_disc_num_sessions;
+#endif
 } device_t;
 
 static char *
@@ -400,7 +404,10 @@ gboolean info_is_system_internal( device_t *device )
         if (strcmp (device->drive_connection_interface, "ata_serial_esata") == 0
           || strcmp (device->drive_connection_interface, "sdio") == 0
           || strcmp (device->drive_connection_interface, "usb") == 0
-          || strcmp (device->drive_connection_interface, "firewire") == 0)
+#ifdef DEPRECATED_HW
+          || strcmp (device->drive_connection_interface, "firewire") == 0
+#endif
+	  )
             return FALSE;
     }
     return TRUE;
@@ -496,6 +503,7 @@ void info_drive_connection( device_t *device )
 
                 }
             }
+#ifdef DEPRECATED_HW
           else if (strcmp (subsystem, "firewire") == 0 || strcmp (subsystem, "ieee1394") == 0)
             {
 
@@ -509,6 +517,7 @@ void info_drive_connection( device_t *device )
               break;
 
             }
+#endif
           else if (strcmp (subsystem, "mmc") == 0)
             {
 
@@ -607,6 +616,7 @@ static const struct
     { "ID_DRIVE_FLASH_SD", "flash_sd" },
     { "ID_DRIVE_FLASH_SDHC", "flash_sdhc" },
     { "ID_DRIVE_FLASH_MMC", "flash_mmc" },
+#ifdef DEPRECATED_HW
     { "ID_CDROM", "optical_cd" },
     { "ID_CDROM_CD_R", "optical_cd_r" },
     { "ID_CDROM_CD_RW", "optical_cd_rw" },
@@ -627,6 +637,7 @@ static const struct
     { "ID_CDROM_MO", "optical_mo" },
     { "ID_CDROM_MRW", "optical_mrw" },
     { "ID_CDROM_MRW_W", "optical_mrw_w" },
+#endif
     { NULL, NULL }, };
 
 static const struct
@@ -642,6 +653,7 @@ static const struct
     { "ID_DRIVE_MEDIA_FLASH_SD", "flash_sd" },
     { "ID_DRIVE_MEDIA_FLASH_SDHC", "flash_sdhc" },
     { "ID_DRIVE_MEDIA_FLASH_MMC", "flash_mmc" },
+#ifdef DEPRECATED_HW
     { "ID_CDROM_MEDIA_CD", "optical_cd" },
     { "ID_CDROM_MEDIA_CD_R", "optical_cd_r" },
     { "ID_CDROM_MEDIA_CD_RW", "optical_cd_rw" },
@@ -662,6 +674,7 @@ static const struct
     { "ID_CDROM_MEDIA_MO", "optical_mo" },
     { "ID_CDROM_MEDIA_MRW", "optical_mrw" },
     { "ID_CDROM_MEDIA_MRW_W", "optical_mrw_w" },
+#endif
     { NULL, NULL }, };
 
 void info_drive_properties ( device_t *device )
@@ -903,6 +916,7 @@ void info_device_properties( device_t *device )
         media_available = FALSE;
     else if ( device->device_is_removable )
     {
+#ifdef DEPRECATED_HW
         gboolean is_cd;
         if ((value = udev_device_get_property_value(device->udevice, "ID_CDROM")))
             is_cd = atoi( value ) != 0;
@@ -911,6 +925,7 @@ void info_device_properties( device_t *device )
 
         if ( !is_cd )
         {
+#endif
             // this test is limited for non-root - user may not have read
             // access to device file even if media is present
             int fd;
@@ -920,12 +935,16 @@ void info_device_properties( device_t *device )
                 media_available = TRUE;
                 close( fd );
             }
+#ifdef DEPRECATED_HW
         }
         else if ((value = udev_device_get_property_value(device->udevice, "ID_CDROM_MEDIA")))
             media_available = ( atoi( value ) == 1 );
+#endif
     }
+#ifdef DEPRECATED_HW
     else if ((value = udev_device_get_property_value(device->udevice, "ID_CDROM_MEDIA")))
         media_available = ( atoi( value ) == 1 );
+#endif
     else
         media_available = TRUE;
     device->device_is_media_available = media_available;
@@ -1265,6 +1284,7 @@ void info_partition( device_t *device )
     }
 }
 
+#ifdef DEPRECATED_HW
 void info_optical_disc( device_t *device )
 {
     const char *cdrom_disc_state;
@@ -1295,6 +1315,7 @@ void info_optical_disc( device_t *device )
     else
         device->device_is_optical_disc = FALSE;
 }
+#endif
 
 static void device_free( device_t *device )
 {
@@ -1339,9 +1360,12 @@ static void device_free( device_t *device )
     g_free( device->partition_table_scheme );
     g_free( device->partition_table_count );
 
+#ifdef DEPRECATED_HW
     g_free( device->optical_disc_num_tracks );
     g_free( device->optical_disc_num_audio_tracks );
     g_free( device->optical_disc_num_sessions );
+#endif
+
     g_slice_free( device_t, device );
 }
 
@@ -1361,7 +1385,9 @@ device_t *device_alloc( struct udev_device *udevice )
     device->device_is_media_available = FALSE;
     device->device_is_read_only = FALSE;
     device->device_is_drive = FALSE;
+#ifdef DEPRECATED_HW
     device->device_is_optical_disc = FALSE;
+#endif
     device->device_is_mounted = FALSE;
     device->device_presentation_hide = NULL;
     device->device_presentation_nopolicy = NULL;
@@ -1402,12 +1428,14 @@ device_t *device_alloc( struct udev_device *udevice )
     device->partition_table_scheme = NULL;
     device->partition_table_count = NULL;
 
+#ifdef DEPRECATED_HW
     device->optical_disc_is_blank = FALSE;
     device->optical_disc_is_appendable = FALSE;
     device->optical_disc_is_closed = FALSE;
     device->optical_disc_num_tracks = NULL;
     device->optical_disc_num_audio_tracks = NULL;
     device->optical_disc_num_sessions = NULL;
+#endif
 
     return device;
 }
@@ -1423,7 +1451,9 @@ gboolean device_get_info( device_t *device )
     device->device_is_mounted = ( device->mount_points != NULL );
     info_partition_table( device );
     info_partition( device );
+#ifdef DEPRECATED_HW
     info_optical_disc( device );
+#endif
     return TRUE;
 }
 
@@ -1494,6 +1524,7 @@ char* device_show_info( device_t *device )
         line[i++] = g_strdup_printf("    uuid:                      %s\n", device->partition_uuid ?
                                                     device->partition_uuid : "" );
     }
+#ifdef DEPRECATED_HW
     if (device->device_is_optical_disc)
     {
         line[i++] = g_strdup_printf("  optical disc:\n");
@@ -1507,6 +1538,7 @@ char* device_show_info( device_t *device )
         line[i++] = g_strdup_printf("    num sessions:              %s\n", device->optical_disc_num_sessions ?
                                                     device->optical_disc_num_sessions : "0" );
     }
+#endif
     if (device->device_is_drive)
     {
         line[i++] = g_strdup_printf("  drive:\n");
@@ -2236,9 +2268,11 @@ void vfs_volume_set_info( VFSVolume* volume )
     // set device icon
     if ( volume->device_type == DEVICE_TYPE_BLOCK )
     {
+#ifdef DEPRECATED_HW
         if ( volume->is_audiocd )
             volume->icon = g_strdup_printf( "dev_icon_audiocd" );
-        else if ( volume->is_optical )
+
+        if ( volume->is_optical )
         {
             if ( volume->is_mounted )
                 volume->icon = g_strdup_printf( "dev_icon_optical_mounted" );
@@ -2247,7 +2281,11 @@ void vfs_volume_set_info( VFSVolume* volume )
             else
                 volume->icon = g_strdup_printf( "dev_icon_optical_nomedia" );
         }
+
         else if ( volume->is_removable )
+#else
+        if ( volume->is_removable )
+#endif
         {
             if ( volume->is_mounted )
                 volume->icon = g_strdup_printf( "dev_icon_remove_mounted" );
@@ -2294,8 +2332,10 @@ void vfs_volume_set_info( VFSVolume* volume )
                 disp_id = g_strdup_printf( ":%.16s", lastcomma );
             }
         }
+#ifdef DEPRECATED_HW
         else if ( volume->is_optical )
             disp_id = g_strdup_printf( _(":optical") );
+#endif
         if ( !disp_id )
             disp_id = g_strdup( "" );
         // table type
@@ -2339,12 +2379,18 @@ void vfs_volume_set_info( VFSVolume* volume )
     }
     else if ( volume->is_mountable )  //has_media
     {
+#ifdef DEPRECATED_HW
         if ( volume->is_blank )
             disp_label = g_strdup_printf( _("[blank]") );
         else if ( volume->label && volume->label[0] != '\0' )
+#else
+        if ( volume->label && volume->label[0] != '\0' )
+#endif
             disp_label = g_strdup_printf( "%s", volume->label );
+#ifdef DEPRECATED_HW
         else if ( volume->is_audiocd )
             disp_label = g_strdup_printf( _("[audio]") );
+#endif
         else
             disp_label = g_strdup( "" );
         if ( volume->size > 0 )
@@ -2446,11 +2492,14 @@ VFSVolume* vfs_volume_read_by_device( struct udev_device *udevice )
     volume->device_file = g_strdup( device->devnode );
     volume->udi = g_strdup( device->device_by_id );
     volume->should_autounmount = FALSE;
+#ifdef DEPRECATED_HW
     volume->is_optical = device->device_is_optical_disc;
+#endif
     volume->is_table = device->device_is_partition_table;
     volume->is_removable = !device->device_is_system_internal;
     volume->requires_eject = device->drive_is_media_ejectable;
     volume->is_mountable = device->device_is_media_available;
+#ifdef DEPRECATED_HW
     volume->is_audiocd = ( device->device_is_optical_disc
                         && device->optical_disc_num_audio_tracks
                         && atoi( device->optical_disc_num_audio_tracks ) > 0 );
@@ -2458,6 +2507,7 @@ VFSVolume* vfs_volume_read_by_device( struct udev_device *udevice )
                                 && strstr( device->drive_media, "optical_dvd" ) );
     volume->is_blank = ( device->device_is_optical_disc
                                 && device->optical_disc_is_blank );
+#endif
     volume->is_mounted = device->device_is_mounted;
     volume->is_user_visible = device->device_presentation_hide ?
                                 !atoi( device->device_presentation_hide ) : TRUE;
@@ -2492,8 +2542,10 @@ VFSVolume* vfs_volume_read_by_device( struct udev_device *udevice )
     volume->ever_mounted = volume->is_mounted;
     //if ( volume->is_blank )
     //    volume->is_mountable = FALSE;  //has_media is now used for showing
+#ifdef DEPRECATED_HW
     if ( volume->is_dvd )
         volume->is_audiocd = FALSE;
+#endif
 
     vfs_volume_set_info( volume );
 /*
@@ -3135,18 +3187,24 @@ char* vfs_volume_handler_cmd( int mode, int action, VFSVolume* vol,
         if ( vol->udi && vol->udi[0] )
             values = g_slist_prepend( values,
                     g_strconcat( "id=", vol->udi, NULL ) );
+#ifdef DEPRECATED_HW
         values = g_slist_prepend( values,
                     g_strconcat( "audiocd=", vol->is_audiocd ? "1" : "0",
                                                                     NULL ) );
         values = g_slist_prepend( values,
                     g_strconcat( "optical=", vol->is_optical ? "1" : "0",
                                                                     NULL ) );
+#endif
         values = g_slist_prepend( values,
                     g_strconcat( "removable=", vol->is_removable ? "1" : "0",
                                                                     NULL ) );
         values = g_slist_prepend( values,
                     g_strconcat( "mountable=",
+#ifdef DEPRECATED_HW
                             vol->is_mountable && !vol->is_blank ? "1" : "0",
+#else
+                            vol->is_mountable ? "1" : "0",
+#endif
                                                                     NULL ) );
         // change spaces in device to underscores for testing - for ISO files
         values = g_slist_prepend( values,
@@ -3496,8 +3554,11 @@ gboolean vfs_volume_is_automount( VFSVolume* vol )
         // volume is a network or ISO file that was manually mounted -
         // for autounmounting only
         return TRUE;
-    if ( !vol->is_mountable || vol->is_blank ||
-                               vol->device_type != DEVICE_TYPE_BLOCK )
+#ifdef DEPRECATED_HW
+    if ( !vol->is_mountable || vol->is_blank || vol->device_type != DEVICE_TYPE_BLOCK )
+#else
+    if ( !vol->is_mountable || vol->device_type != DEVICE_TYPE_BLOCK )
+#endif
         return FALSE;
 
     char* showhidelist = g_strdup_printf( " %s ", xset_get_s( "dev_automount_volumes" ) );
@@ -3539,9 +3600,11 @@ gboolean vfs_volume_is_automount( VFSVolume* vol )
     if ( vol->is_table )
         return FALSE;
 
+#ifdef DEPRECATED_HW
     // optical
     if ( vol->is_optical )
         return xset_get_b( "dev_automount_optical" );
+#endif
 
     // internal?
     if ( vol->is_removable && xset_get_b( "dev_automount_removable" ) )
@@ -3880,11 +3943,15 @@ void vfs_volume_autoexec( VFSVolume* vol )
                                         !vfs_volume_is_automount( vol ) )
         return;
 
+#ifdef DEPRECATED_HW
     if ( vol->is_audiocd )
     {
         command = xset_get_s( "dev_exec_audio" );
     }
     else if ( vol->is_mounted && vol->mount_point && vol->mount_point[0] !='\0' )
+#else
+    if ( vol->is_mounted && vol->mount_point && vol->mount_point[0] !='\0' )
+#endif
     {
         if ( vol->inhibit_auto )
         {
@@ -3892,6 +3959,7 @@ void vfs_volume_autoexec( VFSVolume* vol )
             vol->inhibit_auto = FALSE;
             return;
         }
+#ifdef DEPRECATED_HW
         else
         {
             path = g_build_filename( vol->mount_point, "VIDEO_TS", NULL );
@@ -3938,6 +4006,7 @@ void vfs_volume_autoexec( VFSVolume* vol )
             }
             g_free( path );
         }
+#endif
     }
     vfs_volume_exec( vol, command );
 }
@@ -3960,7 +4029,10 @@ void vfs_volume_autounmount( VFSVolume* vol )
 
 void vfs_volume_automount( VFSVolume* vol )
 {
-    if ( vol->is_mounted || vol->ever_mounted || vol->is_audiocd
+    if ( vol->is_mounted || vol->ever_mounted
+#ifdef DEPRECATED_HW
+                                        || vol->is_audiocd
+#endif
                                         || vol->should_autounmount
                                         || !vfs_volume_is_automount( vol ) )
         return;
@@ -3985,7 +4057,10 @@ void vfs_volume_automount( VFSVolume* vol )
 static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
 {           //frees volume if needed
     GList* l;
-    gboolean was_mounted, was_audiocd, was_mountable;
+    gboolean was_mounted, was_mountable;
+#ifdef DEPRECATED_HW
+    gboolean was_audiocd;
+#endif
     char* changed_mount_point = NULL;
 
     if ( !volume || !volume->udi || !volume->device_file )
@@ -3998,7 +4073,9 @@ static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
         {
             // update existing volume
             was_mounted = ((VFSVolume*)l->data)->is_mounted;
+#ifdef DEPRECATED_HW
             was_audiocd = ((VFSVolume*)l->data)->is_audiocd;
+#endif
             was_mountable = ((VFSVolume*)l->data)->is_mountable;
 
             // detect changed mount point
@@ -4017,7 +4094,9 @@ static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
             ((VFSVolume*)l->data)->disp_name = g_strdup( volume->disp_name );
             ((VFSVolume*)l->data)->is_mounted = volume->is_mounted;
             ((VFSVolume*)l->data)->is_mountable = volume->is_mountable;
+#ifdef DEPRECATED_HW
             ((VFSVolume*)l->data)->is_optical = volume->is_optical;
+#endif
             ((VFSVolume*)l->data)->requires_eject = volume->requires_eject;
             ((VFSVolume*)l->data)->is_removable = volume->is_removable;
             ((VFSVolume*)l->data)->is_user_visible = volume->is_user_visible;
@@ -4025,9 +4104,11 @@ static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
             ((VFSVolume*)l->data)->is_table = volume->is_table;
             ((VFSVolume*)l->data)->nopolicy = volume->nopolicy;
             ((VFSVolume*)l->data)->fs_type = volume->fs_type;
+#ifdef DEPRECATED_HW
             ((VFSVolume*)l->data)->is_blank = volume->is_blank;
             ((VFSVolume*)l->data)->is_audiocd = volume->is_audiocd;
             ((VFSVolume*)l->data)->is_dvd = volume->is_dvd;
+#endif
 
             // Mount and ejection detect for automount
             if ( volume->is_mounted )
@@ -4063,8 +4144,10 @@ static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
                     //remove mount points in case other unmounted
                     ptk_location_view_clean_mount_points();
                 }
+#ifdef DEPRECATED_HW
                 else if ( !was_audiocd && volume->is_audiocd )
                     vfs_volume_autoexec( volume );
+#endif
 
                 //media inserted ?
                 if ( !was_mountable && volume->is_mountable )
@@ -4072,7 +4155,11 @@ static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
 
                 // media ejected ?
                 if ( was_mountable && !volume->is_mountable && volume->is_mounted &&
+#ifdef DEPRECATED_HW
                             ( volume->is_optical || volume->is_removable ) )
+#else
+                            ( volume->is_removable ) )
+#endif
                     unmount_if_mounted( volume );
             }
             // refresh tabs containing changed mount point
@@ -4091,8 +4178,10 @@ static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
     {
         vfs_volume_automount( volume );
         vfs_volume_exec( volume, xset_get_s( "dev_exec_insert" ) );
+#ifdef DEPRECATED_HW
         if ( volume->is_audiocd )
             vfs_volume_autoexec( volume );
+#endif
     }
 }
 

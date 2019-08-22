@@ -1128,6 +1128,9 @@ int main ( int argc, char *argv[] )
 #ifdef ENABLE_NLS
         printf( "NLS " );
 #endif
+#ifdef DEPRECATED_HW
+        printf( "DEPRECATED_HW " );
+#endif
 #ifdef HAVE_MMAP
         printf( "MMAP " );
 #endif

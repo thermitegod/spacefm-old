@@ -4258,8 +4258,10 @@ void main_context_fill( PtkFileBrowser* file_browser, XSetContext* c )
         if ( vol->requires_eject )
             { old_flags = flags; flags = g_strdup_printf( "%s ejectable", flags ); g_free( old_flags ); }
 
+#ifdef DEPRECATED_HW
         if ( vol->is_optical )
             { old_flags = flags; flags = g_strdup_printf( "%s optical", flags ); g_free( old_flags ); }
+#endif
         if ( vol->is_table )
             { old_flags = flags; flags = g_strdup_printf( "%s table", flags ); g_free( old_flags ); }
 
@@ -4275,12 +4277,14 @@ void main_context_fill( PtkFileBrowser* file_browser, XSetContext* c )
         else
             { old_flags = flags; flags = g_strdup_printf( "%s no_media", flags ); g_free( old_flags ); }
 
+#ifdef DEPRECATED_HW
         if ( vol->is_blank )
             { old_flags = flags; flags = g_strdup_printf( "%s blank", flags ); g_free( old_flags ); }
         if ( vol->is_audiocd )
             { old_flags = flags; flags = g_strdup_printf( "%s audiocd", flags ); g_free( old_flags ); }
         if ( vol->is_dvd )
             { old_flags = flags; flags = g_strdup_printf( "%s dvd", flags ); g_free( old_flags ); }
+#endif
 
         c->var[CONTEXT_DEVICE_PROP] = flags;
     }
@@ -4629,18 +4633,22 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
                     fprintf( file, "fm_device_icon='%s'\n", vol->icon );
                     fprintf( file, "fm_device_is_mounted=%d\n",
                                                 vol->is_mounted ? 1 : 0 );
+#ifdef DEPRECATED_HW
                     fprintf( file, "fm_device_is_optical=%d\n",
                                                 vol->is_optical ? 1 : 0 );
+#endif
                     fprintf( file, "fm_device_is_table=%d\n",
                                                 vol->is_table ? 1 : 0 );
                     fprintf( file, "fm_device_is_removable=%d\n",
                                                 vol->is_removable ? 1 : 0 );
+#ifdef DEPRECATED_HW
                     fprintf( file, "fm_device_is_audiocd=%d\n",
                                                 vol->is_audiocd ? 1 : 0 );
                     fprintf( file, "fm_device_is_dvd=%d\n",
                                                 vol->is_dvd ? 1 : 0 );
                     fprintf( file, "fm_device_is_blank=%d\n",
                                                 vol->is_blank ? 1 : 0 );
+#endif
                     fprintf( file, "fm_device_is_mountable=%d\n",
                                                 vol->is_mountable ? 1 : 0 );
                     fprintf( file, "fm_device_nopolicy=%d\n",
@@ -4680,18 +4688,22 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
                 fprintf( file, "fm_panel%d_device_icon='%s'\n", p, vol->icon );
                 fprintf( file, "fm_panel%d_device_is_mounted=%d\n",
                                             p, vol->is_mounted ? 1 : 0 );
+#ifdef DEPRECATED_HW
                 fprintf( file, "fm_panel%d_device_is_optical=%d\n",
                                             p, vol->is_optical ? 1 : 0 );
+#endif
                 fprintf( file, "fm_panel%d_device_is_table=%d\n",
                                             p, vol->is_table ? 1 : 0 );
                 fprintf( file, "fm_panel%d_device_is_removable=%d\n",
                                             p, vol->is_removable ? 1 : 0 );
+#ifdef DEPRECATED_HW
                 fprintf( file, "fm_panel%d_device_is_audiocd=%d\n",
                                             p, vol->is_audiocd ? 1 : 0 );
                 fprintf( file, "fm_panel%d_device_is_dvd=%d\n",
                                             p, vol->is_dvd ? 1 : 0 );
                 fprintf( file, "fm_panel%d_device_is_blank=%d\n",
                                             p, vol->is_blank ? 1 : 0 );
+#endif
                 fprintf( file, "fm_panel%d_device_is_mountable=%d\n",
                                             p, vol->is_mountable ? 1 : 0 );
                 fprintf( file, "fm_panel%d_device_nopolicy=%d\n",

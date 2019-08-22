@@ -99,13 +99,17 @@ struct _VFSVolume
     gboolean is_mounted : 1;
     gboolean is_removable : 1;
     gboolean is_mountable : 1;
+#ifdef DEPRECATED_HW
     gboolean is_audiocd : 1;
     gboolean is_dvd : 1;
+#endif
     gboolean is_blank : 1;
     gboolean requires_eject : 1;
     gboolean is_user_visible : 1;
     gboolean nopolicy : 1;
+#ifdef DEPRECATED_HW
     gboolean is_optical : 1;
+#endif
     gboolean is_table : 1;
     gboolean ever_mounted : 1;
     gboolean inhibit_auto : 1;

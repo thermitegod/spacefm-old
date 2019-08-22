@@ -343,7 +343,11 @@ const Handler handlers_fs[]=
         "hand_fs_+udiso",
         "udevil iso unmount",
         "+iso9660 +dev=/dev/loop*",
+#ifdef DEPRECATED_HW
         "optical=1 removable=1",
+#else
+        "removable=1",
+#endif
         "# Mounting of iso files is performed by udevil in a file handler,\n# not this device handler.  Right-click on any file and select\n# Open|File Handlers, and select Mount ISO to see this command.",
         FALSE,
         "# Note: non-iso9660 types will fall through to Default unmount handler\nudevil umount \"%a\"\n",

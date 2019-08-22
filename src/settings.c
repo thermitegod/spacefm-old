@@ -2522,8 +2522,10 @@ const char* icon_stock_to_id( const char* name )
             stockid = GTK_STOCK_BOLD;
         else if ( !strcmp( icontail, "CANCEL" ) )
             stockid = GTK_STOCK_CANCEL;
+#ifdef DEPRECATED_HW
         else if ( !strcmp( icontail, "CDROM" ) )
             stockid = GTK_STOCK_CDROM;
+#endif
         else if ( !strcmp( icontail, "CLEAR" ) )
             stockid = GTK_STOCK_CLEAR;
         else if ( !strcmp( icontail, "CLOSE" ) )
@@ -9545,15 +9547,23 @@ void xset_defaults()
         xset_set_set( set, "icn", "gtk-edit" );
         set->line = g_strdup( "#devices-settings-name" );
 
+#ifdef DEPRECATED_HW
     set = xset_set( "dev_menu_auto", "lbl", _("_Auto Mount") );
     set->menu_style = XSET_MENU_SUBMENU;
     xset_set_set( set, "desc", "dev_automount_optical dev_automount_removable dev_ignore_udisks_nopolicy dev_automount_volumes dev_automount_dirs dev_auto_open dev_unmount_quit" );
     set->line = g_strdup( "#devices-settings-optical" );
+#else
+    set = xset_set( "dev_menu_auto", "lbl", _("_Auto Mount") );
+    set->menu_style = XSET_MENU_SUBMENU;
+    xset_set_set( set, "desc", "dev_automount_removable dev_ignore_udisks_nopolicy dev_automount_volumes dev_automount_dirs dev_auto_open dev_unmount_quit" );
+#endif
 
+#ifdef DEPRECATED_HW
         set = xset_set( "dev_automount_optical", "lbl", _("Mount _Optical") );
         set->b = geteuid() == 0 ? XSET_B_FALSE : XSET_B_TRUE;
         set->menu_style = XSET_MENU_CHECK;
         set->line = g_strdup( "#devices-settings-optical" );
+#endif
 
         set = xset_set( "dev_automount_removable", "lbl", _("_Mount Removable") );
         set->b = geteuid() == 0 ? XSET_B_FALSE : XSET_B_TRUE;
@@ -9586,7 +9596,11 @@ void xset_defaults()
 
     set = xset_set( "dev_exec", "lbl", _("Auto _Run") );
     set->menu_style = XSET_MENU_SUBMENU;
+#ifdef DEPRECATED_HW
     xset_set_set( set, "desc", "dev_exec_fs dev_exec_audio dev_exec_video sep_ar1 dev_exec_insert dev_exec_unmount dev_exec_remove" );
+#else
+    xset_set_set( set, "desc", "dev_exec_fs sep_ar1 dev_exec_insert dev_exec_unmount dev_exec_remove" );
+#endif
     xset_set_set( set, "icn", "gtk-execute" );
     set->line = g_strdup( "#devices-settings-runm" );
 
@@ -9596,6 +9610,7 @@ void xset_defaults()
         xset_set_set( set, "desc", _("Enter program or bash command line to be run automatically after a removable drive or data disc is auto-mounted:\n\nUse:\n\t%%v\tdevice (eg /dev/sda1)\n\t%%l\tdevice label\n\t%%m\tdevice mount point (eg /media/disk)") );
         set->line = g_strdup( "#devices-settings-runm" );
 
+#ifdef DEPRECATED_HW
         set = xset_set( "dev_exec_audio", "lbl", _("On _Audio CD") );
         set->menu_style = XSET_MENU_STRING;
         xset_set_set( set, "title", _("Auto Run On Audio CD") );
@@ -9607,6 +9622,7 @@ void xset_defaults()
         xset_set_set( set, "title", _("Auto Run On Video DVD") );
         xset_set_set( set, "desc", _("Enter program or bash command line to be run automatically when a video DVD is auto-mounted:\n\nUse:\n\t%%v\tdevice (eg /dev/sda1)\n\t%%l\tdevice label\n\t%%m\tdevice mount point (eg /media/disk)") );
         set->line = g_strdup( "#devices-settings-runv" );
+#endif
 
         set = xset_set( "dev_exec_insert", "lbl", _("On _Insert") );
         set->menu_style = XSET_MENU_STRING;
@@ -9678,9 +9694,14 @@ void xset_defaults()
 
     set = xset_set( "dev_icon", "lbl", _("_Icon") );
     set->menu_style = XSET_MENU_SUBMENU;
+#ifdef DEPRECATED_HW
     xset_set_set( set, "desc", "dev_icon_internal_mounted dev_icon_internal_unmounted sep_i1 dev_icon_remove_mounted dev_icon_remove_unmounted sep_i2 dev_icon_optical_mounted dev_icon_optical_media dev_icon_optical_nomedia dev_icon_audiocd sep_i3 sep_i4 dev_icon_network dev_icon_file" );
+#else
+    xset_set_set( set, "desc", "dev_icon_internal_mounted dev_icon_internal_unmounted sep_i1 dev_icon_remove_mounted dev_icon_remove_unmounted sep_i2 sep_i3 sep_i4 dev_icon_network dev_icon_file" );
     set->line = g_strdup( "#devices-settings-icon" );
+#endif
 
+#ifdef DEPRECATED_HW
         set = xset_set( "dev_icon_audiocd", "lbl", _("Audio CD") );
         set->menu_style = XSET_MENU_ICON;
         xset_set_set( set, "icn", "gtk-cdrom" );
@@ -9701,6 +9722,7 @@ void xset_defaults()
         set->menu_style = XSET_MENU_ICON;
         xset_set_set( set, "icn", "gtk-close" );
         set->line = g_strdup( "#devices-settings-icon" );
+#endif
 
         set = xset_set( "dev_icon_remove_mounted", "lbl", _("Removable Mounted") );
         set->menu_style = XSET_MENU_ICON;
