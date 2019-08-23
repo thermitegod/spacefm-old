@@ -580,7 +580,7 @@ static void process_found_files( FindFile* data, GQueue* queue, const char* path
 //            return;
     }
 
-    while( ff = (FoundFile*)g_queue_pop_head(queue) )
+    while ((ff = (FoundFile*)g_queue_pop_head(queue)))
     {
         GDK_THREADS_ENTER();
         gtk_list_store_append( data->result_list, &it );
@@ -614,7 +614,7 @@ static gpointer search_thread( VFSAsyncTask* task, FindFile* data )
 
         while( ! data->task->cancel )
         {
-            if( eol = strchr( pbuf, '\n' ) )    /* end of line is reached */
+            if ((eol = strchr(pbuf, '\n')))   /* end of line is reached */
             {
                 *eol = '\0';
                 g_string_append( path, pbuf );
@@ -836,7 +836,7 @@ static void on_add_search_folder( GtkWidget* btn, FindFile* data )
     gtk_menu_shell_append( GTK_MENU_SHELL( menu ), item );
     g_signal_connect( item, "activate", G_CALLBACK(on_add_search_home), data );
 
-    if( dir = vfs_get_desktop_dir() )
+    if ((dir = vfs_get_desktop_dir()))
     {
         item = gtk_image_menu_item_new_with_label( dir );
         //img = gtk_image_new_from_icon_name( "gnome-fs-desktop", GTK_ICON_SIZE_MENU );

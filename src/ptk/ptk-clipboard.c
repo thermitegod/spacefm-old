@@ -420,7 +420,7 @@ void ptk_clipboard_paste_links( GtkWindow* parent_win,
         puri = uri_list = g_uri_list_extract_uris( uri_list_str );
         while ( *puri )
         {
-            if ( file_path = g_filename_from_uri( *puri, NULL, NULL ) )
+            if ((file_path = g_filename_from_uri(*puri, NULL, NULL)))
                 files = g_list_prepend( files, file_path );
             ++puri;
         }

@@ -86,18 +86,18 @@ static void get_width_height_pad( char* val, int* width, int* height, int* pad )
     *width = *height = -1;
     if ( val )
     {
-        if ( sep = strchr( val, 'x' ) )
+        if ((sep = strchr(val, 'x')))
             sep[0] = '\0';
-        else if ( sep = strchr( val, ' ' ) )
+        else if ((sep = strchr(val, ' ')))
             sep[0] = '\0';
         *width = atoi( val );
         if ( sep )
         {
             sep[0] = 'x';
             str = sep + 1;
-            if ( sep = strchr( str, 'x' ) )
+            if ((sep = strchr(str, 'x')))
                 sep[0] = '\0';
-            else if ( sep = strchr( str, ' ' ) )
+            else if ((sep = strchr(str, ' ')))
                 sep[0] = '\0';
             *height = atoi( str );
             if ( sep )
@@ -739,7 +739,7 @@ static void set_element_value( CustomElement* el, const char* name,
         {
             g_free( el_name->val );
             el_name->val = unescape( value );
-            if ( sep = strrchr( el_name->val, ':' ) )
+            if ((sep = strrchr(el_name->val, ':')))
                 sep[0] = '\0';
             else
                 sep = NULL;
@@ -1201,7 +1201,7 @@ static char* replace_vars( CustomElement* el, char* value, char* xvalue )
 
     char* newval = NULL;
     ptr = value;
-    while ( sep = strchr( ptr, '%' ) )
+    while ((sep = strchr(ptr, '%')))
     {
         sep[0] = '\0';
         if ( ptr[0] != '\0' )
@@ -1572,7 +1572,7 @@ static void run_command_line( CustomElement* el, char* line )
     {
         if ( i < 2 )
         {
-            if ( sep = strchr( str, ' ' ) )
+            if ((sep = strchr(str, ' ')))
                 sep[0] = '\0';
             args = g_list_append( args, g_strdup( str ) );
             if ( sep )
@@ -3531,7 +3531,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                     str = (char*)l->data;
                     while ( str )
                     {
-                        if ( sep = strchr( str, ':' ) )
+                        if ((sep = strchr(str, ':')))
                             sep[0] = '\0';
                         if ( strchr( str, '/' ) )
                             gtk_file_filter_add_mime_type( filter, str );

@@ -1905,7 +1905,7 @@ GList* get_templates( const char* templates_dir, const char* subdir,
     GDir* dir = g_dir_open( templates_path, 0, NULL );
     if ( dir )
     {
-        while ( name = g_dir_read_name( dir ) )
+        while ((name = g_dir_read_name(dir)))
         {
             path = g_build_filename( templates_path, name, NULL );
             if ( getdir )
@@ -1971,11 +1971,11 @@ void on_template_changed( GtkWidget* widget, MoveSet* mset )
     {
         g_strstrip( text );
         str = text;
-        while ( str2 = strchr( str, '/' ) )
+        while ((str2 = strchr(str, '/')))
             str = str2 + 1;
         if ( str[0] == '.' )
             str++;
-        if ( str2 = strchr( str, '.' ) )
+        if ((str2 = strchr(str, '.')))
             str = str2 + 1;
         else
             str = NULL;
@@ -2789,7 +2789,7 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
 
     // run
     int response;
-    while ( response = gtk_dialog_run( GTK_DIALOG( mset->dlg ) ) )
+    while ((response = gtk_dialog_run(GTK_DIALOG(mset->dlg))))
     {
         if ( response == GTK_RESPONSE_OK || response == GTK_RESPONSE_APPLY )
         {

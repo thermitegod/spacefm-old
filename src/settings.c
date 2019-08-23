@@ -458,7 +458,7 @@ void swap_menu_label( const char* set_name, const char* old_name,
 {   // changes default menu label for older config files
     XSet* set;
 
-    if ( set = xset_is( set_name ) )
+    if ((set = xset_is(set_name)))
     {
         if ( set->menu_label && !strcmp( set->menu_label, old_name ) )
         {
@@ -685,7 +685,7 @@ void load_settings( char* config_dir )
     {
         for ( i = 0; i < G_N_ELEMENTS( terminal_programs ); i++ )
         {
-            if ( term = g_find_program_in_path( terminal_programs[i] ) )
+            if ((term = g_find_program_in_path(terminal_programs[i])))
             {
                 xset_set( "main_terminal", "s", terminal_programs[i] );
                 xset_set_b( "main_terminal", TRUE );  // discovery
@@ -1151,7 +1151,7 @@ char* get_valid_su()  // may return NULL
         // discovery
         for ( i = 0; i < G_N_ELEMENTS( su_commands ); i++ )
         {
-            if ( use_su = g_find_program_in_path( su_commands[i] ) )
+            if ((use_su = g_find_program_in_path(su_commands[i])))
                 break;
         }
         if ( !use_su )
@@ -1214,7 +1214,7 @@ char* get_valid_gsu()  // may return NULL
             // don't automatically select gksudo
             if ( strcmp( gsu_commands[i], "/usr/bin/gksudo" ) )
             {
-                if ( use_gsu = g_find_program_in_path( gsu_commands[i] ) )
+                if ((use_gsu = g_find_program_in_path(gsu_commands[i])))
                     break;
             }
         }
@@ -1232,7 +1232,7 @@ char* get_valid_gsu()  // may return NULL
                                             &stdout, NULL, NULL, NULL )
                                             && stdout && stdout[0] != '\0' )
         {
-            if ( gsu_path = strchr( stdout, '\n' ) )
+            if ((gsu_path = strchr(stdout, '\n')))
                gsu_path[0] = '\0';
             gsu_path = g_build_filename( stdout, "kdesu", NULL );
             g_free( stdout );
@@ -2730,7 +2730,7 @@ GtkWidget* xset_get_image( const char* icon, int icon_size )
     if ( !icon_size )
         icon_size = GTK_ICON_SIZE_MENU;
 
-    if ( stockid = icon_stock_to_id( icon ) )
+    if ((stockid = icon_stock_to_id(icon)))
         image = gtk_image_new_from_stock( stockid, icon_size );
     else if ( icon[0] == '/' )
     {
@@ -3547,7 +3547,7 @@ _redo:
     dir = g_dir_open( path, 0, NULL );
     if ( dir )
     {
-        while ( name = g_dir_read_name( dir ) )
+        while ((name = g_dir_read_name(dir)))
         {
             if ( strlen( name ) == 13 && g_str_has_prefix( name, "cstm_" )
                                                             && !xset_is( name ) )
@@ -3878,7 +3878,7 @@ XSet* xset_import_plugin( const char* plug_dir, int* use )
             set = (XSet*)l->data;
             set->key = set->keymod = set->tool = set->opener = 0;
             xset_set_plugin_mirror( set );
-            if ( set->plugin_top = top )
+            if ((set->plugin_top = top))
             {
                 top = FALSE;
                 rset = set;
@@ -3954,7 +3954,7 @@ void on_install_plugin_cb( VFSFileTask* task, PluginData* plugin_data )
                         if ( !set->next )
                             break;
                     }
-                    while ( set = xset_get( set->next ) );
+                    while ((set = xset_get(set->next)));
                     // set now points to last bookmark
                     newset->prev = g_strdup( plugin_data->set->name );
                     set->next = plugin_data->set->next;  //steal
@@ -4744,7 +4744,7 @@ void xset_custom_activate( GtkWidget* item, XSet* set )
             char* url;
             while ( specs && specs[0] )
             {
-                if ( sep = strchr( specs, ';' ) )
+                if ((sep = strchr(specs, ';')))
                     sep[0] = '\0';
                 url = g_strdup( specs );
                 url = g_strstrip( url );
@@ -5806,8 +5806,8 @@ void xset_design_job( GtkWidget* item, XSet* set )
             folder = g_strdup_printf( "/usr/bin" );
             file = NULL;
         }
-        if ( custom_file = xset_file_dialog( parent, GTK_FILE_CHOOSER_ACTION_OPEN,
-                            _("Choose Custom Executable"), folder, file ) )
+        if ((custom_file = xset_file_dialog(parent, GTK_FILE_CHOOSER_ACTION_OPEN,
+                            _("Choose Custom Executable"), folder, file)))
         {
             xset_set_set( set, "x", "2" );
             xset_set_set( set, "z", custom_file );
@@ -7569,7 +7569,7 @@ int xset_msg_dialog( GtkWidget* parent, int action, const char* title, GtkWidget
 
     gtk_widget_show_all( dlg );
     int response;
-    while ( response = gtk_dialog_run( GTK_DIALOG( dlg ) ) )
+    while ((response = gtk_dialog_run(GTK_DIALOG(dlg))))
     {
         if ( response == GTK_RESPONSE_HELP )
         {
@@ -7998,7 +7998,7 @@ gboolean xset_text_dialog( GtkWidget* parent, const char* title, GtkWidget* imag
     int response;
     char* icon;
     gboolean ret = FALSE;
-    while ( response = gtk_dialog_run( GTK_DIALOG( dlg ) ) )
+    while ((response = gtk_dialog_run(GTK_DIALOG(dlg))))
     {
         if ( response == GTK_RESPONSE_OK )
         {
@@ -9069,7 +9069,7 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
 //printf("    set=%s   set->next=%s\n", set->name, set->next );
     // next toolitem
 _next_toolitem:
-    if ( set_next = xset_is( set->next ) )
+    if ((set_next = xset_is(set->next)))
     {
 //printf("    NEXT %s\n", set_next->name );
         xset_add_toolitem( parent, file_browser, toolbar, icon_size, set_next,

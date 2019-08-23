@@ -141,7 +141,7 @@ static void on_format_changed( GtkComboBox* combo, gpointer user_data )
                             COL_XSET_NAME, &xset_name,
                             //COL_HANDLER_EXTENSIONS, &extensions,
                             -1 );
-        if ( handler_xset = xset_is( xset_name ) )
+        if ((handler_xset = xset_is(xset_name)))
         {
             // Obtaining archive extension
             extension = archive_handler_get_first_extension(handler_xset);
@@ -175,7 +175,7 @@ static void on_format_changed( GtkComboBox* combo, gpointer user_data )
                             COL_XSET_NAME, &xset_name,
                             //COL_HANDLER_EXTENSIONS, &extensions,
                             -1 );
-        if ( handler_xset = xset_is( xset_name ) )
+        if ((handler_xset = xset_is(xset_name)))
         {
             // Obtaining archive extension
             extension = archive_handler_get_first_extension(handler_xset);
@@ -526,7 +526,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
                             COL_XSET_NAME, &xset_name,
                             //COL_HANDLER_EXTENSIONS, &extensions,
                             -1 );
-        if ( handler_xset = xset_is( xset_name ) )
+        if ((handler_xset = xset_is(xset_name)))
         {
             char* err_msg = ptk_handler_load_script( HANDLER_MODE_ARC,
                             HANDLER_COMPRESS, handler_xset,
@@ -616,7 +616,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
     gboolean run_in_terminal;
     gtk_widget_show_all( dlg );
 
-    while( res = gtk_dialog_run( GTK_DIALOG( dlg ) ) )
+    while((res = gtk_dialog_run(GTK_DIALOG(dlg))))
     {
         if ( res == GTK_RESPONSE_OK )
         {
@@ -1194,7 +1194,7 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
         }
 
         // Displaying dialog
-        while( res = gtk_dialog_run( GTK_DIALOG( dlg ) ) )
+        while ((res = gtk_dialog_run(GTK_DIALOG(dlg))))
         {
             if ( res == GTK_RESPONSE_OK )
             {

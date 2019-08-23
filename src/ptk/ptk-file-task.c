@@ -469,7 +469,7 @@ gboolean ptk_file_task_cancel( PtkFileTask* ptask )
                     // convert linefeeds to spaces
                     char* scpids = g_strdup( cpids );
                     char* lf;
-                    while ( lf = strchr( scpids, '\n' ) )
+                    while ((lf = strchr(scpids, '\n')))
                         lf[0] = ' ';
 
                     cmd = g_strdup_printf( "/bin/kill %d %s ; sleep 3 ; /bin/kill -s KILL %d %s %s",  ptask->task->exec_pid, scpids, ptask->task->exec_pid, scpids, rm_cmd );
@@ -613,7 +613,7 @@ void ptk_file_task_pause( PtkFileTask* ptask, int state )
                     // convert linefeeds to spaces
                     char* scpids = g_strdup( cpids );
                     char* lf;
-                    while ( lf = strchr( scpids, '\n' ) )
+                    while ((lf = strchr(scpids, '\n')))
                         lf[0] = ' ';
                     cmd = g_strdup_printf( "/bin/kill -s %d %d %s", sig,
                                                     ptask->task->exec_pid, scpids );

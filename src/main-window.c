@@ -1470,7 +1470,7 @@ void show_panels( GtkMenuItem* item, FMMainWindow* main_window )
                             tab_dir = g_strdup( "/" );
                             tabs++;
                         }
-                        else if ( end = strstr( tabs, "///" ) )
+                        else if ((end = strstr(tabs, "///")))
                         {
                             end[0] = '\0';
                             tab_dir = g_strdup( tabs );
@@ -4109,7 +4109,7 @@ void main_context_fill( PtkFileBrowser* file_browser, XSetContext* c )
                                     g_strdup( "false" ) : g_strdup( "true" );
         }
 
-        if ( sel_files = ptk_file_browser_get_selected_files( file_browser ) )
+        if ((sel_files = ptk_file_browser_get_selected_files(file_browser)))
             file = vfs_file_info_ref( (VFSFileInfo*)sel_files->data );
         else
             file = NULL;
@@ -4351,7 +4351,7 @@ void main_context_fill( PtkFileBrowser* file_browser, XSetContext* c )
         "change",
         "run"
     };
-    if ( ptask = get_selected_task( file_browser->task_view ) )
+    if ((ptask = get_selected_task(file_browser->task_view)))
     {
         c->var[CONTEXT_TASK_TYPE] = g_strdup( job_titles[ptask->task->type] );
         if ( ptask->task->type == VFS_FILE_TASK_EXEC )
@@ -4451,7 +4451,7 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
         // cwd
         gboolean cwd_needs_quote;
         cwd = ptk_file_browser_get_cwd( a_browser );
-        if ( cwd_needs_quote = !!strchr( cwd, '\'' ) )
+        if ((cwd_needs_quote = !!strchr(cwd, '\'')))
         {
             path = bash_quote( cwd );
             fprintf( file, "\nfm_pwd_panel[%d]=%s\n", p, path );
@@ -4813,7 +4813,7 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
          "change",
          "run"
     };
-    if ( ptask = get_selected_task( file_browser->task_view ) )
+    if ((ptask = get_selected_task(file_browser->task_view)))
     {
         fprintf( file, "\nfm_task_type='%s'\n", job_titles[ptask->task->type] );
         if ( ptask->task->type == VFS_FILE_TASK_EXEC )
@@ -5421,7 +5421,7 @@ gboolean on_task_button_press_event( GtkWidget* view, GdkEventButton *event,
     {
         // get selected task
         model = gtk_tree_view_get_model( GTK_TREE_VIEW( view ) );
-        if ( is_tasks = gtk_tree_model_get_iter_first( model, &it ) )
+        if ((is_tasks = gtk_tree_model_get_iter_first(model, &it)))
         {
             if ( gtk_tree_view_get_path_at_pos( GTK_TREE_VIEW( view ), event->x,
                                         event->y, &tree_path, &col, NULL, NULL ) )

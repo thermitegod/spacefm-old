@@ -750,7 +750,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
             }
         }
         // report missing terminal
-        if ( str = strchr( terminal, ' ' ) )
+        if ((str = strchr(terminal, ' ')))
             str[0] = '\0';
         str = g_find_program_in_path( terminal );
         if ( !str )

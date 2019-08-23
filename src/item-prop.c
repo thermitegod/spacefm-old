@@ -312,9 +312,9 @@ int xset_context_test( XSetContext* context, char* rules, gboolean def_disable )
         eleval = value;
         do
         {
-            if ( sep = strstr( eleval, "||" ) )
+            if ((sep = strstr(eleval, "||")))
                 sep_type = 1;
-            else if ( sep = strstr( eleval, "&&" ) )
+            else if ((sep = strstr(eleval, "&&")))
                 sep_type = 2;
 
             if ( sep )
@@ -593,7 +593,7 @@ void on_context_sub_changed( GtkComboBox* box, ContextData* ctxt )
         gtk_combo_box_set_active( GTK_COMBO_BOX( ctxt->box_comp ), atoi( def_comp ) );
         g_free( def_comp );
     }
-    while ( value = get_element_next( &elements ) )
+    while ((value = get_element_next(&elements)))
     {
         gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( ctxt->box_value ), value );
         g_free( value );
@@ -954,9 +954,9 @@ void on_edit_button_press( GtkWidget* btn, ContextData* ctxt )
         else
         {
             char* str;
-            if ( str = strchr( text, ' ' ) )
+            if ((str = strchr(text, ' ')))
                 str[0] = '\0';
-            if ( str = strchr( text, '\n' ) )
+            if ((str = strchr(text, '\n')))
                 str[0] = '\0';
             path = g_strdup( g_strstrip( text ) );
             if ( path[0] == '\0' || ( path[0] != '/' &&
@@ -2475,7 +2475,7 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
                                                    ctxt->item_name );
 
     int response;
-    while ( response = gtk_dialog_run( GTK_DIALOG( ctxt->dlg ) ) )
+    while ((response = gtk_dialog_run(GTK_DIALOG(ctxt->dlg))))
     {
         if ( response == GTK_RESPONSE_OK )
         {

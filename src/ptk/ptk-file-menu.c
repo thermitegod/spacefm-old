@@ -1826,7 +1826,7 @@ char* get_shared_desktop_file_location( const char* name )
     dirs = g_get_system_data_dirs();
     for ( ; *dirs; ++dirs )
     {
-        if ( ret = vfs_mime_type_locate_desktop_file( *dirs, name ) )
+        if ((ret = vfs_mime_type_locate_desktop_file(*dirs, name)))
             return ret;
     }
     return NULL;
@@ -2010,15 +2010,15 @@ void app_job( GtkWidget* item, GtkWidget* app_item )
             if ( g_file_get_contents ( usr_path, &contents, NULL, NULL ) )
             {
                 char* start = NULL;
-                if ( str = strstr( contents, "\n<mime-type " ) )
+                if ((str = strstr(contents, "\n<mime-type ")))
                 {
-                    if ( str = strstr( str, ">\n" ) )
+                    if ((str = strstr(str, ">\n")))
                     {
                         str[1] = '\0';
                         start = contents;
-                        if ( str = strstr( str + 2, "<!--Created automatically" ) )
+                        if ((str = strstr(str + 2, "<!--Created automatically")))
                         {
-                            if ( str = strstr( str, "-->" ) )
+                            if ((str = strstr(str, "-->")))
                                 start = str + 4;
                         }
                     }

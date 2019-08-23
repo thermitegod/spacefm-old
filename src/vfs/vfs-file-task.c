@@ -1122,7 +1122,7 @@ char* vfs_file_task_get_cpids( GPid pid )
         cpids = g_strdup( stdout );
         // get grand cpids recursively
         pids = stdout;
-        while ( nl = strchr( pids, '\n' ) )
+        while ((nl = strchr(pids, '\n')))
         {
             nl[0] = '\0';
             pida = g_strdup( pids );
@@ -1132,7 +1132,7 @@ char* vfs_file_task_get_cpids( GPid pid )
             g_free(pida );
             if ( pidi )
             {
-                if ( gcpids = vfs_file_task_get_cpids( pidi ) )
+                if ((gcpids = vfs_file_task_get_cpids(pidi)))
                 {
                     old_cpids = cpids;
                     cpids = g_strdup_printf( "%s%s", old_cpids, gcpids );
@@ -1161,7 +1161,7 @@ void vfs_file_task_kill_cpids( char* cpids, int signal )
         return;
 
     pids = cpids;
-    while ( nl = strchr( pids, '\n' ) )
+    while ((nl = strchr(pids, '\n')))
     {
         nl[0] = '\0';
         pida = g_strdup( pids );

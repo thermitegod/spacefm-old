@@ -598,8 +598,8 @@ void save_command_history( GtkEntry* entry )
         return;
     const char* text = gtk_entry_get_text( GTK_ENTRY( entry ) );
     // remove duplicates
-    while ( l = g_list_find_custom( xset_cmd_history, text,
-                                                    (GCompareFunc)g_strcmp0 ) )
+    while ((l = g_list_find_custom(xset_cmd_history, text,
+                                                    (GCompareFunc)g_strcmp0)))
     {
         g_free( (char*)l->data );
         xset_cmd_history = g_list_delete_link( xset_cmd_history, l );
@@ -2032,7 +2032,7 @@ void ptk_file_browser_select_last( PtkFileBrowser* file_browser ) //MOD added
         }
         if ( !element )
         {
-            while ( l = l->prev )
+            while ((l = l->prev))
             {
                 if ( l->data && !strcmp( (char*)l->data,
                                     (char*)file_browser->curHistory->data ) )

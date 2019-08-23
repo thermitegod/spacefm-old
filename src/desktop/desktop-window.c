@@ -3791,7 +3791,7 @@ GCompareDataFunc get_sort_func( DesktopWindow* win )
 int comp_item_by_name( DesktopItem* item1, DesktopItem* item2, DesktopWindow* win )
 {
     int ret;
-    if( ret = COMP_VIRTUAL( item1, item2 ) )
+    if((ret = COMP_VIRTUAL(item1, item2)))
         return ret;
     //ret =g_utf8_collate( item1->fi->disp_name, item2->fi->disp_name );
     // natural icase
@@ -3804,7 +3804,7 @@ int comp_item_by_name( DesktopItem* item1, DesktopItem* item2, DesktopWindow* wi
 int comp_item_by_size( DesktopItem* item1, DesktopItem* item2, DesktopWindow* win  )
 {
     int ret;
-    if( ret = COMP_VIRTUAL( item1, item2 ) )
+    if((ret = COMP_VIRTUAL(item1, item2)))
         return ret;
     ret =item1->fi->size - item2->fi->size;
 
@@ -3818,7 +3818,7 @@ int comp_item_by_size( DesktopItem* item1, DesktopItem* item2, DesktopWindow* wi
 int comp_item_by_mtime( DesktopItem* item1, DesktopItem* item2, DesktopWindow* win  )
 {
     int ret;
-    if( ret = COMP_VIRTUAL( item1, item2 ) )
+    if((ret = COMP_VIRTUAL(item1, item2)))
         return ret;
     ret =item1->fi->mtime - item2->fi->mtime;
 
@@ -3832,7 +3832,7 @@ int comp_item_by_mtime( DesktopItem* item1, DesktopItem* item2, DesktopWindow* w
 int comp_item_by_type( DesktopItem* item1, DesktopItem* item2, DesktopWindow* win  )
 {
     int ret;
-    if( ret = COMP_VIRTUAL( item1, item2 ) )
+    if((ret = COMP_VIRTUAL(item1, item2)))
         return ret;
     ret = g_strcmp0( item1->fi->mime_type->type, item2->fi->mime_type->type );
 
@@ -3885,8 +3885,8 @@ void desktop_window_sort_items( DesktopWindow* win, DWSortType sort_by,
                     desktop_item_free( item );
                     continue;
                 }
-                if ( ptr = g_hash_table_lookup( order_hash,
-                                    vfs_file_info_get_name( item->fi ) ) )
+                if ((ptr = g_hash_table_lookup(order_hash,
+                                    vfs_file_info_get_name(item->fi))))
                 {
                     order = GPOINTER_TO_INT( ptr ) - 1;
                     ll = g_list_nth( items, order );
@@ -4146,7 +4146,7 @@ static GHashTable* custom_order_read( DesktopWindow* self )
         while ( fgets( line, sizeof( line ), file ) )
         {
             strtok( line, "\r\n" );
-            if ( sep = strchr( line, '=' ) )
+            if ((sep = strchr(line, '=')))
             {
                 sep[0] = '\0';
                 if ( line[0] == '~' )
