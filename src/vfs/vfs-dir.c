@@ -526,7 +526,7 @@ static gboolean is_dir_virtual( const char* path )
 char* gethidden( const char* path )  //MOD added
 {
     // Read .hidden into string
-    char* hidden_path = g_build_filename( path, ".hidden", NULL );     
+    char* hidden_path = g_build_filename( path, ".hidden", NULL );
 
     // test access first because open() on missing file may cause
     // long delay on nfs
@@ -539,7 +539,7 @@ char* gethidden( const char* path )  //MOD added
     acc = 0;
 #endif
     if ( acc != 0 )
-    {       
+    {
         g_free( hidden_path );
         return NULL;
     }
@@ -602,7 +602,7 @@ gboolean vfs_dir_add_hidden( const char* path, const char* file_name )
         char* file_path = g_build_filename( path, ".hidden", NULL );
         int fd = open( file_path, O_WRONLY | O_CREAT | O_APPEND, 0644 );
         g_free( file_path );
-        
+
         if ( fd != -1 )
         {
             if ( write( fd, buf, strlen( buf ) ) == -1 )
@@ -611,10 +611,10 @@ gboolean vfs_dir_add_hidden( const char* path, const char* file_name )
         }
         else
             ret = FALSE;
-    
+
         g_free( buf );
     }
-    
+
     if ( hidden )
         g_free( hidden );
     return ret;
@@ -992,7 +992,7 @@ VFSDir* vfs_dir_get_by_path_soft( const char* path )
         g_object_ref( dir );
     return dir;
 }
-    
+
 VFSDir* vfs_dir_get_by_path( const char* path )
 {
     VFSDir * dir = NULL;
@@ -1233,7 +1233,7 @@ void mime_change( gpointer user_data )
     }
     if ( mime_dir )
     {
-        // update mime database in 2 seconds 
+        // update mime database in 2 seconds
         mime_change_timer = g_timeout_add_seconds( 2,
                                     ( GSourceFunc ) on_mime_change_timer, NULL );
         //printf("MIME-UPDATE timer started\n" );

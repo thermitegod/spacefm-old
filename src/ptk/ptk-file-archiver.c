@@ -1,13 +1,13 @@
 /*
  * SpaceFM ptk-file-archiver.c
- * 
+ *
  * Copyright (C) 2015 IgnorantGuru <ignorantguru@gmx.com>
  * Copyright (C) 2013-2014 OmegaPhil <OmegaPhil@startmail.com>
  * Copyright (C) 2014 IgnorantGuru <ignorantguru@gmx.com>
  * Copyright (C) 2006 Hong Jen Yee (PCMan) <pcman.tw (AT) gmail.com>
- * 
+ *
  * License: See COPYING file
- * 
+ *
 */
 
 
@@ -185,7 +185,7 @@ static void on_format_changed( GtkComboBox* combo, gpointer user_data )
 
             // Updating new archive filename
             gtk_file_chooser_set_current_name( GTK_FILE_CHOOSER( dlg ), new_name );
-            
+
             g_free( new_name );
             g_free( extension );
         }
@@ -205,7 +205,7 @@ static void on_format_changed( GtkComboBox* combo, gpointer user_data )
         if ( err_msg )
         {
             xset_msg_dialog( GTK_WIDGET( dlg ), GTK_MESSAGE_ERROR,
-                                _("Error Loading Handler"), NULL, 0, 
+                                _("Error Loading Handler"), NULL, 0,
                                 err_msg, NULL, NULL );
             g_free( err_msg );
         }
@@ -260,7 +260,7 @@ char* replace_archive_subs( const char* line, const char* n, const char* N,
 
     if ( !line )
         return g_strdup( "" );
-    
+
     s = g_strdup( "" );
     char* ptr = (char*) line;
     while ( ptr[0] )
@@ -470,11 +470,11 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
                                 COL_HANDLER_EXTENSIONS, extensions,
                                 -1 );
             g_free( extensions );
-            
+
             // Is last used handler?
             if ( !g_strcmp0( xset_name, handler_xset->name ) )
                 format = n;
-            n++;            
+            n++;
         }
     }
 
@@ -533,7 +533,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
             if ( err_msg )
             {
                 xset_msg_dialog( GTK_WIDGET( dlg ), GTK_MESSAGE_ERROR,
-                                    _("Error Loading Handler"), NULL, 0, 
+                                    _("Error Loading Handler"), NULL, 0,
                                     err_msg, NULL, NULL );
                 g_free( err_msg );
             }
@@ -547,7 +547,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
         g_warning( "Unable to fetch the iter from handler ordinal %d!", format );
     };
     g_free( str );
-    
+
     // Mnemonically attaching widgets to labels
     gtk_label_set_mnemonic_widget( GTK_LABEL( lbl_archive_format ),
                                    combo );
@@ -614,7 +614,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
     gchar* command = NULL;
     gboolean run_in_terminal;
     gtk_widget_show_all( dlg );
-    
+
     while( res = gtk_dialog_run( GTK_DIALOG( dlg ) ) )
     {
         if ( res == GTK_RESPONSE_OK )
@@ -644,7 +644,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
             // Saving selected archive handler name as default
             xset_set( "arc_dlg", "s", xset_name );
             g_free( xset_name );
-            
+
             // run in the terminal or not
             run_in_terminal = handler_xset->in_terminal == XSET_B_TRUE;
 
@@ -659,7 +659,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
             if ( ptk_handler_command_is_empty( command ) )
             {
                 xset_msg_dialog( GTK_WIDGET( dlg ), GTK_MESSAGE_ERROR,
-                                    _("Create Archive"), NULL, 0, 
+                                    _("Create Archive"), NULL, 0,
                                     _("The archive creation command is empty.  Please enter a command."),
                                     NULL, NULL );
                 g_free( command );
@@ -717,7 +717,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
                 g_free( err_msg );
                 compress_cmd = g_strdup( "" );
             }
-            
+
             // Checking to see if the compression command has changed
             if ( g_strcmp0( compress_cmd, command ) )
             {
@@ -764,14 +764,14 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
                 if ( err_msg )
                 {
                     xset_msg_dialog( GTK_WIDGET( dlg ), GTK_MESSAGE_ERROR,
-                                        _("Error Saving Handler"), NULL, 0, 
+                                        _("Error Saving Handler"), NULL, 0,
                                         err_msg, NULL, NULL );
                     g_free( err_msg );
-                }                
+                }
             }
             else
                 g_free( compress_cmd );
-            
+
             // Saving settings
             xset_autosave( FALSE, FALSE );
             break;
@@ -883,7 +883,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
             }
             else
                 desc = bash_quote( desc );
-            
+
             // Replace sub vars  %n %N %O (and erroneous %o treat as %O)
             cmd_to_run = replace_archive_subs( command,
                             i == 0 ? desc : "",  // first run only %n = desc
@@ -891,7 +891,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
                             udest_quote, NULL, NULL );
             g_free( udest_quote );
             g_free( desc );
-            
+
             // Appending to final command as appropriate
             if (i == 0)
                 final_command = g_strconcat( cmd_to_run,
@@ -931,7 +931,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
             }
             else
                 first = bash_quote( desc );
-            
+
             /* Generating string of selected files/directories to archive if
              * '%N' is present */
             if ( g_strstr_len( command, -1, "%N" ) )
@@ -963,11 +963,11 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
             // no files selected!
             first = g_strdup( "" );
         }
-        
+
         // Replace sub vars  %n %N %o
         cmd_to_run = replace_archive_subs( command, first, all, udest_quote,
                                            NULL, NULL );
-        
+
         // Enforce error check
         final_command = g_strconcat( cmd_to_run,
                                      "\n[[ $? -eq 0 ]] || fm_handle_err\n",
@@ -1201,7 +1201,7 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
                 choose_dir = gtk_file_chooser_get_filename( GTK_FILE_CHOOSER( dlg ) );
                 create_parent = gtk_toggle_button_get_active(
                                             GTK_TOGGLE_BUTTON( chk_parent ) );
-                write_access = create_parent && 
+                write_access = create_parent &&
                     gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( chk_write ) );
                 xset_set_b( "arc_dlg", create_parent );
                 xset_set( "arc_dlg", "z", write_access ? "1" : "0" );
@@ -1305,7 +1305,7 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
             continue;
         }
         printf( "Archive Handler Selected: %s\n", handler_xset->menu_label );
-        
+
         /* Handler found - fetching the 'run in terminal' preference, if
          * the operation is listing then the terminal should be kept
          * open, otherwise the user should explicitly keep the terminal
@@ -1520,7 +1520,7 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
         cmd = replace_archive_subs( cmd, NULL, NULL, NULL, full_quote,
                                     extract_target );
         g_free( str );
-        
+
         /* Finally constructing command to run, taking into account more than
          * one archive to list/extract. The mkparent command itself has error
          * checking - final error check not here as I want the code shared with
@@ -1531,7 +1531,7 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
                   (g_strcmp0( final_command, "" ) < 0) ? "" : final_command,
                                          dest_quote, mkparent, cmd, perm );
         g_free( str );
-        
+
         // Cleaning up
         g_free( full_quote );
         g_free( full_path );

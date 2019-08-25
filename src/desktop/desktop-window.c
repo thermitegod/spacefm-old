@@ -379,7 +379,7 @@ static void desktop_window_init(DesktopWindow *self)
         if ( g_file_test( desk_dir, G_FILE_TEST_EXISTS ) )
             self->dir = vfs_dir_get_by_path( vfs_get_desktop_dir() );
         else
-            self->dir = NULL;  // FIXME this is not handled well 
+            self->dir = NULL;  // FIXME this is not handled well
     }
 
     if ( self->dir && vfs_dir_is_file_listed( self->dir ) )
@@ -760,7 +760,7 @@ void desktop_window_set_background( DesktopWindow* win, GdkPixbuf* src_pix, DWBg
     if( win->surface )
         cairo_surface_destroy ( win->surface );
 
-    win->surface = surface;        
+    win->surface = surface;
 #else
     if( win->background )
         g_object_unref( win->background );
@@ -850,7 +850,7 @@ void desktop_window_set_icon_size( DesktopWindow* win, int size )
     win->margin_bottom = app_settings.margin_bottom;
     if ( win->sort_by == DW_SORT_CUSTOM )
         win->order_rows = win->row_count; // possible change of row count in new layout
-    
+
     layout_items( win );
 
     for( l = win->items; l; l = l->next )
@@ -1181,7 +1181,7 @@ static void open_clicked_item( DesktopWindow* self, DesktopItem* clicked_item )
 {
     if ( !clicked_item->fi )
         return;
-    /* this won't work yet because desktop context_fill doesn't do selected 
+    /* this won't work yet because desktop context_fill doesn't do selected
      * else if ( xset_opener( self, NULL, 1 ) )
         return;
     */
@@ -1244,7 +1244,7 @@ gboolean on_button_press( GtkWidget* w, GdkEventButton* evt )
         if( ! (evt->state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK)) )
         {
             /* don't cancel selection if clicking on selected items OR
-             * clicking on desktop with right button 
+             * clicking on desktop with right button
             if( !( (evt->button == 1 || evt->button == 3 || evt->button == 0)
                                 && clicked_item && clicked_item->is_selected)
                         && !( !clicked_item && evt->button == 3 ) ) */
@@ -1384,7 +1384,7 @@ gboolean on_button_release( GtkWidget* w, GdkEventButton* evt )
     {
         self->dragging = FALSE;
     }
-    else if ( evt->button == 1 && !( evt->state & 
+    else if ( evt->button == 1 && !( evt->state &
                       ( GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD1_MASK ) ) )
     {
         // unmodified left click release
@@ -1476,7 +1476,7 @@ gboolean on_mouse_move( GtkWidget* w, GdkEventMotion* evt )
                 /* FIXME: timeout should be customizable */
                 if( !app_settings.desk_no_single_hover &&
                                     0 == self->single_click_timeout_handler )
-                    self->single_click_timeout_handler = 
+                    self->single_click_timeout_handler =
                                     g_timeout_add( SINGLE_CLICK_TIMEOUT,
                                     (GSourceFunc)on_single_click_timeout, self );
             }
@@ -1736,7 +1736,7 @@ static char** get_files_from_selection_data(GtkSelectionData* data)
     return files;
 }
 
-void move_desktop_items( DesktopWindow* self, GdkDragContext* ctx, 
+void move_desktop_items( DesktopWindow* self, GdkDragContext* ctx,
                                                     DesktopItem* target_item )
 {
     DesktopItem* item;
@@ -1755,10 +1755,10 @@ void move_desktop_items( DesktopWindow* self, GdkDragContext* ctx,
         g_list_free( sel_items );
         return;
     }
-    
+
     // sort selected items by name - don't change user's order of icons ?
     //sel_items = g_list_sort_with_data( sel_items,
-    //                                (GCompareDataFunc)comp_item_by_name, NULL );   
+    //                                (GCompareDataFunc)comp_item_by_name, NULL );
 
     for ( l = sel_items; l; l = l->next )
     {
@@ -1828,7 +1828,7 @@ void desktop_window_set_insert_item( DesktopWindow* self )
     }
 }
 
-void on_drag_data_received( GtkWidget* w, GdkDragContext* ctx, gint x, gint y, 
+void on_drag_data_received( GtkWidget* w, GdkDragContext* ctx, gint x, gint y,
                             GtkSelectionData* data, guint info, guint time )
 {
     DesktopWindow* self = (DesktopWindow*)w;
@@ -1857,7 +1857,7 @@ void on_drag_data_received( GtkWidget* w, GdkDragContext* ctx, gint x, gint y,
         GList* file_list;
         struct stat statbuf;    // skip stat64
 
-        if( (gtk_selection_data_get_length( data ) < 0) || 
+        if( (gtk_selection_data_get_length( data ) < 0) ||
                                 (gtk_selection_data_get_format( data ) != 8) )
         {
             gtk_drag_finish( ctx, FALSE, FALSE, time );
@@ -1886,7 +1886,7 @@ void on_drag_data_received( GtkWidget* w, GdkDragContext* ctx, gint x, gint y,
                     {
                         for( pfile = files; *pfile; ++pfile )
                         {
-                            if( lstat( *pfile, &statbuf ) == 0 
+                            if( lstat( *pfile, &statbuf ) == 0
                                                 && statbuf.st_dev != dest_dev )
                             {
                                 self->drag_src_dev = statbuf.st_dev;
@@ -1958,7 +1958,7 @@ void on_drag_data_received( GtkWidget* w, GdkDragContext* ctx, gint x, gint y,
                 file_list = g_list_prepend( file_list, files[i] );
             g_free( files );
             file_list = g_list_reverse( file_list );
-            
+
             task = ptk_file_task_new( file_action,
                                       file_list,
                                       dest_dir ? dest_dir : vfs_get_desktop_dir(),
@@ -2037,7 +2037,7 @@ void desktop_window_rename_selected_files( DesktopWindow* self,
     VFSFileInfo* file;
     DesktopItem* item;
     char* msg;
-    
+
     for ( l = files; l; l = l->next )
     {
         file = (VFSFileInfo*)l->data;
@@ -2055,7 +2055,7 @@ void desktop_window_rename_selected_files( DesktopWindow* self,
                 if ( !have_rw_access( target ) )
                 {
                     msg = g_strdup_printf( _("You do not have permission to edit the contents of file %s\n\nConsider copying the file to the desktop, or link to a copy placed in ~/.local/share/applications/"), target );
-                    xset_msg_dialog( GTK_WIDGET( self ), GTK_MESSAGE_INFO, _("Unable To Rename"), NULL, 0, msg, NULL, NULL );                    
+                    xset_msg_dialog( GTK_WIDGET( self ), GTK_MESSAGE_INFO, _("Unable To Rename"), NULL, 0, msg, NULL, NULL );
                     g_free( msg );
                     g_free( path );
                     g_free( filename );
@@ -2148,7 +2148,7 @@ DesktopItem* get_next_item( DesktopWindow* self, int direction )
         current_item = (DesktopItem*) self->items->data;
         self->focus = current_item;
     }
-    else 
+    else
         return NULL; //No items!
 
     for ( l = self->items; l; l = l->next )
@@ -2247,7 +2247,7 @@ void desktop_window_select( DesktopWindow* self, DWSelectMode mode )
     char* key;
     char* name;
     gboolean icase = FALSE;
-    
+
     if ( mode < DW_SELECT_ALL || mode > DW_SELECT_PATTERN )
         return;
 
@@ -2650,18 +2650,18 @@ void desktop_window_on_autoopen_cb( gpointer task, gpointer aop )
     if ( !GTK_IS_WIDGET( ao->desktop ) )
         return;
     DesktopWindow* self = ao->desktop;
-    
+
     if ( ao->path && g_file_test( ao->path, G_FILE_TEST_EXISTS ) )
     {
         char* cwd = g_path_get_dirname( ao->path );
         VFSFileInfo* file;
 
         // select item on desktop
-        if ( GTK_IS_WINDOW( self ) && self->dir && 
+        if ( GTK_IS_WINDOW( self ) && self->dir &&
                                     !g_strcmp0( cwd, vfs_get_desktop_dir() ) )
         {
             char* name = g_path_get_basename( ao->path );
-            
+
             // force file created notify
             vfs_dir_emit_file_created( self->dir, name, TRUE );
             vfs_dir_flush_notify_cache();
@@ -2672,7 +2672,7 @@ void desktop_window_on_autoopen_cb( gpointer task, gpointer aop )
             for ( l = self->items; l; l = l->next )
             {
                 item = (DesktopItem*)l->data;
-                if ( item->fi && 
+                if ( item->fi &&
                             !g_strcmp0( vfs_file_info_get_name( item->fi ), name ) )
                     break;
             }
@@ -2724,15 +2724,15 @@ void calc_item_size( DesktopWindow* self, DesktopItem* item )
     PangoLayoutLine* line;
     int line_h;
     gboolean fake_line = TRUE;  //self->sort_by == DW_SORT_CUSTOM;
-    
+
     item->box.width = self->item_w;
     item->box.height = self->y_pad * 2;
     item->box.height += self->icon_size;
     item->box.height += self->spacing;
 
-    // get text_rect height 
+    // get text_rect height
     item->text_rect.height = 0;
-    
+
     if ( item->fi )  // not empty
     {
         pango_layout_set_text( self->pl, item->fi->disp_name, -1 );
@@ -2807,7 +2807,7 @@ start_layout:
     self->box_count = 0;
     self->row_count = 0;
     row_count = 0;
-    
+
     for ( l = self->items; l; l = l->next )
     {
         item = (DesktopItem*)l->data;
@@ -2823,7 +2823,7 @@ start_layout:
             if ( !self->row_count )
                 self->row_count = row_count;
             row_count = 1;  // adding first row of new column
-            if ( self->sort_by == DW_SORT_CUSTOM && 
+            if ( self->sort_by == DW_SORT_CUSTOM &&
                                 self->order_rows > self->row_count && l->prev )
             {
                 // saved row count was greater than current - eat empties
@@ -2870,13 +2870,13 @@ start_layout:
                 l = l->prev;
             }
         }
-        
+
         if ( !list_compressed && x + item->box.width > right )
         {
             // right side reached - remove empties and redo layout (custom sort)
             gboolean list_changed = FALSE;
             // scan down below box_count and remove all empties
-            for ( ll = g_list_nth( self->items, self->box_count ); ll; 
+            for ( ll = g_list_nth( self->items, self->box_count ); ll;
                                                             ll = ll->next )
             {
                 if ( !((DesktopItem*)ll->data)->fi )
@@ -2893,7 +2893,7 @@ start_layout:
                                 g_list_length( self->items ) > self->box_count )
             {
                 empty_removed = FALSE;
-                for ( ll = g_list_nth( self->items, self->box_count - 1 ); ll; 
+                for ( ll = g_list_nth( self->items, self->box_count - 1 ); ll;
                                                                 ll = ll->prev )
                 {
                     if ( !((DesktopItem*)ll->data)->fi )
@@ -2905,7 +2905,7 @@ start_layout:
                         empty_removed = TRUE;
                         break;
                     }
-                }                
+                }
             }
             // all items now fit or list is as compressed as possible - redo
             list_compressed = TRUE;
@@ -2926,13 +2926,13 @@ start_layout:
         item->text_rect.y = item->box.y + self->y_pad + self->icon_size + self->spacing;
         /*
         if ( !item->fi )
-            printf( "LAY EMPTY %d, %d  %p\n", x, y, item );            
+            printf( "LAY EMPTY %d, %d  %p\n", x, y, item );
         else
             printf( "LAY %s %d, %d  %p\n", vfs_file_info_get_name( item->fi ), x, y, item );
         */
     }
     self->order_rows = 0;  // reset
-    
+
     if ( self->sort_by == DW_SORT_CUSTOM )
     {
         // add empty boxes to fill window
@@ -2943,7 +2943,7 @@ start_layout:
             item->fi = NULL;
             item->box.width = self->item_w;
             calc_item_size( self, item );
-            
+
             if( y + item->box.height > bottom )
             {
                 // bottom reached - go to next column
@@ -2957,12 +2957,12 @@ start_layout:
                 g_slice_free( DesktopItem, item );
                 break;
             }
-            
+
             item->box.x = x;
             item->box.y = y;
             //printf( "ADD empty %d, %d  %p\n", x, y, item );
             y += item->box.height; // go to next row
-            
+
             // add to list
             self->items = g_list_append( self->items, item );
             self->box_count++;
@@ -2983,7 +2983,7 @@ void on_file_listed( VFSDir* dir, gboolean is_cancelled, DesktopWindow* self )
     int order, i;
     GList* ll;
     GList* unordered = NULL;
-    
+
     self->file_listed = TRUE;
     GHashTable* order_hash = custom_order_read( self );
 
@@ -3009,9 +3009,9 @@ void on_file_listed( VFSDir* dir, gboolean is_cancelled, DesktopWindow* self )
                     {
                         target_item = g_slice_new0( DesktopItem );
                         target_item->fi = NULL;
-                        items = g_list_append( items, target_item );                    
+                        items = g_list_append( items, target_item );
                     }
-                    items = g_list_append( items, item );                    
+                    items = g_list_append( items, item );
                 }
                 else if ( ((DesktopItem*)ll->data)->fi )
                 {
@@ -3162,7 +3162,7 @@ void on_file_created( VFSDir* dir, VFSFileInfo* file, gpointer user_data )
                         self->items = g_list_remove( self->items, ll->data );
                         break;
                     }
-                }                
+                }
             }
             else
             {
@@ -3189,7 +3189,7 @@ void on_file_created( VFSDir* dir, VFSFileInfo* file, gpointer user_data )
             {
                 if ( !((DesktopItem*)l->data)->fi )
                     ll = l;  // found empty
-                else 
+                else
                     break;   // found icon
             }
             if ( ll )
@@ -3319,7 +3319,7 @@ void desktop_window_copycmd( DesktopWindow* desktop, GList* sel_files,
     char* copy_dest = NULL;
     char* move_dest = NULL;
     char* path;
-    
+
     if ( !strcmp( setname, "copy_loc_last" ) )
     {
         set2 = xset_get( "copy_loc_last" );
@@ -3357,12 +3357,12 @@ void desktop_window_copycmd( DesktopWindow* desktop, GList* sel_files,
         else
             return;
     }
-    
+
     if ( copy_dest || move_dest )
     {
         int file_action;
         char* dest_dir;
-        
+
         if ( copy_dest )
         {
             file_action = VFS_FILE_TASK_COPY;
@@ -3373,7 +3373,7 @@ void desktop_window_copycmd( DesktopWindow* desktop, GList* sel_files,
             file_action = VFS_FILE_TASK_MOVE;
             dest_dir = move_dest;
         }
-        
+
         if ( !strcmp( dest_dir, cwd ) )
         {
             xset_msg_dialog( GTK_WIDGET( desktop ), GTK_MESSAGE_ERROR,
@@ -3419,7 +3419,7 @@ void paint_item( DesktopWindow* self, DesktopItem* item, GdkRectangle* expose_ar
 {
     /* GdkPixbuf* icon = item->icon ? gdk_pixbuf_ref(item->icon) : NULL; */
     GdkPixbuf* icon;
-    
+
     if ( !item->fi )
         return;   // empty
     const char* text = item->fi->disp_name;
@@ -3647,7 +3647,7 @@ DesktopItem* hit_test_box( DesktopWindow* self, int x, int y )  //sfm
             return item;
         }
     }
-    
+
     // unlikely - no box was directly hit, so use closest
     GList* closest_l = NULL;
     float dist_min, dist;
@@ -3669,7 +3669,7 @@ DesktopItem* hit_test_box( DesktopWindow* self, int x, int y )  //sfm
         return NULL;
     if ( !((DesktopItem*)closest_l->data)->fi )
         return (DesktopItem*)closest_l->data;
-    if ( !( closest_l->next && ((DesktopItem*)closest_l->next->data)->box.x == 
+    if ( !( closest_l->next && ((DesktopItem*)closest_l->next->data)->box.x ==
                                ((DesktopItem*)closest_l->data)->box.x ) )
         // if closest is non-empty and last item in column, use next
         return closest_l->next ? (DesktopItem*)closest_l->next->data : NULL;
@@ -3682,9 +3682,9 @@ void open_folders( GList* folders )
 {
     FMMainWindow* main_window;
     gboolean new_window = FALSE;
-    
+
     main_window = fm_main_window_get_on_current_desktop();
-    
+
     if ( !main_window )
     {
         main_window = FM_MAIN_WINDOW(fm_main_window_new());
@@ -3697,7 +3697,7 @@ void open_folders( GList* folders )
         */
         new_window = !xset_get_b( "main_save_tabs" );
     }
-    
+
     while( folders )
     {
         VFSFileInfo* fi = (VFSFileInfo*)folders->data;
@@ -3739,12 +3739,12 @@ void desktop_window_open_desktop_dir( GtkMenuItem *menuitem,
 {
     FMMainWindow* main_window;
     gboolean new_window = FALSE;
-    
+
     const char* path = vfs_get_desktop_dir();
     if ( !desktop || !path )
         return;
     main_window = fm_main_window_get_on_current_desktop();
-    
+
     if ( !main_window )
     {
         main_window = FM_MAIN_WINDOW( fm_main_window_new() );
@@ -3756,7 +3756,7 @@ void desktop_window_open_desktop_dir( GtkMenuItem *menuitem,
         */
         new_window = !xset_get_b( "main_save_tabs" );
     }
-    
+
     if ( new_window )
     {
         main_window_open_path_in_current_tab( main_window, path );
@@ -3875,7 +3875,7 @@ void desktop_window_sort_items( DesktopWindow* win, DWSortType sort_by,
 
     app_settings.desktop_sort_by = win->sort_by = sort_by;
     app_settings.desktop_sort_type = win->sort_type = sort_type;
-    
+
     if ( sort_by == DW_SORT_CUSTOM )
     {
         GHashTable* order_hash = custom_order_read( win );
@@ -3908,9 +3908,9 @@ void desktop_window_sort_items( DesktopWindow* win, DWSortType sort_by,
                         {
                             target_item = g_slice_new0( DesktopItem );
                             target_item->fi = NULL;
-                            items = g_list_append( items, target_item );                    
+                            items = g_list_append( items, target_item );
                         }
-                        items = g_list_append( items, item );                    
+                        items = g_list_append( items, item );
                     }
                     else if ( ((DesktopItem*)ll->data)->fi )
                     {
@@ -3939,7 +3939,7 @@ void desktop_window_sort_items( DesktopWindow* win, DWSortType sort_by,
             g_list_free( win->items );
             win->items = items;
             g_hash_table_destroy( order_hash );
-        }        
+        }
     }
     else
     {
@@ -3959,7 +3959,7 @@ void desktop_window_sort_items( DesktopWindow* win, DWSortType sort_by,
                 // remove
                 item = (DesktopItem*)items->data;
                 //printf("REMOVE empty %d, %d  %p\n", item->box.x, item->box.y, item );
-                items = items->next;                
+                items = items->next;
                 win->items = g_list_remove( win->items, item );
                 desktop_item_free( item );
             }
@@ -3972,7 +3972,7 @@ void desktop_window_sort_items( DesktopWindow* win, DWSortType sort_by,
 
     // layout
     layout_items( win );
-        
+
     /* //sfm 0.9.0 no longer using special items
     // skip the special items since they always appears first
     GList* items = NULL;
@@ -4004,7 +4004,7 @@ void desktop_window_sort_items( DesktopWindow* win, DWSortType sort_by,
         win->items = g_list_concat( special_items, items );
     else
         win->items = items;
-        
+
     layout_items( win );
     */
 }
@@ -4117,9 +4117,9 @@ static void custom_order_write( DesktopWindow* self )
     if ( file )
     {
         GList* l;
-        
+
         fprintf( file, "~rows=%d\n", self->row_count );
-        
+
         int i = 1; // start from 1 to detect atoi failure
         for ( l = self->items; l; l = l->next )
         {
@@ -4142,13 +4142,13 @@ static GHashTable* custom_order_read( DesktopWindow* self )
     int order;
     GHashTable* order_hash = NULL;
 
-    self->order_rows = 0;    
+    self->order_rows = 0;
     if ( self->sort_by != DW_SORT_CUSTOM )
         return NULL;
     char* filename = g_strdup_printf( "desktop%d", self->screen_index );
     char* path = g_build_filename( xset_get_config_dir(), filename, NULL );
     g_free( filename );
-    
+
     FILE* file = fopen( path, "r" );
     if ( file )
     {
@@ -4185,7 +4185,7 @@ static GHashTable* custom_order_read( DesktopWindow* self )
         }
         fclose( file );
     }
-    g_free( path );    
+    g_free( path );
     return order_hash;
 }
 
@@ -4207,7 +4207,7 @@ GdkFilterReturn on_rootwin_event ( GdkXEvent *xevent,
             get_working_area( gtk_widget_get_screen((GtkWidget*)self), &self->wa );
             //printf("working area is resized   x,y=%d, %d   w,h=%d, %d\n",
             //        self->wa.x, self->wa.y, self->wa.width, self->wa.height);
-            
+
             /* This doesn't seem to have the desired effect, and also
              * desktop window size should be based on screen size not WA
              * https://github.com/IgnorantGuru/spacefm/issues/300
@@ -4374,7 +4374,7 @@ void desktop_context_fill( DesktopWindow* win, gpointer context )
     XSetContext* c = (XSetContext*)context;
     c->valid = FALSE;
     // assume we don't need all selected files info
-    
+
     if ( !c->var[CONTEXT_IS_ROOT] )
         c->var[CONTEXT_IS_ROOT] = geteuid() == 0 ?
                                         g_strdup( "true" ) : g_strdup( "false" );
@@ -4390,7 +4390,7 @@ void desktop_context_fill( DesktopWindow* win, gpointer context )
         else
             c->var[CONTEXT_CLIP_FILES] = g_strdup( "true" );
     }
-    
+
     if ( !c->var[CONTEXT_CLIP_TEXT] )
     {
         if ( !clip )
@@ -4398,7 +4398,7 @@ void desktop_context_fill( DesktopWindow* win, gpointer context )
         c->var[CONTEXT_CLIP_TEXT] = gtk_clipboard_wait_is_text_available( clip ) ?
                                     g_strdup( "true" ) : g_strdup( "false" );
     }
-    
+
     c->var[CONTEXT_BOOKMARK] = g_strdup( "" );
     c->var[CONTEXT_DEVICE] = g_strdup( "" );
     c->var[CONTEXT_DEVICE_LABEL] = g_strdup( "" );
@@ -4406,7 +4406,7 @@ void desktop_context_fill( DesktopWindow* win, gpointer context )
     c->var[CONTEXT_DEVICE_UDI] = g_strdup( "" );
     c->var[CONTEXT_DEVICE_FSTYPE] = g_strdup( "" );
     c->var[CONTEXT_DEVICE_PROP] = g_strdup( "" );
-    
+
     c->var[CONTEXT_PANEL_COUNT] = g_strdup( "" );
     c->var[CONTEXT_PANEL] = g_strdup( "" );
     c->var[CONTEXT_TAB] = g_strdup( "" );
@@ -4446,7 +4446,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
         return FALSE;
     result = fputs( "# source\n\n", file );
     if ( result < 0 ) return FALSE;
- 
+
     write_src_functions( file );
 
     // selected files
@@ -4487,7 +4487,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
         g_list_free( sel_files );
     }
 
-    // my selected files 
+    // my selected files
     esc_path = bash_quote( cwd );
     fprintf( file, "fm_pwd=%s\n", esc_path );
     fprintf( file, "fm_desktop_pwd=%s\n", esc_path );
@@ -4524,7 +4524,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
     esc_path = bash_quote( xset_get_s( "editor" ) );
     fprintf( file, "fm_editor=%s\n", esc_path );
     g_free( esc_path );
-    fprintf( file, "fm_editor_terminal=%d\n", xset_get_b( "editor" ) ? 1 : 0 );    
+    fprintf( file, "fm_editor_terminal=%d\n", xset_get_b( "editor" ) ? 1 : 0 );
 
     // set
     if ( set )
@@ -4563,7 +4563,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
         fprintf( file, "fm_cmd_data=%s\n", esc_path );
         g_free( esc_path );
         g_free( path );
-        
+
         // plugin_dir
         if ( set->plugin )
         {
@@ -4571,7 +4571,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
             fprintf( file, "fm_plugin_dir=%s\n", esc_path );
             g_free( esc_path );
         }
-        
+
         // cmd_name
         if ( set->menu_label )
         {
@@ -4598,7 +4598,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
 gboolean on_configure_event( GtkWidget* w, GdkEventConfigure *event )
 {
     DesktopWindow* self = (DesktopWindow*) w;
-    
+
     printf("on_configure_event %p  x,y=%d, %d    w,h=%d, %d  file_listed = %s\n", self, event->x, event->y, event->width, event->height, self->file_listed ? "TRUE" : "FALSE" );
     get_working_area( gtk_widget_get_screen((GtkWidget*)self), &self->wa ); //temp
     printf("    working area is   x,y=%d, %d   w,h=%d, %d\n",

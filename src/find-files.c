@@ -150,7 +150,7 @@ static gboolean open_file( char* dir, GList* files, PtkFileBrowser* file_browser
             GList * l;
             gchar* full_path;
             VFSFileInfo* file;
-            
+
             for ( l = files; l; l = l->next )
             {
                 file = ( VFSFileInfo* ) l->data;
@@ -194,7 +194,7 @@ static void on_open_files( GtkAction* action, FindFile* data )
     gboolean open_files_has_dir = FALSE;  //sfm
     PtkFileBrowser* file_browser = NULL;  //sfm
     gboolean open_files = TRUE;
-    
+
     if ( action )
         open_files = (0 == strcmp( gtk_action_get_name(action), "OpenAction") );
 
@@ -714,7 +714,7 @@ static void on_stop_search( GtkWidget* btn, FindFile* data )
     if( data->task && ! vfs_async_task_is_finished( data->task ) )
     {
         // see note in vfs-async-task.c: vfs_async_task_real_cancel()
-        GDK_THREADS_LEAVE(); 
+        GDK_THREADS_LEAVE();
         vfs_async_task_cancel( data->task );
         GDK_THREADS_ENTER();
     }
@@ -778,7 +778,7 @@ static void on_add_search_browse(GtkWidget* menu, FindFile* data)
       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
       GTK_STOCK_OPEN, GTK_RESPONSE_OK,
       NULL );
-      
+
     gtk_dialog_set_alternative_button_order( GTK_DIALOG( dlg ), GTK_RESPONSE_OK, GTK_RESPONSE_CANCEL );
     if( gtk_dialog_run( GTK_DIALOG( dlg ) ) == GTK_RESPONSE_OK )
     {
@@ -952,14 +952,14 @@ static gboolean on_view_button_press( GtkTreeView* view, GdkEventButton* evt, Fi
                                            evt->x, evt->y, &tree_path, NULL, NULL, NULL );
             tree_sel = gtk_tree_view_get_selection( GTK_TREE_VIEW( view ) );
 
-            if ( tree_path && tree_sel && 
+            if ( tree_path && tree_sel &&
                         !gtk_tree_selection_path_is_selected( tree_sel, tree_path ) )
             {
                 gtk_tree_selection_unselect_all( tree_sel );
                 gtk_tree_selection_select_path( tree_sel, tree_path );
             }
             gtk_tree_path_free( tree_path );
-            
+
             GtkWidget* popup;
             GtkUIManager* menu_mgr;
             GtkActionGroup* action_group = gtk_action_group_new ("PopupActions");
@@ -995,20 +995,20 @@ static gboolean on_view_button_press( GtkTreeView* view, GdkEventButton* evt, Fi
 void on_use_size_lower_toggled( GtkWidget* widget, FindFile* data )
 {
     gtk_widget_set_sensitive( data->size_lower,
-                    gtk_toggle_button_get_active( 
+                    gtk_toggle_button_get_active(
                     GTK_TOGGLE_BUTTON( data->use_size_lower ) ) );
-    gtk_widget_set_sensitive( data->size_lower_unit, 
-                    gtk_toggle_button_get_active( 
+    gtk_widget_set_sensitive( data->size_lower_unit,
+                    gtk_toggle_button_get_active(
                     GTK_TOGGLE_BUTTON( data->use_size_lower ) ) );
 }
 
 void on_use_size_upper_toggled( GtkWidget* widget, FindFile* data )
 {
     gtk_widget_set_sensitive( data->size_upper,
-                    gtk_toggle_button_get_active( 
+                    gtk_toggle_button_get_active(
                     GTK_TOGGLE_BUTTON( data->use_size_upper ) ) );
-    gtk_widget_set_sensitive( data->size_upper_unit, 
-                    gtk_toggle_button_get_active( 
+    gtk_widget_set_sensitive( data->size_upper_unit,
+                    gtk_toggle_button_get_active(
                     GTK_TOGGLE_BUTTON( data->use_size_upper ) ) );
 }
 
@@ -1152,7 +1152,7 @@ void fm_find_files( const char** search_dirs )
     int height = xset_get_int( "main_search", "y" );
     if ( width && height )
         gtk_window_set_default_size( GTK_WINDOW( data->win ), width, height );
-    
+
     gtk_widget_show( data->win );
 
 }

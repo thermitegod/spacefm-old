@@ -1,11 +1,11 @@
 /*
  * SpaceFM settings.h
- * 
+ *
  * Copyright (C) 2015 IgnorantGuru <ignorantguru@gmx.com>
  * Copyright (C) 2006 Hong Jen Yee (PCMan) <pcman.tw (AT) gmail.com>
- * 
+ *
  * License: See COPYING file
- * 
+ *
 */
 
 #ifndef _SETTINGS_H_
@@ -60,7 +60,7 @@ typedef struct
     gboolean sdebug;            //sfm
     gboolean load_saved_tabs;   //sfm
     char* date_format;  //MOD for speed dupe of xset
-    
+
     //int open_bookmark_method; /* 1: current tab, 2: new tab, 3: new window */
     //int view_mode; /* icon view or detailed list view */
     int sort_order; /* Sort by name, size, time */
@@ -93,7 +93,7 @@ typedef struct
     int margin_right;
     int margin_bottom;
     int margin_pad;
-    
+
     /* Interface */
     gboolean always_show_tabs;
     gboolean hide_close_tab_buttons;
@@ -278,7 +278,7 @@ typedef struct
     char* context;
     char tool;              // 0=not 1=true 2=false
     gboolean lock;          // not saved, default true
-    
+
     // Custom Command ( !lock )
     char* prev;
     char* parent;
@@ -301,7 +301,7 @@ typedef struct
     gboolean plugin_top;
     char* plug_name;
     char* plug_dir;
-    
+
 } XSet;
 
 typedef struct

@@ -144,7 +144,7 @@ struct _DesktopWindow
     GdkColor shadow;
 
     GdkRectangle wa;    /* working area */
-    
+
     guint screen_index;     // screen index of this desktop window
     guint box_count;        // number of boxes visible on the desktop
     guint row_count;        // number of rows visible on the desktop

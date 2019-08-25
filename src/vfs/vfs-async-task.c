@@ -199,8 +199,8 @@ void vfs_async_task_real_cancel( VFSAsyncTask* task, gboolean finalize )
      */
 
     //sfm this deadlocks on quick dir change
-    //GDK_THREADS_LEAVE(); 
-    
+    //GDK_THREADS_LEAVE();
+
     vfs_async_task_lock( task );
     task->cancel = TRUE;
     vfs_async_task_unlock( task );

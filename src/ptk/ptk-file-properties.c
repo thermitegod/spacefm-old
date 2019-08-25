@@ -187,9 +187,9 @@ gboolean on_update_labels( FilePropertiesDialogData* data )
         g_free( count_dir );
     }
     else
-        count = g_strdup_printf( ngettext( "%d files", "%d files", 
+        count = g_strdup_printf( ngettext( "%d files", "%d files",
                                  data->total_count), data->total_count );
- 
+
      gtk_label_set_text( data->count_label, count );
     g_free( count );
 
@@ -398,7 +398,7 @@ GtkWidget* file_properties_dlg_new( GtkWindow* parent,
     }
 
     //MOD
-    VFSMimeType* type; 
+    VFSMimeType* type;
     VFSMimeType* type2 = NULL;
     for ( l = sel_files; l ; l = l->next )
     {
@@ -548,7 +548,7 @@ GtkWidget* file_properties_dlg_new( GtkWindow* parent,
 
         data->orig_mtime = NULL;
         data->orig_atime = NULL;
-        
+
         for ( i = 0; i < N_CHMOD_ACTIONS; ++i )
         {
             gtk_toggle_button_set_inconsistent ( data->chmod_btns[ i ], TRUE );
@@ -569,14 +569,14 @@ GtkWidget* file_properties_dlg_new( GtkWindow* parent,
         }
         else
         {
-            if ( vfs_file_info_is_dir( file ) && 
+            if ( vfs_file_info_is_dir( file ) &&
                                             !vfs_file_info_is_symlink( file ) )
                 gtk_label_set_markup_with_mnemonic( GTK_LABEL( label_name ),
                                                     _("<b>Folder _Name:</b>") );
             gtk_entry_set_text( GTK_ENTRY( name ),
                                 vfs_file_info_get_disp_name( file ) );
         }
-        
+
         gtk_editable_set_editable ( GTK_EDITABLE( name ), FALSE );
 
         if ( ! vfs_file_info_is_dir( file ) )
@@ -595,10 +595,10 @@ GtkWidget* file_properties_dlg_new( GtkWindow* parent,
             sprintf( buf, _("%s  ( %lu bytes )"), buf2,
                      ( guint64 ) vfs_file_info_get_blocks( file ) * 512 );
             gtk_label_set_text( data->size_on_disk_label, buf );
-            
+
             gtk_label_set_text( data->count_label, _("1 file") );
         }
-        
+
         // Modified / Accessed
         //gtk_entry_set_text( GTK_ENTRY( mtime ),
         //                    vfs_file_info_get_disp_mtime( file ) );
@@ -628,7 +628,7 @@ GtkWidget* file_properties_dlg_new( GtkWindow* parent,
                 gtk_toggle_button_set_active( data->chmod_btns[ i ], data->chmod_states[ i ] );
             }
         }
-        
+
         // target
         if ( vfs_file_info_is_symlink( file ) )
         {
@@ -683,7 +683,7 @@ GtkWidget* file_properties_dlg_new( GtkWindow* parent,
     g_signal_connect_swapped( gtk_builder_get_object(builder, "cancel_button"),
                         "clicked",
                         G_CALLBACK(gtk_widget_destroy), dlg );
-    
+
     g_object_unref( builder );
 
     gtk_notebook_set_current_page( notebook, page );
@@ -778,7 +778,7 @@ on_dlg_response ( GtkDialog *dialog,
     GtkAllocation allocation;
 
     gtk_widget_get_allocation ( GTK_WIDGET( dialog ), &allocation );
-    
+
     int width = allocation.width;
     int height = allocation.height;
     if ( width && height )
@@ -809,14 +809,14 @@ on_dlg_response ( GtkDialog *dialog,
             char* quoted_time;
             char* quoted_path;
             const char* new_mtime = gtk_entry_get_text( data->mtime );
-            if ( !( new_mtime && new_mtime[0] ) || 
+            if ( !( new_mtime && new_mtime[0] ) ||
                                 !g_strcmp0( data->orig_mtime, new_mtime ) )
                 new_mtime = NULL;
             const char* new_atime = gtk_entry_get_text( data->atime );
-            if ( !( new_atime && new_atime[0] ) || 
+            if ( !( new_atime && new_atime[0] ) ||
                                 !g_strcmp0( data->orig_atime, new_atime ) )
                 new_atime = NULL;
-            
+
             if ( ( new_mtime || new_atime ) && data->file_list )
             {
                 GString* gstr = g_string_new( NULL );
@@ -830,7 +830,7 @@ on_dlg_response ( GtkDialog *dialog,
                     g_free( file_path );
                     g_free( quoted_path );
                 }
-                    
+
                 if ( new_mtime )
                 {
                     quoted_time = bash_quote( new_mtime );
@@ -863,7 +863,7 @@ on_dlg_response ( GtkDialog *dialog,
                     ptk_file_task_run( task );
                 }
             }
-        
+
             /* Set default action for mimetype */
             GtkWidget* open_with;
             if( ( open_with = (GtkWidget*)g_object_get_data( G_OBJECT(dialog), "open_with" ) ) )

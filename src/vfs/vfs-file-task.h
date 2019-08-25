@@ -96,7 +96,7 @@ struct _VFSFileTask
     char* dest_dir; /* Destinaton directory */
     gboolean avoid_changes;
     GSList* devs;
-    
+
     VFSFileTaskOverwriteMode overwrite_mode ;
     gboolean recursive; /* Apply operation to all files under folders
         * recursively. This is default to copy/delete,
@@ -120,13 +120,13 @@ struct _VFSFileTask
     gdouble last_elapsed;
     guint current_item;
     int err_count;
-    
+
     char* current_file; /* copy of Current processed file */
     char* current_dest; /* copy of Current destination file */
 
     int error;
     gboolean error_first;
-    
+
     GThread* thread;
     VFSFileTaskState state;
     VFSFileTaskState state_pause;
@@ -139,13 +139,13 @@ struct _VFSFileTask
 
     VFSFileTaskStateCallback state_cb;
     gpointer state_cb_data;
-    
+
     GMutex* mutex;
 
     //sfm write directly to gtk buffer for speed
     GtkTextBuffer* add_log_buf;
     GtkTextMark* add_log_end;
-    
+
     //MOD run task
     VFSExecType exec_type;
     char* exec_action;

@@ -92,7 +92,7 @@ void ptk_menu_add_items_from_data( GtkWidget* menu,
     {
       if( ! ent->stock_icon ) /* End of menu */
         break;
-        menu_item = gtk_separator_menu_item_new();      
+        menu_item = gtk_separator_menu_item_new();
     }
 
     gtk_menu_shell_append ( GTK_MENU_SHELL(menu), menu_item );
@@ -391,13 +391,13 @@ void transpose_nonlatin_keypress( GdkEventKey* event )
 {
     if ( !( event && event->keyval != 0 ) )
         return;
-    
+
     // is already a latin key?
     if ( ( GDK_KEY_0 <= event->keyval && event->keyval <= GDK_KEY_9 ) ||
          ( GDK_KEY_A <= event->keyval && event->keyval <= GDK_KEY_Z ) ||
          ( GDK_KEY_a <= event->keyval && event->keyval <= GDK_KEY_z ) )
         return;
-    
+
     // We have a non-latin char, try other keyboard groups
     GdkKeymapKey* keys = NULL;
     guint *keyvals;

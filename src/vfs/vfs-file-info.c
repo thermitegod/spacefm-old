@@ -55,12 +55,12 @@ static void vfs_file_info_clear( VFSFileInfo* fi )
     {
         g_free( fi->collate_key );
         fi->collate_key = NULL;
-    }    
+    }
     if ( fi->collate_icase_key )  //sfm
     {
         g_free( fi->collate_icase_key );
         fi->collate_icase_key = NULL;
-    }    
+    }
     if ( fi->disp_size )
     {
         g_free( fi->disp_size );
@@ -404,7 +404,7 @@ static void get_file_perm_string( char* perm, mode_t mode )
         if ( G_LIKELY( mode & S_IXUSR ) )
             perm[ 3 ] = 's';
         else
-            perm[ 3 ] = 'S';        
+            perm[ 3 ] = 'S';
     }
     else
         perm[ 3 ] = ( mode & S_IXUSR ) ? 'x' : '-';
@@ -415,7 +415,7 @@ static void get_file_perm_string( char* perm, mode_t mode )
         if ( G_LIKELY( mode & S_IXGRP ) )
             perm[ 6 ] = 's';
         else
-            perm[ 6 ] = 'S';        
+            perm[ 6 ] = 'S';
     }
     else
         perm[ 6 ] = ( mode & S_IXGRP ) ? 'x' : '-';
@@ -426,7 +426,7 @@ static void get_file_perm_string( char* perm, mode_t mode )
         if ( G_LIKELY( mode & S_IXOTH ) )
             perm[ 9 ] = 't';
         else
-            perm[ 9 ] = 'T';        
+            perm[ 9 ] = 'T';
     }
     else
         perm[ 9 ] = ( mode & S_IXOTH ) ? 'x' : '-';
@@ -663,7 +663,7 @@ gboolean vfs_file_info_is_image( VFSFileInfo* fi )
 gboolean vfs_file_info_is_video( VFSFileInfo* fi )
 {
     /* FIXME: We had better use functions of xdg_mime to check this */
-#ifdef HAVE_FFMPEG 
+#ifdef HAVE_FFMPEG
     if ( ! strncmp( "video/", vfs_mime_type_get_type( fi->mime_type ), 6 ) )
         return TRUE;
 #endif
@@ -797,7 +797,7 @@ void vfs_file_info_load_special_info( VFSFileInfo* fi,
 {
     /*if ( G_LIKELY(fi->type) && G_UNLIKELY(fi->type->name, "application/x-desktop") ) */
     if ( G_UNLIKELY( g_str_has_suffix( fi->name, ".desktop") ) )
-    {    
+    {
         VFSAppDesktop * desktop;
         const char* icon_name;
 

@@ -849,7 +849,7 @@ get_size ( GtkCellRenderer *cell,
     PangoRectangle rect;
     gint xpad, ypad;
     gfloat xalign, yalign;
-   
+
     gtk_cell_renderer_get_padding ( cell, &xpad, &ypad );
     gtk_cell_renderer_get_alignment ( cell, &xalign, &yalign );
 
@@ -965,7 +965,7 @@ ptk_text_renderer_render ( GtkCellRenderer *cell,
 
     cr = gdk_cairo_create ( window );
 #endif
-    
+
     gtk_cell_renderer_get_padding ( cell, &xpad, &ypad );
 
     /* get focus width and padding */

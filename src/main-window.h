@@ -62,7 +62,7 @@ typedef struct _FMMainWindow
 //  GtkWidget *bookmarks;
 //  GtkWidget *status_bar;
   //gint splitter_pos;
-    
+
   /* Check menu items & tool items */
 /*
 GtkCheckMenuItem* open_side_pane_menu;
@@ -174,7 +174,7 @@ void main_window_open_network( FMMainWindow* main_window, const char* path,
                                                             gboolean new_tab );
 char main_window_socket_command( char* argv[], char** reply );
 gboolean main_window_event( gpointer mw, XSet* preset, const char* event,
-                            int panel, int tab, const char* focus, 
+                            int panel, int tab, const char* focus,
                             int keyval, int button, int state,
                             gboolean visible );
 void fm_main_window_store_positions( FMMainWindow* main_window );

@@ -1,12 +1,12 @@
 /*
  * SpaceFM ptk-file-archiver.h
- * 
+ *
  * Copyright (C) 2013-2014 OmegaPhil <OmegaPhil@startmail.com>
  * Copyright (C) 2014 IgnorantGuru <ignorantguru@gmx.com>
  * Copyright (C) 2006 Hong Jen Yee (PCMan) <pcman.tw (AT) gmail.com>
- * 
+ *
  * License: See COPYING file
- * 
+ *
 */
 
 #ifndef _PTK_FILE_ARCHIVER_H_

@@ -1,11 +1,11 @@
 /*
  * SpaceFM ptk-dir-tree.c
- * 
+ *
  * Copyright (C) 2015 IgnorantGuru <ignorantguru@gmx.com>
  * Copyright (C) 2006 Hong Jen Yee (PCMan) <pcman.tw (AT) gmail.com>
- * 
+ *
  * License: See COPYING file
- * 
+ *
 */
 
 #include "ptk-dir-tree.h"

@@ -106,7 +106,7 @@ void ptk_file_list_file_changed( VFSDir* dir, VFSFileInfo* file,
 
 void ptk_file_list_show_thumbnails( PtkFileList* list, gboolean is_big,
                                     int max_file_size );
-void ptk_file_list_sort ( PtkFileList* list );   //sfm 
+void ptk_file_list_sort ( PtkFileList* list );   //sfm
 
 G_END_DECLS
 

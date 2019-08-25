@@ -56,7 +56,7 @@ static void init_list_view( GtkTreeView* view )
                                          COL_APP_NAME, NULL );
 
     gtk_tree_view_append_column ( view, col );
-    
+
     // add tooltip
     gtk_tree_view_set_tooltip_column( view, COL_FULL_PATH );
 }
@@ -88,7 +88,7 @@ static void add_list_item( GtkListStore* list, VFSAppDesktop* desktop )
     GdkPixbuf* icon = NULL;
     char* file;
     const char* name = vfs_app_desktop_get_name( desktop );
-    
+
     // desktop file already in list?
     if ( gtk_tree_model_get_iter_first( GTK_TREE_MODEL( list ), &it ) )
     {
@@ -201,7 +201,7 @@ GtkWidget* app_chooser_dialog_new( GtkWindow* parent, VFSMimeType* mime_type,
     GtkTreeModel* model;
     GtkEntry* entry;
     GtkNotebook* notebook;
-    
+
     g_object_set_data_full( G_OBJECT(dlg), "builder", builder, (GDestroyNotify)g_object_unref );
 
     xset_set_window_icon( GTK_WINDOW( dlg ) );
@@ -241,7 +241,7 @@ GtkWidget* app_chooser_dialog_new( GtkWindow* parent, VFSMimeType* mime_type,
                                                         "label_command" ) ),
                             _("Please choose an application:") );
     }
-    
+
     view = GTK_TREE_VIEW( (GtkWidget*)gtk_builder_get_object(
                                             builder, "recommended_apps" ) );
     notebook = GTK_NOTEBOOK( (GtkWidget*)gtk_builder_get_object( builder,
@@ -268,7 +268,7 @@ GtkWidget* app_chooser_dialog_new( GtkWindow* parent, VFSMimeType* mime_type,
                                     dlg );
 
     gtk_window_set_transient_for( GTK_WINDOW( dlg ), parent );
-    
+
     if ( focus_all_apps )
     {
         // select All Apps tab
@@ -437,7 +437,7 @@ on_browse_btn_clicked ( GtkButton *button,
                 gtk_entry_set_text( entry, filename );
             }
             g_free ( filename );
-            gtk_widget_set_sensitive( GTK_WIDGET( notebook ), 
+            gtk_widget_set_sensitive( GTK_WIDGET( notebook ),
                                 gtk_entry_get_text_length( entry ) == 0 );
             gtk_widget_grab_focus( GTK_WIDGET( entry ) );
             gtk_editable_set_position( GTK_EDITABLE( entry ), -1 );
@@ -477,7 +477,7 @@ static void on_dlg_response( GtkDialog* dlg, int id, gpointer user_data )
         {
 //printf("spacefm: app-chooser.c -> vfs_async_task_cancel\n");
             // see note in vfs-async-task.c: vfs_async_task_real_cancel()
-            GDK_THREADS_LEAVE(); 
+            GDK_THREADS_LEAVE();
             vfs_async_task_cancel( task );
             GDK_THREADS_ENTER();
             /* The GtkListStore will be freed in "finish" handler of task - on_load_all_app_finish(). */

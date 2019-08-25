@@ -82,7 +82,7 @@ struct _FMPrefDlg
     GtkWidget* bg_color1;
     GtkWidget* text_color;
     GtkWidget* shadow_color;
-    
+
     //MOD
     GtkWidget* confirm_delete;
     GtkWidget* click_exec;
@@ -99,7 +99,7 @@ struct _FMPrefDlg
 extern gboolean daemon_mode;    /* defined in main.c */
 
 static FMPrefDlg* data = NULL;
-static const int tool_icon_sizes[] = { 
+static const int tool_icon_sizes[] = {
     0,
     GTK_ICON_SIZE_MENU,
     GTK_ICON_SIZE_SMALL_TOOLBAR,
@@ -186,7 +186,7 @@ static void font_button_set_font( GtkWidget* button,
         else
             fontname = font_name_str =
                                 pango_font_description_to_string( font_desc );
-        gtk_button_set_label( GTK_BUTTON( button ), fontname );        
+        gtk_button_set_label( GTK_BUTTON( button ), fontname );
         g_free( font_name_str );
     }
 }
@@ -390,7 +390,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
                                 GTK_TOGGLE_BUTTON( data->desk_open_mime ) );
 
         // wallpaper
-        show_wallpaper = gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( 
+        show_wallpaper = gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(
                                                     data->show_wallpaper ) );
         wallpaper = gtk_file_chooser_get_filename( GTK_FILE_CHOOSER(
                                                     data->wallpaper ) );
@@ -467,15 +467,15 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
         g_free( old_fontname );
 
         // margins
-        int margin_top = atoi( gtk_entry_get_text( 
+        int margin_top = atoi( gtk_entry_get_text(
                                         GTK_ENTRY( data->margin_top ) ) );
-        int margin_left = atoi( gtk_entry_get_text( 
+        int margin_left = atoi( gtk_entry_get_text(
                                         GTK_ENTRY( data->margin_left ) ) );
-        int margin_right = atoi( gtk_entry_get_text( 
+        int margin_right = atoi( gtk_entry_get_text(
                                         GTK_ENTRY( data->margin_right ) ) );
-        int margin_bottom = atoi( gtk_entry_get_text( 
+        int margin_bottom = atoi( gtk_entry_get_text(
                                         GTK_ENTRY( data->margin_bottom ) ) );
-        int margin_pad = atoi( gtk_entry_get_text( 
+        int margin_pad = atoi( gtk_entry_get_text(
                                         GTK_ENTRY( data->margin_pad ) ) );
         if ( margin_top != app_settings.margin_top ||
              margin_left != app_settings.margin_left ||
@@ -504,7 +504,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
 
         if ( update_icons )
             fm_desktop_update_icons();
-        
+
 
         // ===============================================================
 
@@ -573,7 +573,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
                     }
                 }
             }
-            update_volume_icons();            
+            update_volume_icons();
         }
 
         if ( tool_icon != app_settings.tool_icon_size )
@@ -608,7 +608,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
         }
         if ( need_refresh )
             main_window_refresh_all();
-        
+
         /* single click changed? */
         single_click = gtk_toggle_button_get_active( (GtkToggleButton*)data->single_click );
         if( single_click != app_settings.single_click )
@@ -657,7 +657,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
                 }
             }
         }
-        
+
         //MOD
         app_settings.no_execute = !gtk_toggle_button_get_active(
                                             (GtkToggleButton*)data->click_exec );
@@ -673,7 +673,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
             main_window_rubberband_all();
         }
         */
-        
+
         root_bar = gtk_toggle_button_get_active(
                                             (GtkToggleButton*)data->root_bar );
         if ( !!root_bar != !!xset_get_b( "root_bar" ) )
@@ -681,7 +681,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
             xset_set_b( "root_bar", root_bar );
             main_window_root_bar_all();
         }
-        
+
         char* s = g_strdup_printf( "%d",
                     gtk_combo_box_get_active( GTK_COMBO_BOX( data->drag_action ) ) );
         xset_set( "drag_action", "x", s );
@@ -706,7 +706,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
             else
                 xset_set( "su_command", "s", su_commands[idx] );
         }
-        
+
         // graphical su command
         char* custom_gsu = NULL;
         if ( settings_graphical_su )
@@ -731,7 +731,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
             else
                 xset_set( "gsu_command", "s", gsu_commands[idx] );
         }
-        
+
         //MOD editors
         xset_set( "editor", "s", gtk_entry_get_text( GTK_ENTRY( data->editor ) ) );
         xset_set_b( "editor", gtk_toggle_button_get_active(
@@ -797,7 +797,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
         }
         g_free( str );
         g_free( terminal );
-        
+
         /* save to config file */
 
         char* err_msg = save_settings( NULL );
@@ -809,13 +809,13 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
             g_free( msg );
             g_free( err_msg );
         }
-        
+
         if ( xset_get_b( "main_terminal" ) )
         {
             root_set_change = TRUE;
             xset_set_b( "main_terminal", FALSE );
         }
-        
+
         // root settings saved?
         if ( geteuid() != 0 )
         {
@@ -844,7 +844,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
                 task->task->exec_sync = FALSE;
                 task->task->exec_export = FALSE;
                 task->task->exec_write_root = TRUE;
-                ptk_file_task_run( task );            
+                ptk_file_task_run( task );
             }
         }
     }
@@ -868,27 +868,27 @@ void on_date_format_changed( GtkComboBox *widget, FMPrefDlg* data )
 void on_single_click_toggled( GtkWidget* widget, FMPrefDlg* data )
 {
     gtk_widget_set_sensitive( data->single_hover,
-                    gtk_toggle_button_get_active( 
+                    gtk_toggle_button_get_active(
                     GTK_TOGGLE_BUTTON( data->single_click ) ) );
 }
 
 void on_desk_single_click_toggled( GtkWidget* widget, FMPrefDlg* data )
 {
     gtk_widget_set_sensitive( data->desk_single_hover,
-                    gtk_toggle_button_get_active( 
+                    gtk_toggle_button_get_active(
                     GTK_TOGGLE_BUTTON( data->desk_single_click ) ) );
 }
 
 void on_show_thumbnail_toggled( GtkWidget* widget, FMPrefDlg* data )
 {
     gtk_widget_set_sensitive( data->max_thumb_size,
-                    gtk_toggle_button_get_active( 
+                    gtk_toggle_button_get_active(
                     GTK_TOGGLE_BUTTON( data->show_thumbnail ) ) );
-    gtk_widget_set_sensitive( data->thumb_label1, 
-                    gtk_toggle_button_get_active( 
+    gtk_widget_set_sensitive( data->thumb_label1,
+                    gtk_toggle_button_get_active(
                     GTK_TOGGLE_BUTTON( data->show_thumbnail ) ) );
-    gtk_widget_set_sensitive( data->thumb_label2, 
-                    gtk_toggle_button_get_active( 
+    gtk_widget_set_sensitive( data->thumb_label2,
+                    gtk_toggle_button_get_active(
                     GTK_TOGGLE_BUTTON( data->show_thumbnail ) ) );
 }
 
@@ -917,7 +917,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
     GtkWidget* img_preview;
     GtkWidget* dlg;
     char* str;
-    
+
     if( ! data )
     {
         GtkTreeModel* model;
@@ -970,7 +970,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
         //    gtk_entry_set_text( GTK_ENTRY( data->encoding ), "UTF-8" );
         //else
         //    gtk_entry_set_text( GTK_ENTRY( data->encoding ), app_settings.encoding );
-        
+
         /*
         if ( app_settings.open_bookmark_method >= 1 &&
                 app_settings.open_bookmark_method <= 2 )
@@ -983,7 +983,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
             gtk_combo_box_set_active( GTK_COMBO_BOX( data->bm_open_method ), 0 );
         }
         */
-        
+
         gtk_spin_button_set_value ( GTK_SPIN_BUTTON( data->max_thumb_size ),
                                     app_settings.max_thumb_size >> 10 );
 
@@ -1056,7 +1056,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
         gtk_widget_set_sensitive( data->single_hover, app_settings.single_click );
         g_signal_connect( data->single_click, "toggled",
                                 G_CALLBACK( on_single_click_toggled ), data );
-        
+
         /* Setup 'Interface' tab */
 
         data->always_show_tabs = (GtkWidget*)gtk_builder_get_object( builder, "always_show_tabs" );
@@ -1080,7 +1080,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
         data->confirm_delete = (GtkWidget*)gtk_builder_get_object( builder,
                                                                 "confirm_delete" );
         gtk_toggle_button_set_active ( GTK_TOGGLE_BUTTON( data->confirm_delete ),
-                                                        !app_settings.no_confirm );                                
+                                                        !app_settings.no_confirm );
         data->click_exec = (GtkWidget*)gtk_builder_get_object( builder,
                                                                 "click_exec" );
         gtk_toggle_button_set_active ( GTK_TOGGLE_BUTTON( data->click_exec ),
@@ -1164,7 +1164,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
                                 G_CALLBACK( on_wallpaper_mode_changed ), data );
         gtk_combo_box_set_active( (GtkComboBox*)data->wallpaper_mode,
                                                 app_settings.wallpaper_mode );
-        
+
         // checkboxes
         gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( data->show_wm_menu ),
                                       app_settings.show_wm_menu );
@@ -1178,12 +1178,12 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
                                 G_CALLBACK( on_desk_single_click_toggled ), data );
         gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( data->desk_open_mime ),
                                       app_settings.desk_open_mime );
-        
+
         //font
         font_button_set_font( data->desk_font, app_settings.desk_font, NULL );
         g_signal_connect( data->desk_font, "clicked",
                                 G_CALLBACK(on_font_button_clicked), data );
-        
+
         // colors
         data->bg_color1 = (GtkWidget*)gtk_builder_get_object( builder, "bg_color1" );
         data->text_color = (GtkWidget*)gtk_builder_get_object( builder, "text_color" );
@@ -1199,7 +1199,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
         on_wallpaper_toggled( GTK_TOGGLE_BUTTON( data->show_wallpaper ), data );
         g_signal_connect( data->show_wallpaper, "toggled",
                                 G_CALLBACK( on_wallpaper_toggled ), data );
-        
+
         // margins
         str = g_strdup_printf( "%d", app_settings.margin_top );
         gtk_entry_set_text( GTK_ENTRY( data->margin_top ), str );
@@ -1219,7 +1219,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
 
 
         // Advanced Tab ==================================================
-     
+
         // terminal su
         int idx;
         GtkTreeIter it;
@@ -1233,7 +1233,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
             custom_su = g_find_program_in_path( settings_terminal_su );
         if ( custom_su )
         {
-            GtkListStore* su_list = GTK_LIST_STORE( gtk_combo_box_get_model( 
+            GtkListStore* su_list = GTK_LIST_STORE( gtk_combo_box_get_model(
                                         GTK_COMBO_BOX( data->su_command ) ) );
             gtk_list_store_prepend( su_list, &it );
             gtk_list_store_set( GTK_LIST_STORE( su_list ), &it, 0, custom_su,
@@ -1259,7 +1259,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
         }
         gtk_combo_box_set_active( GTK_COMBO_BOX( data->su_command ), idx );
         g_free( custom_su );
-        
+
         // graphical su
         char* custom_gsu = NULL;
         char* use_gsu;
@@ -1276,13 +1276,13 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
 #endif
         if ( custom_gsu )
         {
-            GtkListStore* gsu_list = GTK_LIST_STORE( gtk_combo_box_get_model( 
+            GtkListStore* gsu_list = GTK_LIST_STORE( gtk_combo_box_get_model(
                                         GTK_COMBO_BOX( data->gsu_command ) ) );
             gtk_list_store_prepend( gsu_list, &it );
             gtk_list_store_set( GTK_LIST_STORE( gsu_list ), &it, 0, custom_gsu,
                                                                         -1 );
         }
-        
+
         if ( !use_gsu )
             idx = 0;
         else if ( custom_gsu && !g_strcmp0( custom_gsu, use_gsu ) )
@@ -1303,7 +1303,7 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
         }
         gtk_combo_box_set_active( GTK_COMBO_BOX( data->gsu_command ), idx );
         g_free( custom_gsu );
-    
+
         // date format
         data->date_format = (GtkWidget*)gtk_builder_get_object( builder,
                                                                 "date_format" );

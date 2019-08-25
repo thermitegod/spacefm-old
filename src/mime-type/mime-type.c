@@ -287,7 +287,7 @@ static char* parse_xml_icon( const char* buf, size_t len, gboolean is_local )
     }
     if ( !icon_tag )
         return NULL;    // no icon found
-    
+
     // find />
     end_tag = g_strstr_len( icon_tag, len, "/>" );
     if ( !end_tag )
@@ -295,7 +295,7 @@ static char* parse_xml_icon( const char* buf, size_t len, gboolean is_local )
     end_tag[0] = '\0';
     if ( strchr( end_tag, '\n' ) )
         return NULL;    // linefeed in tag
-    
+
     // remove quotes
     if ( icon_tag[0] == '"' )
         icon_tag++;
@@ -304,7 +304,7 @@ static char* parse_xml_icon( const char* buf, size_t len, gboolean is_local )
 
     if ( icon_tag == end_tag )
         return NULL;    // blank name
-    
+
     return g_strdup( icon_tag );
 }
 
@@ -410,7 +410,7 @@ static char* _mime_type_get_desc_icon( const char* file_path,
  * If locale is NULL, current locale will be used.
  * The returned string should be freed when no longer used.
  * The icon_name will only be set if points to NULL, and must be freed.
- * 
+ *
  * Note: Spec is not followed for icon.  If icon tag is found in .local
  * xml file, it is used.  Otherwise vfs_mime_type_get_icon guesses the icon.
  * The Freedesktop spec /usr/share/mime/generic-icons is NOT parsed. */
@@ -421,7 +421,7 @@ char* mime_type_get_desc_icon( const char* type, const char* locale,
     const gchar* const * dir;
     char file_path[ 256 ];
     int acc;
-    
+
     /*  //sfm 0.7.7+ FIXED:
      * According to specs on freedesktop.org, user_data_dir has
      * higher priority than system_data_dirs, but in most cases, there was
@@ -444,7 +444,7 @@ char* mime_type_get_desc_icon( const char* type, const char* locale,
         if ( desc )
             return desc;
     }
-    
+
     // look in system dirs
     dir = g_get_system_data_dirs();
     for( ; *dir; ++dir )

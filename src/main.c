@@ -182,7 +182,7 @@ void receive_socket_command( int client, GString* args );  //sfm
 char* get_inode_tag()
 {
     struct stat stat_buf;
-    
+
     const char* path = g_get_home_dir();
     if ( !path || stat( path, &stat_buf ) == -1 )
         return g_strdup_printf( "%d=", getuid() );
@@ -211,7 +211,7 @@ gboolean on_socket_event( GIOChannel* ioc, GIOCondition cond, gpointer data )
             while( (r = read( client, buf, sizeof(buf) )) > 0 )
             {
                 g_string_append_len( args, buf, r);
-                if ( args->str[0] == CMD_SOCKET_CMD && args->len > 1 && 
+                if ( args->str[0] == CMD_SOCKET_CMD && args->len > 1 &&
                                             args->str[args->len - 2] == '\n' &&
                                             args->str[args->len - 1] == '\n' )
                     // because CMD_SOCKET_CMD doesn't immediately close the socket
@@ -228,7 +228,7 @@ gboolean on_socket_event( GIOChannel* ioc, GIOCondition cond, gpointer data )
             reuse_tab = FALSE;
             no_tabs = FALSE;
             socket_daemon_or_desktop = FALSE;
-            
+
             int argx = 0;
             if ( args->str[argx] == CMD_NO_TABS )
             {
@@ -320,7 +320,7 @@ gboolean on_socket_event( GIOChannel* ioc, GIOCondition cond, gpointer data )
             handle_parsed_commandline_args();
             app_settings.load_saved_tabs = TRUE;
             socket_daemon_or_desktop = FALSE;
-            
+
             GDK_THREADS_LEAVE();
         }
     }
@@ -402,7 +402,7 @@ gboolean single_instance_check()
             // another command always follows CMD_REUSE_TAB
             cmd = CMD_OPEN;
         }
-        
+
         if( daemon_mode )
             cmd = CMD_DAEMON_MODE;
         else if( desktop )
@@ -426,12 +426,12 @@ gboolean single_instance_check()
         else if( find_files )
             cmd = CMD_FIND_FILES;
         else if ( panel > 0 && panel < 5 )
-            cmd = CMD_PANEL1 + panel - 1;            
+            cmd = CMD_PANEL1 + panel - 1;
 
         // open a new window if no file spec
         if ( cmd == CMD_OPEN_TAB && !files )
             cmd = CMD_OPEN;
-            
+
         write( sock, &cmd, sizeof(char) );
         if( G_UNLIKELY( show_pref > 0 ) )
         {
@@ -505,7 +505,7 @@ gboolean single_instance_check()
             //goto _exit;
         }
     }
-    
+
     return TRUE;
 
 _exit:
@@ -532,7 +532,7 @@ void receive_socket_command( int client, GString* args )  //sfm
     char** arg;
     char cmd;
     char* reply = NULL;
-    
+
     if ( args->str[1] )
     {
         if ( g_str_has_suffix( args->str, "\n\n" ) )
@@ -581,7 +581,7 @@ void receive_socket_command( int client, GString* args )  //sfm
     }
     g_strfreev( argv );
     g_free( inode_tag );
-    
+
     // send response
     write( client, &cmd, sizeof(char) );  // send exit status
     if ( reply && reply[0] )
@@ -633,7 +633,7 @@ int send_socket_command( int argc, char* argv[], char** reply )   //sfm
     write( sock, inode_tag, strlen( inode_tag ) );
     write( sock, "\n", 1 );
     g_free( inode_tag );
-    
+
     // send arguments
     int i;
     for ( i = 2; i < argc; i++ )
@@ -642,12 +642,12 @@ int send_socket_command( int argc, char* argv[], char** reply )   //sfm
         write( sock, "\n", 1 );
     }
     write( sock, "\n", 1 );
-    
+
     // get response
     GString* sock_reply = g_string_new_len( NULL, 2048 );
     int r;
     static char buf[ 1024 ];
-    
+
     while( ( r = read( sock, buf, sizeof( buf ) ) ) > 0 )
         g_string_append_len( sock_reply, buf, r);
 
@@ -848,7 +848,7 @@ void show_socket_help()
     printf( "    spacefm -s emit-key 0xffbe 0   # press F1 to show Help\n" );
     printf( "    spacefm -s activate --window $fm_my_window \"Custom Menu\"\n" );
     printf( "    spacefm -s add-event evt_pnl_sel 'spacefm -s set statusbar_text \"$fm_file\"'\n\n" );
-    
+
     printf( "    #!%s\n", BASHPATH );
     printf( "    eval copied_files=\"$(spacefm -s get clipboard_copy_files)\"\n" );
     printf( "    echo \"%s:\"\n", _("These files have been copied to the clipboard") );
@@ -1129,7 +1129,7 @@ gboolean handle_parsed_commandline_args()
     struct stat64 statbuf;
 
     app_settings.load_saved_tabs = !no_tabs;
-    
+
     // If no files are specified, open home dir by defualt.
     if( G_LIKELY( ! files ) )
     {
@@ -1155,7 +1155,7 @@ gboolean handle_parsed_commandline_args()
         fprintf( stderr, "spacefm: %s\n", _("This build of SpaceFM has desktop integration disabled") );
 #endif
     }
-    
+
     if( show_pref > 0 ) /* show preferences dialog */
     {
         fm_edit_preference( GTK_WINDOW( main_window ), show_pref - 1 );
@@ -1261,7 +1261,7 @@ gboolean handle_parsed_commandline_args()
                     }
                     ret = TRUE;
                     gtk_window_present( GTK_WINDOW( main_window ) );
-                }    
+                }
                 else
                 {
                     char* err_msg = g_strdup_printf( "%s:\n\n%s", _( "File doesn't exist" ),
@@ -1322,7 +1322,7 @@ int main ( int argc, char *argv[] )
 {
     gboolean run = FALSE;
     GError* err = NULL;
-    
+
 #ifdef ENABLE_NLS
     bindtextdomain ( GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR );
     bind_textdomain_codeset ( GETTEXT_PACKAGE, "UTF-8" );
@@ -1331,7 +1331,7 @@ int main ( int argc, char *argv[] )
 
     // load spacefm.conf
     load_conf();
-    
+
     // separate instance options
     if ( argc > 1 )
     {
@@ -1374,7 +1374,7 @@ int main ( int argc, char *argv[] )
             bindtextdomain( GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR );
             textdomain( GETTEXT_PACKAGE );
 #endif
-            if ( argv[2] && ( !strcmp( argv[2], "help" ) || 
+            if ( argv[2] && ( !strcmp( argv[2], "help" ) ||
                                                 !strcmp( argv[2], "--help" ) ) )
             {
                 show_socket_help();
@@ -1396,21 +1396,21 @@ int main ( int argc, char *argv[] )
         g_error_free( err );
         return 1;
     }
-    
+
     // dialog mode with other options?
     if ( custom_dialog )
     {
         fprintf( stderr, "spacefm: %s\n", _("--dialog must be first option") );
         return 1;
     }
-    
+
     // socket command with other options?
     if ( socket_cmd )
     {
         fprintf( stderr, "spacefm: %s\n", _("--socket-cmd must be first option") );
         return 1;
     }
-    
+
     // --desktop with no desktop build?
 #ifndef DESKTOP_INTEGRATION
     if ( desktop )
@@ -1448,7 +1448,7 @@ int main ( int argc, char *argv[] )
         printf( "\n" );
         return 0;
     }
-    
+
     // bash installed?
     if ( !( BASHPATH && g_file_test( BASHPATH, G_FILE_TEST_IS_EXECUTABLE ) ) )
     {
@@ -1500,7 +1500,7 @@ int main ( int argc, char *argv[] )
     load_settings( config_dir );    /* load config file */  //MOD was before vfs_file_monitor_init
 
     app_settings.sdebug = sdebug;
-    
+
 /*
     // temporarily turn off desktop if needed
     if( G_LIKELY( no_desktop ) )

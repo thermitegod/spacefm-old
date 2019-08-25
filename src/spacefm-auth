@@ -15,7 +15,7 @@ if [ "$2" = "" ]; then
 	echo "              designed to be run directly." 1>&2
 	exit 1
 fi
-	
+
 fm_source="$1"
 fm_sum="$2"
 

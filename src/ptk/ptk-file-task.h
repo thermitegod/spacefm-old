@@ -1,7 +1,7 @@
 /*
 *  C Interface: ptk-file-task
 *
-* Description: 
+* Description:
 *
 *
 * Author: Hong Jen Yee (PCMan) <pcman.tw (AT) gmail.com>, (C) 2006
@@ -25,7 +25,7 @@ enum {
     PTASK_ERROR_ANY,
     PTASK_ERROR_CONT
 };
-    
+
 struct _PtkFileTask
 {
     VFSFileTask* task;
@@ -52,11 +52,11 @@ struct _PtkFileTask
     gboolean log_appended;
     guint err_count;
     char err_mode;
-    
+
 /*
     int percent;
     off64_t total_size;     // Total size of the files to be processed, in bytes
-    off64_t progress;       // Total size of current processed files, in btytes 
+    off64_t progress;       // Total size of current processed files, in btytes
     guint item_count;
     guint old_err_count;
 */
@@ -65,7 +65,7 @@ struct _PtkFileTask
     gboolean pause_change;
     gboolean pause_change_view;
     gboolean force_scroll;
-    
+
     /* <private> */
     guint timeout;
     gboolean restart_timeout;
@@ -76,7 +76,7 @@ struct _PtkFileTask
     gboolean keep_dlg;
     gboolean pop_detail;
     char* pop_handler;
-    
+
     GCond* query_cond;
     GCond* query_cond_last;
     char** query_new_dest;

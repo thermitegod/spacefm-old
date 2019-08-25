@@ -37,7 +37,7 @@ static GQuark use_hand_cursor = (GQuark)"hand_cursor";
 static char*
 get_cwd( GtkEntry* entry )
 {
-    const char* path = gtk_entry_get_text( entry );    
+    const char* path = gtk_entry_get_text( entry );
     if ( path[0] == '/' )
         return g_path_get_dirname( path );
     else if ( path[0] != '$' && path[0] != '+' && path[0] != '&'
@@ -51,7 +51,7 @@ get_cwd( GtkEntry* entry )
                                     edata->browser ), path );
             char* ret = g_path_get_dirname( real_path );
             g_free( real_path );
-            return ret;            
+            return ret;
         }
     }
     return NULL;
@@ -70,10 +70,10 @@ gboolean seek_path( GtkEntry* entry )
         g_source_remove( edata->seek_timer );
         edata->seek_timer = 0;
     }
-    
+
     if ( !xset_get_b( "path_seek" ) )
         return FALSE;
-    
+
     char* str;
     char* seek_dir;
     char* seek_name = NULL;
@@ -81,7 +81,7 @@ gboolean seek_path( GtkEntry* entry )
     const char* path = gtk_entry_get_text( entry );
     if ( !path || path[0] == '$' || path[0] == '+' || path[0] == '&'
                     || path[0] == '!' || path[0] == '\0' || path[0] == ' '
-                    || path[0] == '%' )    
+                    || path[0] == '%' )
         return FALSE;
 
     // get dir and name prefix
@@ -147,7 +147,7 @@ gboolean seek_path( GtkEntry* entry )
         gtk_editable_set_position( (GtkEditable*)entry, -1 );
         g_signal_handlers_unblock_matched( G_OBJECT( entry ),
                                          G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
-                                         on_changed, NULL );        
+                                         on_changed, NULL );
     }
     g_free( actual_path );
 */
@@ -295,7 +295,7 @@ static void update_completion( GtkEntry* entry,
                     g_free( (char*)l->data );
                 }
                 g_slist_free( name_list );
-                
+
                 gtk_entry_completion_set_match_func( completion, match_func, NULL, NULL );
             }
             else
@@ -335,7 +335,7 @@ void insert_complete( GtkEntry* entry )
         g_free( dir_path );
         return;
     }
-    
+
     int count = 0;
     int len;
     int long_len = 0;
@@ -413,7 +413,7 @@ void insert_complete( GtkEntry* entry )
                                          G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
                                          on_changed, NULL );
         g_free( new_prefix );
-    }        
+    }
     g_dir_close( dir );
     g_free( last_path );
     g_free( prefix_name );
@@ -422,20 +422,20 @@ void insert_complete( GtkEntry* entry )
 
 static gboolean
 on_key_press( GtkWidget *entry, GdkEventKey* evt, EntryData* edata )
-{    
+{
     int keymod = ( evt->state & ( GDK_SHIFT_MASK | GDK_CONTROL_MASK |
                  GDK_MOD1_MASK | GDK_SUPER_MASK | GDK_HYPER_MASK | GDK_META_MASK ) );
-                 
+
     if( evt->keyval == GDK_KEY_Tab && !keymod )
     {
         //gtk_entry_completion_insert_prefix( gtk_entry_get_completion(GTK_ENTRY(entry)) );
         //gtk_editable_set_position( (GtkEditable*)entry, -1 );
-        
+
         /*
         g_signal_handlers_block_matched( G_OBJECT( entry ),
                                          G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
                                          on_changed, NULL );
-                                                
+
         gtk_entry_completion_insert_prefix( gtk_entry_get_completion(GTK_ENTRY(entry)) );
         const char* path = gtk_entry_get_text( GTK_ENTRY( entry ) );
         if ( path && path[0] && !g_str_has_suffix( path, "/" ) &&
@@ -446,7 +446,7 @@ on_key_press( GtkWidget *entry, GdkEventKey* evt, EntryData* edata )
             g_free( new_path );
         }
         gtk_editable_set_position( (GtkEditable*)entry, -1 );
-        
+
         g_signal_handlers_unblock_matched( G_OBJECT( entry ),
                                          G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
                                          on_changed, NULL );
@@ -541,7 +541,7 @@ on_focus_in( GtkWidget *entry, GdkEventFocus* evt, gpointer user_data )
     g_object_unref( list );
 
     /* gtk_entry_completion_set_text_column( completion, COL_PATH ); */
-    
+
     // Following line causes GTK3 to show both columns, so skip this and use
     // custom match-selected handler to insert COL_PATH
     //g_object_set( completion, "text-column", COL_PATH, NULL );
@@ -638,7 +638,7 @@ void ptk_path_entry_help( GtkWidget* widget, GtkWidget* parent )
 static gboolean on_button_press( GtkWidget* entry, GdkEventButton *evt,
                                                         gpointer user_data )
 {
-    if ( ( evt_win_click->s || evt_win_click->ob2_data ) && 
+    if ( ( evt_win_click->s || evt_win_click->ob2_data ) &&
             main_window_event( NULL, evt_win_click, "evt_win_click", 0, 0, "pathbar", 0,
                                             evt->button, evt->state, TRUE ) )
         return TRUE;
@@ -726,7 +726,7 @@ void on_populate_popup( GtkEntry *entry, GtkMenu *menu, PtkFileBrowser* file_bro
                                 strstr( text, ":/" ) ||
                                 g_str_has_prefix( text, "//" ) ) );
     xset_add_menuitem( NULL, file_browser, GTK_WIDGET( menu ), accel_group, set );
-    
+
     set = xset_get( "path_seek" );
     xset_add_menuitem( NULL, file_browser, GTK_WIDGET( menu ), accel_group, set );
     set = xset_set_cb( "path_hand", on_protocol_handlers, file_browser );
@@ -750,14 +750,14 @@ void on_entry_insert( GtkEntryBuffer *buf, guint position, gchar *chars,
 
     if ( strchr( text, '\n' ) )
     {
-        // remove linefeeds from pasted text       
+        // remove linefeeds from pasted text
         text = new_text = replace_string( text, "\n", "", FALSE );
     }
-    
+
     // remove leading spaces for test
     while ( text[0] == ' ' )
         text++;
-    
+
     if ( text[0] == '\'' && g_str_has_suffix( text, "'" ) && text[1] != '\0' )
     {
         // path is quoted - assume bash quote
@@ -785,7 +785,7 @@ GtkWidget* ptk_path_entry_new( PtkFileBrowser* file_browser )
     GtkWidget* entry = gtk_entry_new();
     gtk_entry_set_has_frame( GTK_ENTRY( entry ), TRUE );
     gtk_widget_set_size_request( entry, 50, -1 );
-    
+
     // set font
     if ( file_browser->mypanel > 0 && file_browser->mypanel < 5 &&
                         xset_get_s_panel( file_browser->mypanel, "font_path" ) )
@@ -799,7 +799,7 @@ GtkWidget* ptk_path_entry_new( PtkFileBrowser* file_browser )
     EntryData* edata = g_slice_new0( EntryData );
     edata->browser = file_browser;
     edata->seek_timer = 0;
-    
+
     g_signal_connect( entry, "focus-in-event", G_CALLBACK(on_focus_in), NULL );
     g_signal_connect( entry, "focus-out-event", G_CALLBACK(on_focus_out), NULL );
 

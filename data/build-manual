@@ -26,15 +26,15 @@ parse()
 	head="${section[x]%%>*}>"	#<!-- @Plugins @Creation And Files -->
 	h1="${head#*@}"				#Plugins @Creation And Files -->
 	h2="$h1"					#Plugins @Creation And Files -->
-	h1="${h1%%@*}"				#Plugins 
-	h1="${h1%%-->*}"			 
+	h1="${h1%%@*}"				#Plugins
+	h1="${h1%%-->*}"
 	h1="$(trim "$h1")"			#Plugins
 	hx="${h2#*@}"				#Creation And Files -->
 	if [ "$hx" = "$h2" ]; then
 		h2=""
 	else
 		h2="$hx"
-		h2="${h2%%-->*}"			#Creation And Files 
+		h2="${h2%%-->*}"			#Creation And Files
 		h2="$(trim "$h2")"			#Creation And Files
 		subname="${h2##*#}"			#Creation And Files #creation
 		if [ "$subname" = "$h2" ]; then
@@ -118,7 +118,7 @@ else
 	# make toc
 	echo '<!-- @toc -->'
 	echo '<font size=+2><a name="toc">Table Of Contents</a></font><br><br><blockquote>'
-	
+
 	#<a href="#introduction">Introduction</a>
 	#<ul>
 	#	<a href="#about">About</a><br>
@@ -149,7 +149,7 @@ else
 	echo "</ul>"
 	echo "</blockquote></td></tr>"
 	echo
-	
+
 	# sections
 	sx=0
 	main=""
@@ -174,11 +174,11 @@ else
 		echo '<td width="20%" valign="top">'
 		echo '<a href="#toc">Contents</a>'
 		echo '<ul>'
-		
+
 		hh1="$h1"
 		hh2="$h2"
 		aanc="$anc"
-		
+
 		# sections
 		#<ul>
 		#	<li>Introduction
@@ -236,17 +236,17 @@ else
 		echo '</td>'
 		echo '<td valign="top">'
 		echo "<a name=\"$aanc\"/><a href=\"#$aanc\"><font size=+2>$hh2</font></a>"
-		
+
 		section[sx]="${section[sx]//\<a name=\"@/<a name=\"$aanc-}"
 		section[sx]="${section[sx]//\<a href=\"@/<a href=\"#$aanc-}"
-		
+
 		echo -n "${section[$sx]}"
 		echo "<!-- @end $aanc-->"
 		echo '<br><br></td></tr>'
 		echo
 		(( sx++ ))
 	done
-	
+
 	# tail
 
 	# get version info
@@ -264,7 +264,7 @@ else
 	else
 		version="Updated $(date +%Y-%m-%d)"
 	fi
-	
+
 	section[scount - 1]="${section[scount - 1]//@@@version@@@/$version}"
 	section[scount - 1]="${section[scount - 1]//@@@year@@@/$(date +%Y)}"
 	echo

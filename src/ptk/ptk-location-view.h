@@ -1,11 +1,11 @@
 /*
  * SpaceFM ptk-location-view.h
- * 
+ *
  * Copyright (C) 2015 IgnorantGuru <ignorantguru@gmx.com>
  * Copyright (C) 2006 Hong Jen Yee (PCMan) <pcman.tw (AT) gmail.com>
- * 
+ *
  * License: See COPYING file
- * 
+ *
 */
 
 #ifndef  _PTK_LOCATION_VIEW_H_
@@ -33,7 +33,7 @@ void ptk_location_view_mount_network( PtkFileBrowser* file_browser,
                                       gboolean new_tab,
                                       gboolean force_new_mount );
 void mount_iso( PtkFileBrowser* file_browser, const char* path );
-void ptk_location_view_dev_menu( GtkWidget* parent, PtkFileBrowser* file_browser, 
+void ptk_location_view_dev_menu( GtkWidget* parent, PtkFileBrowser* file_browser,
                                                             GtkWidget* menu );
 char* ptk_location_view_create_mount_point( int mode, VFSVolume* vol,
                                     netmount_t* netmount, const char* path );

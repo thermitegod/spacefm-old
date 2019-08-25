@@ -55,7 +55,7 @@ gboolean mime_type_has_action( const char* type, const char* desktop_id );
 
 /*
  * Get default applications used to open this mime-type
- * 
+ *
  * The returned string was newly allocated, and should be freed when no longer
  * used.  If NULL is returned, that means a default app is not set for this
  * mime-type.  This is very roughly based on specs:

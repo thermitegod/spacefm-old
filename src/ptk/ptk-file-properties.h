@@ -1,7 +1,7 @@
-/*                                                                                  
+/*
 *  C Interface: file_properties
 *
-* Description: 
+* Description:
 *
 *
 * Author: Hong Jen Yee (PCMan) <pcman.tw (AT) gmail.com>, (C) 2006

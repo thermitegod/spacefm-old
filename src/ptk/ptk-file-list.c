@@ -676,7 +676,7 @@ static gint ptk_file_list_compare( gconstpointer a,
     VFSFileInfo* file_b = (VFSFileInfo*)b;
     PtkFileList* list = (PtkFileList*)user_data;
     int result;
-    
+
     // dirs before/after files
     if ( list->sort_dir != PTK_LIST_SORT_DIR_MIXED )
     {
@@ -684,7 +684,7 @@ static gint ptk_file_list_compare( gconstpointer a,
         if ( result != 0 )
             return list->sort_dir == PTK_LIST_SORT_DIR_FIRST ? -result : result;
     }
-    
+
     // by column
     switch ( list->sort_col )
     {
@@ -735,7 +735,7 @@ static gint ptk_file_list_compare( gconstpointer a,
         result = list->sort_hidden_first ? 1 : -1;
     if ( result != 0 )
         return result;
-	
+
     // by display name
     if ( list->sort_natural )
     {
@@ -753,7 +753,7 @@ static gint ptk_file_list_compare( gconstpointer a,
          * NOTE: both g_ascii_strcasecmp and g_ascii_strncasecmp appear to be
          * case insensitive when used on utf8
          * FIXME: No case sensitive mode here because no function compare
-         * UTF-8 strings case sensitively without collating (natural) */ 
+         * UTF-8 strings case sensitively without collating (natural) */
         result = g_ascii_strcasecmp( file_a->disp_name, file_b->disp_name );
     }
     return list->sort_order == GTK_SORT_ASCENDING ? result : -result;
@@ -866,13 +866,13 @@ void ptk_file_list_file_created( VFSDir* dir,
     GtkTreeIter it;
     GtkTreePath* path;
     VFSFileInfo* file2;
-    
+
     if( ! list->show_hidden && vfs_file_info_get_name(file)[0] == '.' )
         return;
 
     gboolean is_desktop = vfs_file_info_is_desktop_entry( file ); //sfm
     gboolean is_desktop2;
-    
+
     for( l = list->files; l; l = l->next )
     {
         file2 = (VFSFileInfo*)l->data;
@@ -881,7 +881,7 @@ void ptk_file_list_file_created( VFSDir* dir,
             /* The file is already in the list */
             return;
         }
-        
+
         is_desktop2 = vfs_file_info_is_desktop_entry( file2 );
         if ( is_desktop || is_desktop2 )
         {
@@ -1017,7 +1017,7 @@ void ptk_file_list_show_thumbnails( PtkFileList* list, gboolean is_big,
 
     if ( !list )
         return;
-    
+
     old_max_thumbnail = list->max_thumbnail;
     list->max_thumbnail = max_file_size;
     list->big_thumbnail = is_big;

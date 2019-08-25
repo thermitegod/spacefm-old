@@ -170,7 +170,7 @@ VFSFileMonitor* vfs_file_monitor_add( char* path,
     }
     else
         real_path = resolved_path;
-    
+
     monitor = ( VFSFileMonitor* ) g_hash_table_lookup ( monitor_hash, real_path );
     if ( ! monitor )
     {
@@ -494,7 +494,7 @@ else if ( ievent->mask & ( IN_DELETE | IN_MOVED_FROM | IN_DELETE_SELF | IN_UNMOU
 else if ( ievent->mask & ( IN_MODIFY | IN_ATTRIB ) )
     desc = "CHANGE";
 if ( !strcmp( monitor->path, "/tmp" ) && g_str_has_prefix( file_name, "vte" ) )
-{ } // due to current vte scroll problems creating and deleting massive numbers of 
+{ } // due to current vte scroll problems creating and deleting massive numbers of
 // /tmp/vte8CBO7V types of files, ignore these (creates feedback loop when
 // spacefm is run in terminal because each printf triggers a scroll,
 // which triggers another printf below, which triggers another file change)

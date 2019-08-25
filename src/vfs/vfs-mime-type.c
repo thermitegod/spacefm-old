@@ -533,7 +533,7 @@ void vfs_mime_type_add_action( VFSMimeType* mime_type,
         mime_type_add_action( mime_type->type, desktop_id, custom_desktop );
     else if ( custom_desktop )  //sfm
         *custom_desktop = g_strdup( desktop_id );
-        
+
 }
 
 /*

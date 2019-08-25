@@ -12,7 +12,7 @@
 #define gtk_combo_box_text_new gtk_combo_box_new_text
 #define gtk_combo_box_text_get_active_text gtk_combo_box_get_active_text
 #define gtk_combo_box_text_append_text gtk_combo_box_append_text
-static inline void gtk_combo_box_set_entry_text_column( 
+static inline void gtk_combo_box_set_entry_text_column(
                               GtkComboBox *combo_box, gint text_column )
 {
     gtk_combo_box_entry_set_text_column( GTK_COMBO_BOX_ENTRY( combo_box ),
@@ -21,7 +21,7 @@ static inline void gtk_combo_box_set_entry_text_column(
 #define gtk_combo_box_text_prepend_text gtk_combo_box_prepend_text
 #define GTK_COMBO_BOX_TEXT GTK_COMBO_BOX
 static inline gint gdk_window_get_width (GdkWindow *window)
-{ 
+{
     gint width;
     gdk_drawable_get_size(GDK_DRAWABLE(window), &width, NULL);
     return width;

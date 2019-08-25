@@ -1,7 +1,7 @@
 /*
 *  C Implementation: ptk-clipboard
 *
-* Description: 
+* Description:
 *
 *
 * Copyright: See COPYING file that comes with this distribution
@@ -68,7 +68,7 @@ static void clipboard_get_data ( GtkClipboard *clipboard,
             g_string_append( list, "\r\n" );
     }
 
-    gtk_selection_data_set ( selection_data, 
+    gtk_selection_data_set ( selection_data,
                              gtk_selection_data_get_target ( selection_data ),
                              8,
                              ( guchar* ) list->str, list->len + 1 );
@@ -129,7 +129,7 @@ void ptk_clipboard_copy_name( const char* working_dir,
     char* file_text;
     gint fcount = 0;
     char* str;
-    
+
     file_text = g_strdup( "" );
     for ( l = files; l; l = l->next )
     {
@@ -138,10 +138,10 @@ void ptk_clipboard_copy_name( const char* working_dir,
         if ( fcount == 0 )
             file_text = g_strdup_printf( "%s", vfs_file_info_get_name( file ) );
         else if ( fcount == 1 )
-            file_text = g_strdup_printf( "%s\n%s\n", file_text, 
+            file_text = g_strdup_printf( "%s\n%s\n", file_text,
                                          vfs_file_info_get_name( file ) );
         else
-            file_text = g_strdup_printf( "%s%s\n", file_text, 
+            file_text = g_strdup_printf( "%s%s\n", file_text,
                                          vfs_file_info_get_name( file ) );
         fcount++;
         g_free( str );
@@ -226,7 +226,7 @@ void ptk_clipboard_copy_file_list( char** path, gboolean copy )
     VFSFileInfo* file;
     char** file_path;
     GList* file_list = NULL;
-    
+
     gtk_target_list_add_text_targets( target_list, 0 );
     targets = gtk_target_table_new_from_list( target_list, &n_targets );
     n_targets += 2;
@@ -286,7 +286,7 @@ void ptk_clipboard_paste_files( GtkWindow* parent_win,
     sel_data = gtk_clipboard_wait_for_contents( clip, gnome_target );
     if ( sel_data )
     {
-        if ( gtk_selection_data_get_length( sel_data ) <= 0 || 
+        if ( gtk_selection_data_get_length( sel_data ) <= 0 ||
                                 gtk_selection_data_get_format( sel_data ) != 8 )
         {
             gtk_selection_data_free( sel_data );
@@ -311,7 +311,7 @@ void ptk_clipboard_paste_files( GtkWindow* parent_win,
         sel_data = gtk_clipboard_wait_for_contents( clip, uri_list_target );
         if ( !sel_data )
             return;
-        if ( gtk_selection_data_get_length( sel_data ) <= 0 || 
+        if ( gtk_selection_data_get_length( sel_data ) <= 0 ||
                                 gtk_selection_data_get_format( sel_data ) != 8 )
         {
             gtk_selection_data_free( sel_data );
@@ -384,13 +384,13 @@ void ptk_clipboard_paste_links( GtkWindow* parent_win,
     sel_data = gtk_clipboard_wait_for_contents( clip, gnome_target );
     if ( sel_data )
     {
-        if ( gtk_selection_data_get_length( sel_data ) <= 0 || 
+        if ( gtk_selection_data_get_length( sel_data ) <= 0 ||
                                 gtk_selection_data_get_format( sel_data ) != 8 )
         {
             gtk_selection_data_free( sel_data );
             return;
         }
-        
+
         uri_list_str = ( char* ) gtk_selection_data_get_data( sel_data );
         action = VFS_FILE_TASK_LINK;
         if ( uri_list_str )
@@ -405,7 +405,7 @@ void ptk_clipboard_paste_links( GtkWindow* parent_win,
         sel_data = gtk_clipboard_wait_for_contents( clip, uri_list_target );
         if ( !sel_data )
             return;
-        if ( gtk_selection_data_get_length( sel_data ) <= 0 || 
+        if ( gtk_selection_data_get_length( sel_data ) <= 0 ||
                                 gtk_selection_data_get_format( sel_data ) != 8 )
         {
             gtk_selection_data_free( sel_data );
@@ -458,7 +458,7 @@ void ptk_clipboard_paste_targets( GtkWindow* parent_win,
     gint missing_targets = 0;
     char* str;
     struct stat64 stat;
-    
+
     PtkFileTask* task;
     VFSFileTaskType action;
     char* uri_list_str;
@@ -467,7 +467,7 @@ void ptk_clipboard_paste_targets( GtkWindow* parent_win,
     sel_data = gtk_clipboard_wait_for_contents( clip, gnome_target );
     if ( sel_data )
     {
-        if ( gtk_selection_data_get_length( sel_data ) <= 0 || 
+        if ( gtk_selection_data_get_length( sel_data ) <= 0 ||
                                 gtk_selection_data_get_format( sel_data ) != 8 )
         {
             gtk_selection_data_free( sel_data );
@@ -488,13 +488,13 @@ void ptk_clipboard_paste_targets( GtkWindow* parent_win,
         sel_data = gtk_clipboard_wait_for_contents( clip, uri_list_target );
         if ( !sel_data )
             return;
-        if ( gtk_selection_data_get_length( sel_data ) <= 0 || 
+        if ( gtk_selection_data_get_length( sel_data ) <= 0 ||
                                 gtk_selection_data_get_format( sel_data ) != 8 )
         {
             gtk_selection_data_free( sel_data );
             return;
         }
-        
+
         uri_list_str = ( char* ) gtk_selection_data_get_data( sel_data );
         action = VFS_FILE_TASK_COPY;
     }
@@ -543,13 +543,13 @@ void ptk_clipboard_paste_targets( GtkWindow* parent_win,
             ptk_file_task_set_complete_notify( task, callback,
                                                (gpointer)callback_win );
         ptk_file_task_run( task );
-        
+
         if ( missing_targets > 0 )
             ptk_show_error( parent_win ? GTK_WINDOW( parent_win ) : NULL,
                             g_strdup_printf ( "Error" ),
                             g_strdup_printf ( "%i target%s missing",
-                            missing_targets, 
-                            missing_targets > 1 ? g_strdup_printf ( "s are" ) : 
+                            missing_targets,
+                            missing_targets > 1 ? g_strdup_printf ( "s are" ) :
                             g_strdup_printf ( " is" ) ) );
     }
     gtk_selection_data_free( sel_data );
@@ -566,7 +566,7 @@ GList* ptk_clipboard_get_file_paths( const char* cwd, gboolean* is_cut,
     GList* files = NULL;
     gchar* file_path;
     char* uri_list_str;
-    
+
     *is_cut = FALSE;
     *missing_targets = 0;
 
@@ -575,13 +575,13 @@ GList* ptk_clipboard_get_file_paths( const char* cwd, gboolean* is_cut,
     sel_data = gtk_clipboard_wait_for_contents( clip, gnome_target );
     if ( sel_data )
     {
-        if ( gtk_selection_data_get_length( sel_data ) <= 0 || 
+        if ( gtk_selection_data_get_length( sel_data ) <= 0 ||
                                 gtk_selection_data_get_format( sel_data ) != 8 )
         {
             gtk_selection_data_free( sel_data );
             return NULL;
         }
-        
+
         uri_list_str = ( char* ) gtk_selection_data_get_data( sel_data );
         *is_cut = ( 0 == strncmp( ( char* ) gtk_selection_data_get_data( sel_data ),
                                                                     "cut", 3 ) );
@@ -598,7 +598,7 @@ GList* ptk_clipboard_get_file_paths( const char* cwd, gboolean* is_cut,
         sel_data = gtk_clipboard_wait_for_contents( clip, uri_list_target );
         if ( ! sel_data )
             return NULL;
-        if ( gtk_selection_data_get_length( sel_data ) <= 0 || 
+        if ( gtk_selection_data_get_length( sel_data ) <= 0 ||
                                 gtk_selection_data_get_format( sel_data ) != 8 )
         {
             gtk_selection_data_free( sel_data );
@@ -612,7 +612,7 @@ GList* ptk_clipboard_get_file_paths( const char* cwd, gboolean* is_cut,
         gtk_selection_data_free( sel_data );
         return NULL;
     }
-    
+
     // create file list
     puri = uri_list = g_uri_list_extract_uris( uri_list_str );
     while ( *puri )
@@ -620,7 +620,7 @@ GList* ptk_clipboard_get_file_paths( const char* cwd, gboolean* is_cut,
         file_path = g_filename_from_uri( *puri, NULL, NULL );
         if ( file_path )
         {
-            if ( g_file_test( file_path, G_FILE_TEST_EXISTS ) )             
+            if ( g_file_test( file_path, G_FILE_TEST_EXISTS ) )
             {
                 files = g_list_prepend( files, file_path );
             }

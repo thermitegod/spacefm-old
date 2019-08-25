@@ -764,7 +764,7 @@
                             <property name="y_options">GTK_SHRINK</property>
                           </packing>
                         </child>
-                        
+
                         <!-- Wallpaper Mode -->
                         <child>
                           <object class="GtkLabel" id="label15">
@@ -1117,7 +1117,7 @@
                         <property name="expand">False</property>
                       </packing>
                     </child>
-                    
+
                     <child>
                       <object class="GtkCheckButton" id="desk_open_mime">
                         <property name="visible">True</property>

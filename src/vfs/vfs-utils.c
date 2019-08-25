@@ -39,7 +39,7 @@ GdkPixbuf* vfs_load_icon( GtkIconTheme* theme, const char* icon_name, int size )
 
     if ( !inf && icon_name[0] == '/' )
         return gdk_pixbuf_new_from_file_at_size ( icon_name, size, size, NULL );
-    
+
     if( G_UNLIKELY( ! inf ) )
         return NULL;
 
@@ -103,7 +103,7 @@ static char* find_su_program( GError** err )
         su = g_find_program_in_path( "gksu" );
     if ( ! su )
         su = g_find_program_in_path( "kdesu" );
-        
+
     if ( ! su )
         g_set_error( err, G_SPAWN_ERROR, G_SPAWN_ERROR_FAILED, _( "su command not found" ) ); //MOD
 

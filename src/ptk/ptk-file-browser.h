@@ -51,18 +51,18 @@ struct _PtkFileBrowser
     GList* curHistory;
     GList* histsel;  //MOD added
     GList* curhistsel;  //MOD added
-    
+
     VFSDir* dir;
     GtkTreeModel* file_list;
     int max_thumbnail;
     int n_sel_files;
     off_t sel_size;
     guint sel_change_idle;
-    
+
     // path bar auto seek
     gboolean inhibit_focus;
     char* seek_name;
-    
+
     /* side pane */
     GtkWidget* side_pane_buttons;
     GtkToggleToolButton* location_btn;
@@ -96,7 +96,7 @@ struct _PtkFileBrowser
 
     glong prev_update_time;
     guint update_timeout;
-    
+
     //MOD
     int mypanel;
     GtkWidget* mynotebook;
@@ -257,7 +257,7 @@ void ptk_file_browser_view_as_list ( PtkFileBrowser* file_browser );
 
 void ptk_file_browser_create_new_file( PtkFileBrowser* file_browser,
                                        gboolean create_folder );
-                                       
+
 void ptk_file_browser_hide_selected( PtkFileBrowser* file_browser,
                                                     GList* files, char* cwd );
 
@@ -312,7 +312,7 @@ void ptk_file_browser_select_file( PtkFileBrowser* file_browser,
 void ptk_file_browser_select_file_list( PtkFileBrowser* file_browser,
                                                         char** filename,
                                                         gboolean do_select );
-void ptk_file_browser_seek_path( PtkFileBrowser* file_browser, 
+void ptk_file_browser_seek_path( PtkFileBrowser* file_browser,
                                                     const char* seek_dir,
                                                     const char* seek_name );
 void ptk_file_browser_add_toolbar_widget( gpointer set_ptr, GtkWidget* widget );

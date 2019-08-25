@@ -1,11 +1,11 @@
 /*
  * SpaceFM vfs-volume-nohal.c
- * 
+ *
  * Copyright (C) 2014 IgnorantGuru <ignorantguru@gmx.com>
  * Copyright (C) 2006 Hong Jen Yee (PCMan) <pcman.tw (AT) gmail.com>
- * 
+ *
  * License: See COPYING file
- * 
+ *
  * udev & mount monitor code by IgnorantGuru
  * device info code uses code excerpts from freedesktop's udisks v1.0.4
 */
@@ -93,7 +93,7 @@ GIOChannel* mchannel = NULL;
 ************************************************************************** */
 
 typedef struct device_t  {
-    struct udev_device *udevice;    
+    struct udev_device *udevice;
     dev_t devnum;
     char *devnode;
     char *native_path;
@@ -121,7 +121,7 @@ typedef struct device_t  {
     char *id_version;
     char *id_uuid;
     char *id_label;
-    
+
     char *drive_vendor;
     char *drive_model;
     char *drive_revision;
@@ -370,7 +370,7 @@ sysfs_resolve_link (const char *sysfs_path,
 gboolean info_is_system_internal( device_t *device )
 {
     const char *value;
-    
+
     if ( value = udev_device_get_property_value( device->udevice, "UDISKS_SYSTEM_INTERNAL" ) )
         return atoi( value ) != 0;
 
@@ -420,7 +420,7 @@ void info_drive_connection( device_t *device )
 
   connection_interface = NULL;
   connection_speed = 0;
-  
+
   /* walk up the device tree to figure out the subsystem */
   s = g_strdup (device->native_path);
   do
@@ -692,7 +692,7 @@ void info_drive_properties ( device_t *device )
     guint n;
     const char *value;
 
-    // drive identification 
+    // drive identification
     device->device_is_drive = sysfs_file_exists( device->native_path, "range" );
 
     // vendor
@@ -706,7 +706,7 @@ void info_drive_properties ( device_t *device )
     {
         device->drive_vendor = g_strdup( value );
     }
-    
+
     // model
     if ( value = udev_device_get_property_value( device->udevice, "ID_MODEL_ENC" ) )
     {
@@ -718,11 +718,11 @@ void info_drive_properties ( device_t *device )
     {
         device->drive_model = g_strdup( value );
     }
-    
+
     // revision
-    device->drive_revision = g_strdup( udev_device_get_property_value( 
+    device->drive_revision = g_strdup( udev_device_get_property_value(
                                                     device->udevice, "ID_REVISION" ) );
-    
+
     // serial
     if ( value = udev_device_get_property_value( device->udevice, "ID_SCSI_SERIAL" ) )
     {
@@ -746,7 +746,7 @@ void info_drive_properties ( device_t *device )
     {
         device->drive_wwn = g_strdup( value + 2 );
     }
-    
+
     /* pick up some things (vendor, model, connection_interface, connection_speed)
     * not (yet) exported by udev helpers
     */
@@ -761,11 +761,11 @@ void info_drive_properties ( device_t *device )
     else
     {
       drive_is_ejectable = FALSE;
-      drive_is_ejectable |= ( udev_device_get_property_value( 
+      drive_is_ejectable |= ( udev_device_get_property_value(
                                     device->udevice, "ID_CDROM" ) != NULL );
-      drive_is_ejectable |= ( udev_device_get_property_value( 
+      drive_is_ejectable |= ( udev_device_get_property_value(
                                     device->udevice, "ID_DRIVE_FLOPPY_ZIP" ) != NULL );
-      drive_is_ejectable |= ( udev_device_get_property_value( 
+      drive_is_ejectable |= ( udev_device_get_property_value(
                                     device->udevice, "ID_DRIVE_FLOPPY_JAZ" ) != NULL );
     }
     device->drive_is_media_ejectable = drive_is_ejectable;
@@ -774,7 +774,7 @@ void info_drive_properties ( device_t *device )
     media_compat_array = g_ptr_array_new ();
     for (n = 0; drive_media_mapping[n].udev_property != NULL; n++)
     {
-        if ( udev_device_get_property_value( device->udevice, 
+        if ( udev_device_get_property_value( device->udevice,
                                 drive_media_mapping[n].udev_property ) == NULL )
             continue;
 
@@ -811,7 +811,7 @@ void info_drive_properties ( device_t *device )
     {
         for (n = 0; media_mapping[n].udev_property != NULL; n++)
         {
-            if ( udev_device_get_property_value( device->udevice, 
+            if ( udev_device_get_property_value( device->udevice,
                                     media_mapping[n].udev_property ) == NULL )
                 continue;
             // should this be media_mapping[n] ?  doesn't matter, same?
@@ -844,7 +844,7 @@ void info_drive_properties ( device_t *device )
 void info_device_properties( device_t *device )
 {
     const char* value;
-    
+
     device->native_path = g_strdup( udev_device_get_syspath( device->udevice ) );
     device->devnode = g_strdup( udev_device_get_devnode( device->udevice ) );
     device->devnum = udev_device_get_devnum( device->udevice );
@@ -858,9 +858,9 @@ void info_device_properties( device_t *device )
         device->devnum = 0;
         return;
     }
-    
+
     //by id - would need to read symlinks in /dev/disk/by-id
-    
+
     // is_removable may also be set in info_drive_connection walking up sys tree
     device->device_is_removable = sysfs_get_int( device->native_path, "removable");
 
@@ -879,12 +879,12 @@ void info_device_properties( device_t *device )
     gchar *decoded_string;
     const gchar *partition_scheme;
     gint partition_type = 0;
-    
+
     partition_scheme = udev_device_get_property_value( device->udevice, "UDISKS_PARTITION_SCHEME");
     if ( value = udev_device_get_property_value( device->udevice, "UDISKS_PARTITION_TYPE") )
         partition_type = atoi( value );
-    if (g_strcmp0 (partition_scheme, "mbr") == 0 && (partition_type == 0x05 || 
-                                                   partition_type == 0x0f || 
+    if (g_strcmp0 (partition_scheme, "mbr") == 0 && (partition_type == 0x05 ||
+                                                   partition_type == 0x0f ||
                                                    partition_type == 0x85))
     {
     }
@@ -913,7 +913,7 @@ void info_device_properties( device_t *device )
 
     // device_is_media_available
     gboolean media_available = FALSE;
-    
+
     if ( ( device->id_usage && device->id_usage[0] != '\0' ) ||
          ( device->id_type  && device->id_type[0]  != '\0' ) ||
          ( device->id_uuid  && device->id_uuid[0]  != '\0' ) ||
@@ -981,10 +981,10 @@ void info_device_properties( device_t *device )
         device->device_size = device->device_block_size = 0;
         device->device_is_read_only = FALSE;
     }
-    
+
     // links
-    struct udev_list_entry *entry = udev_device_get_devlinks_list_entry( 
-                                                                device->udevice );    
+    struct udev_list_entry *entry = udev_device_get_devlinks_list_entry(
+                                                                device->udevice );
     while ( entry )
     {
         const char *entry_name = udev_list_entry_get_name( entry );
@@ -1005,7 +1005,7 @@ gchar* info_mount_points( device_t *device )
     GError *error;
     guint n;
     GList* mounts = NULL;
-    
+
     guint dmajor = MAJOR( device->devnum );
     guint dminor = MINOR( device->devnum );
 
@@ -1015,7 +1015,7 @@ gchar* info_mount_points( device_t *device )
         GList* l;
         for ( l = devmounts; l; l = l->next )
         {
-            if ( ((devmount_t*)l->data)->major == dmajor && 
+            if ( ((devmount_t*)l->data)->major == dmajor &&
                                         ((devmount_t*)l->data)->minor == dminor )
             {
                 return g_strdup( ((devmount_t*)l->data)->mount_points );
@@ -1050,7 +1050,7 @@ gchar* info_mount_points( device_t *device )
       gchar encoded_mount_point[PATH_MAX];
       gchar *mount_point;
       //dev_t dev;
-      
+
       if (strlen (lines[n]) == 0)
         continue;
 
@@ -1102,7 +1102,7 @@ gchar* info_mount_points( device_t *device )
 
         if ( major != dmajor || minor != dminor )
             continue;
-            
+
         mount_point = g_strcompress (encoded_mount_point);
         if ( mount_point && mount_point[0] != '\0' )
         {
@@ -1143,17 +1143,17 @@ void info_partition_table( device_t *device )
 {
   gboolean is_partition_table = FALSE;
   const char* value;
-  
+
     /* Check if udisks-part-id identified the device as a partition table.. this includes
     * identifying partition tables set up by kpartx for multipath etc.
     */
-    if ( ( value = udev_device_get_property_value( device->udevice, "UDISKS_PARTITION_TABLE" ) ) 
+    if ( ( value = udev_device_get_property_value( device->udevice, "UDISKS_PARTITION_TABLE" ) )
                                                     && atoi( value ) == 1 )
     {
-        device->partition_table_scheme = g_strdup( udev_device_get_property_value( 
+        device->partition_table_scheme = g_strdup( udev_device_get_property_value(
                                                 device->udevice,
                                                 "UDISKS_PARTITION_TABLE_SCHEME" ) );
-        device->partition_table_count = g_strdup( udev_device_get_property_value( 
+        device->partition_table_count = g_strdup( udev_device_get_property_value(
                                                 device->udevice,
                                                 "UDISKS_PARTITION_TABLE_COUNT" ) );
         is_partition_table = TRUE;
@@ -1241,7 +1241,7 @@ void info_partition( device_t *device )
       uuid = udev_device_get_property_value( device->udevice, "UDISKS_PARTITION_UUID");
       flags = udev_device_get_property_value( device->udevice, "UDISKS_PARTITION_FLAGS");
       offset = udev_device_get_property_value( device->udevice, "UDISKS_PARTITION_OFFSET");
-      alignment_offset = udev_device_get_property_value( device->udevice, 
+      alignment_offset = udev_device_get_property_value( device->udevice,
                                                 "UDISKS_PARTITION_ALIGNMENT_OFFSET");
       number = udev_device_get_property_value( device->udevice, "UDISKS_PARTITION_NUMBER");
       slave_sysfs_path = udev_device_get_property_value( device->udevice, "UDISKS_PARTITION_SLAVE");
@@ -1337,7 +1337,7 @@ void info_optical_disc( device_t *device )
                                     device->udevice, "ID_CDROM_MEDIA_TRACK_COUNT_AUDIO") );
         device->optical_disc_num_sessions = g_strdup( udev_device_get_property_value(
                                     device->udevice, "ID_CDROM_MEDIA_SESSION_COUNT") );
-                                    
+
         cdrom_disc_state = udev_device_get_property_value( device->udevice, "ID_CDROM_MEDIA_STATE");
 
         device->optical_disc_is_blank = ( g_strcmp0( cdrom_disc_state,
@@ -1355,7 +1355,7 @@ static void device_free( device_t *device )
 {
     if ( !device )
         return;
-        
+
     g_free( device->native_path );
     g_free( device->mount_points );
     g_free( device->devnode );
@@ -1463,7 +1463,7 @@ device_t *device_alloc( struct udev_device *udevice )
     device->optical_disc_num_tracks = NULL;
     device->optical_disc_num_audio_tracks = NULL;
     device->optical_disc_num_sessions = NULL;
-    
+
     return device;
 }
 
@@ -1486,7 +1486,7 @@ char* device_show_info( device_t *device )
 {
     gchar* line[140];
     int i = 0;
-    
+
     line[i++] = g_strdup_printf("Showing information for %s\n", device->devnode );
     line[i++] = g_strdup_printf("  native-path:                 %s\n", device->native_path );
     line[i++] = g_strdup_printf("  device:                      %u:%u\n",
@@ -1522,7 +1522,7 @@ char* device_show_info( device_t *device )
     if (device->device_is_partition_table)
     {
         line[i++] = g_strdup_printf("  partition table:\n");
-        line[i++] = g_strdup_printf("    scheme:                    %s\n", device->partition_table_scheme ? 
+        line[i++] = g_strdup_printf("    scheme:                    %s\n", device->partition_table_scheme ?
                                                     device->partition_table_scheme : "" );
         line[i++] = g_strdup_printf("    count:                     %s\n", device->partition_table_count ?
                                                     device->partition_table_count : "0" );
@@ -1532,21 +1532,21 @@ char* device_show_info( device_t *device )
         line[i++] = g_strdup_printf("  partition:\n");
         line[i++] = g_strdup_printf("    scheme:                    %s\n", device->partition_scheme ?
                                                     device->partition_scheme : "" );
-        line[i++] = g_strdup_printf("    number:                    %s\n", device->partition_number ? 
+        line[i++] = g_strdup_printf("    number:                    %s\n", device->partition_number ?
                                                     device->partition_number : "" );
         line[i++] = g_strdup_printf("    type:                      %s\n", device->partition_type ?
                                                     device->partition_type : "" );
-        line[i++] = g_strdup_printf("    flags:                     %s\n", device->partition_flags ? 
+        line[i++] = g_strdup_printf("    flags:                     %s\n", device->partition_flags ?
                                                     device->partition_flags : "" );
-        line[i++] = g_strdup_printf("    offset:                    %s\n", device->partition_offset ? 
+        line[i++] = g_strdup_printf("    offset:                    %s\n", device->partition_offset ?
                                                     device->partition_offset : "" );
-        line[i++] = g_strdup_printf("    alignment offset:          %s\n", device->partition_alignment_offset ? 
+        line[i++] = g_strdup_printf("    alignment offset:          %s\n", device->partition_alignment_offset ?
                                                     device->partition_alignment_offset : "" );
-        line[i++] = g_strdup_printf("    size:                      %s\n", device->partition_size ? 
+        line[i++] = g_strdup_printf("    size:                      %s\n", device->partition_size ?
                                                     device->partition_size : "" );
-        line[i++] = g_strdup_printf("    label:                     %s\n", device->partition_label ? 
+        line[i++] = g_strdup_printf("    label:                     %s\n", device->partition_label ?
                                                     device->partition_label : "" );
-        line[i++] = g_strdup_printf("    uuid:                      %s\n", device->partition_uuid ? 
+        line[i++] = g_strdup_printf("    uuid:                      %s\n", device->partition_uuid ?
                                                     device->partition_uuid : "" );
     }
     if (device->device_is_optical_disc)
@@ -1579,7 +1579,7 @@ char* device_show_info( device_t *device )
         line[i++] = g_strdup_printf("    ejectable:                 %d\n", device->drive_is_media_ejectable);
         line[i++] = g_strdup_printf("    media:                     %s\n", device->drive_media ?
                                                     device->drive_media : "" );
-        line[i++] = g_strdup_printf("      compat:                  %s\n", device->drive_media_compatibility ? 
+        line[i++] = g_strdup_printf("      compat:                  %s\n", device->drive_media_compatibility ?
                                                     device->drive_media_compatibility : "" );
         if ( device->drive_connection_interface == NULL ||
                                 strlen (device->drive_connection_interface) == 0 )
@@ -1589,7 +1589,7 @@ char* device_show_info( device_t *device )
         if (device->drive_connection_speed == 0)
             line[i++] = g_strdup_printf("    if speed:                  (unknown)\n");
         else
-            line[i++] = g_strdup_printf("    if speed:                  %" G_GINT64_FORMAT " bits/s\n", 
+            line[i++] = g_strdup_printf("    if speed:                  %" G_GINT64_FORMAT " bits/s\n",
                                                     device->drive_connection_speed);
     }
     line[i] = NULL;
@@ -1642,11 +1642,11 @@ void parse_mounts( gboolean report )
     GList* changed = NULL;
     devmount_t *devmount;
     gboolean subdir_mount;
-    
+
     /* See Documentation/filesystems/proc.txt for the format of /proc/self/mountinfo
     *
     * Note that things like space are encoded as \020.
-    * 
+    *
     * This file contains lines of the form:
     * 36 35 98:0 /mnt1 /mnt2 rw,noatime master:1 - ext3 /dev/root rw,errors=continue
     * (1)(2)(3)   (4)   (5)      (6)      (7)   (8) (9)   (10)         (11)
@@ -1673,7 +1673,7 @@ void parse_mounts( gboolean report )
         gchar encoded_mount_point[PATH_MAX];
         gchar* mount_point;
         gchar* fstype;
-      
+
         if ( strlen( lines[n] ) == 0 )
             continue;
 
@@ -1765,7 +1765,7 @@ void parse_mounts( gboolean report )
         devmount = NULL;
         for ( l = newmounts; l; l = l->next )
         {
-            if ( ((devmount_t*)l->data)->major == major && 
+            if ( ((devmount_t*)l->data)->major == major &&
                                         ((devmount_t*)l->data)->minor == minor )
             {
                 devmount = (devmount_t*)l->data;
@@ -1810,7 +1810,7 @@ void parse_mounts( gboolean report )
                     if ( subdir_mount )
                     {
                         // is block device with subdir mount - ignore
-                        g_free( mount_point );   
+                        g_free( mount_point );
                         continue;
                     }
                     // add
@@ -1858,7 +1858,7 @@ void parse_mounts( gboolean report )
         devmount->mount_points = points;
 //printf( "translate %d:%d %s\n", devmount->major, devmount->minor, points );
     }
-    
+
     // compare old and new lists
     GList* found;
     if ( report )
@@ -1969,7 +1969,7 @@ static void free_devmounts()
 {
     GList* l;
     devmount_t *devmount;
-    
+
     if ( !devmounts )
         return;
     for ( l = devmounts; l; l = l->next )
@@ -1986,7 +1986,7 @@ static void free_devmounts()
 const char* get_devmount_fstype( int major, int minor )
 {
     GList* l;
-    
+
     for ( l = devmounts; l; l = l->next )
     {
         if ( ((devmount_t*)l->data)->major == major &&
@@ -2041,7 +2041,7 @@ if ( !( cond & G_IO_NVAL ) )
         printf("    Invalid FD\n");
 }
 */
-    if ( ( cond & G_IO_NVAL ) ) 
+    if ( ( cond & G_IO_NVAL ) )
     {
         g_warning( "udev g_io_channel_unref G_IO_NVAL" );
         g_io_channel_unref( channel );
@@ -2160,7 +2160,7 @@ static gboolean cb_out_watch( GIOChannel *channel, GIOCondition cond,
         //printf("    !G_IO_STATUS_NORMAL\n");
         return TRUE;
     }
-    
+
     //printf("umon: %s\n", line );
     // parse line to get parameter and value
         //added:     /org/freedesktop/UDisks/devices/sdd1
@@ -2221,7 +2221,7 @@ void vfs_volume_monitor_start()
         //printf("monpid non-null - skipping start\n");
         return;
     }
-    
+
     // start polling on /dev/sr0 - this also starts the udisks daemon
     char* stdout = NULL;
     char* stderr = NULL;
@@ -2245,14 +2245,14 @@ void vfs_volume_monitor_start()
     }
 
     monpid = pid;
-    
+
     // catch termination
     g_child_watch_add( pid, (GChildWatchFunc)cb_child_watch, NULL );
 
     // create channels for output
     out_ch = g_io_channel_unix_new( out );
     g_io_channel_set_close_on_unref( out_ch, TRUE );
-    
+
     // if enable err channel, need to add &err to g_spawn_async_with_pipes
     //    and remove G_SPAWN_STDERR_TO_DEV_NULL flag
     //err_ch = g_io_channel_unix_new( err );
@@ -2312,7 +2312,7 @@ void vfs_volume_set_info( VFSVolume* volume )
     char* disp_devnum;
     char* disp_id = NULL;
     char size_str[ 64 ];
-    
+
     if ( !volume )
         return;
 
@@ -2362,7 +2362,7 @@ void vfs_volume_set_info( VFSVolume* volume )
         volume->icon = g_strdup_printf( "dev_icon_network" );
     else if ( volume->device_type == DEVICE_TYPE_OTHER )
         volume->icon = g_strdup_printf( "dev_icon_file" );
-    
+
     // set disp_id using by-id
     if ( volume->device_type == DEVICE_TYPE_BLOCK )
     {
@@ -2405,7 +2405,7 @@ void vfs_volume_set_info( VFSVolume* volume )
     }
     else
         disp_id = g_strdup( volume->udi );
-    
+
     // set display name
     if ( volume->is_mounted )
     {
@@ -2467,10 +2467,10 @@ void vfs_volume_set_info( VFSVolume* volume )
         disp_fstype = g_strdup( "" );
     disp_devnum = g_strdup_printf( "%u:%u", (unsigned int)MAJOR( volume->devnum ),
                                             (unsigned int)MINOR( volume->devnum ) );
- 
+
     char* fmt = xset_get_s( "dev_dispname" );
     if ( !fmt )
-        parameter = g_strdup_printf( "%s %s %s %s %s %s", 
+        parameter = g_strdup_printf( "%s %s %s %s %s %s",
                             disp_device, disp_size, disp_fstype, disp_label,
                             disp_mount, disp_id );
     else
@@ -2489,7 +2489,7 @@ void vfs_volume_set_info( VFSVolume* volume )
         parameter = replace_string( valuec, "%i", disp_id, FALSE );
         g_free( valuec );
     }
-    
+
     //volume->disp_name = g_filename_to_utf8( parameter, -1, NULL, NULL, NULL );
     while ( strstr( parameter, "  " ) )
     {
@@ -2531,7 +2531,7 @@ VFSVolume* vfs_volume_read_by_device( struct udev_device *udevice )
         device_free( device );
         return NULL;
     }
-    
+
     // translate device info to VFSVolume
     volume = g_slice_new0( VFSVolume );
     volume->devnum = device->devnum;
@@ -2551,14 +2551,14 @@ VFSVolume* vfs_volume_read_by_device( struct udev_device *udevice )
                         && atoi( device->optical_disc_num_audio_tracks ) > 0 );
     volume->is_dvd = ( device->drive_media
                                 && strstr( device->drive_media, "optical_dvd" ) );
-    volume->is_blank = ( device->device_is_optical_disc 
+    volume->is_blank = ( device->device_is_optical_disc
                                 && device->optical_disc_is_blank );
     volume->is_mounted = device->device_is_mounted;
-    volume->is_user_visible = device->device_presentation_hide ? 
+    volume->is_user_visible = device->device_presentation_hide ?
                                 !atoi( device->device_presentation_hide ) : TRUE;
     volume->ever_mounted = FALSE;
     volume->open_main_window = NULL;
-    volume->nopolicy = device->device_presentation_nopolicy ? 
+    volume->nopolicy = device->device_presentation_nopolicy ?
                         atoi( device->device_presentation_nopolicy ) : FALSE;
     volume->mount_point = NULL;
     if ( device->mount_points && device->mount_points[0] != '\0' )
@@ -2588,7 +2588,7 @@ VFSVolume* vfs_volume_read_by_device( struct udev_device *udevice )
     //if ( volume->is_blank )
     //    volume->is_mountable = FALSE;  //has_media is now used for showing
     if ( volume->is_dvd )
-        volume->is_audiocd = FALSE;        
+        volume->is_audiocd = FALSE;
 
     vfs_volume_set_info( volume );
 /*
@@ -2637,9 +2637,9 @@ gboolean path_is_mounted_mtab( const char* mtab_file,
     contents = NULL;
     lines = NULL;
     error = NULL;
-    
+
     char* mtab_path = g_build_filename( SYSCONFDIR, "mtab", NULL );
-    
+
     if ( mtab_file )
     {
         // read from a custom mtab file, eg ~/.mtab.fuseiso
@@ -2736,7 +2736,7 @@ int split_network_url( const char* url, netmount_t** netmount )
 {   // returns 0=not a network url  1=valid network url  2=invalid network url
     if ( !url || !netmount )
         return 0;
-    
+
     int ret;
     char* str;
     char* str2;
@@ -2751,7 +2751,7 @@ int split_network_url( const char* url, netmount_t** netmount )
     nm->pass = NULL;
     nm->path = NULL;
     nm->url = g_strdup( url );
-    
+
     // get protocol
     gboolean is_colon;
     if ( g_str_has_prefix( xurl, "//" ) )
@@ -2771,7 +2771,7 @@ int split_network_url( const char* url, netmount_t** netmount )
             goto _net_free;
         str[0] = ':';
         is_colon = TRUE;
-        
+
         // remove ...# from start of protocol
         // eg curlftpfs mtab url looks like: curlftpfs#ftp://hostname/
         if ( nm->fstype && ( str = strchr( nm->fstype, '#' ) ) )
@@ -2789,18 +2789,18 @@ int split_network_url( const char* url, netmount_t** netmount )
         nm->fstype = g_strdup( "nfs" );
         str[0] = '\0';
         nm->host = g_strdup( xurl );
-        str[0] = ':';        
+        str[0] = ':';
         is_colon = TRUE;
     }
     else
         goto _net_free;
-    
+
     ret = 1;
-    
+
     // parse
     if ( is_colon && ( str = strchr( xurl, ':' ) ) )
     {
-        
+
         xurl = str + 1;
     }
     while ( xurl[0] == '/' )
@@ -2866,7 +2866,7 @@ int split_network_url( const char* url, netmount_t** netmount )
     // check host
     if ( !nm->host )
         nm->host = g_strdup( "" );
-    
+
     /*
     // check user pass port
     if ( ( nm->user && strchr( nm->user, ' ' ) )
@@ -2874,7 +2874,7 @@ int split_network_url( const char* url, netmount_t** netmount )
             || ( nm->port && strchr( nm->port, ' ' ) ) )
         ret = 2;
     */
-    
+
     *netmount = nm;
     return ret;
 
@@ -3059,7 +3059,7 @@ VFSVolume* vfs_volume_read_by_device( char* device_file )
     VFSVolume* volume = NULL;
     size_t colonx;
     char* device_file_delayed;
-    
+
     //printf( ">>> udisks --show-info %s\n", device_file );
     fp = popen(g_strdup_printf( "/usr/bin/udisks --show-info %s", device_file ), "r");
     if (fp)
@@ -3159,7 +3159,7 @@ VFSVolume* vfs_volume_read_by_device( char* device_file )
                         volume->is_table = TRUE;
                     else if ( !strcmp( parameter, "    type" ) && !strcmp( value, "0x05" ) )
                         volume->is_table = TRUE;  //extended partition
-                    
+
                     g_free( parameter );
                     g_free( valuec );
                 }
@@ -3171,7 +3171,7 @@ VFSVolume* vfs_volume_read_by_device( char* device_file )
         //if ( volume->is_blank )
         //    volume->is_mountable = FALSE;  //has_media is now used for showing
         if ( volume->is_dvd )
-            volume->is_audiocd = FALSE;        
+            volume->is_audiocd = FALSE;
 
         if ( volume->device_file && !strcmp( volume->device_file, device_file ) )
         {
@@ -3220,7 +3220,7 @@ char* vfs_volume_handler_cmd( int mode, int action, VFSVolume* vol,
 
     if ( mount_point )
         *mount_point = NULL;
-    
+
     if ( mode == HANDLER_MODE_FS )
     {
         if ( !vol )
@@ -3308,7 +3308,7 @@ char* vfs_volume_handler_cmd( int mode, int action, VFSVolume* vol,
     if ( vol && vol->is_mounted && vol->mount_point && vol->mount_point[0] )
         values = g_slist_prepend( values,
                 g_strconcat( "point=", vol->mount_point, NULL ) );
-    
+
     // get handlers
     if ( !( handlers_list = xset_get_s( mode == HANDLER_MODE_FS ?
                                         "dev_fs_cnf" : "dev_net_cnf" ) ) )
@@ -3341,7 +3341,7 @@ char* vfs_volume_handler_cmd( int mode, int action, VFSVolume* vol,
         {
             // test blacklist
             if ( ptk_handler_values_in_list( set->x, values, NULL ) )
-                break;            
+                break;
             // test whitelist
             if ( ptk_handler_values_in_list( set->s, values, &msg ) )
             {
@@ -3355,7 +3355,7 @@ char* vfs_volume_handler_cmd( int mode, int action, VFSVolume* vol,
     g_strfreev( handlers );
     if ( !found )
         return NULL;
-                              
+
     // get command for action
     char* command = NULL;
     const char* action_s;
@@ -3385,7 +3385,7 @@ char* vfs_volume_handler_cmd( int mode, int action, VFSVolume* vol,
     }
     else
         return NULL;
-    
+
     // show selected handler
     printf( "\n%s '%s': %s%s %s\n", mode == HANDLER_MODE_FS ?
                                                 _("Selected Device Handler") :
@@ -3591,7 +3591,7 @@ gboolean vfs_volume_is_automount( VFSVolume* vol )
     int i, j;
     char* test;
     char* value;
-    
+
     if ( vol->should_autounmount )
         // volume is a network or ISO file that was manually mounted -
         // for autounmounting only
@@ -3662,11 +3662,11 @@ char* vfs_volume_device_info( VFSVolume* vol )
                                             (unsigned int)MINOR( vol->devnum ) );
         return g_strdup_printf( _("( no udev device )") );
     }
-    
+
     device_t *device = device_alloc( udevice );
     if ( !device_get_info( device ) )
         return g_strdup( "" );
-    
+
     char* info = device_show_info( device );
     device_free( device );
     udev_device_unref( udevice );
@@ -3730,7 +3730,7 @@ char* vfs_volume_device_unmount_cmd( VFSVolume* vol, gboolean* run_in_terminal )
     char* s1;
     char* pointq;
     *run_in_terminal = FALSE;
-    
+
     // unmounting a network ?
     if ( vol->device_type == DEVICE_TYPE_NETWORK )
     {
@@ -3750,7 +3750,7 @@ char* vfs_volume_device_unmount_cmd( VFSVolume* vol, gboolean* run_in_terminal )
             g_free( netmount->pass );
             g_free( netmount->path );
             g_slice_free( netmount_t, netmount );
-            
+
             //igtodo is this redundant?
             // replace mount point sub var
             if ( command && strstr( command, "%a" ) )
@@ -3778,7 +3778,7 @@ char* vfs_volume_device_unmount_cmd( VFSVolume* vol, gboolean* run_in_terminal )
             command = replace_string( command, "%a", pointq, FALSE );
             g_free( s1 );
             g_free( pointq );
-        }        
+        }
     }
     else
         command = vfs_volume_handler_cmd( HANDLER_MODE_FS, HANDLER_UNMOUNT,
@@ -3856,7 +3856,7 @@ char* vfs_volume_get_mount_options( VFSVolume* vol, char* options )
     // no options
     if ( news[0] == '\0' )
         return NULL;
-        
+
     // parse options with fs type
     // nosuid,sync+vfat,utf+vfat,nosuid-ext4
     char* opts = g_strdup_printf( ",%s,", news );
@@ -3880,13 +3880,13 @@ char* vfs_volume_get_mount_options( VFSVolume* vol, char* options )
             // pure option, check for -fs option
             test = g_strdup_printf( ",%s-%s,", single, fstype );
             if ( !strstr( opts, test ) )
-            {   
+            {
                 // add option
                 strcpy( newoptr, single );
                 newoptr = newo + strlen( newo );
                 newoptr[0] = ',';
                 newoptr[1] = '\0';
-                newoptr++;    
+                newoptr++;
             }
             g_free( test );
         }
@@ -3908,7 +3908,7 @@ char* vfs_volume_get_mount_options( VFSVolume* vol, char* options )
                     newoptr = newo + strlen( newo );
                     newoptr[0] = ',';
                     newoptr[1] = '\0';
-                    newoptr++;    
+                    newoptr++;
                 }
                 g_free( test );
             }
@@ -3949,7 +3949,7 @@ void exec_task( const char* command, gboolean run_in_terminal )
     task->task->exec_sync = FALSE;
     task->task->exec_export = FALSE;
     task->task->exec_terminal = run_in_terminal;
-    ptk_file_task_run( task );    
+    ptk_file_task_run( task );
 }
 
 void vfs_volume_exec( VFSVolume* vol, const char* command )
@@ -4006,7 +4006,7 @@ void vfs_volume_autoexec( VFSVolume* vol )
                     {
                         printf( _("\nAuto Open Tab for %s in %s\n"), vol->device_file,
                                                                 vol->mount_point );
-                        //PtkFileBrowser* file_browser = 
+                        //PtkFileBrowser* file_browser =
                         //        (PtkFileBrowser*)fm_main_window_get_current_file_browser(
                         //                                                main_window );
                         //if ( file_browser )
@@ -4087,7 +4087,7 @@ static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
     GList* l;
     gboolean was_mounted, was_audiocd, was_mountable;
     char* changed_mount_point = NULL;
-    
+
     if ( !volume || !volume->udi || !volume->device_file )
         return;
 
@@ -4166,11 +4166,11 @@ static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
                 }
                 else if ( !was_audiocd && volume->is_audiocd )
                     vfs_volume_autoexec( volume );
-                
+
                 //media inserted ?
                 if ( !was_mountable && volume->is_mountable )
                     vfs_volume_exec( volume, xset_get_s( "dev_exec_insert" ) );
-                
+
                 // media ejected ?
                 if ( was_mountable && !volume->is_mountable && volume->is_mounted &&
                             ( volume->is_optical || volume->is_removable ) )
@@ -4205,7 +4205,7 @@ static gboolean vfs_volume_nonblock_removed( dev_t devnum )
 {
     GList* l;
     VFSVolume* volume;
-    
+
     for ( l = volumes; l; l = l->next )
     {
         if ( ((VFSVolume*)l->data)->device_type != DEVICE_TYPE_BLOCK &&
@@ -4354,14 +4354,14 @@ gboolean vfs_volume_init()
     {
         printf( "spacefm: cannot set udev filter\n");
         goto finish_;
-    }    
+    }
 
     gint ufd = udev_monitor_get_fd( umonitor );
     if ( ufd == 0 )
     {
         printf( "spacefm: cannot get udev monitor socket file descriptor\n");
         goto finish_;
-    }    
+    }
     global_inhibit_auto = TRUE; // don't autoexec during startup
 
     uchannel = g_io_channel_unix_new( ufd );
@@ -4392,7 +4392,7 @@ gboolean vfs_volume_init()
 
     // start resume autoexec timer
     g_timeout_add_seconds( 3, ( GSourceFunc ) on_cancel_inhibit_timer, NULL );
-    
+
     return TRUE;
 finish_:
     if ( umonitor )
@@ -4417,7 +4417,7 @@ gboolean vfs_volume_finalize()
         mchannel = NULL;
     }
     free_devmounts();
-    
+
     // stop udev monitor
     if ( uchannel )
     {
@@ -4434,7 +4434,7 @@ gboolean vfs_volume_finalize()
         udev_unref( udev );
         udev = NULL;
     }
-    
+
     // free callbacks
     if ( callbacks )
         g_array_free( callbacks, TRUE );
@@ -4456,7 +4456,7 @@ gboolean vfs_volume_finalize()
 
     // remove unused mount points
     ptk_location_view_clean_mount_points();
-    
+
     return TRUE;
 }
 
@@ -4470,10 +4470,10 @@ VFSVolume* vfs_volume_get_by_device_or_point( const char* device_file,
 {
     VFSVolume* vol;
     GList* l;
-    
+
     if ( !point && !device_file )
         return NULL;
-    
+
     // canonicalize point
     char buf[ PATH_MAX + 1 ];
     char* canon = NULL;
@@ -4483,7 +4483,7 @@ VFSVolume* vfs_volume_get_by_device_or_point( const char* device_file,
         if ( canon && !strcmp( canon, point ) )
             canon = NULL;
     }
-    
+
     if ( G_LIKELY( volumes ) )
     {
         for ( l = volumes; l; l = l->next )
@@ -4592,7 +4592,7 @@ const char* vfs_volume_get_fstype( VFSVolume *vol )
 const char* vfs_volume_get_icon( VFSVolume *vol )
 {
     if ( !vol->icon )
-        return NULL;        
+        return NULL;
     XSet* set = xset_get( vol->icon );
     return set->icon;
 }
@@ -4630,7 +4630,7 @@ gboolean vfs_volume_dir_avoid_changes( const char* dir )
     char* canon = realpath( dir, buf );
     if ( !canon )
         return FALSE;
-    
+
     // get devnum
     struct stat stat_buf;   // skip stat64
     if ( stat( canon, &stat_buf ) == -1 )
@@ -4679,7 +4679,7 @@ gboolean vfs_volume_dir_avoid_changes( const char* dir )
         }
         /* blacklist these types for no change detection (if not block device)
         ret = (    g_str_has_prefix( fstype, "nfs" )    // nfs nfs4 etc
-                || ( g_str_has_prefix( fstype, "fuse" ) && 
+                || ( g_str_has_prefix( fstype, "fuse" ) &&
                             strcmp( fstype, "fuseblk" ) ) // fuse fuse.sshfs curlftpfs(fuse) etc
                 || strstr( fstype, "cifs" )
                 || !strcmp( fstype, "smbfs" )
@@ -4693,7 +4693,7 @@ gboolean vfs_volume_dir_avoid_changes( const char* dir )
     else
         // block device
         ret = FALSE;
-    
+
     if ( udevice )
         udev_device_unref( udevice );
 //printf( "    avoid_changes = %s\n", ret ? "TRUE" : "FALSE" );
@@ -4726,6 +4726,6 @@ dev_t get_device_parent( dev_t dev )
         return 0;
     dev_t retdev = udev_device_get_devnum( udevice );
     udev_device_unref( udevice );
-    return retdev;    
+    return retdev;
 }
 

@@ -24,7 +24,7 @@ G_BEGIN_DECLS
   * The list will be freed in this function, so the caller mustn't
   * free the list after calling this function.
   */
-  
+
 typedef struct _PtkFileMenu PtkFileMenu;
 struct _PtkFileMenu
 {

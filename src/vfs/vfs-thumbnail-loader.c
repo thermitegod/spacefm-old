@@ -334,7 +334,7 @@ void vfs_thumbnail_loader_cancel_all_requests( VFSDir* dir, gboolean is_big )
             /* g_debug( "FREE LOADER IN vfs_thumbnail_loader_cancel_all_requests!" ); */
             vfs_async_task_unlock( loader->task );
             loader->dir->thumbnail_loader = NULL;
-            
+
             /* FIXME: added idle_handler = 0 to prevent idle_handler being
              * removed in vfs_thumbnail_loader_free - BUT causes a segfault
              * in vfs_async_task_lock ??
@@ -343,7 +343,7 @@ void vfs_thumbnail_loader_cancel_all_requests( VFSDir* dir, gboolean is_big )
              * attempting to remove it" warning.  Such a source ID is always
              * the one added in thumbnail_loader_thread at the "add2" comment. */
             //loader->idle_handler = 0;
-            
+
             vfs_thumbnail_loader_free( loader );
             return;
         }
@@ -368,14 +368,14 @@ static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
     struct stat statbuf;
     GdkPixbuf* thumbnail, *result = NULL;
     int create_size;
-    
+
     if ( size > 256 )
         create_size = 512;
     else if ( size > 128 )
         create_size = 256;
     else
         create_size = 128;
-    
+
     gboolean file_is_video = FALSE;
 #ifdef HAVE_FFMPEG
     VFSMimeType* mimetype = vfs_mime_type_get_from_file_name( file_path );

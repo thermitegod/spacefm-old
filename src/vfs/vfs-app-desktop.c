@@ -33,7 +33,7 @@ VFSAppDesktop* vfs_app_desktop_new( const char* file_name )
     GKeyFile* file;
     gboolean load;
     char* relative_path;
-    
+
     VFSAppDesktop* app = g_slice_new0( VFSAppDesktop );
     app->n_ref = 1;
 
@@ -126,9 +126,9 @@ gboolean vfs_app_desktop_rename( char* desktop_file_path, char* new_name )   //s
 {
     if ( !desktop_file_path || !new_name )
         return FALSE;
-        
+
     GKeyFile* kfile = g_key_file_new();
-    
+
     // load
     if ( !g_key_file_load_from_file( kfile, desktop_file_path,
                                         G_KEY_FILE_KEEP_COMMENTS
@@ -162,7 +162,7 @@ gboolean vfs_app_desktop_rename( char* desktop_file_path, char* new_name )   //s
     // get keyfile as string
     char* data = g_key_file_to_data( kfile, NULL, NULL );
     g_key_file_free( kfile );
-    
+
     // overwrite desktop file
     if ( data )
     {
@@ -287,7 +287,7 @@ gboolean vfs_app_desktop_open_multiple_files( VFSAppDesktop* app )
         if ( strstr( app->exec, "%U" ) || strstr( app->exec, "%F" ) ||
              strstr( app->exec, "%N" ) || strstr( app->exec, "%D" ) )
             return TRUE;
-        
+
         /*  this is broken
         for( p = app->exec; *p; ++p )
         {
@@ -576,7 +576,7 @@ gboolean vfs_app_desktop_open_files( GdkScreen* screen,
                 if ( cmd )
                 {
                     if ( vfs_app_desktop_open_in_terminal( app ) )
-                        exec_in_terminal( sn_desc, 
+                        exec_in_terminal( sn_desc,
                                           app->path && app->path[0] ? app->path
                                                                     : working_dir,
                                           cmd );

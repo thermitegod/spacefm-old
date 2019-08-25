@@ -82,11 +82,11 @@ static void get_width_height_pad( char* val, int* width, int* height, int* pad )
     char* str;
     char* sep;
     int i;
-    
+
     *width = *height = -1;
     if ( val )
     {
-        if ( sep = strchr( val, 'x' ) ) 
+        if ( sep = strchr( val, 'x' ) )
             sep[0] = '\0';
         else if ( sep = strchr( val, ' ' ) )
             sep[0] = '\0';
@@ -95,7 +95,7 @@ static void get_width_height_pad( char* val, int* width, int* height, int* pad )
         {
             sep[0] = 'x';
             str = sep + 1;
-            if ( sep = strchr( str, 'x' ) ) 
+            if ( sep = strchr( str, 'x' ) )
                 sep[0] = '\0';
             else if ( sep = strchr( str, ' ' ) )
                 sep[0] = '\0';
@@ -128,13 +128,13 @@ static void fill_combo_box( CustomElement* el, GList* arglist )
     char* default_value = NULL;
     int default_row = -1;
     int set_default = -1;
-    
+
     if ( !el->widgets->next )
         return;
     GtkWidget* combo = (GtkWidget*)el->widgets->next->data;
     if ( !GTK_IS_COMBO_BOX( combo ) )
         return;
-        
+
     // prepare default value
     if ( el->val )
     {
@@ -166,7 +166,7 @@ static void fill_combo_box( CustomElement* el, GList* arglist )
             set_default = row;
         row++;
     }
-    
+
     // set default
     if ( set_default != -1 )
     {
@@ -190,20 +190,20 @@ static void select_in_combo_box( CustomElement* el, const char* value )
     GtkTreeIter iter;
     GtkTreeModel* model;
     char* str;
-    
+
     if ( !el->widgets->next )
         return;
     GtkWidget* combo = (GtkWidget*)el->widgets->next->data;
     if ( !GTK_IS_COMBO_BOX( combo ) )
         return;
-        
+
     model = gtk_combo_box_get_model( GTK_COMBO_BOX( combo ) );
     if ( !model )
         return;
-    
+
     if ( !gtk_tree_model_get_iter_first( model, &iter ) )
         return;
-    
+
     do
     {
         gtk_tree_model_get( model, &iter, 0, &str, -1 );
@@ -259,7 +259,7 @@ char* get_tree_view_selected( CustomElement* el, const char* prefix )
     GtkWidget* view = (GtkWidget*)el->widgets->next->data;
     if ( !GTK_IS_TREE_VIEW( view ) )
         goto _return_value;
-    
+
     tree_sel = gtk_tree_view_get_selection( GTK_TREE_VIEW( view ) );
     model = gtk_tree_view_get_model( GTK_TREE_VIEW( view ) );
     if ( !GTK_IS_TREE_MODEL( model ) )
@@ -276,7 +276,7 @@ char* get_tree_view_selected( CustomElement* el, const char* prefix )
             str = get_column_value( model, &iter, 0 );
             value = bash_quote( str );
             g_free( str );
-            
+
             str = selected;
             selected = g_strdup_printf( "%s%s%s",
                                         str ? str : "",
@@ -284,7 +284,7 @@ char* get_tree_view_selected( CustomElement* el, const char* prefix )
                                         value );
             g_free( value );
             g_free( str );
-            
+
             str = indices;
             indices = g_strdup_printf( "%s%s%d",
                                         str ? str : "",
@@ -340,13 +340,13 @@ static void fill_tree_view( CustomElement* el, GList* arglist )
     int colcount;
     int i;
     gboolean headers = FALSE;
-    
+
     if ( !el->widgets->next )
         return;
     GtkWidget* view = (GtkWidget*)el->widgets->next->data;
     if ( !GTK_IS_TREE_VIEW( view ) )
         return;
-        
+
     // clear list
     model = gtk_tree_view_get_model( GTK_TREE_VIEW( view ) );
     if ( model )
@@ -359,7 +359,7 @@ static void fill_tree_view( CustomElement* el, GList* arglist )
                         GTK_TREE_VIEW_COLUMN( (GtkTreeViewColumn*)l->data ) );
     }
     g_list_free( args );
-    
+
     // fill list
     args = arglist;
     col = NULL;
@@ -392,7 +392,7 @@ static void fill_tree_view( CustomElement* el, GList* arglist )
             // new column start
             if ( colcount == MAX_LIST_COLUMNS )
             {
-                str = g_strdup_printf( _("Too many columns (>%d) in %s"), 
+                str = g_strdup_printf( _("Too many columns (>%d) in %s"),
                                                 MAX_LIST_COLUMNS, el->name );
                 dlg_warn( str, NULL, NULL );
                 g_free( str );
@@ -462,11 +462,11 @@ static void fill_tree_view( CustomElement* el, GList* arglist )
 
     // list store
     list = gtk_list_store_newv( colcount, coltypes );
-    gtk_tree_view_set_model( GTK_TREE_VIEW( view ), 
+    gtk_tree_view_set_model( GTK_TREE_VIEW( view ),
                                         GTK_TREE_MODEL( list ) );
     // gtk_tree_view_set_model adds a ref
     g_object_unref( list );
-    
+
     int colx = 0;
     gboolean start = FALSE;
     gboolean valid_iter = FALSE;
@@ -486,7 +486,7 @@ static void fill_tree_view( CustomElement* el, GList* arglist )
                     break;
                 colx++;
                 // set iter to first row  - false if no rows
-                valid_iter = gtk_tree_model_get_iter_first( 
+                valid_iter = gtk_tree_model_get_iter_first(
                                             GTK_TREE_MODEL( list ), &iter );
             }
         }
@@ -533,14 +533,14 @@ static void fill_tree_view( CustomElement* el, GList* arglist )
                 valid_iter = gtk_tree_model_iter_next( GTK_TREE_MODEL( list ), &iter );
         }
     }
-    
+
     // resize columns - none of this seems to do anything
     gtk_tree_view_columns_autosize( GTK_TREE_VIEW( view ) ); // doc: only works after realize
 /*
     args = gtk_tree_view_get_columns( GTK_TREE_VIEW( view ) );
     for ( l = args; l; l = l->next )
     {
-        gtk_tree_view_column_queue_resize( 
+        gtk_tree_view_column_queue_resize(
                     GTK_TREE_VIEW_COLUMN( (GtkTreeViewColumn*)l->data ) );
     }
     g_list_free( args );
@@ -562,11 +562,11 @@ static void select_in_tree_view( CustomElement* el, const char* value,
     GtkWidget* view = (GtkWidget*)el->widgets->next->data;
     if ( !GTK_IS_TREE_VIEW( view ) )
         return;
-        
+
     model = gtk_tree_view_get_model( GTK_TREE_VIEW( view ) );
     if ( !model )
         return;
-    
+
     tree_sel = gtk_tree_view_get_selection( GTK_TREE_VIEW( view ) );
 
     if ( value[0] == '\0' )
@@ -593,7 +593,7 @@ static void select_in_tree_view( CustomElement* el, const char* value,
 
     if ( !gtk_tree_model_get_iter_first( model, &iter ) )
         return;
-    
+
     do
     {
         str = get_column_value( model, &iter, 0 );
@@ -658,10 +658,10 @@ GList* args_from_file( const char* path )
 static CustomElement* el_from_name( CustomElement* el, const char* name )
 {
     GList* l;
-    
+
     if ( !el || !name )
         return NULL;
-        
+
     GList* elements = (GList*)g_object_get_data( G_OBJECT( el->widgets->data ),
                                                                 "elements" );
     CustomElement* el_name = NULL;
@@ -688,7 +688,7 @@ static void set_element_value( CustomElement* el, const char* name,
     char* str;
     int i, width, height;
     GList* l;
-    
+
     if ( !el || !name || !value )
         return;
 
@@ -711,7 +711,7 @@ static void set_element_value( CustomElement* el, const char* name,
                             value, 16, GTK_ICON_LOOKUP_USE_BUILTIN, NULL );
         else
             pixbuf = NULL;
-        gtk_window_set_icon( GTK_WINDOW( dlg ), pixbuf );  
+        gtk_window_set_icon( GTK_WINDOW( dlg ), pixbuf );
         g_free( el_name->val );
         el_name->val = g_strdup( value );
         break;
@@ -776,7 +776,7 @@ static void set_element_value( CustomElement* el, const char* name,
     case CDLG_ICON:
     case CDLG_IMAGE:
         // destroy old image
-        if ( el_name->widgets->next && el_name->widgets->next->next && 
+        if ( el_name->widgets->next && el_name->widgets->next->next &&
                         ( w = GTK_WIDGET( el_name->widgets->next->next->data ) ) )
         {
             gtk_widget_destroy( w );
@@ -804,7 +804,7 @@ static void set_element_value( CustomElement* el, const char* name,
         str = replace_string( value, "\n", "", FALSE );
         if ( el_name->type == CDLG_INPUT_LARGE )
         {
-            gtk_text_buffer_set_text( gtk_text_view_get_buffer( 
+            gtk_text_buffer_set_text( gtk_text_view_get_buffer(
                                 GTK_TEXT_VIEW( el_name->widgets->next->data ) ),
                                 str, -1 );
             multi_input_select_region( el_name->widgets->next->data, 0, -1 );
@@ -812,9 +812,9 @@ static void set_element_value( CustomElement* el, const char* name,
         else
         {
             gtk_entry_set_text( GTK_ENTRY( el_name->widgets->next->data ), str );
-            gtk_editable_select_region( 
+            gtk_editable_select_region(
                                 GTK_EDITABLE( el_name->widgets->next->data ),
-                                0, -1 );                    
+                                0, -1 );
         }
         g_free( el_name->val );
         el_name->val = str;
@@ -837,10 +837,10 @@ static void set_element_value( CustomElement* el, const char* name,
             if ( el_name->option )
             {
                 //scroll to end if scrollbar is mostly down or new
-                GtkAdjustment* adj = gtk_scrolled_window_get_vadjustment( 
+                GtkAdjustment* adj = gtk_scrolled_window_get_vadjustment(
                         GTK_SCROLLED_WINDOW( el_name->widgets->next->next->data ) );
                 if ( gtk_adjustment_get_upper( adj ) - gtk_adjustment_get_value( adj ) < gtk_adjustment_get_page_size( adj ) + 40 )
-                    gtk_text_view_scroll_to_mark( GTK_TEXT_VIEW( 
+                    gtk_text_view_scroll_to_mark( GTK_TEXT_VIEW(
                                                 el_name->widgets->next->data ),
                                           gtk_text_buffer_get_mark( buf, "end" ),
                                           0.0, FALSE, 0, 0 );
@@ -850,7 +850,7 @@ static void set_element_value( CustomElement* el, const char* name,
         }
         else if ( el_name->type == CDLG_EDITOR && el_name->widgets->next )
         {
-            // new editor            
+            // new editor
             buf = gtk_text_view_get_buffer(
                                     GTK_TEXT_VIEW( el_name->widgets->next->data ) );
             fill_buffer_from_file( el_name, buf, value, FALSE );
@@ -933,14 +933,14 @@ static void set_element_value( CustomElement* el, const char* name,
                     g_source_remove( el_name->timeout );
                     el_name->timeout = 0;
                 }
-                gtk_progress_bar_pulse( GTK_PROGRESS_BAR( 
+                gtk_progress_bar_pulse( GTK_PROGRESS_BAR(
                                                 el_name->widgets->next->data ) );
             }
             else if ( !g_strcmp0( value, "auto-pulse" ) )
             {
                 if ( !el_name->timeout )
                     el_name->timeout = g_timeout_add( 200,
-                                    (GSourceFunc)on_progress_timer, el_name );            
+                                    (GSourceFunc)on_progress_timer, el_name );
             }
             else
             {
@@ -954,7 +954,7 @@ static void set_element_value( CustomElement* el, const char* name,
                         g_source_remove( el_name->timeout );
                         el_name->timeout = 0;
                     }
-                    gtk_progress_bar_set_fraction( 
+                    gtk_progress_bar_set_fraction(
                                     GTK_PROGRESS_BAR( el_name->widgets->next->data ),
                                     (gdouble)i / 100 );
                 }
@@ -963,7 +963,7 @@ static void set_element_value( CustomElement* el, const char* name,
                 {
                     if ( !g_ascii_isdigit( str[0] ) )
                     {
-                        gtk_progress_bar_set_text( 
+                        gtk_progress_bar_set_text(
                                     GTK_PROGRESS_BAR( el_name->widgets->next->data ),
                                     value );
                         break;
@@ -976,7 +976,7 @@ static void set_element_value( CustomElement* el, const char* name,
                         str = g_strdup_printf( "%d %%", i );
                     else
                         str = g_strdup( " " );
-                    gtk_progress_bar_set_text( 
+                    gtk_progress_bar_set_text(
                                 GTK_PROGRESS_BAR( el_name->widgets->next->data ),
                                 str );
                     g_free( str );
@@ -1012,7 +1012,7 @@ static void set_element_value( CustomElement* el, const char* name,
     case CDLG_CHOOSER:
         if ( el_name->widgets->next )
         {
-            i = gtk_file_chooser_get_action( GTK_FILE_CHOOSER( 
+            i = gtk_file_chooser_get_action( GTK_FILE_CHOOSER(
                                         el_name->widgets->next->data ) );
             if ( i == GTK_FILE_CHOOSER_ACTION_SAVE ||
                                 i == GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER )
@@ -1020,27 +1020,27 @@ static void set_element_value( CustomElement* el, const char* name,
                 if ( strchr( value, '/' ) )
                 {
                     str = g_path_get_dirname( value );
-                    gtk_file_chooser_set_current_folder( 
+                    gtk_file_chooser_set_current_folder(
                                     GTK_FILE_CHOOSER( el_name->widgets->next->data ),
                                                                     str );
                     g_free( str );
                     str = g_path_get_basename( value );
-                    gtk_file_chooser_set_current_name( 
+                    gtk_file_chooser_set_current_name(
                                     GTK_FILE_CHOOSER( el_name->widgets->next->data ),
                                                                     str );
                     g_free( str );
                 }
                 else
-                    gtk_file_chooser_set_current_name( 
+                    gtk_file_chooser_set_current_name(
                                     GTK_FILE_CHOOSER( el_name->widgets->next->data ),
                                                                     value );
             }
             else if ( g_file_test( value, G_FILE_TEST_IS_DIR ) )
-                gtk_file_chooser_set_current_folder( 
+                gtk_file_chooser_set_current_folder(
                                 GTK_FILE_CHOOSER( el_name->widgets->next->data ),
                                                                     value );
             else
-                gtk_file_chooser_set_filename( 
+                gtk_file_chooser_set_filename(
                                     GTK_FILE_CHOOSER( el_name->widgets->next->data ),
                                                                     value );
         }
@@ -1062,7 +1062,7 @@ static char* get_element_value( CustomElement* el, const char* name )
         el_name = el_from_name( el, name );
     if ( !el_name )
         return g_strdup( "" );
-    
+
     char* ret = NULL;
     switch ( el_name->type )
     {
@@ -1089,7 +1089,7 @@ static char* get_element_value( CustomElement* el, const char* name )
         if ( el_name->type == CDLG_INPUT_LARGE )
             ret = multi_input_get_text( el_name->widgets->next->data );
         else
-            ret = g_strdup( gtk_entry_get_text( 
+            ret = g_strdup( gtk_entry_get_text(
                                     GTK_ENTRY( el_name->widgets->next->data ) ) );
         break;
     case CDLG_CHECKBOX:
@@ -1101,7 +1101,7 @@ static char* get_element_value( CustomElement* el, const char* name )
     case CDLG_DROP:
     case CDLG_COMBO:
         // write text value
-        ret = gtk_combo_box_text_get_active_text( 
+        ret = gtk_combo_box_text_get_active_text(
                             GTK_COMBO_BOX_TEXT( el_name->widgets->next->data ) );
         break;
     case CDLG_LIST:
@@ -1109,7 +1109,7 @@ static char* get_element_value( CustomElement* el, const char* name )
         ret = get_tree_view_selected( el_name, NULL );
         break;
     case CDLG_PROGRESS:
-        ret = g_strdup( gtk_progress_bar_get_text( 
+        ret = g_strdup( gtk_progress_bar_get_text(
                         GTK_PROGRESS_BAR( el_name->widgets->next->data ) ) );
         break;
     case CDLG_WINDOW_SIZE:
@@ -1122,7 +1122,7 @@ static char* get_element_value( CustomElement* el, const char* name )
             ret = g_strdup_printf( "%dx%d %d", width, height, pad );
         break;
     case CDLG_CHOOSER:
-        if ( gtk_file_chooser_get_select_multiple( GTK_FILE_CHOOSER ( 
+        if ( gtk_file_chooser_get_select_multiple( GTK_FILE_CHOOSER (
                                                 el_name->widgets->next->data ) ) )
         {
             GSList* files = gtk_file_chooser_get_filenames( GTK_FILE_CHOOSER(
@@ -1145,7 +1145,7 @@ static char* get_element_value( CustomElement* el, const char* name )
             }
         }
         else
-            ret = g_strdup( gtk_file_chooser_get_filename( GTK_FILE_CHOOSER ( 
+            ret = g_strdup( gtk_file_chooser_get_filename( GTK_FILE_CHOOSER (
                                                 el_name->widgets->next->data ) ) );
         break;
     }
@@ -1159,11 +1159,11 @@ static char* get_command_value( CustomElement* el, char* cmdline, char* xvalue )
     gint exit_status;
     GError* error = NULL;
     char* argv[4];
-    
+
     char* line = replace_vars( el, cmdline, xvalue );
     if ( line[0] == '\0' )
         return line;
-    
+
     //fprintf( stderr, "spacefm-dialog: SYNC=%s\n", line );
     argv[0] = g_strdup( "bash" );
     argv[1] = g_strdup( "-c" );
@@ -1176,7 +1176,7 @@ static char* get_command_value( CustomElement* el, char* cmdline, char* xvalue )
         dlg_warn( "%s", error->message, NULL );
         g_error_free( error );
     }
-    return ret && stdout ? stdout : g_strdup( "" );    
+    return ret && stdout ? stdout : g_strdup( "" );
 }
 
 static char* replace_vars( CustomElement* el, char* value, char* xvalue )
@@ -1190,7 +1190,7 @@ static char* replace_vars( CustomElement* el, char* value, char* xvalue )
 
     if ( !el || !value )
         return g_strdup( value );
-    
+
     char* newval = NULL;
     ptr = value;
     while ( sep = strchr( ptr, '%' ) )
@@ -1224,7 +1224,7 @@ static char* replace_vars( CustomElement* el, char* value, char* xvalue )
             str3 = get_command_value( el, sep + 2, xvalue );
             ptr[0] = ')';
             ptr++;
-            
+
             str2 = newval;
             newval = g_strdup_printf( "%s%s", str2 ? str2 : "", str3 );
             g_free( str2 );
@@ -1311,8 +1311,8 @@ static void internal_command( CustomElement* el, int icmd, GList* args, char* xv
         cvalue = g_strdup( "" );
 
     if ( icmd == CMD_SET && ( !strcmp( cname, "title" )
-                           || !strcmp( cname, "windowtitle" ) 
-                           || !strcmp( cname, "windowsize" ) 
+                           || !strcmp( cname, "windowtitle" )
+                           || !strcmp( cname, "windowsize" )
                            || !strcmp( cname, "windowicon" ) ) )
     {
         // generic - no element
@@ -1340,7 +1340,7 @@ static void internal_command( CustomElement* el, int icmd, GList* args, char* xv
                                 cvalue, 16, GTK_ICON_LOOKUP_USE_BUILTIN, NULL );
             else
                 pixbuf = NULL;
-            gtk_window_set_icon( GTK_WINDOW( el->widgets->data ), pixbuf );  
+            gtk_window_set_icon( GTK_WINDOW( el->widgets->data ), pixbuf );
         }
         g_free( cname );
         g_free( cvalue );
@@ -1388,14 +1388,14 @@ static void internal_command( CustomElement* el, int icmd, GList* args, char* xv
         g_idle_add( (GSourceFunc)destroy_dlg, el->widgets->data );
         break;
     case CMD_SET:
-    
+
         set_element_value( el, cname, cvalue );
         break;
     case CMD_PRESS:
         if ( el_name->type == CDLG_BUTTON || el_name->type == CDLG_FREE_BUTTON )
             on_button_clicked( NULL, el_name );
         else
-            dlg_warn( _("internal command press is invalid for non-button %s"), 
+            dlg_warn( _("internal command press is invalid for non-button %s"),
                                                                 cname, NULL );
         break;
     case CMD_SELECT:
@@ -1407,7 +1407,7 @@ static void internal_command( CustomElement* el, int icmd, GList* args, char* xv
             if ( icmd == CMD_SELECT )
                 select_in_combo_box( el_name, cvalue );
             else
-                gtk_combo_box_set_active( GTK_COMBO_BOX( 
+                gtk_combo_box_set_active( GTK_COMBO_BOX(
                                     el_name->widgets->next->data ), -1 );
         }
         else if ( el_name->type == CDLG_COMBO )
@@ -1417,7 +1417,7 @@ static void internal_command( CustomElement* el, int icmd, GList* args, char* xv
                                     el_name->widgets->next->data ) ) ), cvalue );
             else
                 gtk_entry_set_text( GTK_ENTRY( gtk_bin_get_child( GTK_BIN(
-                                    el_name->widgets->next->data ) ) ), "" );                
+                                    el_name->widgets->next->data ) ) ), "" );
         }
         else if ( el_name->type == CDLG_CHOOSER )
         {
@@ -1528,7 +1528,7 @@ static void run_command( CustomElement* el, GList* argslist, char* xvalue )
                 fprintf( stderr, "\n" );
                 */
                 error = NULL;
-                if ( !g_spawn_async( NULL, argv, NULL, 
+                if ( !g_spawn_async( NULL, argv, NULL,
                                 G_SPAWN_SEARCH_PATH | G_SPAWN_STDOUT_TO_DEV_NULL,
                                 NULL, NULL, NULL, &error ) )
                 {
@@ -1576,7 +1576,7 @@ static void run_command_line( CustomElement* el, char* line )
             args = g_list_append( args, g_strdup( str ) );
             str = NULL;
         }
-        i++;                
+        i++;
     }
     if ( args )
     {
@@ -1603,7 +1603,7 @@ static void write_file_value( const char* path, const char* val )
 {
     int f;
     int add = 0;
-    
+
     if ( !path )
         return;
     if ( path[0] == '@' )
@@ -1632,7 +1632,7 @@ static char* read_file_value( const char* path, gboolean multi )
     FILE* file;
     int f, bytes;
     const gchar* end;
-    
+
     if ( !g_file_test( path, G_FILE_TEST_EXISTS ) )
     {
         // create file
@@ -1688,7 +1688,7 @@ static char* read_file_value( const char* path, gboolean multi )
             dlg_warn( _("file '%s' contents are not valid UTF-8"), path, NULL );
             return NULL;
         }
-    }        
+    }
     return line[0] != '\0' ? g_strdup( line ) : NULL;
 }
 
@@ -1724,7 +1724,7 @@ if ( !( cond & G_IO_NVAL ) )
         fprintf( stderr, "    Invalid FD\n");
 }
 */
-    if ( ( cond & G_IO_NVAL ) ) 
+    if ( ( cond & G_IO_NVAL ) )
     {
         g_io_channel_unref( channel );
         return FALSE;
@@ -1761,12 +1761,12 @@ if ( !( cond & G_IO_NVAL ) )
             GtkTextIter iter, siter;
             GtkTextBuffer* buf = gtk_text_view_get_buffer(
                                         GTK_TEXT_VIEW( el->widgets->next->data ) );
-            gtk_text_buffer_get_end_iter( buf, &iter);            
+            gtk_text_buffer_get_end_iter( buf, &iter);
             gtk_text_buffer_insert( buf, &iter, line, size );
             //scroll
             if ( el->option )
             {
-                GtkAdjustment* adj = gtk_scrolled_window_get_vadjustment( 
+                GtkAdjustment* adj = gtk_scrolled_window_get_vadjustment(
                         GTK_SCROLLED_WINDOW( el->widgets->next->next->data ) );
                 if ( gtk_adjustment_get_upper( adj ) - gtk_adjustment_get_value( adj ) < gtk_adjustment_get_page_size( adj ) + 40 )
                     gtk_text_view_scroll_to_mark( GTK_TEXT_VIEW( el->widgets->next->data ),
@@ -1785,7 +1785,7 @@ if ( !( cond & G_IO_NVAL ) )
                 }
                 else
                     // trim to 700 lines
-                    gtk_text_buffer_get_iter_at_line( buf, &iter, 
+                    gtk_text_buffer_get_iter_at_line( buf, &iter,
                             gtk_text_buffer_get_line_count( buf ) - 700 );
                 gtk_text_buffer_get_start_iter( buf, &siter );
                 gtk_text_buffer_delete( buf, &siter, &iter );
@@ -1847,7 +1847,7 @@ static void cb_file_value_change( VFSFileMonitor* fm,
         //printf ("    DELETE\n");
         if ( el->monitor )
             vfs_file_monitor_remove( el->monitor, el->callback, el );
-        el->monitor = NULL; 
+        el->monitor = NULL;
         // update_element will add a new monitor if file re-created
         // use low priority since cb_file_value_change is called from another thread
         // otherwise segfault in vfs-file-monitor.c:351
@@ -1874,13 +1874,13 @@ static void fill_buffer_from_file( CustomElement* el, GtkTextBuffer* buf,
 {
     char line[ 4096 ];
     FILE* file;
-    
+
     char* pathx = path;
     if ( pathx[0] == '@' )
         pathx++;
-    
+
     gtk_text_buffer_set_text( buf, "", -1 );
-    
+
     file = fopen( pathx, "r" );
     if ( !file )
     {
@@ -1949,7 +1949,7 @@ static void free_elements( GList* elements )
 {
     GList* l;
     CustomElement* el;
-    
+
     for ( l = elements; l; l = l->next )
     {
         el = (CustomElement*)l->data;
@@ -2002,7 +2002,7 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
     char* str;
     char* prefix = "dialog";
     int width, height, pad = -1;
-    
+
     GList* elements = (GList*)g_object_get_data( G_OBJECT( dlg ), "elements" );
 
     // get custom prefix
@@ -2069,7 +2069,7 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
                     write_value( out, prefix, "pressed", "label", el->val );
                 }
                 else if ( el->type == CDLG_TIMEOUT )
-                {    
+                {
                     write_value( out, prefix, "pressed", NULL, el->name );
                     write_value( out, prefix, "pressed", "index", "-3" );
                     write_value( out, prefix, "pressed", "label", NULL );
@@ -2138,17 +2138,17 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
             break;
         case CDLG_CHECKBOX:
         case CDLG_RADIO:
-            write_value( out, prefix, el->name, "label", gtk_button_get_label( 
+            write_value( out, prefix, el->name, "label", gtk_button_get_label(
                                         GTK_BUTTON( el->widgets->next->data ) ) );
             write_value( out, prefix, el->name, NULL,
                     gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(
                                                 el->widgets->next->data ) ) ?
                                                 "1" : "0" );
             // save file
-            if ( !is_cancel && el->args && el->args->next 
+            if ( !is_cancel && el->args && el->args->next
                                     && ((char*)el->args->next->data)[0] == '@' )
             {
-                write_file_value( (char*)el->args->next->data + 1, 
+                write_file_value( (char*)el->args->next->data + 1,
                     gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(
                                                 el->widgets->next->data ) ) ?
                                                 "1" : "0" );
@@ -2159,7 +2159,7 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
         case CDLG_DROP:
         case CDLG_COMBO:
             // write text value
-            str = gtk_combo_box_text_get_active_text( 
+            str = gtk_combo_box_text_get_active_text(
                                 GTK_COMBO_BOX_TEXT( el->widgets->next->data ) );
             write_value( out, prefix, el->name, NULL, str );
             if ( !is_cancel && el->def_val && el->def_val[0] == '@' )
@@ -2170,8 +2170,8 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
             }
             g_free( str );
             // write index
-            str = g_strdup_printf( "%d", 
-                                    gtk_combo_box_get_active( GTK_COMBO_BOX( 
+            str = g_strdup_printf( "%d",
+                                    gtk_combo_box_get_active( GTK_COMBO_BOX(
                                     el->widgets->next->data ) ) );
             write_value( out, prefix, el->name, "index", str );
             g_free( str );
@@ -2184,7 +2184,7 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
             break;
         case CDLG_PROGRESS:
             write_value( out, prefix, el->name, NULL,
-                            gtk_progress_bar_get_text( 
+                            gtk_progress_bar_get_text(
                             GTK_PROGRESS_BAR( el->widgets->next->data ) ) );
             break;
         case CDLG_WINDOW_SIZE:
@@ -2214,7 +2214,7 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
             }
             break;
         case CDLG_CHOOSER:
-            if ( gtk_file_chooser_get_select_multiple( GTK_FILE_CHOOSER ( 
+            if ( gtk_file_chooser_get_select_multiple( GTK_FILE_CHOOSER (
                                                     el->widgets->next->data ) ) )
             {
                 GSList* files = gtk_file_chooser_get_filenames( GTK_FILE_CHOOSER(
@@ -2238,12 +2238,12 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
             }
             else
             {
-                str = gtk_file_chooser_get_filename( GTK_FILE_CHOOSER ( 
+                str = gtk_file_chooser_get_filename( GTK_FILE_CHOOSER (
                                                     el->widgets->next->data ) );
                 write_value( out, prefix, el->name, NULL, str );
                 g_free( str );
             }
-            str = gtk_file_chooser_get_current_folder( GTK_FILE_CHOOSER ( 
+            str = gtk_file_chooser_get_current_folder( GTK_FILE_CHOOSER (
                                                     el->widgets->next->data ) );
             write_value( out, prefix, el->name, "dir", str );
             if ( !is_cancel && el->args && ((char*)el->args->data)[0] == '@' )
@@ -2319,7 +2319,7 @@ void on_widget_grab_focus( GtkWidget *widget, CustomElement* el )
 
     if ( !enable_click_event )
         return;
-    
+
     char* elval = get_element_value( el, el->name );
     if ( elval && elval[0] )
         val = g_strdup_printf( "%s %s", el->name, elval );
@@ -2372,13 +2372,13 @@ static void on_list_row_activated( GtkTreeView *view,
                                    CustomElement* el )
 {
     GtkTreeIter iter;
-    
+
     if ( !el->cmd_args )
     {
         press_last_button( el->widgets->data );
         return;
     }
-    
+
     // get iter
     GtkTreeModel* model = gtk_tree_view_get_model( GTK_TREE_VIEW( view ) );
     if ( !gtk_tree_model_get_iter( model, &iter, tree_path ) )
@@ -2452,13 +2452,13 @@ void on_option_toggled( GtkToggleButton *togglebutton, CustomElement* el )
         }
         else if  ( el->type == CDLG_CHECKBOX )
         {
-            run_command( el, el->cmd_args, 
+            run_command( el, el->cmd_args,
                     gtk_toggle_button_get_active( togglebutton ) ? "1" : "0" );
         }
     }
 }
 
-static void on_button_clicked( GtkButton *button, CustomElement* el ) 
+static void on_button_clicked( GtkButton *button, CustomElement* el )
 {
     if ( el->cmd_args )
         // button has a command
@@ -2608,9 +2608,9 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
     gboolean nowrap = FALSE;
     int selstart = -1;
     int selend = -1;
-    
+
     GList* args = el->args;
-    
+
     // get element options
     while ( args && g_str_has_prefix( (char*)args->data, "--" ) )
     {
@@ -2674,7 +2674,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
         args = args->next;
     }
     el->args = args;  // only parse options once
-    
+
     switch ( el->type )
     {
     case CDLG_TITLE:
@@ -2696,8 +2696,8 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                                 el->val, 16, GTK_ICON_LOOKUP_USE_BUILTIN, NULL );
             else
                 pixbuf = NULL;
-            gtk_window_set_icon( GTK_WINDOW( dlg ), pixbuf ); 
-            el->cmd_args = el->args->next; 
+            gtk_window_set_icon( GTK_WINDOW( dlg ), pixbuf );
+            el->cmd_args = el->args->next;
         }
         break;
     case CDLG_LABEL:
@@ -2738,7 +2738,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             g_signal_connect( G_OBJECT( w ), "grab-focus",
                                     G_CALLBACK( on_widget_grab_focus ), el );
             //if ( args )
-            //    el->cmd_args = el->args->next; 
+            //    el->cmd_args = el->args->next;
         }
         // set label
         if ( el->widgets->next && ( w = GTK_WIDGET( el->widgets->next->data ) ) )
@@ -2785,7 +2785,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                                         G_CALLBACK( on_button_clicked ), el );
             if ( radio ) *radio = NULL;
             if ( args )
-                el->cmd_args = el->args->next; 
+                el->cmd_args = el->args->next;
         }
         // set label and icon
         if ( el->widgets->next && ( w = GTK_WIDGET( el->widgets->next->data ) ) )
@@ -2855,10 +2855,10 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                                    el );
             if ( radio ) *radio = NULL;
             if ( args )
-                el->cmd_args = el->args->next; 
+                el->cmd_args = el->args->next;
         }
         // destroy old image
-        if ( el->widgets->next && el->widgets->next->next && 
+        if ( el->widgets->next && el->widgets->next->next &&
                                 ( w = GTK_WIDGET( el->widgets->next->next->data ) ) )
         {
             gtk_widget_destroy( w );
@@ -2918,7 +2918,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                         el->option2 = selend;
                     }
                     else
-                        gtk_editable_select_region( GTK_EDITABLE( w ), 0, -1 );                    
+                        gtk_editable_select_region( GTK_EDITABLE( w ), 0, -1 );
                 }
                 gtk_box_pack_start( GTK_BOX( box ), GTK_WIDGET( w ), !compact, TRUE, pad );
             }
@@ -2939,7 +2939,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                 // value has changed from initial default, so update contents
                 if ( el->type == CDLG_INPUT_LARGE )
                 {
-                    gtk_text_buffer_set_text( gtk_text_view_get_buffer( 
+                    gtk_text_buffer_set_text( gtk_text_view_get_buffer(
                                         GTK_TEXT_VIEW( el->widgets->next->data ) ),
                                         el->val ? el->val : "", -1 );
                     multi_input_select_region( el->widgets->next->data, 0, -1 );
@@ -2947,9 +2947,9 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                 else
                 {
                     gtk_entry_set_text( GTK_ENTRY( el->widgets->next->data ), el->val );
-                    gtk_editable_select_region( 
+                    gtk_editable_select_region(
                                         GTK_EDITABLE( el->widgets->next->data ),
-                                        0, -1 );                    
+                                        0, -1 );
                 }
             }
             g_free( str );
@@ -2988,7 +2988,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             // viewer
             buf = gtk_text_view_get_buffer(
                                 GTK_TEXT_VIEW( el->widgets->next->data ) );
-            if ( selstart && stat64( (char*)args->data, &statbuf ) != -1 
+            if ( selstart && stat64( (char*)args->data, &statbuf ) != -1
                                              && S_ISFIFO( statbuf.st_mode ) )
             {
                 // watch pipe
@@ -3025,7 +3025,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             if ( el->option )
             {
                 //scroll to end if scrollbar is mostly down or new
-                GtkAdjustment* adj = gtk_scrolled_window_get_vadjustment( 
+                GtkAdjustment* adj = gtk_scrolled_window_get_vadjustment(
                         GTK_SCROLLED_WINDOW( el->widgets->next->next->data ) );
                 if ( selstart || gtk_adjustment_get_upper( adj ) - gtk_adjustment_get_value( adj ) < gtk_adjustment_get_page_size( adj ) + 40 )
                     gtk_text_view_scroll_to_mark( GTK_TEXT_VIEW( el->widgets->next->data ),
@@ -3036,7 +3036,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
         else if ( args && ((char*)args->data)[0] != '\0' && selstart &&
                                 el->type == CDLG_EDITOR && el->widgets->next )
         {
-            // new editor            
+            // new editor
             buf = gtk_text_view_get_buffer(
                                     GTK_TEXT_VIEW( el->widgets->next->data ) );
             fill_buffer_from_file( el, buf, (char*)args->data, FALSE );
@@ -3048,7 +3048,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
         if ( !el->option && args )
         {
             if ( ((char*)args->data)[0] != '\0'
-                                && stat64( (char*)args->data, &statbuf ) != -1 
+                                && stat64( (char*)args->data, &statbuf ) != -1
                                 && S_ISFIFO( statbuf.st_mode ) )
             {
                 // watch pipe
@@ -3123,13 +3123,13 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             }
             g_free( str );
             gtk_button_set_focus_on_click( GTK_BUTTON( w ), FALSE );
-            
+
             // set font of label
-            l = gtk_container_get_children( GTK_CONTAINER( w ) );            
+            l = gtk_container_get_children( GTK_CONTAINER( w ) );
             if ( l )
                 set_font( GTK_WIDGET( l->data ), font );
             g_list_free( l );
-            
+
             el->widgets = g_list_append( el->widgets, w );
             gtk_box_pack_start( GTK_BOX( box ), GTK_WIDGET( w ), expand, TRUE, pad );
             // default value
@@ -3139,7 +3139,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                 if ( !g_strcmp0( el->val, "1" ) ||
                      !g_strcmp0( el->val, "true" ) )
                     gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( w ), TRUE );
-                el->cmd_args = el->args->next->next; 
+                el->cmd_args = el->args->next->next;
             }
             g_signal_connect( G_OBJECT( w ), "toggled",
                                         G_CALLBACK( on_option_toggled ), el );
@@ -3255,10 +3255,10 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             gtk_tree_view_set_rules_hint ( GTK_TREE_VIEW( w ), TRUE );
             gtk_tree_view_set_enable_search( GTK_TREE_VIEW( w ), TRUE );
             set_font( w, font );
-            GtkTreeSelection* tree_sel = gtk_tree_view_get_selection( 
+            GtkTreeSelection* tree_sel = gtk_tree_view_get_selection(
                                                     GTK_TREE_VIEW( w ) );
-            gtk_tree_selection_set_mode( tree_sel, 
-                        el->type == CDLG_MLIST ? 
+            gtk_tree_selection_set_mode( tree_sel,
+                        el->type == CDLG_MLIST ?
                         GTK_SELECTION_MULTIPLE : GTK_SELECTION_SINGLE );
             GtkWidget* scroll = gtk_scrolled_window_new( NULL, NULL );
             gtk_scrolled_window_set_policy ( GTK_SCROLLED_WINDOW ( scroll ),
@@ -3320,8 +3320,8 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             //                                GTK_WIDGET( w ), TRUE, TRUE, pad );
             gtk_box_pack_start( GTK_BOX( box ), w, FALSE, FALSE, pad );
             el->widgets = g_list_append( el->widgets, w );
-            GList* children = gtk_container_get_children( 
-                                GTK_CONTAINER( gtk_statusbar_get_message_area( 
+            GList* children = gtk_container_get_children(
+                                GTK_CONTAINER( gtk_statusbar_get_message_area(
                                     GTK_STATUSBAR( w ) ) ) );
             w = children->data; // status bar label
             el->widgets = g_list_append( el->widgets, w );
@@ -3356,7 +3356,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             {
                 if ( !strcmp( (char*)args->data, "pulse" ) )
                     args = NULL;  // treat pulse as auto-pulse
-                gtk_progress_bar_set_text( 
+                gtk_progress_bar_set_text(
                                     GTK_PROGRESS_BAR( el->widgets->next->data ),
                                     " " );
                 el->timeout = g_timeout_add( 200, (GSourceFunc)on_progress_timer, el );
@@ -3379,7 +3379,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             {
                 if ( !el->timeout )
                     el->timeout = g_timeout_add( 200, (GSourceFunc)on_progress_timer,
-                                                                        el );            
+                                                                        el );
             }
             else
             {
@@ -3393,7 +3393,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                         g_source_remove( el->timeout );
                         el->timeout = 0;
                     }
-                    gtk_progress_bar_set_fraction( 
+                    gtk_progress_bar_set_fraction(
                                     GTK_PROGRESS_BAR( el->widgets->next->data ),
                                     (gdouble)i / 100 );
                 }
@@ -3402,7 +3402,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                 {
                     if ( !g_ascii_isdigit( str[0] ) )
                     {
-                        gtk_progress_bar_set_text( 
+                        gtk_progress_bar_set_text(
                                     GTK_PROGRESS_BAR( el->widgets->next->data ),
                                     el->val );
                         break;
@@ -3415,7 +3415,7 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                         str = g_strdup_printf( "%d %%", i );
                     else
                         str = g_strdup( " " );
-                    gtk_progress_bar_set_text( 
+                    gtk_progress_bar_set_text(
                                 GTK_PROGRESS_BAR( el->widgets->next->data ),
                                 str );
                     g_free( str );
@@ -3547,33 +3547,33 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             get_text_value( el, (char*)args->data, FALSE, TRUE );
             if ( el->val )
             {
-                if ( chooser_save && ( chooser_dir || 
+                if ( chooser_save && ( chooser_dir ||
                                 !g_file_test( el->val, G_FILE_TEST_IS_DIR ) ) )
                 {
                     if ( strchr( el->val, '/' ) )
                     {
                         str = g_path_get_dirname( el->val );
-                        gtk_file_chooser_set_current_folder( 
+                        gtk_file_chooser_set_current_folder(
                                         GTK_FILE_CHOOSER( el->widgets->next->data ),
                                                                         str );
                         g_free( str );
                         str = g_path_get_basename( el->val );
-                        gtk_file_chooser_set_current_name( 
+                        gtk_file_chooser_set_current_name(
                                         GTK_FILE_CHOOSER( el->widgets->next->data ),
                                                                         str );
                         g_free( str );
                     }
                     else
-                        gtk_file_chooser_set_current_name( 
+                        gtk_file_chooser_set_current_name(
                                         GTK_FILE_CHOOSER( el->widgets->next->data ),
                                                                         el->val );
                 }
                 else if ( g_file_test( el->val, G_FILE_TEST_IS_DIR ) )
-                    gtk_file_chooser_set_current_folder( 
+                    gtk_file_chooser_set_current_folder(
                                     GTK_FILE_CHOOSER( el->widgets->next->data ),
                                                                         el->val );
                 else
-                    gtk_file_chooser_set_filename( 
+                    gtk_file_chooser_set_filename(
                                         GTK_FILE_CHOOSER( el->widgets->next->data ),
                                                                         el->val );
             }
@@ -3618,7 +3618,7 @@ static void build_dialog( GList* elements )
     gboolean is_sized = FALSE;
     gboolean is_large = FALSE;
     gboolean has_delete_handler = FALSE;
-    
+
     // create dialog
     dlg = gtk_dialog_new();
     gtk_window_set_default_size( GTK_WINDOW( dlg ), width, height );
@@ -3627,14 +3627,14 @@ static void build_dialog( GList* elements )
     GdkPixbuf* pixbuf = gtk_icon_theme_load_icon( gtk_icon_theme_get_default(),
                     DEFAULT_ICON, 16, GTK_ICON_LOOKUP_USE_BUILTIN, NULL );
     if ( pixbuf )
-        gtk_window_set_icon( GTK_WINDOW( dlg ), pixbuf ); 
+        gtk_window_set_icon( GTK_WINDOW( dlg ), pixbuf );
     g_object_set_data( G_OBJECT( dlg ), "elements", elements );
 
     // pack some boxes to create horizonal padding at edges of window
     GtkWidget* hbox = gtk_hbox_new( FALSE, 0 );
     gtk_box_pack_start( GTK_BOX( gtk_dialog_get_content_area( GTK_DIALOG( dlg ) ) ), hbox, TRUE, TRUE, 0 );
     box = gtk_vbox_new( FALSE, 0 );
-    gtk_box_pack_start( GTK_BOX( hbox ), box, TRUE, TRUE, 8 );  // <- hpad 
+    gtk_box_pack_start( GTK_BOX( hbox ), box, TRUE, TRUE, 8 );  // <- hpad
     GList* boxes = g_list_append( NULL, box );
 
     // pack timeout button first
@@ -3703,10 +3703,10 @@ static void build_dialog( GList* elements )
             timeout_added = TRUE;
         }
         if ( !is_large && el->widgets->next && (
-                                                el->type == CDLG_CHOOSER || 
-                                                el->type == CDLG_MLIST || 
-                                                el->type == CDLG_EDITOR || 
-                                                el->type == CDLG_VIEWER || 
+                                                el->type == CDLG_CHOOSER ||
+                                                el->type == CDLG_MLIST ||
+                                                el->type == CDLG_EDITOR ||
+                                                el->type == CDLG_VIEWER ||
                                                 el->type == CDLG_LIST ) )
             is_large = TRUE;
     }
@@ -3734,13 +3734,13 @@ static void build_dialog( GList* elements )
         if ( focus_el->type == CDLG_INPUT && focus_el->option >= 0 )
         {
             // grab_focus causes all text to be selected, so re-select
-            gtk_editable_select_region( 
+            gtk_editable_select_region(
                         GTK_EDITABLE( focus_el->widgets->next->data ),
                         focus_el->option, focus_el->option2 );
         }
     }
     signal_dialog = dlg;
-    
+
     // run init COMMMAND(s)
     for ( l = elements; l; l = l->next )
     {
@@ -3749,7 +3749,7 @@ static void build_dialog( GList* elements )
             run_command( (CustomElement*)l->data,
                                     ((CustomElement*)l->data)->cmd_args, NULL );
     }
-    
+
     // enable grab focus for click events
     enable_click_event = TRUE;
 }
@@ -3758,7 +3758,7 @@ static void show_help()
 {
     int i, j;
     FILE* f = stdout;
-    
+
     fprintf( f, _("SpaceFM Dialog creates a custom GTK dialog based on the GUI elements you\nspecify on the command line, features run-time internal/external commands which\ncan modify elements, and outputs evaluatable/parsable results.\n") );
     fprintf( f, _("Usage:\n") );
     fprintf( f, _("    spacefm --dialog|-g {ELEMENT [OPTIONS] [ARGUMENTS...]} ...\n") );
@@ -3783,9 +3783,9 @@ static void show_help()
     fprintf( f, _("    SAVEFILE A viewer's or editor's contents are saved to this file.\n") );
     fprintf( f, _("    COMMAND  An internal command or executable followed by arguments. Separate\n             multiple commands with a -- argument.\n             The following substitutions may be used in COMMANDs:\n                 %%n           Name of the current element\n                 %%v           Value of the current element\n                 %%NAME        Value of element named NAME (eg: %%input1)\n                 %%(command)   stdout from a bash command line\n                 %%%%           %%\n") );
     fprintf( f, _("    LABEL    The following escape sequences in LABEL are unescaped:\n                 \\n   newline\n                 \\t   tab\n                 \\\"   \"\n                 \\\\   \\\n             In --label elements only, if the first character in LABEL is a\n             tilde (~), pango markup may be used.  For example:\n                 --label '~This is plain. <b>This is bold.</b>'\n") );
-    
+
     fprintf( f, _("\nIn addition to the OPTIONS listed above, --compact or --expand options may be\nadded to any element.  Also, a --font option may be used with most element\ntypes to change the element's font and font size.  For example:\n    --input --font \"Times New Roman 16\" \"Default Text\"\n") );
-    
+
     fprintf( f, _("\nINTERNAL COMMANDS:\n") );
 
     for ( i = 0; i < G_N_ELEMENTS( cdlg_cmd ) / 3; i++ )
@@ -3799,7 +3799,7 @@ static void show_help()
 
     fprintf( f, _("\nEXAMPLE WITH COMMANDS:\n") );
     fprintf( f, _("    spacefm -g --label \"Enter some text and press Enter:\" \\\n               --input \"\" set label2 %%v -- echo '# %%n = %%v' \\\n               --label \\\n               --button ok\n") );
-    
+
     fprintf( f, _("\nEXAMPLE SCRIPT:\n") );
     fprintf( f, _("    #!%s\n    # This script shows a Yes/No dialog\n    # Use QUOTED eval to read variables output by SpaceFM Dialog:\n    eval \"`spacefm -g --label \"Are you sure?\" --button yes --button no`\"\n    if [[ \"$dialog_pressed\" == \"button1\" ]]; then\n        echo \"User pressed Yes - take some action\"\n    else\n        echo \"User did NOT press Yes - abort\"\n    fi\n"), BASHPATH );
     fprintf( f, _("\nFor full documentation and examples see the SpaceFM User's Manual:\n") );
@@ -3832,7 +3832,7 @@ int custom_dialog_init( int argc, char *argv[] )
             fprintf( stderr, _("spacefm: argument is not valid UTF-8\n") );
             free_elements( elements );
             return 1;
-        }        
+        }
         else if ( ac == 2 && ( !strcmp( argv[ac], "--help" )
                             || !strcmp( argv[ac], "help" ) ) )
         {
@@ -3882,7 +3882,7 @@ int custom_dialog_init( int argc, char *argv[] )
         el->args = g_list_append( el->args, argv[ac] );
     }
     build_dialog( elements );
-    
+
     signal( SIGHUP, signal_handler );
     signal( SIGINT, signal_handler );
     signal( SIGTERM, signal_handler );

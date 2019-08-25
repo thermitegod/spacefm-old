@@ -148,7 +148,7 @@ gboolean vfs_exec_on_screen( GdkScreen* screen,
                                ( SnDisplayErrorTrapPush ) gdk_error_trap_pop );
     else
         display = NULL;
-    
+
     if ( G_LIKELY ( display ) )
     {
         if ( !disp_name )

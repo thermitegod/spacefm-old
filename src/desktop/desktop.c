@@ -100,16 +100,16 @@ void fm_turn_on_desktop_icons(gboolean transparent)
 
         gtk_widget_realize( desktops[ i ] );  /* without this, setting wallpaper won't work */
         gtk_widget_show_all( desktops[ i ] );
-        
+
         // move desktop window to 0,0 so background in window aligns with
         // root window background for transparent panel
         // re https://github.com/IgnorantGuru/spacefm/issues/248
         gtk_window_move( GTK_WINDOW( desktops[ i ] ), 0, 0 );
-        
+
         gdk_window_lower( gtk_widget_get_window(desktops[ i ]) );
 
         gtk_window_group_add_window( GTK_WINDOW_GROUP(group), GTK_WINDOW( desktops[i] ) );
-        
+
         /*   this doesn't work when size is changed via xrandr?
         // temp detect screen size change
         g_signal_connect( gtk_widget_get_screen( GTK_WIDGET( desktops[ i ] ) ),
@@ -154,7 +154,7 @@ void fm_desktop_update_wallpaper( gboolean transparency_changed )
     DWBgType type;
     GdkPixbuf* pix;
     int i;
-    
+
     // is desktop manager running?
     if ( !n_screens || !desktops )
         return;

@@ -1,16 +1,16 @@
 /*
  * SpaceFM mime-action.c
- * 
+ *
  * Copyright (C) 2013-2015 IgnorantGuru <ignorantguru@gmx.com>
  * Copyright (C) 2007 Hong Jen Yee (PCMan) <pcman.tw (AT) gmail.com>
- * 
+ *
  * License: See COPYING file
  *
  * This file handles default applications for MIME types.  For changes it
  * makes to mimeapps.list, it is fully compliant with Freedeskop's:
  *   Association between MIME types and applications 1.0.1
  *   http://standards.freedesktop.org/mime-apps-spec/mime-apps-spec-latest.html
- * 
+ *
  * However, for reading the hierarchy and determining default and associated
  * applications, it uses a best-guess algorithm for better performance and
  * compatibility with older systems, and is NOT fully spec compliant.
@@ -53,11 +53,11 @@ static char* data_dir_foreach( DataDirFunc func, const char* mime_type, gpointer
     char* ret;
     const gchar* const * dirs;
     char* dir;
-    
+
     // $XDG_CONFIG_HOME=[~/.config]/mimeapps.list
     if( (ret = func( g_get_user_config_dir(), mime_type, user_data )) )
         return ret;
-    
+
     // $XDG_DATA_HOME=[~/.local]/applications/mimeapps.list
     dir = g_build_filename( g_get_user_data_dir(), "applications", NULL );
     if( (ret = func( dir, mime_type, user_data )) )
@@ -66,7 +66,7 @@ static char* data_dir_foreach( DataDirFunc func, const char* mime_type, gpointer
         return ret;
     }
     g_free( dir );
-    
+
     // $XDG_DATA_DIRS=[/usr/[local/]share]/applications/mimeapps.list
     dirs = g_get_system_data_dirs();
     for( ; *dirs; ++dirs )
@@ -155,7 +155,7 @@ static void remove_actions( const char* type, GArray* actions )
         }
     }
     g_free( path );
-    
+
     removed = g_key_file_get_string_list( file, "Removed Associations",
                                                     type, &n_removed, NULL );
     if ( removed )
@@ -178,7 +178,7 @@ static void remove_actions( const char* type, GArray* actions )
 
 /*
  * Get applications associated with this mime-type
- * 
+ *
  * This is very roughly based on specs:
  * http://standards.freedesktop.org/mime-apps-spec/mime-apps-spec-latest.html
  *
@@ -194,7 +194,7 @@ static char* get_actions( const char* dir, const char* type, GArray* actions )
     gboolean is_removed;
     gsize n_removed = 0, r;
     gsize n_apps, i;
-    
+
     const char* names[] = {
         "mimeapps.list",
         "mimeinfo.cache"
@@ -544,11 +544,11 @@ static char* _locate_desktop_file_recursive( const char* path,
 {   // if first is true, just search for subdirs not desktop_id (already searched)
     const char* name;
     char* sub_path;
-    
+
     GDir* dir = g_dir_open( path, 0, NULL );
     if ( !dir )
         return NULL;
-    
+
     char* found = NULL;
     while ( name = g_dir_read_name( dir ) )
     {
@@ -562,7 +562,7 @@ static char* _locate_desktop_file_recursive( const char* path,
                 break;
             }
         }
-        else if ( !first && !strcmp( name, desktop_id ) && 
+        else if ( !first && !strcmp( name, desktop_id ) &&
                                 g_file_test( sub_path, G_FILE_TEST_IS_REGULAR ) )
         {
             found = sub_path;
@@ -605,7 +605,7 @@ static char* _locate_desktop_file( const char* dir, const char* unused,
     if ( found )
         return path;
     g_free( path );
-    
+
     //sfm 0.8.7 some desktop files listed by the app chooser are in subdirs
     path = g_build_filename( dir, "applications", NULL );
     sep = _locate_desktop_file_recursive( path, desktop_id, TRUE );
@@ -628,7 +628,7 @@ static char* get_default_action( const char* dir, const char* type, gpointer use
     gsize n_apps, i;
     int n, k;
     gboolean opened;
-    
+
 //g_print( "get_default_action( %s, %s )\n", dir, type );
     // search these files in dir for the first existing default app
     char* names[] = {
@@ -639,7 +639,7 @@ static char* get_default_action( const char* dir, const char* type, gpointer use
         "Default Applications",
         "Added Associations"
     };
-    
+
     for ( n = 0; n < G_N_ELEMENTS( names ); n++ )
     {
         char* path = g_build_filename( dir, names[n], NULL );
@@ -688,7 +688,7 @@ static char* get_default_action( const char* dir, const char* type, gpointer use
 
 /*
  * Get default applications used to open this mime-type
- * 
+ *
  * The returned string was newly allocated, and should be freed when no longer
  * used.  If NULL is returned, that means a default app is not set for this
  * mime-type.  This is very roughly based on specs:
@@ -739,9 +739,9 @@ void mime_type_update_association( const char* type, const char* desktop_id,
         g_warning( "mime_type_update_association invalid action" );
         return;
     }
-    
+
     // Load current mimeapps.list content, if available
-    file = g_key_file_new();    
+    file = g_key_file_new();
     // $XDG_CONFIG_HOME=[~/.config]/mimeapps.list
     char* path = g_build_filename( g_get_user_config_dir(),
                                             "mimeapps.list", NULL );
@@ -824,7 +824,7 @@ void mime_type_update_association( const char* type, const char* desktop_id,
             }
             g_strfreev( apps );
         }
-        
+
         // update key string if needed
         if ( action < MIME_TYPE_ACTION_REMOVE )
         {
@@ -872,7 +872,7 @@ void mime_type_update_association( const char* type, const char* desktop_id,
         }
         g_free( new_action );
     }
-    
+
     // save updated mimeapps.list
     if ( data_changed )
     {

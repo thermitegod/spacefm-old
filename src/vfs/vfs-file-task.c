@@ -189,12 +189,12 @@ gboolean check_overwrite( VFSFileTask* task,
             *dest_exists = !lstat64( dest_file, &dest_stat );
             if ( !*dest_exists )
                 return !task->abort;
-            
+
             // auto-rename
             char* ext;
             char* old_name = g_path_get_basename( dest_file );
             char* dest_dir = g_path_get_dirname( dest_file );
-            char* base_name = get_name_extension( old_name, 
+            char* base_name = get_name_extension( old_name,
                                                   S_ISDIR( dest_stat.st_mode ),
                                                   &ext );
             g_free( old_name );
@@ -222,7 +222,7 @@ gboolean check_overwrite( VFSFileTask* task,
             *dest_exists = TRUE;
             task->state = VFS_FILE_TASK_QUERY_OVERWRITE;
             new_dest = NULL;
-            
+
             // query user
             if ( !task->state_cb( task, VFS_FILE_TASK_QUERY_OVERWRITE,
                                    &new_dest, task->state_cb_data ) )
@@ -237,7 +237,7 @@ gboolean check_overwrite( VFSFileTask* task,
                 g_free( new_dest );
                 return FALSE;
             }
-            
+
             if ( task->overwrite_mode != VFS_FILE_TASK_RENAME )
             {
                 g_free( new_dest );
@@ -285,7 +285,7 @@ gboolean check_dest_in_src( VFSFileTask* task, const char* src_dir )
     if ( realpath( src_dir, real_src_path ) &&
                           g_str_has_prefix( real_dest_path, real_src_path ) &&
                           ( len = strlen( real_src_path ) ) &&
-                          ( real_dest_path[len] == '/' || 
+                          ( real_dest_path[len] == '/' ||
                             real_dest_path[len] == '\0' ) )
     {
         // source is contained in destination dir
@@ -398,7 +398,7 @@ vfs_file_task_do_copy( VFSFileTask* task,
             string_copy_free( &task->current_dest, dest_file );
             g_mutex_unlock( task->mutex );
         }
-        
+
         if ( ! dest_exists )
             result = mkdir( dest_file, file_stat.st_mode | 0700 );
 
@@ -491,7 +491,7 @@ vfs_file_task_do_copy( VFSFileTask* task,
                 {
                     vfs_file_task_error( task, errno, _("Removing"), dest_file );
                     goto _return_;
-                }                
+                }
             }
 
             if ( ( wfd = symlink( buffer, dest_file ) ) == 0 )
@@ -555,9 +555,9 @@ vfs_file_task_do_copy( VFSFileTask* task,
                     vfs_file_task_error( task, errno, _("Removing"), dest_file );
                     close( rfd );
                     goto _return_;
-                }                
+                }
             }
-            
+
             if ( ( wfd = creat( dest_file,
                                 file_stat.st_mode | S_IWUSR ) ) >= 0 )
             {
@@ -572,7 +572,7 @@ vfs_file_task_do_copy( VFSFileTask* task,
                         copy_fail = TRUE;
                         break;
                     }
-                    
+
                     if ( write( wfd, buffer, rsize ) > 0 )
                     {
                         g_mutex_lock( task->mutex );
@@ -608,7 +608,7 @@ vfs_file_task_do_copy( VFSFileTask* task,
                     }
                     if ( task->avoid_changes )
                         update_file_display( dest_file );
-        
+
                     /* Move files to different device: Need to delete source files */
                     if ( (task->type == VFS_FILE_TASK_MOVE || task->type == VFS_FILE_TASK_TRASH)
                          && !should_abort( task ) )
@@ -706,7 +706,7 @@ vfs_file_task_do_move ( VFSFileTask* task,
         g_mutex_unlock( task->mutex );
     }
 
-    if ( S_ISDIR( file_stat.st_mode ) && 
+    if ( S_ISDIR( file_stat.st_mode ) &&
                                 g_file_test( dest_file, G_FILE_TEST_IS_DIR ) )
     {
         // moving a directory onto a directory that exists
@@ -758,7 +758,7 @@ vfs_file_task_do_move ( VFSFileTask* task,
     //MOD don't chmod link
     else if ( ! g_file_test( dest_file, G_FILE_TEST_IS_SYMLINK ) )
         chmod( dest_file, file_stat.st_mode );
-    
+
     g_mutex_lock( task->mutex );
     task->progress += file_stat.st_size;
     if ( task->error_first )
@@ -814,7 +814,7 @@ vfs_file_task_move( char* src_file, VFSFileTask* task )
             vfs_file_task_do_copy( task, src_file, dest_file );
         }
         /*
-        else if ( S_ISDIR( src_stat.st_mode ) && 
+        else if ( S_ISDIR( src_stat.st_mode ) &&
                                     g_file_test( dest_file, G_FILE_TEST_IS_DIR) )
         {
             // moving a directory onto a directory that exists
@@ -933,7 +933,7 @@ vfs_file_task_link( char* src_file, VFSFileTask* task )
     old_dest_file = g_build_filename( task->dest_dir, file_name, NULL );
     g_free(file_name );
     dest_file = old_dest_file;
-    
+
     //MOD  setup task for check overwrite
     if ( should_abort( task ) )
         return ;
@@ -942,7 +942,7 @@ vfs_file_task_link( char* src_file, VFSFileTask* task )
     string_copy_free( &task->current_dest, old_dest_file );
     task->current_item++;
     g_mutex_unlock( task->mutex );
-    
+
     if ( stat64( src_file, &src_stat ) == -1 )
     {
         //MOD allow link to broken symlink
@@ -966,7 +966,7 @@ vfs_file_task_link( char* src_file, VFSFileTask* task )
         string_copy_free( &task->current_dest, dest_file );
         g_mutex_unlock( task->mutex );
     }
-    
+
     //MOD if dest exists, delete it first to prevent exists error
     if ( dest_exists )
     {
@@ -975,7 +975,7 @@ vfs_file_task_link( char* src_file, VFSFileTask* task )
         {
             vfs_file_task_error( task, errno, _("Removing"), dest_file );
             return;
-        }                
+        }
     }
 
     result = symlink( src_file, dest_file );
@@ -1110,10 +1110,10 @@ char* vfs_file_task_get_cpids( GPid pid )
     char* cpids;
     char* gcpids;
     char* old_cpids;
-    
+
     if ( !pid )
         return NULL;
-        
+
     char* command = g_strdup_printf( "/bin/ps h --ppid %d -o pid", pid );
     gboolean ret = g_spawn_command_line_sync( command, &stdout, NULL, NULL, NULL );
     g_free(command );
@@ -1138,7 +1138,7 @@ char* vfs_file_task_get_cpids( GPid pid )
                     cpids = g_strdup_printf( "%s%s", old_cpids, gcpids );
                     g_free(old_cpids );
                     g_free(gcpids );
-                }                
+                }
             }
         }
         g_free(stdout );
@@ -1156,10 +1156,10 @@ void vfs_file_task_kill_cpids( char* cpids, int signal )
     char* pids;
     char* pida;
     GPid pidi;
-    
+
     if ( !signal || !cpids || cpids[0] == '\0' )
         return;
-        
+
     pids = cpids;
     while ( nl = strchr( pids, '\n' ) )
     {
@@ -1224,7 +1224,7 @@ static void cb_exec_child_watch( GPid pid, gint status, VFSFileTask* task )
     }
     else
         call_state_callback( task, VFS_FILE_TASK_ERROR );
-    
+
     if ( bad_status || ( !task->exec_channel_out && !task->exec_channel_err ) )
         call_state_callback( task, VFS_FILE_TASK_FINISH );
 }
@@ -1267,7 +1267,7 @@ if ( !( cond & G_IO_NVAL ) )
     gsize  size;
     GtkTextIter iter;
 
-    if ( ( cond & G_IO_NVAL ) ) 
+    if ( ( cond & G_IO_NVAL ) )
     {
         g_io_channel_unref( channel );
         return FALSE;
@@ -1366,7 +1366,7 @@ if ( !( cond & G_IO_NVAL ) )
     //    goto _unref_channel;
 
     return TRUE;
-    
+
 _unref_channel:
     g_io_channel_unref( channel );
     if ( channel == task->exec_channel_out )
@@ -1386,7 +1386,7 @@ char* get_sha256sum( char* path )
         g_warning( _("Please install /usr/bin/sha256sum so I can improve your security while running root commands\n") );
         return NULL;
     }
-    
+
     char* stdout;
     char* sum;
     char* cmd = g_strdup_printf( "%s %s", sha256sum, path );
@@ -1401,7 +1401,7 @@ char* get_sha256sum( char* path )
         }
     }
     g_free( cmd );
-    return sum;    
+    return sum;
 }
 
 void vfs_file_task_exec_error( VFSFileTask* task, int errnox, char* action )
@@ -1456,7 +1456,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
     task->total_size = 0;
     task->percent = 0;
     g_mutex_unlock( task->mutex );
-    
+
     if ( should_abort( task ) )
         return;
 
@@ -1496,13 +1496,13 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
             }
         }
     }
-    
+
     // make tmpdir
     if ( geteuid() != 0 && task->exec_as_user && !strcmp( task->exec_as_user, "root" ) )
         tmp = xset_get_shared_tmp_dir();
     else
         tmp = xset_get_user_tmp_dir();
- 
+
     if ( !tmp || ( tmp && !g_file_test( tmp, G_FILE_TEST_IS_DIR ) ) )
     {
         str = _("Cannot create temporary directory");
@@ -1513,7 +1513,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
                                 _("Error"), NULL, 0, str, NULL, NULL );
         goto _exit_with_error_lean;
     }
-    
+
     // get terminal if needed
     if ( !task->exec_terminal && task->exec_as_user )
     {
@@ -1570,7 +1570,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
             g_free( hexname );
             g_free( hex8 );
         }
-        while ( g_file_test( task->exec_script, G_FILE_TEST_EXISTS ) ); 
+        while ( g_file_test( task->exec_script, G_FILE_TEST_EXISTS ) );
 
         // open file
         file = fopen( task->exec_script, "w" );
@@ -1579,7 +1579,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         // build - header
         result = fprintf( file, "#!%s\n#\n# Temporary SpaceFM exec script - it is safe to delete this file\n\n", BASHPATH );
         if ( result < 0 ) goto _exit_with_error;
-        
+
         // build - exports
         if ( task->exec_export && ( task->exec_browser || task->exec_desktop ) )
         {
@@ -1605,7 +1605,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         // build - run
         result = fprintf( file, "# run\n\nif [ \"$1\" == \"run\" ]; then\n\n" );
         if ( result < 0 ) goto _exit_with_error;
-        
+
         // build - write root settings
         if ( task->exec_write_root && geteuid() != 0 )
         {
@@ -1644,15 +1644,15 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
          * These terminals will not work properly with Run As Task.
          * ! WHEN CHANGING THIS LIST, also see similar checks in pref-dialog.c
          * and ptk-location-view.c.
-        
+
          * Note for konsole:  if you create a link to it and execute the
          * link, it will start a new instance (might also work for lxterminal?)
          * http://www.linuxjournal.com/content/start-and-control-konsole-dbus
-         * 
+         *
          * gnome-terminal removed --disable-factory option as of 3.10
          * https://github.com/IgnorantGuru/spacefm/issues/428
         */
-        if ( !task->exec_keep_tmp && terminal && 
+        if ( !task->exec_keep_tmp && terminal &&
                                 ( strstr( terminal, "lxterminal" ) ||
                                   strstr( terminal, "urxvtc" ) ||    // sure no option avail?
                                   strstr( terminal, "konsole" ) ||
@@ -1674,7 +1674,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
                                                     task->exec_script );
             if ( result < 0 ) goto _exit_with_error;
         }
-        
+
         // build - command
         printf("\nTASK_COMMAND(%p)=%s\n", task->exec_ptask, task->exec_command );
         result = fprintf( file, "%s\nfm_err=$?\n", task->exec_command );
@@ -1683,12 +1683,12 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         // build - press enter to close
         if ( terminal && task->exec_keep_terminal )
         {
-            if ( geteuid() == 0 || 
+            if ( geteuid() == 0 ||
                     ( task->exec_as_user && !strcmp( task->exec_as_user, "root" ) ) )
                 result = fprintf( file, "\necho\necho -n '%s: '\nread s",
                                         "[ Finished ]  Press Enter to close" );
-            else 
-            {         
+            else
+            {
                 result = fprintf( file, "\necho\necho -n '%s: '\nread s\nif [ \"$s\" = 's' ]; then\n    if [ \"$(whoami)\" = \"root\" ]; then\n        echo\n        echo '[ %s ]'\n    fi\n    echo\n    %s\nfi\n\n", "[ Finished ]  Press Enter to close or s + Enter for a shell", "You are ROOT", BASHPATH );
             }
             if ( result < 0 ) goto _exit_with_error;
@@ -1696,21 +1696,21 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
 
         result = fprintf( file, "\nexit $fm_err\nfi\n" );
         if ( result < 0 ) goto _exit_with_error;
-        
+
         // close file
         result = fclose( file );
         file = NULL;
         if ( result ) goto _exit_with_error;
-        
+
         // set permissions
         if ( task->exec_as_user && strcmp( task->exec_as_user, "root" ) )
             // run as a non-root user
             chmod( task->exec_script,
-                            S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH );    
+                            S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH );
         else
             // run as self or as root
             chmod( task->exec_script, S_IRWXU );
-        
+
         // use checksum
         if ( geteuid() != 0 && ( task->exec_as_user || task->exec_checksum ) )
             sum_script = get_sha256sum( task->exec_script );
@@ -1726,7 +1726,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
     char* use_su;
     gboolean single_arg = FALSE;
     char* auth = NULL;
-    
+
     if ( terminal )
     {
         // terminal
@@ -1756,7 +1756,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
             argv[a++] = g_strdup_printf( "--disable-server" );
 
         // add option to execute command in terminal
-        if ( strstr( terminal, "xfce4-terminal" ) 
+        if ( strstr( terminal, "xfce4-terminal" )
                                 || strstr( terminal, "gnome-terminal" )
                                 || strstr( terminal, "terminator" )
                                 || g_str_has_suffix( terminal, "/terminal" ) ) // xfce
@@ -1772,7 +1772,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
              * argument to -e.  SpaceFM uses spacefm-auth to run commands,
              * so only a single argument is ever used as the command. */
             argv[a++] = g_strdup( "-e" );
-        
+
         use_su = su;
     }
     else
@@ -1842,7 +1842,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
             g_warning( _("spacefm-auth not found in path - this reduces your security") );
         }
     }
-    
+
     if ( sum_script && auth )
     {
         // spacefm-auth
@@ -1964,7 +1964,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         call_state_callback( task, VFS_FILE_TASK_FINISH );
         return;
     }
-    
+
     task->exec_pid = pid;
 
     // catch termination (always is run in the main loop thread)
@@ -1981,9 +1981,9 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
 
     // Add watches to channels
     // These are run in the main loop thread so use G_PRIORITY_LOW to not
-    // interfere with g_idle_add in vfs-dir/vfs-async-task etc 
+    // interfere with g_idle_add in vfs-dir/vfs-async-task etc
     // "Use this for very low priority background tasks. It is not used within
-    // GLib or GTK+." 
+    // GLib or GTK+."
     g_io_add_watch_full( task->exec_channel_out, G_PRIORITY_LOW,
                         G_IO_IN	| G_IO_HUP | G_IO_NVAL | G_IO_ERR, //want ERR?
                         (GIOFunc)cb_exec_out_watch, task, NULL );
@@ -2075,7 +2075,7 @@ static gpointer vfs_file_task_thread ( VFSFileTask* task )
     guint size_timeout = 0;
     if ( task->recursive )
     {
-        // start timer to limit the amount of time to spend on this - can be 
+        // start timer to limit the amount of time to spend on this - can be
         // VERY slow for network filesystems
         size_timeout = g_timeout_add_seconds( 5,
                                        ( GSourceFunc ) on_size_timeout, task );
@@ -2102,7 +2102,7 @@ static gpointer vfs_file_task_thread ( VFSFileTask* task )
     }
     else if ( task->type != VFS_FILE_TASK_EXEC )
     {
-        // start timer to limit the amount of time to spend on this - can be 
+        // start timer to limit the amount of time to spend on this - can be
         // VERY slow for network filesystems
         size_timeout = g_timeout_add_seconds( 5,
                                        ( GSourceFunc ) on_size_timeout, task );
@@ -2177,11 +2177,11 @@ static gpointer vfs_file_task_thread ( VFSFileTask* task )
         {
             // make queue exception for smaller tasks
             off64_t exlimit;
-            if ( task->type == VFS_FILE_TASK_MOVE || 
+            if ( task->type == VFS_FILE_TASK_MOVE ||
                                                 task->type == VFS_FILE_TASK_COPY )
                 exlimit = 10485760;     // 10M
-            else if ( task->type == VFS_FILE_TASK_DELETE || 
-                                                task->type == VFS_FILE_TASK_TRASH )            
+            else if ( task->type == VFS_FILE_TASK_DELETE ||
+                                                task->type == VFS_FILE_TASK_TRASH )
                 exlimit = 5368709120;   // 5G
             else
                 exlimit = 0;            // always exception for other types
@@ -2191,7 +2191,7 @@ static gpointer vfs_file_task_thread ( VFSFileTask* task )
         // device list is populated so signal queue start
         task->queue_start = TRUE;
     }
-    
+
     if ( task->state == VFS_FILE_TASK_SIZE_TIMEOUT )
     {
         append_add_log( task, _("Timed out calculating total size\n"), -1 );
@@ -2239,7 +2239,7 @@ VFSFileTask* vfs_task_new ( VFSFileTaskType type,
     task->dest_dir = g_strdup( dest_dir );
     task->current_file = NULL;
     task->current_dest = NULL;
-    
+
     task->recursive = ( task->type == VFS_FILE_TASK_COPY ||
                         task->type == VFS_FILE_TASK_DELETE );
 
@@ -2247,7 +2247,7 @@ VFSFileTask* vfs_task_new ( VFSFileTaskType type,
     task->abort = FALSE;
     task->error_first = TRUE;
     task->custom_percent = FALSE;
-    
+
     task->exec_type = VFS_EXEC_NORMAL;
     task->exec_action = NULL;
     task->exec_command = NULL;
@@ -2274,20 +2274,20 @@ VFSFileTask* vfs_task_new ( VFSFileTaskType type,
     task->exec_set = NULL;
     task->exec_cond = NULL;
     task->exec_ptask = NULL;
-    
+
     task->pause_cond = NULL;
     task->state_pause = VFS_FILE_TASK_RUNNING;
     task->queue_start = FALSE;
     task->devs = NULL;
-    
+
     task->mutex = g_mutex_new();
-    
+
     GtkTextIter iter;
     task->add_log_buf = gtk_text_buffer_new( NULL );
     task->add_log_end = gtk_text_mark_new( NULL, FALSE );
     gtk_text_buffer_get_end_iter( task->add_log_buf, &iter);
     gtk_text_buffer_add_mark( task->add_log_buf, task->add_log_end, &iter );
-    
+
     task->start_time = time( NULL );
     task->last_speed = 0;
     task->last_progress = 0;
@@ -2407,12 +2407,12 @@ void vfs_file_task_free ( VFSFileTask* task )
         g_free(task->exec_script );
 
     g_mutex_free( task->mutex );
-    
+
     gtk_text_buffer_set_text( task->add_log_buf, "", -1 );
     g_object_unref( task->add_log_buf );
 
     g_timer_destroy( task->timer );
-    
+
     g_slice_free( VFSFileTask, task );
 }
 

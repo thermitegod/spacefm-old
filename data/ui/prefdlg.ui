@@ -764,7 +764,7 @@
                             <property name="bottom_attach">1</property>
                           </packing>
                         </child>
-                        
+
                         <!-- Wallpaper Mode -->
                         <child>
                           <object class="GtkLabel" id="label15">
@@ -1101,7 +1101,7 @@
                         <property name="expand">False</property>
                       </packing>
                     </child>
-                    
+
                     <child>
                       <object class="GtkCheckButton" id="show_wm_menu">
                         <property name="visible">True</property>

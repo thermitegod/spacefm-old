@@ -173,7 +173,7 @@ GtkWidget* ptk_dir_tree_view_new( PtkFileBrowser* browser,
                                              drag_targets,
                                              sizeof( drag_targets ) / sizeof( GtkTargetEntry ),
                                              GDK_ACTION_DEFAULT | GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK );
-  */  
+  */
 
     col = gtk_tree_view_column_new ();
 
@@ -513,7 +513,7 @@ gboolean on_dir_tree_view_key_press( GtkWidget* view,
     GtkTreeModel *model;
     GtkTreeIter iter;
     GtkTreeSelection *select = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
-    
+
     if(!gtk_tree_selection_get_selected(select, &model, &iter))
         return FALSE;
 
