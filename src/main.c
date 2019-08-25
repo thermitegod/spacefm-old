@@ -1252,11 +1252,8 @@ int main ( int argc, char *argv[] )
             /* initialize the file alteration monitor */
             if( G_UNLIKELY( ! vfs_file_monitor_init() ) )
             {
-#ifdef USE_INOTIFY
-                ptk_show_error( NULL, _("Error"), _("Error: Unable to initialize inotify file change monitor.\n\nDo you have an inotify-capable kernel?") );
-#else
-                ptk_show_error( NULL, _("Error"), _("Error: Unable to establish connection with FAM.\n\nDo you have \"FAM\" or \"Gamin\" installed and running?") );
-#endif
+                ptk_show_error( NULL, "Error", "Error: Unable to initialize inotify\n");
+
                 vfs_file_monitor_clean();
                 return 1;
             }
@@ -1339,11 +1336,8 @@ int main ( int argc, char *argv[] )
         printf( "GTK2 " );
 #endif
         printf( "UDEV " );
-#ifdef USE_INOTIFY
         printf( "INOTIFY " );
-#else
-        printf( "FAM " );
-#endif
+
 #ifdef DESKTOP_INTEGRATION
         printf( "DESKTOP " );
 #endif
@@ -1380,11 +1374,8 @@ int main ( int argc, char *argv[] )
     /* initialize the file alteration monitor */
     if( G_UNLIKELY( ! vfs_file_monitor_init() ) )
     {
-#ifdef USE_INOTIFY
-        ptk_show_error( NULL, _("Error"), _("Error: Unable to initialize inotify file change monitor.\n\nDo you have an inotify-capable kernel?") );
-#else
-        ptk_show_error( NULL, _("Error"), _("Error: Unable to establish connection with FAM.\n\nDo you have \"FAM\" or \"Gamin\" installed and running?") );
-#endif
+        ptk_show_error( NULL, "Error", "Error: Unable to initialize inotify\n");
+
         vfs_file_monitor_clean();
         //free_settings();
         return 1;

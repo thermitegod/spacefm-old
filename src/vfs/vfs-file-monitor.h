@@ -14,39 +14,21 @@
 #include <config.h>
 #endif
 
-/*
-  FIXME: VFSFileMonitor can support at most 1024 monitored files.
-         This is caused by the limit of FAM/gamin itself.
-         Maybe using inotify directly can solve this?
-*/
-
 #ifndef _VFS_FILE_MONITOR_H_
 #define _VFS_FILE_MONITOR_H_
 
 #include <glib.h>
 
-#ifdef USE_INOTIFY
 #include <unistd.h>
 #include <sys/inotify.h>
-#else /* Use FAM|gamin */
-#include <fam.h>
-#endif
 
 G_BEGIN_DECLS
 
-#ifdef USE_INOTIFY
 typedef enum{
   VFS_FILE_MONITOR_CREATE,
   VFS_FILE_MONITOR_DELETE,
   VFS_FILE_MONITOR_CHANGE
 }VFSFileMonitorEvent;
-#else
-typedef enum{
-  VFS_FILE_MONITOR_CREATE = FAMCreated,
-  VFS_FILE_MONITOR_DELETE = FAMDeleted,
-  VFS_FILE_MONITOR_CHANGE = FAMChanged
-}VFSFileMonitorEvent;
-#endif
 
 typedef struct _VFSFileMonitor VFSFileMonitor;
 
@@ -54,11 +36,7 @@ struct _VFSFileMonitor{
   gchar* path;
   /*<private>*/
   int n_ref;
-#ifdef USE_INOTIFY
   int wd;
-#else
-  FAMRequest request;
-#endif
   GArray* callbacks;
 };
 
@@ -74,7 +52,7 @@ typedef void (*VFSFileMonitorCallback)( VFSFileMonitor* fm,
 
 /*
 * Init monitor:
-* Establish connection with gamin/fam.
+* connect to inotify
 */
 gboolean vfs_file_monitor_init();
 

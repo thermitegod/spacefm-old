@@ -80,6 +80,7 @@ static void on_mime_cache_changed( VFSFileMonitor* fm,
     {
     case VFS_FILE_MONITOR_CREATE:
     case VFS_FILE_MONITOR_DELETE:
+        // Unknow if below is still needed w/ inotify
         /* NOTE: FAM sometimes generate incorrect "delete" notification for non-existent files.
          *  So if the cache is not loaded originally (the cache file is non-existent), we skip it. */
         if( ! cache->buffer )

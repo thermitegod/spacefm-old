@@ -286,27 +286,6 @@ gboolean vfs_app_desktop_open_multiple_files( VFSAppDesktop* app )
         if ( strstr( app->exec, "%U" ) || strstr( app->exec, "%F" ) ||
              strstr( app->exec, "%N" ) || strstr( app->exec, "%D" ) )
             return TRUE;
-
-        /*  this is broken
-        for( p = app->exec; *p; ++p )
-        {
-            if( *p == '%' )
-            {
-                ++p;
-                switch( *p )
-                {
-                case 'U':
-                case 'F':
-                case 'N':
-                case 'D':
-                    return TRUE;
-                case '\0':
-                    return FALSE;
-                }
-            }
-            return TRUE;
-        }
-        */
     }
     return FALSE;
 }
@@ -350,35 +329,6 @@ static char* translate_app_exec_to_command_line( VFSAppDesktop* app,
             ++pexec;
             switch( *pexec )
             {
-            /* 0.9.4: Treat %u/%U as %f/%F acceptable for local files per spec at
-             * http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html#exec-variables
-             * This seems to be more common behavior among file managers and
-             * some common .desktop files erroneously make this assumption.
-            case 'U':
-                for( l = file_list; l; l = l->next )
-                {
-                    tmp = g_filename_to_uri( (char*)l->data, NULL, NULL );
-                    file = g_shell_quote( tmp );
-                    g_free( tmp );
-                    g_string_append( cmd, file );
-                    g_string_append_c( cmd, ' ' );
-                    g_free( file );
-                }
-                add_files = TRUE;
-                break;
-            case 'u':
-                if( file_list && file_list->data )
-                {
-                    file = (char*)file_list->data;
-                    tmp = g_filename_to_uri( file, NULL, NULL );
-                    file = g_shell_quote( tmp );
-                    g_free( tmp );
-                    g_string_append( cmd, file );
-                    g_free( file );
-                    add_files = TRUE;
-                }
-                break;
-            */
             case 'F':
             case 'N':
             case 'U':

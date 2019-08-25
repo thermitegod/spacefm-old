@@ -89,6 +89,7 @@ static void vfs_async_task_init(VFSAsyncTask *task)
     g_mutex_init(&task->lock);
 }
 
+
 VFSAsyncTask* vfs_async_task_new( VFSAsyncFunc task_func, gpointer user_data )
 {
     VFSAsyncTask* task = (VFSAsyncTask*)g_object_new(VFS_ASYNC_TASK_TYPE, NULL);

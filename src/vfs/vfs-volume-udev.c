@@ -1,5 +1,5 @@
 /*
- * SpaceFM vfs-volume-nohal.c
+ * SpaceFM vfs-volume-udev.c
  *
  * Copyright (C) 2014 IgnorantGuru <ignorantguru@gmx.com>
  * Copyright (C) 2006 Hong Jen Yee (PCMan) <pcman.tw (AT) gmail.com>

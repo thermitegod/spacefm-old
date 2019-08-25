@@ -473,7 +473,6 @@ VFSDir* vfs_dir_new( const char* path )
     dir->path = g_strdup( path );
 
     dir->avoid_changes = vfs_volume_dir_avoid_changes( path );
-
 //printf("vfs_dir_new %s  avoid_changes=%s\n", dir->path, dir->avoid_changes ? "TRUE" : "FALSE" );
     return dir;
 }
