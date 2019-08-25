@@ -19,7 +19,6 @@
 #include "vfs-thumbnail-loader.h"
 #include "vfs-app-desktop.h"
 
-#include "glib-mem.h"
 #include "working-area.h"
 
 #include "ptk-file-misc.h"

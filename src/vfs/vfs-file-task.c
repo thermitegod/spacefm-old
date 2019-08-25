@@ -22,8 +22,6 @@
 #include <sys/stat.h>
 
 #include <glib.h>
-#include "glib-mem.h"
-#include "glib-utils.h"
 #include <glib/gi18n.h>
 
 #include <stdio.h>

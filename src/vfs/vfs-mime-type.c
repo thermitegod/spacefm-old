@@ -22,8 +22,6 @@
 
 #include <gtk/gtk.h>
 
-#include "glib-mem.h"
-
 #include "vfs-utils.h"  /* for vfs_load_icon */
 
 static GHashTable *mime_hash = NULL;

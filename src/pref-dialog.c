@@ -22,7 +22,6 @@
 #include <string.h>
 #include <malloc.h>
 
-#include "glib-utils.h"
 #include <glib/gi18n.h>
 
 #include "pref-dialog.h"

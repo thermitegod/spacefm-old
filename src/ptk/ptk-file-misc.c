@@ -12,7 +12,6 @@
 #include "ptk-file-misc.h"
 
 #include <glib.h>
-#include "glib-mem.h"
 
 #include <string.h>
 #include <fcntl.h>
@@ -1848,10 +1847,8 @@ char* get_template_dir()
 {
     char* templates_path = NULL;
 
-#if GLIB_CHECK_VERSION(2, 14, 0)
     templates_path = g_strdup( g_get_user_special_dir(
                                             G_USER_DIRECTORY_TEMPLATES ) );
-#endif
     if ( !templates_path )
     {
         templates_path = g_strdup( g_getenv( "XDG_TEMPLATES_DIR" ) );

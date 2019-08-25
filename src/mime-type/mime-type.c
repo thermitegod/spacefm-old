@@ -39,9 +39,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "glib-mem.h"
-
-
 /*
  * FIXME:
  * Currently, mmap cannot be used because of the limitation of mmap.

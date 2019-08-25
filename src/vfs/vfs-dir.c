@@ -15,7 +15,6 @@
 
 #include "vfs-dir.h"
 #include "vfs-thumbnail-loader.h"
-#include "glib-mem.h"
 
 #include <glib/gi18n.h>
 #include <string.h>
@@ -1070,51 +1069,7 @@ const char* vfs_get_desktop_dir()
     if( G_LIKELY(is_desktop_set) )
         return desktop_dir;
 
-/* glib provides API for this since ver. 2.14, but I think my implementation is better. */
-#if GLIB_CHECK_VERSION( 2, 14, 0 ) && 0  /* Delete && 0 to use the one provided by glib */
     desktop_dir = g_get_user_special_dir( G_USER_DIRECTORY_DESKTOP );
-#else
-    def = g_build_filename( g_get_user_config_dir(), "user-dirs.dirs", NULL );
-    if( def )
-    {
-        int fd = open( def, O_RDONLY );
-        g_free( def );
-        if( G_LIKELY( fd != -1 ) )
-        {
-            struct stat s;   // skip stat64
-            if( G_LIKELY( fstat( fd, &s ) != -1 ) )
-            {
-                char* buf = g_malloc( s.st_size + 1 );
-                if( (s.st_size = read( fd, buf, s.st_size )) != -1 )
-                {
-                    char* line;
-                    buf[ s.st_size ] = 0;
-                    line = strstr( buf, "XDG_DESKTOP_DIR=" );
-                    if( G_LIKELY( line ) )
-                    {
-                        char* eol;
-                        line += 16;
-                        if( G_LIKELY( ( eol = strchr( line, '\n' ) ) ) )
-                            *eol = '\0';
-                        line = g_shell_unquote( line, NULL );
-                        if( g_str_has_prefix(line, "$HOME") )
-                        {
-                            desktop_dir = g_build_filename( g_get_home_dir(), line + 5, NULL );
-                            g_free( line );
-                        }
-                        else
-                            desktop_dir = line;
-                    }
-                }
-                g_free( buf );
-            }
-            close( fd );
-        }
-    }
-
-    if( ! desktop_dir )
-        desktop_dir = g_build_filename( g_get_home_dir(), "Desktop", NULL );
-#endif
 
 #if 0
     /* FIXME: what should we do if the user has no desktop dir? */

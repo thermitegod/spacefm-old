@@ -29,8 +29,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "glib-mem.h"
-
 typedef struct
 {
     VFSFileMonitorCallback callback;

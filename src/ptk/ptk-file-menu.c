@@ -20,7 +20,6 @@
 
 #include "ptk-file-menu.h"
 #include <glib.h>
-#include "glib-mem.h"
 #include <string.h>
 #include <stdlib.h>
 

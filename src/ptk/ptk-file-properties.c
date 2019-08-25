@@ -17,7 +17,6 @@
 #include "private.h"
 
 #include <gtk/gtk.h>
-#include "glib-mem.h"
 
 #include "ptk-file-properties.h"
 

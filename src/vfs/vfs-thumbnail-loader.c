@@ -22,8 +22,6 @@
 
 #include "vfs-mime-type.h"
 #include "vfs-thumbnail-loader.h"
-#include "glib-mem.h" /* for g_slice API */
-#include "glib-utils.h" /* for g_mkdir_with_parents() */
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>

@@ -25,7 +25,6 @@
 #include "mime-cache.h"
 
 #include <glib.h>
-#include "glib-mem.h"
 
 #include <stdio.h>
 #include <string.h>

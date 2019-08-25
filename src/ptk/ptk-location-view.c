@@ -22,8 +22,6 @@
 #include <stdlib.h> /* for realpath */
 #include <errno.h>
 
-#include "glib-utils.h" /* for g_mkdir_with_parents */
-
 #include "ptk-location-view.h"
 #include "ptk-utils.h"
 #include "ptk-file-browser.h"
@@ -771,11 +769,7 @@ char* ptk_location_view_get_mount_point_dir( const char* name )
                     value = g_strdup( g_get_home_dir() );
                     break;
                 case 3:  // $XDG_RUNTIME_DIR
-#if GLIB_CHECK_VERSION(2, 28, 0)
                     value = g_strdup( g_get_user_runtime_dir() );
-#else
-                    value = g_strdup( g_getenv( "XDG_RUNTIME_DIR" ) );
-#endif
                     break;
                 case 4:  // $XDG_CACHE_HOME
                     value = g_strdup( g_get_user_cache_dir() );

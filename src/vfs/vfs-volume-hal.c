@@ -60,7 +60,6 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include "vfs-volume.h"
-#include "glib-mem.h"
 #include "vfs-file-info.h"
 #include "vfs-volume-hal-options.h"
 #include "vfs-utils.h"  /* for vfs_sudo_cmd() */

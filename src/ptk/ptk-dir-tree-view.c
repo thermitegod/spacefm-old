@@ -16,7 +16,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
-#include "glib-mem.h"
 
 #include <string.h>
 

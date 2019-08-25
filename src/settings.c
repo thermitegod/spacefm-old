@@ -22,7 +22,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#include "glib-utils.h" /* for g_mkdir_with_parents() */
 #include <glib/gi18n.h>
 
 #include <gtk/gtk.h>

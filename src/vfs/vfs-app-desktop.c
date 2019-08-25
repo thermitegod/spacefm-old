@@ -12,7 +12,6 @@
 
 #include "vfs-app-desktop.h"
 #include <glib/gi18n.h>
-#include "glib-mem.h"
 
 #include <string.h>
 

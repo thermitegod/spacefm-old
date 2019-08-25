@@ -10,7 +10,6 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
-#include "glib-mem.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>

@@ -12,7 +12,6 @@
 
 #include "vfs-file-info.h"
 #include <glib.h>
-#include "glib-mem.h"
 #include <glib/gi18n.h>
 #include <grp.h> /* Query group name */
 #include <pwd.h> /* Query user name */

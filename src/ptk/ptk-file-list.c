@@ -13,7 +13,6 @@
 #include "ptk-file-list.h"
 #include <gdk/gdk.h>
 
-#include "glib-mem.h"
 #include "vfs-file-info.h"
 #include "vfs-thumbnail-loader.h"
 

@@ -18,7 +18,6 @@
 #include "vfs-utils.h"  /* for vfs_load_icon */
 #include "vfs-file-info.h"
 #include "vfs-file-monitor.h"
-#include "glib-mem.h"
 
 struct _PtkDirTreeNode
 {
