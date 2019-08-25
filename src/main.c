@@ -116,12 +116,6 @@ static gboolean set_wallpaper = FALSE;
 static gboolean find_files = FALSE;
 static char* config_dir = NULL;
 
-#ifdef HAVE_HAL
-static char* mount = NULL;
-static char* umount = NULL;
-static char* eject = NULL;
-#endif
-
 static int n_pcmanfm_ref = 0;
 
 static GOptionEntry opt_entries[] =
@@ -153,12 +147,6 @@ static GOptionEntry opt_entries[] =
 
     { "sdebug", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &sdebug, NULL, NULL },
 
-#ifdef HAVE_HAL
-    /* hidden arguments used to mount volumes */
-    { "mount", 'm', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_STRING, &mount, NULL, NULL },
-    { "umount", 'u', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_STRING, &umount, NULL, NULL },
-    { "eject", 'e', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_STRING, &eject, NULL, NULL },
-#endif
     {G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY, &files, NULL, N_("[DIR | FILE | URL]...")},
     { NULL }
 };
@@ -908,25 +896,6 @@ void init_folder()
     folder_initialized = TRUE;
 }
 
-#ifdef HAVE_HAL
-
-/* FIXME: Currently, this cannot be supported without HAL */
-
-static int handle_mount( char** argv )
-{
-    gboolean success;
-    vfs_volume_init();
-    if( mount )
-        success = vfs_volume_mount_by_udi( mount, NULL );
-    else if( umount )
-        success = vfs_volume_umount_by_udi( umount, NULL );
-    else /* if( eject ) */
-        success = vfs_volume_eject_by_udi( eject, NULL );
-    vfs_volume_finalize();
-    return success ? 0 : 1;
-}
-#endif
-
 gboolean delayed_popup( GtkWidget* popup )
 {
     GDK_THREADS_ENTER();
@@ -1369,11 +1338,7 @@ int main ( int argc, char *argv[] )
 #else
         printf( "GTK2 " );
 #endif
-#ifdef HAVE_HAL
-        printf( "HAL " );
-#else
         printf( "UDEV " );
-#endif
 #ifdef USE_INOTIFY
         printf( "INOTIFY " );
 #else
@@ -1406,12 +1371,6 @@ int main ( int argc, char *argv[] )
 #endif
     g_thread_init( NULL );
     gdk_threads_init ();
-
-#if HAVE_HAL
-    /* If the user wants to mount/umount/eject a device */
-    if( G_UNLIKELY( mount || umount || eject ) )
-        return handle_mount( argv );
-#endif
 
     /* ensure that there is only one instance of spacefm.
          if there is an existing instance, command line arguments

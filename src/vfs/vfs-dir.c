@@ -472,11 +472,8 @@ VFSDir* vfs_dir_new( const char* path )
     dir = ( VFSDir* ) g_object_new( VFS_TYPE_DIR, NULL );
     dir->path = g_strdup( path );
 
-#ifdef HAVE_HAL
-    dir->avoid_changes = FALSE;
-#else
     dir->avoid_changes = vfs_volume_dir_avoid_changes( path );
-#endif
+
 //printf("vfs_dir_new %s  avoid_changes=%s\n", dir->path, dir->avoid_changes ? "TRUE" : "FALSE" );
     return dir;
 }

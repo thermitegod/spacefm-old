@@ -2316,9 +2316,6 @@ void vfs_file_task_run ( VFSFileTask* task )
 {
     if ( task->type != VFS_FILE_TASK_EXEC )
     {
-#ifdef HAVE_HAL
-        task->avoid_changes = FALSE;
-#else
         if ( task->type == VFS_FILE_TASK_CHMOD_CHOWN && task->src_paths->data )
         {
             char* dir = g_path_get_dirname( (char*)task->src_paths->data );
@@ -2327,7 +2324,7 @@ void vfs_file_task_run ( VFSFileTask* task )
         }
         else
             task->avoid_changes = vfs_volume_dir_avoid_changes( task->dest_dir );
-#endif
+
         task->thread = g_thread_create( ( GThreadFunc ) vfs_file_task_thread,
                                         task, TRUE, NULL );
         //task->thread = g_thread_create_full( ( GThreadFunc ) vfs_file_task_thread,
@@ -2419,9 +2416,8 @@ void add_task_dev( VFSFileTask* task, dev_t dev )
     dev_t parent = 0;
     if ( !g_slist_find( task->devs, GUINT_TO_POINTER( dev ) ) )
     {
-#ifndef HAVE_HAL
         parent = get_device_parent( dev );
-#endif
+
 //printf("add_task_dev %d:%d\n", major(dev), minor(dev) );
         g_mutex_lock( task->mutex );
         task->devs = g_slist_append( task->devs, GUINT_TO_POINTER( dev ) );

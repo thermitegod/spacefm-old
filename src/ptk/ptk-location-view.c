@@ -83,12 +83,9 @@ static void on_drag_data_received( GtkWidget *widget, GdkDragContext *drag_conte
 
 static gboolean try_mount( GtkTreeView* view, VFSVolume* vol );
 
-#ifdef HAVE_HAL
-static void on_mount( GtkMenuItem* item, VFSVolume* vol );
-#else
 static void on_open_tab( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 );
 static void on_open( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 );
-#endif
+
 
 enum {
     COL_ICON = 0,
@@ -200,7 +197,6 @@ void update_all_icons()
     main_window_update_all_bookmark_views();
 }
 
-#ifndef HAVE_HAL
 void update_change_detection()
 {
     const GList* l;
@@ -316,7 +312,6 @@ static void update_names()
         }
     }
 }
-#endif
 
 gboolean ptk_location_view_chdir( GtkTreeView* location_view, const char* cur_dir )
 {
@@ -422,11 +417,8 @@ void on_row_activated( GtkTreeView* view, GtkTreePath* tree_path,
     if ( xset_opener( NULL, file_browser, 2 ) )
         return;
 
-#ifndef HAVE_HAL
     if ( !vfs_volume_is_mounted( vol ) && vol->device_type == DEVICE_TYPE_BLOCK )
-#else
-    if ( !vfs_volume_is_mounted( vol ) )
-#endif
+
     {
         try_mount( view, vol );
         if ( vfs_volume_is_mounted( vol ) )
@@ -439,7 +431,6 @@ void on_row_activated( GtkTreeView* view, GtkTreePath* tree_path,
             }
         }
     }
-#ifndef HAVE_HAL
     if ( vfs_volume_is_mounted( vol ) && vol->mount_point )
     {
         if ( xset_get_b( "dev_newtab" ) )
@@ -455,13 +446,6 @@ void on_row_activated( GtkTreeView* view, GtkTreePath* tree_path,
                                                         PTK_FB_CHDIR_ADD_HISTORY );
         }
     }
-#else
-    if ( vfs_volume_is_mounted( vol ) && vfs_volume_get_mount_point( vol ) )
-    {
-        ptk_file_browser_emit_open( file_browser, vfs_volume_get_mount_point( vol ),
-                                                        PTK_OPEN_NEW_TAB );
-    }
-#endif
 }
 
 gboolean ptk_location_view_open_block( const char* block, gboolean new_tab )
@@ -478,15 +462,10 @@ gboolean ptk_location_view_open_block( const char* block, gboolean new_tab )
         if ( !g_strcmp0( vfs_volume_get_device( (VFSVolume*)l->data ), canon ) )
         {
             VFSVolume* vol = (VFSVolume*)l->data;
-#ifdef HAVE_HAL
-            if ( !vfs_volume_is_mounted( vol ) )
-                on_mount( NULL, vol );
-#else
             if ( new_tab )
                 on_open_tab( NULL, vol, NULL );
             else
                 on_open( NULL, vol, NULL );
-#endif
             return TRUE;
         }
     }
@@ -859,7 +838,6 @@ char* ptk_location_view_create_mount_point( int mode, VFSVolume* vol,
     char* str;
     if ( mode == HANDLER_MODE_FS && vol )
     {
-#ifndef HAVE_HAL
         char* bdev = g_path_get_basename( vol->device_file );
         if ( vol->label && vol->label[0] != '\0'
                             && vol->label[0] != ' '
@@ -916,7 +894,6 @@ char* ptk_location_view_create_mount_point( int mode, VFSVolume* vol,
         }
         else
             mname = g_strdup( netmount->fstype );
-#endif
     }
     else if ( mode == HANDLER_MODE_FILE && path )
         mname = g_path_get_basename( path );
@@ -958,127 +935,6 @@ char* ptk_location_view_create_mount_point( int mode, VFSVolume* vol,
                                                         g_strerror( errno ) );
     return point;
 }
-
-#ifdef HAVE_HAL
-static void on_mount( GtkMenuItem* item, VFSVolume* vol )
-{
-    GError* err = NULL;
-    GtkWidget* view = (GtkWidget*)g_object_get_data( G_OBJECT(item), "view" );
-    if ( view )
-        show_busy( view );
-    if( ! vfs_volume_mount( vol, &err ) )
-    {
-        char* msg = g_markup_escape_text(err->message, -1);
-        if ( view )
-            show_ready( view );
-        ptk_show_error( NULL, _("Unable to mount device"), msg );
-        g_free(msg);
-        g_error_free( err );
-    }
-    else if ( view )
-        show_ready( view );
-}
-
-static void on_umount( GtkMenuItem* item, VFSVolume* vol )
-{
-    GError* err = NULL;
-    GtkWidget* view = item ?
-                (GtkWidget*)g_object_get_data( G_OBJECT(item), "view" ) : NULL;
-    if ( view )
-        show_busy( view );
-    if( ! vfs_volume_umount( vol, &err ) )
-    {
-        char* msg = g_markup_escape_text(err->message, -1);
-        if ( view )
-            show_ready( view );
-        ptk_show_error( NULL, _("Unable to unmount device"), msg );
-        g_free(msg);
-        g_error_free( err );
-    }
-    else if ( view )
-        show_ready( view );
-}
-
-static void on_eject( GtkMenuItem* item, VFSVolume* vol )
-{
-    GError* err = NULL;
-    GtkWidget* view = item ?
-                (GtkWidget*)g_object_get_data( G_OBJECT(item), "view" ) : NULL;
-    if( vfs_volume_is_mounted( vol ) )
-    {
-        if ( view )
-            show_busy( view );
-        if( ! vfs_volume_umount( vol, &err ) || ! vfs_volume_eject( vol, &err ) )
-        {
-            char* msg = g_markup_escape_text(err->message, -1);
-            if ( view )
-                show_ready( view );
-            ptk_show_error( NULL, _("Unable to eject device"), msg );
-            g_free(msg);
-            g_error_free( err );
-        }
-        else if ( view )
-            show_ready( view );
-    }
-    else
-    {
-        if( ! vfs_volume_eject( vol, &err ) )
-        {
-            char* msg = g_markup_escape_text(err->message, -1);
-            if ( view )
-                show_ready( view );
-            ptk_show_error( NULL, _("Unable to eject device"), msg );
-            g_free(msg);
-            g_error_free( err );
-        }
-        else if ( view )
-            show_ready( view );
-    }
-}
-
-static gboolean try_mount( GtkTreeView* view, VFSVolume* vol )
-{
-    GError* err = NULL;
-    GtkWindow* toplevel = view ?
-                    GTK_WINDOW( gtk_widget_get_toplevel( GTK_WIDGET(view) ) ) :
-                    NULL;
-    gboolean ret = TRUE;
-
-    if ( view )
-        show_busy( GTK_WIDGET( view ) );
-
-    if ( ! vfs_volume_mount( vol, &err ) )
-    {
-        char* msg = g_markup_escape_text(err->message, -1);
-        ptk_show_error( toplevel,
-                        _( "Unable to mount device" ),
-                        msg);
-        g_free(msg);
-        g_error_free( err );
-        ret = FALSE;
-    }
-
-    /* Run main loop to process HAL events or volume info won't get updated correctly. */
-    while(gtk_events_pending () )
-        gtk_main_iteration ();
-
-    if ( view )
-        show_ready( GTK_WIDGET( view ) );
-    return ret;
-}
-
-void ptk_location_view_mount_network( PtkFileBrowser* file_browser,
-                                      const char* url,
-                                      gboolean new_tab,
-                                      gboolean force_new_mount )
-{
-    xset_msg_dialog( GTK_WIDGET( file_browser ), GTK_MESSAGE_ERROR,
-                _("udev Not Configured"), NULL, 0,
-                _("Mounting a network share requires a udev (--disable-hal) build of SpaceFM."),
-                NULL, NULL );
-}
-
-#else
 
 void on_autoopen_net_cb( VFSFileTask* task, AutoOpen* ao )
 {
@@ -3286,8 +3142,6 @@ static void on_handler_show_config( GtkMenuItem* item, GtkWidget* view, XSet* se
     ptk_handler_show_config( mode, NULL, file_browser, NULL );
 }
 
-#endif
-
 void open_external_tab( const char* path )
 {
     char* prog = g_find_program_in_path( g_get_prgname() );
@@ -3305,7 +3159,6 @@ void open_external_tab( const char* path )
 
 gboolean volume_is_visible( VFSVolume* vol )
 {
-#ifndef HAVE_HAL
 
    // check show/hide
     int i, j;
@@ -3386,11 +3239,10 @@ gboolean volume_is_visible( VFSVolume* vol )
     // has media?
     if ( !vol->is_mountable && !vol->is_mounted && !xset_get_b( "dev_show_empty" ) )
         return FALSE;
-#endif
+
     return TRUE;
 }
 
-#ifndef HAVE_HAL
 void ptk_location_view_on_action( GtkWidget* view, XSet* set )
 {
     char* xname;
@@ -3475,7 +3327,6 @@ void ptk_location_view_on_action( GtkWidget* view, XSet* set )
             on_prop( NULL, vol, view );
     }
 }
-#endif
 
 static void show_devices_menu( GtkTreeView* view, VFSVolume* vol,
                                PtkFileBrowser* file_browser,
@@ -3488,8 +3339,6 @@ static void show_devices_menu( GtkTreeView* view, VFSVolume* vol,
     GtkAccelGroup* accel_group = gtk_accel_group_new ();
     XSetContext* context = xset_context_new();
     main_context_fill( file_browser, context );
-
-#ifndef HAVE_HAL
 
     set = xset_set_cb( "dev_menu_remove", on_eject, vol );
         xset_set_ob1( set, "view", view );
@@ -3555,31 +3404,7 @@ static void show_devices_menu( GtkTreeView* view, VFSVolume* vol,
     char* menu_elements = g_strdup_printf( "dev_menu_remove dev_menu_reload dev_menu_unmount dev_menu_sync sep_dm1 dev_menu_open dev_menu_tab dev_menu_mount dev_menu_remount%s", str );
     xset_add_menu( NULL, file_browser, popup, accel_group, menu_elements );
     g_free( menu_elements );
-#else
-    item = gtk_menu_item_new_with_mnemonic( _( "_Mount" ) );
-    g_object_set_data( G_OBJECT(item), "view", view );
-    g_signal_connect( item, "activate", G_CALLBACK(on_mount), vol );
-    if( vfs_volume_is_mounted( vol ) )
-        gtk_widget_set_sensitive( item, FALSE );
-    gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
 
-    item = gtk_menu_item_new_with_mnemonic( _( "_Unmount" ) );
-    g_object_set_data( G_OBJECT(item), "view", view );
-    g_signal_connect( item, "activate", G_CALLBACK(on_umount), vol );
-    if( !vfs_volume_is_mounted( vol ) )
-        gtk_widget_set_sensitive( item, FALSE );
-    gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
-
-    if( vfs_volume_requires_eject( vol ) )
-    {
-        item = gtk_menu_item_new_with_mnemonic( _( "_Eject" ) );
-        g_object_set_data( G_OBJECT(item), "view", view );
-        g_signal_connect( item, "activate", G_CALLBACK(on_eject), vol );
-        gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
-    }
-#endif
-
-#ifndef HAVE_HAL
     if ( vol )
     {
         set = xset_set_cb( "dev_fmt_vfat", on_format, vol );
@@ -3693,7 +3518,7 @@ static void show_devices_menu( GtkTreeView* view, VFSVolume* vol,
     menu_elements = g_strdup_printf( "sep_dm2 dev_menu_root sep_dm3 dev_prop dev_menu_settings" );
     xset_add_menu( NULL, file_browser, popup, accel_group, menu_elements );
     g_free( menu_elements );
-#endif
+
     gtk_widget_show_all( GTK_WIDGET(popup) );
 
     g_signal_connect( popup, "selection-done",
@@ -3754,13 +3579,13 @@ gboolean on_button_press_event( GtkTreeView* view, GdkEventButton* evt,
             ret = TRUE;
         }
     }
-#ifndef HAVE_HAL
+
     else if ( vol && evt->button == 2 ) /* middle button */
     {
         on_eject( NULL, vol, GTK_WIDGET( view ) );
         ret = TRUE;
     }
-#endif
+
     else if ( evt->button == 3 )    /* right button */
     {
         show_devices_menu( view, vol, file_browser, evt->button, evt->time );
@@ -3816,22 +3641,19 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
         return;
 
     GtkWidget* view = (GtkWidget*)g_object_get_data( G_OBJECT(menu), "parent" );
-#ifndef HAVE_HAL
+
     if ( xset_get_b( "dev_newtab" ) )
         file_browser = (PtkFileBrowser*)g_object_get_data( G_OBJECT(view),
                                                                 "file_browser" );
     else
         file_browser = NULL;
-#else
-    file_browser = (PtkFileBrowser*)g_object_get_data( G_OBJECT(view),
-                                                            "file_browser" );
-#endif
+
 
     // NOTE: file_browser may be NULL
     if ( button == 1 )
     {
         // left-click - mount & open
-#ifndef HAVE_HAL
+
         // device opener?  note that context may be based on devices list sel
         // won't work for desktop because no DesktopWindow currently available
         if ( file_browser && xset_opener( NULL, file_browser, 2 ) )
@@ -3841,32 +3663,13 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
             on_open_tab( NULL, vol, view );
         else
             on_open( NULL, vol, view );
-#else
-        if ( !vfs_volume_is_mounted( vol ) && !try_mount( NULL, vol ) )
-            return;
-        if ( vfs_volume_get_mount_point( vol ) )
-        {
-            if ( file_browser )
-                ptk_file_browser_emit_open( file_browser,
-                                            vfs_volume_get_mount_point( vol ),
-                                            PTK_OPEN_NEW_TAB );
-            else
-                open_in_prog( vfs_volume_get_mount_point( vol ) );
-        }
-#endif
+
         return;
     }
     else if ( button == 2 )
     {
         // middle-click - Remove / Eject
-#ifndef HAVE_HAL
         on_eject( NULL, vol, view );
-#else
-        if ( vfs_volume_requires_eject( vol ) )
-            on_eject( NULL, vol );
-        else if ( vfs_volume_is_mounted( vol ) )
-            on_umount( NULL, vol );
-#endif
         return;
     }
 
@@ -3875,7 +3678,6 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
     GtkWidget* item;
     GtkWidget* popup = gtk_menu_new();
 
-#ifndef HAVE_HAL
     GtkWidget* image;
     set = xset_get( "dev_menu_remove" );
     item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
@@ -3972,26 +3774,6 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
     gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
     if ( !vol )
         gtk_widget_set_sensitive( item, FALSE );
-#else
-    item = gtk_menu_item_new_with_mnemonic( _( "_Mount" ) );
-    g_signal_connect( item, "activate", G_CALLBACK(on_mount), vol );
-    if( vfs_volume_is_mounted( vol ) )
-        gtk_widget_set_sensitive( item, FALSE );
-    gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
-
-    item = gtk_menu_item_new_with_mnemonic( _( "_Unmount" ) );
-    g_signal_connect( item, "activate", G_CALLBACK(on_umount), vol );
-    if( ! vfs_volume_is_mounted( vol ) )
-        gtk_widget_set_sensitive( item, FALSE );
-    gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
-
-    if ( vfs_volume_requires_eject( vol ) )
-    {
-        item = gtk_menu_item_new_with_mnemonic( _( "_Eject" ) );
-        g_signal_connect( item, "activate", G_CALLBACK(on_eject), vol );
-        gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
-    }
-#endif
 
     // show menu
     gtk_widget_show_all( GTK_WIDGET( popup ) );
@@ -4128,7 +3910,6 @@ void ptk_location_view_dev_menu( GtkWidget* parent, PtkFileBrowser* file_browser
     g_signal_connect( menu, "key_press_event",
                             G_CALLBACK( on_dev_menu_keypress ), NULL );
 
-#ifndef HAVE_HAL
     xset_set_cb( "dev_show_internal_drives", update_all, NULL );
     xset_set_cb( "dev_show_empty", update_all, NULL );
     xset_set_cb( "dev_show_partition_tables", update_all, NULL );
@@ -4154,7 +3935,6 @@ void ptk_location_view_dev_menu( GtkWidget* parent, PtkFileBrowser* file_browser
     char* desc = g_strdup_printf( "dev_show sep_dm4 dev_menu_auto dev_exec dev_fs_cnf dev_net_cnf dev_mount_options dev_change%s", file_browser ? " dev_newtab" : "" );
     xset_set_set( set, "desc", desc );
     g_free( desc );
-#endif
 }
 
 VFSVolume* ptk_location_view_get_volume(  GtkTreeView* location_view, GtkTreeIter* it )
@@ -4678,12 +4458,8 @@ static void on_bookmark_device( GtkMenuItem* item, VFSVolume* vol )
     if ( !file_browser )
         return;
 
-#ifndef HAVE_HAL
     // udi is the original user-entered URL, if available, else mtab url
     url = vol->udi;
-#else
-    url = vfs_volume_get_device( vol );
-#endif
 
     if ( g_str_has_prefix( url, "curlftpfs#" ) )
         url += 10;

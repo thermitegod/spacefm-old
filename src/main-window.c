@@ -583,14 +583,13 @@ GtkWidget* create_devices_menu( FMMainWindow* main_window )
     xset_add_menuitem( NULL, file_browser, dev_menu, accel_group, set );
 
     ptk_location_view_dev_menu( GTK_WIDGET( file_browser ), file_browser, dev_menu );
-#ifndef HAVE_HAL
+
     set = xset_get( "sep_dm3" );
     xset_add_menuitem( NULL, file_browser, dev_menu, accel_group, set );
 
     set = xset_get( "dev_menu_settings" );
     xset_add_menuitem( NULL, file_browser, dev_menu, accel_group, set );
 
-#endif
     // show all
     gtk_widget_show_all( dev_menu );
 
@@ -3986,11 +3985,8 @@ _key_found:
 
             // handlers
             if ( g_str_has_prefix( set->name, "dev_" ) )
-#ifndef HAVE_HAL
                 ptk_location_view_on_action( GTK_WIDGET( browser->side_dev ), set );
-#else
-g_warning( _("Device manager key shortcuts are disabled in HAL mode") );
-#endif
+
             else if ( g_str_has_prefix( set->name, "main_" ) )
             {
                 xname = set->name + 5;
@@ -4355,7 +4351,6 @@ void main_context_fill( PtkFileBrowser* file_browser, XSetContext* c )
     if ( !c->var[CONTEXT_BOOKMARK] )
         c->var[CONTEXT_BOOKMARK] = g_strdup( "" );
 
-#ifndef HAVE_HAL
     // device
     if ( file_browser->side_dev &&
             ( vol = ptk_location_view_get_selected_vol(
@@ -4417,16 +4412,13 @@ void main_context_fill( PtkFileBrowser* file_browser, XSetContext* c )
     }
     else
     {
-#endif
         c->var[CONTEXT_DEVICE] = g_strdup( "" );
         c->var[CONTEXT_DEVICE_LABEL] = g_strdup( "" );
         c->var[CONTEXT_DEVICE_MOUNT_POINT] = g_strdup( "" );
         c->var[CONTEXT_DEVICE_UDI] = g_strdup( "" );
         c->var[CONTEXT_DEVICE_FSTYPE] = g_strdup( "" );
         c->var[CONTEXT_DEVICE_PROP] = g_strdup( "" );
-#ifndef HAVE_HAL
     }
-#endif
 
     // panels
     int i, p;
@@ -4450,12 +4442,10 @@ void main_context_fill( PtkFileBrowser* file_browser, XSetContext* c )
         panel_count++;
         c->var[CONTEXT_PANEL1_DIR + p - 1] = g_strdup( ptk_file_browser_get_cwd(
                                                                     a_browser ) );
-#ifndef HAVE_HAL
         if ( a_browser->side_dev &&
                 ( vol = ptk_location_view_get_selected_vol(
                                         GTK_TREE_VIEW( a_browser->side_dev ) ) ) )
             c->var[CONTEXT_PANEL1_DEVICE + p - 1] = g_strdup( vol->device_file );
-#endif
 
         // panel has files selected?
         if ( a_browser->view_mode == PTK_FB_ICON_VIEW ||
@@ -4724,7 +4714,7 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
                 g_free( esc_path );
             }
         }
-#ifndef HAVE_HAL
+
         // device
         if ( a_browser->side_dev )
         {
@@ -4839,7 +4829,7 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
                                             p, vol->nopolicy ? 1 : 0 );
             }
         }
-#endif
+
         // tabs
         PtkFileBrowser* t_browser;
         num_pages = gtk_notebook_get_n_pages( GTK_NOTEBOOK( main_window->panel[p-1] ) );
@@ -5140,11 +5130,8 @@ void main_task_start_queued( GtkWidget* view, PtkFileTask* new_task )
     GSList* running = NULL;
     GSList* queued = NULL;
     gboolean smart;
-#ifdef HAVE_HAL
-    smart = FALSE;
-#else
     smart = xset_get_b( "task_q_smart" );
-#endif
+
     if ( !GTK_IS_TREE_VIEW( view ) )
         return;
 
@@ -5641,11 +5628,6 @@ gboolean on_task_button_press_event( GtkWidget* view, GdkEventButton *event,
         xset_set_cb( "task_resume_all", on_task_stop, view );
         set = xset_get( "task_all" );
         set->disable = !is_tasks;
-
-#ifdef HAVE_HAL
-        set = xset_get( "task_q_smart" );
-        set->disable = TRUE;
-#endif
 
         const char* showout = "";
         if ( ptask && ptask->pop_handler )
@@ -7646,11 +7628,6 @@ _invalid_get:
         else if ( !strcmp( argv[i], "mount" ) || !strcmp( argv[i], "unmount" ) )
         {
             // mount or unmount TARGET
-#ifdef HAVE_HAL
-            *reply = g_strdup_printf( _("spacefm: task type %s requires udev build\n"),
-                                                argv[i] );
-            return 2;
-#else
             for ( j = i + 1; argv[j] && argv[j][0] == '-'; j++ )
             {
                 *reply = g_strdup_printf( _("spacefm: invalid %s task option '%s'\n"),
@@ -7769,7 +7746,6 @@ _invalid_get:
             ptask->task->exec_show_error = TRUE;
             ptask->task->exec_scroll_lock = FALSE;
             ptk_file_task_run( ptask );
-#endif
         }
         else if ( !strcmp( argv[i], "copy" ) || !strcmp( argv[i], "move" )
                                              || !strcmp( argv[i], "link" )

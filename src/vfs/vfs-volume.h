@@ -77,15 +77,6 @@ typedef struct netmount_t {
     char* path;
 } netmount_t;
 
-#ifdef HAVE_HAL
-gboolean vfs_volume_mount_by_udi( const char* udi, GError** err );
-
-gboolean vfs_volume_umount_by_udi( const char* udi, GError** err );
-
-gboolean vfs_volume_eject_by_udi( const char* udi, GError** err );
-
-#else
-
 enum{
     DEVICE_TYPE_BLOCK,
     DEVICE_TYPE_NETWORK,
@@ -149,9 +140,6 @@ gboolean path_is_mounted_mtab( const char* mtab_file,
 gboolean mtab_fstype_is_handled_by_protocol( const char* mtab_fstype );
 VFSVolume* vfs_volume_get_by_device_or_point( const char* device_file,
                                               const char* point );
-
-
-#endif
 
 G_END_DECLS
 

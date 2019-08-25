@@ -84,58 +84,6 @@ GdkPixbuf* vfs_load_icon( GtkIconTheme* theme, const char* icon_name, int size )
     return icon;
 }
 
-#ifdef HAVE_HAL
-static char* find_su_program( GError** err )
-{
-    char* su = NULL;
-
-#ifdef PREFERABLE_SUDO_PROG
-    su = g_find_program_in_path( PREFERABLE_SUDO_PROG );
-#endif
-    // Use default search rules
-    if ( ! su )
-        su = get_valid_gsu();
-    if ( ! su )
-        su = g_find_program_in_path( "ktsuss" );
-    if ( ! su )
-        su = g_find_program_in_path( "gksudo" );
-    if ( ! su )
-        su = g_find_program_in_path( "gksu" );
-    if ( ! su )
-        su = g_find_program_in_path( "kdesu" );
-
-    if ( ! su )
-        g_set_error( err, G_SPAWN_ERROR, G_SPAWN_ERROR_FAILED, _( "su command not found" ) ); //MOD
-
-    return su;
-}
-
-gboolean vfs_sudo_cmd_sync( const char* cwd, char* argv[],
-                            int* exit_status,
-                            char** pstdout, char** pstderr, GError** err )  //MOD
-{
-    char *su;  //MOD
-    gboolean ret;
-
-    if ( ! ( su = find_su_program( err ) ) )
-        return FALSE;
-
-    argv[0] = su;
-    if ( ! strstr( su, "ktsuss" ) )  //MOD
-    {
-        // Combine arguments for gksu, kdesu, etc but not for ktsuss
-        argv[1] = g_strdup_printf( "%s %s '%s'", argv[1], argv[2], argv[3] );
-        argv[2] = NULL;
-    }
-
-    ret = g_spawn_sync( cwd, argv, NULL,
-                   G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
-                   NULL, NULL,
-                   pstdout, pstderr, exit_status, err );
-    return ret;
-}
-#endif
-
 /*
 
 gboolean vfs_sudo_cmd_async( const char* cwd, const char* cmd, GError** err )
