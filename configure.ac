@@ -34,7 +34,7 @@ AC_DEFINE(G_DISABLE_ASSERT, [1], [do not enable g_asserts])
 AC_DEFINE(G_LOG_DOMAIN, "SpaceFM")
 
 AC_ARG_WITH([bash-path],
-        AC_HELP_STRING([--with-bash-path=PATH], [Absolute path to GENUINE bash v4 - other shells lack features REQUIRED by SpaceFM (default: /bin/bash)]),
+        AC_HELP_STRING([--with-bash-path=PATH], [Absolute path to GENUINE bash v5 - other shells lack features REQUIRED by SpaceFM (default: /bin/bash)]),
         AC_DEFINE_UNQUOTED(BASHPATH, "$withval", [path to bash]),
         AC_DEFINE_UNQUOTED(BASHPATH, "/bin/bash", [path to bash]))
 bash_path="$withval"
@@ -47,7 +47,7 @@ if test ! -z "$bash_path"; then
     fi
     echo "Modifying spacefm-auth to use bash path..."
     bash_esc="${bash_path//\//\\/}"
-    sed "s/\(\/bin\/bash\)/$bash_esc/" src/spacefm-auth.bash > src/spacefm-auth
+    sed "s/\(\/bin\/bash\)/$bash_esc/" src/spacefm-auth >| src/spacefm-auth
 fi
 
 # gtk2 or gtk3
@@ -85,8 +85,7 @@ AC_SUBST([GTK_CFLAGS])
 AC_SUBST([GTK_LIBS])
 
 # Default make options
-# disable deprecated warnings for now due to GTK2/GTK3 build compat
-CFLAGS="$CFLAGS -Wno-deprecated-declarations -Wformat -Wformat-security -Wreturn-type -Wunused-value -Wparentheses -Wswitch-default -Wimplicit-fallthrough"
+CFLAGS="$CFLAGS -D_FORTIFY_SOURCE=2 -D_DEFAULT_SOURCE -std=c18 -O2 -Wformat -Wformat-security -Wreturn-type -Wunused-value -Wparentheses -Wswitch-default -Wimplicit-fallthrough"
 
 # start-notification is optional - will be used if installed and no --disable
 AC_ARG_ENABLE(
@@ -154,18 +153,6 @@ PKG_CHECK_MODULES(LIBUDEV, [libudev >= 143])
 AC_SUBST(LIBUDEV_CFLAGS)
 AC_SUBST(LIBUDEV_LIBS)
 
-
-AC_ARG_ENABLE([largefile],
-    AS_HELP_STRING([--enable-largefile],
-        [enable Large file support (default: yes)]),
-    largefile=$enableval, largefile="yes")
-
-if test x"$largefile" = x"yes"; then
-  CPPFLAGS="$CPPFLAGS -D_LARGEFILE_SOURCE -D_REENTRANT -D_FILE_OFFSET_BITS=64"
-  AC_DEFINE(_LARGEFILE64_SOURCE, 1, [Whether to enable large file support])
-  AC_DEFINE(_FILE_OFFSET_BITS, 64, [File offset bits])
-fi
-
 AC_ARG_ENABLE(
     [superuser-checks],
     AS_HELP_STRING([--disable-superuser-checks],
@@ -181,7 +168,7 @@ AC_ARG_WITH(
                    [Specify custom graphical su program to run root commands (or see /etc/spacefm/spacefm.conf)]),
                    [ preferable_sudo="$withval" ])
 if test ! -z "$preferable_sudo"; then
-  CPPFLAGS="$CPPFLAGS -DPREFERABLE_SUDO_PROG=\\\"$preferable_sudo\\\""
+  CFLAGS="$CFLAGS -DPREFERABLE_SUDO_PROG=\\\"$preferable_sudo\\\""
 fi
 
 AC_ARG_ENABLE(
@@ -224,10 +211,10 @@ AC_ARG_ENABLE(
 AM_CONDITIONAL(NO_PIXMAPS, test ! x"$use_pixmaps" = x"yes")
 
 dnl advanced compiler tweaking
-CPPFLAGS="$CPPFLAGS -fstrict-aliasing -fmessage-length=0"
+CFLAGS="$CFLAGS -fstrict-aliasing -fmessage-length=0"
 
 dnl data dirs
-CPPFLAGS="$CPPFLAGS -DDATADIR=\\\"$datadir\\\" -DHTMLDIR=\\\"$htmldir\\\""
+CFLAGS="$CFLAGS -DDATADIR=\\\"$datadir\\\" -DHTMLDIR=\\\"$htmldir\\\""
 
 AC_CHECK_FUNC(euidaccess,[AC_DEFINE(HAVE_EUIDACCESS,[],[Define to 1 if euidaccess is available])])
 AC_CHECK_FUNC(eaccess,[AC_DEFINE(HAVE_EACCESS,[],[Define to 1 if eaccess is available])])
@@ -246,7 +233,8 @@ AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])
 
 dnl Add the languages which your application supports here.
-ALL_LINGUAS="af ar da ca cs de es et eu fa fi fr gl he hr hu id it ja ko lt ml ms nb nl nn pl ps pt pt_BR ru sk sl sv tr uk ur ur_PK vi zh_CN zh_TW"
+#ALL_LINGUAS="af ar da ca cs de es et eu fa fi fr gl he hr hu id it ja ko lt ml ms nb nl nn pl ps pt pt_BR ru sk sl sv tr uk ur ur_PK vi zh_CN zh_TW"
+ALL_LINGUAS=""
 
 AC_OUTPUT([
 Makefile
@@ -283,7 +271,6 @@ echo Custom path to bash v4....................... : "$bash_path"
 fi
 echo Linux device support......................... : libudev
 echo Linux file change monitor support............ : inotify
-echo 64-bit Large file support.................... : $largefile
 #echo Show warnings if run as super user........... : $superuser_checks
 if test ! -z "$preferable_sudo"; then
 echo Additional graphical su program.............. : $preferable_sudo

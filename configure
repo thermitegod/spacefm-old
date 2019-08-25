@@ -825,7 +825,6 @@ with_gtk3
 with_gtk2
 enable_startup_notification
 enable_cast_checks
-enable_largefile
 enable_superuser_checks
 with_preferable_sudo
 enable_desktop_integration
@@ -1491,7 +1490,6 @@ Optional Features:
                           disable use of libstartup-notification (default:
                           enable if installed)
   --enable-cast-checks    enable Glib casting checks (default: disable)
-  --enable-largefile      enable Large file support (default: yes)
   --disable-superuser-checks
                           disable checks running as super user (no current
                           function) (default: enable)
@@ -1517,7 +1515,7 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot[=DIR]    Search for dependent libraries within DIR (or the
                           compiler's sysroot if not specified).
-  --with-bash-path=PATH   Absolute path to GENUINE bash v4 - other shells lack
+  --with-bash-path=PATH   Absolute path to GENUINE bash v5 - other shells lack
                           features REQUIRED by SpaceFM (default: /bin/bash)
   --with-gtk3             Build with GTK3 interface instead of GTK2 (default:
                           with GTK2 unless GTK2 not installed)
@@ -14507,7 +14505,7 @@ if test ! -z "$bash_path"; then
     fi
     echo "Modifying spacefm-auth to use bash path..."
     bash_esc="${bash_path//\//\\/}"
-    sed "s/\(\/bin\/bash\)/$bash_esc/" src/spacefm-auth.bash > src/spacefm-auth
+    sed "s/\(\/bin\/bash\)/$bash_esc/" src/spacefm-auth >| src/spacefm-auth
 fi
 
 # gtk2 or gtk3
@@ -15164,8 +15162,7 @@ fi
 
 
 # Default make options
-# disable deprecated warnings for now due to GTK2/GTK3 build compat
-CFLAGS="$CFLAGS -Wno-deprecated-declarations -Wformat -Wformat-security -Wreturn-type -Wunused-value -Wparentheses -Wswitch-default -Wimplicit-fallthrough"
+CFLAGS="$CFLAGS -D_FORTIFY_SOURCE=2 -D_DEFAULT_SOURCE -std=c18 -O2 -Wformat -Wformat-security -Wreturn-type -Wunused-value -Wparentheses -Wswitch-default -Wimplicit-fallthrough"
 
 # start-notification is optional - will be used if installed and no --disable
 # Check whether --enable-startup-notification was given.
@@ -15549,25 +15546,6 @@ fi
 
 
 
-
-# Check whether --enable-largefile was given.
-if test "${enable_largefile+set}" = set; then :
-  enableval=$enable_largefile; largefile=$enableval
-else
-  largefile="yes"
-fi
-
-
-if test x"$largefile" = x"yes"; then
-  CPPFLAGS="$CPPFLAGS -D_LARGEFILE_SOURCE -D_REENTRANT -D_FILE_OFFSET_BITS=64"
-
-$as_echo "#define _LARGEFILE64_SOURCE 1" >>confdefs.h
-
-
-$as_echo "#define _FILE_OFFSET_BITS 64" >>confdefs.h
-
-fi
-
 # Check whether --enable-superuser-checks was given.
 if test "${enable_superuser_checks+set}" = set; then :
   enableval=$enable_superuser_checks; superuser_checks=$enableval
@@ -15588,7 +15566,7 @@ if test "${with_preferable_sudo+set}" = set; then :
 fi
 
 if test ! -z "$preferable_sudo"; then
-  CPPFLAGS="$CPPFLAGS -DPREFERABLE_SUDO_PROG=\\\"$preferable_sudo\\\""
+  CFLAGS="$CFLAGS -DPREFERABLE_SUDO_PROG=\\\"$preferable_sudo\\\""
 fi
 
 # Check whether --enable-desktop-integration was given.
@@ -15755,9 +15733,9 @@ else
 fi
 
 
-CPPFLAGS="$CPPFLAGS -fstrict-aliasing -fmessage-length=0"
+CFLAGS="$CFLAGS -fstrict-aliasing -fmessage-length=0"
 
-CPPFLAGS="$CPPFLAGS -DDATADIR=\\\"$datadir\\\" -DHTMLDIR=\\\"$htmldir\\\""
+CFLAGS="$CFLAGS -DDATADIR=\\\"$datadir\\\" -DHTMLDIR=\\\"$htmldir\\\""
 
 ac_fn_c_check_func "$LINENO" "euidaccess" "ac_cv_func_euidaccess"
 if test "x$ac_cv_func_euidaccess" = xyes; then :
@@ -15797,7 +15775,8 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-ALL_LINGUAS="af ar da ca cs de es et eu fa fi fr gl he hr hu id it ja ko lt ml ms nb nl nn pl ps pt pt_BR ru sk sl sv tr uk ur ur_PK vi zh_CN zh_TW"
+#ALL_LINGUAS="af ar da ca cs de es et eu fa fi fr gl he hr hu id it ja ko lt ml ms nb nl nn pl ps pt pt_BR ru sk sl sv tr uk ur ur_PK vi zh_CN zh_TW"
+ALL_LINGUAS=""
 
 ac_config_files="$ac_config_files Makefile etc/Makefile src/Makefile po/Makefile.in data/Makefile"
 
@@ -18012,7 +17991,6 @@ echo Custom path to bash v4....................... : "$bash_path"
 fi
 echo Linux device support......................... : libudev
 echo Linux file change monitor support............ : inotify
-echo 64-bit Large file support.................... : $largefile
 #echo Show warnings if run as super user........... : $superuser_checks
 if test ! -z "$preferable_sudo"; then
 echo Additional graphical su program.............. : $preferable_sudo
