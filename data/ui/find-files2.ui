@@ -114,10 +114,9 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkComboBox" id="fn_pattern">
+                      <object class="GtkComboBoxEntry" id="fn_pattern">
                         <property name="visible">True</property>
                         <property name="has_focus">True</property>
-                        <property name="has_entry">True</property>
                         <child internal-child="entry">
                           <object class="GtkEntry" id="fn_pattern_entry">
                             <property name="visible">True</property>
