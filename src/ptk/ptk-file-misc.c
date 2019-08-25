@@ -220,24 +220,6 @@ char* get_real_link_target( const char* link_path )
     return target_path;
 }
 
-static void select_file_name_part( GtkEntry* entry )
-{
-    GtkEditable * editable = GTK_EDITABLE( entry );
-    const char* file_name = gtk_entry_get_text( entry );
-    const char* dot;
-    int pos;
-
-    if ( !file_name[ 0 ] || file_name[ 0 ] == '.' )
-        return ;
-    /* FIXME: Simply finding '.' usually gets wrong filename suffix. */
-    dot = g_utf8_strrchr( file_name, -1, '.' );
-    if ( dot )
-    {
-        pos = g_utf8_pointer_to_offset( file_name, dot );
-        gtk_editable_select_region( editable, 0, pos );
-    }
-}
-
 void on_help_activate( GtkMenuItem* item, MoveSet* mset )
 {
     xset_show_help( GTK_WIDGET( mset->dlg ), NULL,

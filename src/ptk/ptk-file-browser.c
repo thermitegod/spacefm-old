@@ -103,9 +103,6 @@ ptk_file_browser_cut_or_copy( PtkFileBrowser* file_browser,
 static void
 ptk_file_browser_update_model( PtkFileBrowser* file_browser );
 
-static gboolean
-is_latin_shortcut_key( guint keyval );
-
 /* Get GtkTreePath of the item at coordinate x, y */
 static GtkTreePath*
 folder_view_get_tree_path_at_pos( PtkFileBrowser* file_browser, int x, int y );
@@ -230,10 +227,6 @@ enum{  //MOD
     RESPONSE_RUN = 100,
     RESPONSE_RUNTERMINAL = 101,
 };
-
-static void enter_callback( GtkEntry* entry, GtkDialog* dlg );  //MOD
-
-static char *replace_str(char *str, char *orig, char *rep); //MOD
 
 static void rebuild_toolbox( GtkWidget* widget, PtkFileBrowser* file_browser );
 static void rebuild_side_toolbox( GtkWidget* widget,

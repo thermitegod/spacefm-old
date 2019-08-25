@@ -69,13 +69,8 @@ on_popup_run_app ( GtkMenuItem *menuitem,
 static void
 on_popup_open_in_new_tab_activate ( GtkMenuItem *menuitem,
                                     PtkFileMenu* data );
-static void
-on_popup_open_in_new_win_activate ( GtkMenuItem *menuitem,
-                                    PtkFileMenu* data );
 static void on_new_bookmark( GtkMenuItem *menuitem,
                              PtkFileMenu* data );
-static void on_popup_open_in_terminal_activate( GtkMenuItem *menuitem,
-                                                PtkFileMenu* data );
 static void on_popup_handlers_activate ( GtkMenuItem *menuitem,
                                        PtkFileMenu* data );
 static void
@@ -141,8 +136,6 @@ on_popup_file_properties_activate ( GtkMenuItem *menuitem,
 void on_popup_file_permissions_activate ( GtkMenuItem *menuitem,
                                     PtkFileMenu* data );
 
-static void on_popup_open_files_activate( GtkMenuItem *menuitem,
-                               PtkFileMenu* data );  //MOD
 static void on_popup_open_all( GtkMenuItem *menuitem, PtkFileMenu* data );
 
 void

@@ -93,9 +93,6 @@ static void fm_main_window_destroy ( GtkObject *object );
 
 static gboolean fm_main_window_window_state_event ( GtkWidget *widget,
                                                     GdkEventWindowState *event );
-static void fm_main_window_next_tab ( FMMainWindow* widget );
-static void fm_main_window_prev_tab ( FMMainWindow* widget );
-
 
 static void on_folder_notebook_switch_pape ( GtkNotebook *notebook,
                                              GtkWidget *page,
@@ -122,9 +119,6 @@ static void on_file_browser_sel_change( PtkFileBrowser* file_browser,
 //                                              FMMainWindow* main_window );
 void on_file_browser_panel_change( PtkFileBrowser* file_browser,
                                  FMMainWindow* main_window );
-static void on_file_browser_splitter_pos_change( PtkFileBrowser* file_browser,
-                                                 GParamSpec *param,
-                                                 FMMainWindow* main_window );
 static gboolean on_tab_drag_motion ( GtkWidget *widget,
                                      GdkDragContext *drag_context,
                                      gint x,

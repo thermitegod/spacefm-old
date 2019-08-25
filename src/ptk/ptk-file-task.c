@@ -33,7 +33,6 @@ static gboolean on_vfs_file_task_state_cb( VFSFileTask* task,
 
 static void query_overwrite( PtkFileTask* ptask );
 
-static void enter_callback( GtkEntry* entry, GtkDialog* dlg );   //MOD
 void ptk_file_task_update( PtkFileTask* ptask );
 //void ptk_file_task_notify_handler( GObject* o, PtkFileTask* ptask );
 gboolean ptk_file_task_add_main( PtkFileTask* ptask );

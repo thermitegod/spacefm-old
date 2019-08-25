@@ -116,28 +116,6 @@ const char* press_enter_to_close = "[ Finished ]  Press Enter to close";
 /*  Drag & Drop/Clipboard targets  */
 static GtkTargetEntry drag_targets[] = { {"text/uri-list", 0 , 0 } };
 
-static void show_busy( GtkWidget* view )
-{
-    GtkWidget* toplevel;
-    GdkCursor* cursor;
-
-    toplevel = gtk_widget_get_toplevel( GTK_WIDGET(view) );
-    cursor = gdk_cursor_new_for_display( gtk_widget_get_display(GTK_WIDGET( view )), GDK_WATCH );
-    gdk_window_set_cursor( gtk_widget_get_window ( toplevel ), cursor );
-    gdk_cursor_unref( cursor );
-
-    /* update the  GUI */
-    while (gtk_events_pending ())
-        gtk_main_iteration ();
-}
-
-static void show_ready( GtkWidget* view )
-{
-    GtkWidget* toplevel;
-    toplevel = gtk_widget_get_toplevel( GTK_WIDGET(view) );
-    gdk_window_set_cursor( gtk_widget_get_window ( toplevel ), NULL );
-}
-
 static void on_model_destroy( gpointer data, GObject* object )
 {
     GtkIconTheme* icon_theme;
