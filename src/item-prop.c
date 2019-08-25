@@ -36,7 +36,7 @@ typedef struct
     XSetContext* context;
     XSet* set;
     char* temp_cmd_line;
-    struct stat64 script_stat;
+    struct stat script_stat;
     gboolean script_stat_valid;
     gboolean reset_command;
 
@@ -722,12 +722,12 @@ void enable_options( ContextData* ctxt )
 
 gboolean is_command_script_newer( ContextData* ctxt )
 {
-    struct stat64 statbuf;
+    struct stat statbuf;
 
     if ( !ctxt->script_stat_valid )
         return FALSE;
     char* script = xset_custom_get_script( ctxt->set, FALSE );
-    if ( script && stat64( script, &statbuf ) == 0 )
+    if ( script && stat( script, &statbuf ) == 0 )
     {
         if ( statbuf.st_mtime != ctxt->script_stat.st_mtime ||
              statbuf.st_size != ctxt->script_stat.st_size )
@@ -739,7 +739,7 @@ gboolean is_command_script_newer( ContextData* ctxt )
 void command_script_stat( ContextData* ctxt )
 {
     char* script = xset_custom_get_script( ctxt->set, FALSE );
-    if ( script && stat64( script, &ctxt->script_stat ) == 0 )
+    if ( script && stat( script, &ctxt->script_stat ) == 0 )
         ctxt->script_stat_valid = TRUE;
     else
         ctxt->script_stat_valid = FALSE;

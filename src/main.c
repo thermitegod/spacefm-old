@@ -828,7 +828,7 @@ gboolean handle_parsed_commandline_args()
     gboolean ret = TRUE;
     XSet* set;
     int p;
-    struct stat64 statbuf;
+    struct stat statbuf;
 
     app_settings.load_saved_tabs = !no_tabs;
 
@@ -931,7 +931,7 @@ gboolean handle_parsed_commandline_args()
                 }
                 else if ( g_file_test( real_path, G_FILE_TEST_EXISTS ) )
                 {
-                    if ( stat64( real_path, &statbuf ) == 0 &&
+                    if ( stat( real_path, &statbuf ) == 0 &&
                                             S_ISBLK( statbuf.st_mode ) )
                     {
                         // open block device eg /dev/sda1

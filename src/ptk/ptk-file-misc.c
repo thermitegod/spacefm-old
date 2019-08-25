@@ -200,7 +200,7 @@ char* get_real_link_target( const char* link_path )
     char buf[ PATH_MAX + 1 ];
     char* canon;
     ssize_t len;
-    struct stat64 stat;
+    struct stat stat;
     char* target_path;
 
     if ( !link_path )
@@ -546,7 +546,7 @@ void on_move_change( GtkWidget* widget, MoveSet* mset )
 //printf("path=%s   full=%s\n", path, full_path );
 
     // tests
-    struct stat64 statbuf;
+    struct stat statbuf;
     gboolean full_path_exists = FALSE;
     gboolean full_path_exists_dir = FALSE;
     gboolean full_path_same = FALSE;
@@ -561,7 +561,7 @@ void on_move_change( GtkWidget* widget, MoveSet* mset )
                     gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(
                                                         mset->opt_new_link ) ) )
         {
-            if ( lstat64( full_path, &statbuf ) == 0 )
+            if ( lstat( full_path, &statbuf ) == 0 )
             {
                 full_path_exists = TRUE;
                 if ( g_file_test( full_path, G_FILE_TEST_IS_DIR ) )
@@ -571,13 +571,13 @@ void on_move_change( GtkWidget* widget, MoveSet* mset )
     }
     else
     {
-        if ( lstat64( full_path, &statbuf ) == 0 )
+        if ( lstat( full_path, &statbuf ) == 0 )
         {
             full_path_exists = TRUE;
             if ( g_file_test( full_path, G_FILE_TEST_IS_DIR ) )
                 full_path_exists_dir = TRUE;
         }
-        else if ( lstat64( path, &statbuf ) == 0 )
+        else if ( lstat( path, &statbuf ) == 0 )
         {
             if ( !g_file_test( path, G_FILE_TEST_IS_DIR ) )
                 path_exists_file = TRUE;
@@ -1811,8 +1811,8 @@ char* get_unique_name( const char* dir, const char* ext )
         path = g_build_filename( dir, base, NULL );
 
     int n = 2;
-    struct stat64 statbuf;
-    while ( lstat64( path, &statbuf ) == 0 ) // g_file_test doesn't see broken links
+    struct stat statbuf;
+    while ( lstat( path, &statbuf ) == 0 ) // g_file_test doesn't see broken links
     {
         g_free( path );
         if ( n == 1000 )
@@ -1969,8 +1969,8 @@ void on_template_changed( GtkWidget* widget, MoveSet* mset )
     gtk_text_buffer_get_start_iter( mset->buf_full_path, &siter );
     gtk_text_buffer_get_end_iter( mset->buf_full_path, &iter );
     char* full_path = gtk_text_buffer_get_text( mset->buf_full_path, &siter, &iter, FALSE );
-    struct stat64 statbuf;
-    if ( lstat64( full_path, &statbuf ) == 0 ) // g_file_test doesn't see broken links
+    struct stat statbuf;
+    if ( lstat( full_path, &statbuf ) == 0 ) // g_file_test doesn't see broken links
     {
         char* dir = g_path_get_dirname( full_path );
         g_free( full_path );
@@ -2048,7 +2048,7 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
     gboolean target_missing = FALSE;
     GList* templates;
     FILE* touchfile;
-    struct stat64 statbuf;
+    struct stat statbuf;
 
     if ( !file_dir )
         return 0;
@@ -2870,7 +2870,7 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
                 else
                     update_new_display( path );
             }
-            else if ( lstat64( full_path, &statbuf ) == 0 )
+            else if ( lstat( full_path, &statbuf ) == 0 )
             {
                 // overwrite
                 if ( g_file_test( full_path, G_FILE_TEST_IS_DIR ) )

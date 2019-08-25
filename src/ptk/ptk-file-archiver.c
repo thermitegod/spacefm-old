@@ -331,7 +331,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
         *ext = NULL, *s1 = NULL, *str = NULL, *udest_file = NULL,
         *udest_quote = NULL, *final_command = NULL;
     int i, n, format, res;
-    struct stat64 statbuf;
+    struct stat statbuf;
 
     /* Generating dialog - extra NULL on the NULL-terminated list to
      * placate an irrelevant compilation warning. See notes in
@@ -856,7 +856,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
 
                 // Looping to find a path that doesnt exist
                 n = 1;
-                while ( lstat64( udest_file, &statbuf ) == 0 )
+                while ( lstat( udest_file, &statbuf ) == 0 )
                 {
                     g_free( udest_file );
                     udest_file = g_strdup_printf( "%s/%s-%s%d%s",
@@ -1055,7 +1055,7 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
         *perm = NULL, *cmd = NULL, *str = NULL, *final_command = NULL,
         *s1 = NULL, *extension = NULL;
     int i, n, j, res;
-    struct stat64 statbuf;
+    struct stat statbuf;
     GSList *handlers_slist = NULL;
 
     // Making sure files to act on have been passed
@@ -1435,7 +1435,7 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
                 n = 1;
 
                 // Looping to find a path that doesnt exist
-                while ( lstat64( parent_path, &statbuf ) == 0 )
+                while ( lstat( parent_path, &statbuf ) == 0 )
                 {
                     g_free( parent_path );
                     parent_path = g_strdup_printf( "%s-%s%d",
@@ -1491,7 +1491,7 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
                 n = 1;
 
                 // Looping to find a path that doesnt exist
-                while ( lstat64( extract_target, &statbuf ) == 0 )
+                while ( lstat( extract_target, &statbuf ) == 0 )
                 {
                     g_free( extract_target );
                     str = g_strdup_printf( "%s-%s%d%s", filename_no_ext,

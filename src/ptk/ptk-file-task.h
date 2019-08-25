@@ -55,8 +55,8 @@ struct _PtkFileTask
 
 /*
     int percent;
-    off64_t total_size;     // Total size of the files to be processed, in bytes
-    off64_t progress;       // Total size of current processed files, in btytes
+    off_t total_size;     // Total size of the files to be processed, in bytes
+    off_t progress;       // Total size of current processed files, in btytes
     guint item_count;
     guint old_err_count;
 */

@@ -113,7 +113,7 @@ VFSFileMonitor* vfs_file_monitor_add( char* path,
 {
     VFSFileMonitor * monitor;
     VFSFileMonitorCallbackEntry cb_ent;
-    struct stat file_stat;   // skip stat64
+    struct stat file_stat;   // skip stat
     char resolved_path[PATH_MAX];
     char* real_path;
 
@@ -240,7 +240,7 @@ static void reconnect_inotify( gpointer key,
                            gpointer value,
                            gpointer user_data )
 {
-    struct stat file_stat;   // skip stat64
+    struct stat file_stat;   // skip stat
     VFSFileMonitor* monitor = ( VFSFileMonitor* ) value;
     const char* path = ( const char* ) key;
     if ( lstat( path, &file_stat ) != -1 )

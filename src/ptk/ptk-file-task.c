@@ -1547,7 +1547,7 @@ void ptk_file_task_update( PtkFileTask* ptask )
     }
 
     VFSFileTask* task = ptask->task;
-    off64_t cur_speed;
+    off_t cur_speed;
     gdouble timer_elapsed = g_timer_elapsed( task->timer, NULL );
 
     if ( task->type == VFS_FILE_TASK_EXEC )
@@ -1688,7 +1688,7 @@ void ptk_file_task_update( PtkFileTask* ptask )
         vfs_file_size_to_string_format( buf2, avg_speed, NULL );
         speed2 = g_strdup_printf( "%s/s", buf2 );
         //remain cur
-        off64_t remain;
+        off_t remain;
         if ( cur_speed > 0 && task->total_size != 0 )
             remain = ( task->total_size - task->progress ) / cur_speed;
         else
@@ -2125,7 +2125,7 @@ static void query_overwrite( PtkFileTask* ptask )
     int response;
     gboolean has_overwrite_btn = TRUE;
     gboolean different_files, is_src_dir, is_dest_dir;
-    struct stat64 src_stat, dest_stat;
+    struct stat src_stat, dest_stat;
     char* from_size_str = NULL;
     char* to_size_str = NULL;
     char* from_disp;
@@ -2141,8 +2141,8 @@ static void query_overwrite( PtkFileTask* ptask )
     different_files = ( 0 != g_strcmp0( ptask->task->current_file,
                                      ptask->task->current_dest ) );
 
-    lstat64( ptask->task->current_file, &src_stat );
-    lstat64( ptask->task->current_dest, &dest_stat );
+    lstat( ptask->task->current_file, &src_stat );
+    lstat( ptask->task->current_dest, &dest_stat );
 
     is_src_dir = !!S_ISDIR( dest_stat.st_mode );
     is_dest_dir = !!S_ISDIR( src_stat.st_mode );

@@ -457,7 +457,7 @@ void ptk_clipboard_paste_targets( GtkWindow* parent_win,
     gchar* file_path;
     gint missing_targets = 0;
     char* str;
-    struct stat64 stat;
+    struct stat stat;
 
     PtkFileTask* task;
     VFSFileTaskType action;
@@ -517,7 +517,7 @@ void ptk_clipboard_paste_targets( GtkWindow* parent_win,
                 if ( file_path )
                 {
                     // do not use g_file_test here - link target may be missing
-                    if ( lstat64( file_path, &stat ) == 0 )
+                    if ( lstat( file_path, &stat ) == 0 )
                         files = g_list_prepend( files, file_path );
                     else
                     {

@@ -1844,7 +1844,7 @@ void on_drag_data_received( GtkWidget* w, GdkDragContext* ctx, gint x, gint y,
         char** files;
         int n, i;
         GList* file_list;
-        struct stat statbuf;    // skip stat64
+        struct stat statbuf;    // skip stat
 
         if( (gtk_selection_data_get_length( data ) < 0) ||
                                 (gtk_selection_data_get_format( data ) != 8) )

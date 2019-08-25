@@ -681,7 +681,7 @@ void on_dir_tree_view_drag_data_received ( GtkWidget *widget,
             {
                 // We only want to update drag status, not really want to drop
                 dev_t dest_dev;
-                struct stat statbuf;    // skip stat64
+                struct stat statbuf;    // skip stat
                 if( stat( dest_dir, &statbuf ) == 0 )
                 {
                     dest_dev = statbuf.st_dev;

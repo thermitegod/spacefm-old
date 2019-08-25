@@ -543,7 +543,7 @@ char* gethidden( const char* path )  //MOD added
     g_free( hidden_path );
     if ( fd != -1 )
     {
-        struct stat s;   // skip stat64
+        struct stat s;   // skip stat
         if ( G_LIKELY( fstat( fd, &s ) != -1 ) )
         {
             char* buf = g_malloc( s.st_size + 1 );

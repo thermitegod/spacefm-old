@@ -46,17 +46,17 @@ typedef struct _VFSFileInfo VFSFileInfo;
 
 struct _VFSFileInfo
 {
-    /* struct stat64 file_stat; */
-    /* Only use some members of struct stat64 to reduce memory usage */
+    /* struct stat file_stat; */
+    /* Only use some members of struct stat to reduce memory usage */
     mode_t mode;
     dev_t dev;
     uid_t uid;
     gid_t gid;
-    off64_t size;           //sfm was off_t
+    off_t size;
     time_t mtime;
     time_t atime;
     long blksize;  //sfm was long then blksize_t but blksize_t not defined for squeeze gcc
-    blkcnt64_t blocks;      //sfm was blkcnt_t
+    blkcnt_t blocks;
 
     char* name; /* real name on file system */
     char* disp_name;  /* displayed name (in UTF-8) */

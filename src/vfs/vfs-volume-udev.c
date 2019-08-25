@@ -2801,7 +2801,7 @@ VFSVolume* vfs_volume_read_by_mount( dev_t devnum, const char* mount_points )
     VFSVolume* volume;
     char* str;
     int i;
-    struct stat64 statbuf;
+    struct stat statbuf;
     netmount_t *netmount = NULL;
     XSet* set;
 
@@ -4525,7 +4525,7 @@ gboolean vfs_volume_dir_avoid_changes( const char* dir )
         return FALSE;
 
     // get devnum
-    struct stat stat_buf;   // skip stat64
+    struct stat stat_buf;   // skip stat
     if ( stat( canon, &stat_buf ) == -1 )
         return FALSE;
     //printf("    stat_buf.st_dev = %d:%d\n", major(stat_buf.st_dev), minor( stat_buf.st_dev) );

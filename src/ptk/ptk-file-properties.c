@@ -65,8 +65,8 @@ typedef struct
     GtkLabel* total_size_label;
     GtkLabel* size_on_disk_label;
     GtkLabel* count_label;
-    off64_t total_size;
-    off64_t size_on_disk;
+    off_t total_size;
+    off_t size_on_disk;
     guint total_count;
     guint total_count_dir;
     gboolean cancel;
@@ -96,12 +96,12 @@ static void calc_total_size_of_files( const char* path, FilePropertiesDialogData
     GDir * dir;
     const char* name;
     char* full_path;
-    struct stat64 file_stat;
+    struct stat file_stat;
 
     if ( data->cancel )
         return ;
 
-    if ( lstat64( path, &file_stat ) )
+    if ( lstat( path, &file_stat ) )
         return ;
 
     data->total_size += file_stat.st_size;
@@ -114,7 +114,7 @@ static void calc_total_size_of_files( const char* path, FilePropertiesDialogData
         while ( !data->cancel && ( name = g_dir_read_name( dir ) ) )
         {
             full_path = g_build_filename( path, name, NULL );
-            lstat64( full_path, &file_stat );
+            lstat( full_path, &file_stat );
             if ( S_ISDIR( file_stat.st_mode ) )
             {
                 calc_total_size_of_files( full_path, data );

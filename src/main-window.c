@@ -7443,7 +7443,7 @@ _invalid_get:
             }
 
             // Resolve TARGET
-            struct stat64 statbuf;
+            struct stat statbuf;
             char* real_path = argv[j];
             char* device_file = NULL;
             VFSVolume* vol = NULL;
@@ -7455,7 +7455,7 @@ _invalid_get:
                 if ( path_is_mounted_mtab( NULL, real_path, &device_file, NULL )
                                                             && device_file )
                 {
-                    if ( !( stat64( device_file, &statbuf ) == 0 &&
+                    if ( !( stat( device_file, &statbuf ) == 0 &&
                                                 S_ISBLK( statbuf.st_mode ) ) )
                     {
                         // NON-block device - try to find vol by mount point
@@ -7471,7 +7471,7 @@ _invalid_get:
                     }
                 }
             }
-            else if ( stat64( real_path, &statbuf ) == 0 &&
+            else if ( stat( real_path, &statbuf ) == 0 &&
                                                 S_ISBLK( statbuf.st_mode ) )
             {
                 // block device eg /dev/sda1
