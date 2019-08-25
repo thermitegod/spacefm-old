@@ -86,9 +86,8 @@ static void vfs_async_task_class_init(VFSAsyncTaskClass *klass)
 
 static void vfs_async_task_init(VFSAsyncTask *task)
 {
-    task->lock = g_mutex_new();
+    g_mutex_init(&task->lock);
 }
-
 
 VFSAsyncTask* vfs_async_task_new( VFSAsyncFunc task_func, gpointer user_data )
 {
@@ -124,7 +123,6 @@ void vfs_async_task_finalize(GObject *object)
     vfs_async_task_real_cancel( task, TRUE );
     vfs_async_thread_cleanup( task, TRUE );
 
-    g_mutex_free( task->lock );
     task->lock = NULL;
 
     if (G_OBJECT_CLASS(parent_class)->finalize)
@@ -157,7 +155,7 @@ gpointer vfs_async_task_thread( gpointer _task )
 
 void vfs_async_task_execute( VFSAsyncTask* task )
 {
-    task->thread = g_thread_create( vfs_async_task_thread, task, TRUE, NULL );
+    task->thread = g_thread_new("async_task", vfs_async_task_thread, task);
 }
 
 void vfs_async_thread_cleanup( VFSAsyncTask* task, gboolean finalize )
