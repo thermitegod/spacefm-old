@@ -31,10 +31,6 @@
 #include <libffmpegthumbnailer/videothumbnailerc.h>
 #endif
 
-#if GLIB_CHECK_VERSION(2, 16, 0)
-    #include "md5.h"    /* for thumbnails */
-#endif
-
 struct _VFSThumbnailLoader
 {
     VFSDir* dir;
@@ -354,12 +350,8 @@ void vfs_thumbnail_loader_cancel_all_requests( VFSDir* dir, gboolean is_big )
 static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
                                                     int size, time_t mtime )
 {
-#if GLIB_CHECK_VERSION(2, 16, 0)
     GChecksum *cs;
-#else
-    md5_state_t md5_state;
-    md5_byte_t md5[ 16 ];
-#endif
+
     char file_name[ 40 ];
     char* thumbnail_file;
     char mtime_str[ 32 ];
@@ -387,7 +379,6 @@ static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
     }
 #endif
 
-
     if ( file_is_video == FALSE )
     {
         if ( !gdk_pixbuf_get_file_info( file_path, &w, &h ) )
@@ -402,19 +393,10 @@ static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
         }
     }
 
-#if GLIB_CHECK_VERSION(2, 16, 0)
     cs = g_checksum_new(G_CHECKSUM_MD5);
     g_checksum_update(cs, uri, strlen(uri));
     memcpy( file_name, g_checksum_get_string(cs), 32 );
     g_checksum_free(cs);
-#else
-    md5_init( &md5_state );
-    md5_append( &md5_state, ( md5_byte_t * ) uri, strlen( uri ) );
-    md5_finish( &md5_state, md5 );
-
-    for ( i = 0; i < 16; ++i )
-        sprintf( ( file_name + i * 2 ), "%02x", md5[ i ] );
-#endif
     strcpy( ( file_name + 32 ), ".png" );
 
     thumbnail_file = g_build_filename( g_get_home_dir(),
