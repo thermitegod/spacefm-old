@@ -1087,7 +1087,11 @@ void on_browse_button_press( GtkWidget* widget, MoveSet* mset )
                         gtk_label_new( _("Insert as") ), FALSE, TRUE, 2 );
     for ( i = MODE_FILENAME; i <= MODE_PATH; i++ )
     {
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_set_focus_on_click( GTK_BUTTON( mode[i] ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_button_set_focus_on_click( GTK_BUTTON( mode[i] ), FALSE );
+#endif
         g_signal_connect( G_OBJECT( mode[i] ), "toggled",
                                         G_CALLBACK( on_browse_mode_toggled ), dlg );
         gtk_box_pack_start( GTK_BOX( hbox ), mode[i], FALSE, TRUE, 2 );
@@ -2155,7 +2159,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
     gtk_dialog_add_action_widget( GTK_DIALOG( mset->dlg ), mset->options, GTK_RESPONSE_YES);
     gtk_button_set_image( GTK_BUTTON( mset->options ), xset_get_image( "GTK_STOCK_PROPERTIES",
                                                         GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->options ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->options ), FALSE );
+#endif
     g_signal_connect( G_OBJECT( mset->options ), "clicked",
                           G_CALLBACK( on_options_button_press ), mset );
 
@@ -2163,7 +2171,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
     gtk_dialog_add_action_widget( GTK_DIALOG( mset->dlg ), mset->browse, GTK_RESPONSE_YES);
     gtk_button_set_image( GTK_BUTTON( mset->browse ), xset_get_image( "GTK_STOCK_OPEN",
                                                         GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->browse ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->browse ), FALSE );
+#endif
     g_signal_connect( G_OBJECT( mset->browse ), "clicked",
                           G_CALLBACK( on_browse_button_press ), mset );
 
@@ -2171,7 +2183,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
     gtk_dialog_add_action_widget( GTK_DIALOG( mset->dlg ), mset->revert, GTK_RESPONSE_NO);
     gtk_button_set_image( GTK_BUTTON( mset->revert ), xset_get_image( "GTK_STOCK_REVERT_TO_SAVED",
                                                         GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->revert ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->revert ), FALSE );
+#endif
     g_signal_connect( G_OBJECT( mset->revert ), "clicked",
                           G_CALLBACK( on_revert_button_press ), mset );
 
@@ -2180,7 +2196,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
 
     mset->next = gtk_button_new_from_stock( GTK_STOCK_OK );
     gtk_dialog_add_action_widget( GTK_DIALOG( mset->dlg ), mset->next, GTK_RESPONSE_OK);
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->next ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->next ), FALSE );
+#endif
     gtk_button_set_image( GTK_BUTTON( mset->next ), xset_get_image( "GTK_STOCK_YES",
                                                         GTK_ICON_SIZE_BUTTON ) );
     gtk_button_set_label( GTK_BUTTON( mset->next ), _("_Rename") );
@@ -2189,7 +2209,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
     {
         mset->open = gtk_button_new_with_mnemonic( _("& _Open") );
         gtk_dialog_add_action_widget( GTK_DIALOG( mset->dlg ), mset->open, GTK_RESPONSE_APPLY);
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_set_focus_on_click( GTK_BUTTON( mset->open ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_button_set_focus_on_click( GTK_BUTTON( mset->open ), FALSE );
+#endif
     }
     else
         mset->open = NULL;
@@ -2297,7 +2321,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
             mset->browse_target = gtk_button_new();
             gtk_button_set_image( GTK_BUTTON( mset->browse_target ),
                             xset_get_image( "GTK_STOCK_OPEN", GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+            gtk_widget_set_focus_on_click( GTK_BUTTON( mset->browse_target ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
             gtk_button_set_focus_on_click( GTK_BUTTON( mset->browse_target ), FALSE );
+#endif
             if ( mset->new_path && file )
                 gtk_entry_set_text( GTK_ENTRY( mset->entry_target ), mset->new_path );
             g_signal_connect( G_OBJECT( mset->browse_target ), "clicked",
@@ -2396,7 +2424,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
         mset->browse_template = gtk_button_new();
         gtk_button_set_image( GTK_BUTTON( mset->browse_template ),
                         xset_get_image( "GTK_STOCK_OPEN", GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_set_focus_on_click( GTK_BUTTON( mset->browse_template ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_button_set_focus_on_click( GTK_BUTTON( mset->browse_template ), FALSE );
+#endif
         g_signal_connect( G_OBJECT( mset->browse_template ), "clicked",
                             G_CALLBACK( on_create_browse_button_press ), mset );
     }
@@ -2546,19 +2578,37 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
     mset->opt_new_link = gtk_radio_button_new_with_mnemonic_from_widget(
                         GTK_RADIO_BUTTON( mset->opt_new_file ), C_("New|Radio", "_Link") );
 
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->opt_move ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->opt_move ), FALSE );
+#endif
     g_signal_connect( G_OBJECT( mset->opt_move ), "focus",
                                             G_CALLBACK( on_button_focus ), mset );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->opt_copy ), FALSE );
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->opt_link ), FALSE );
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->opt_copy_target ), FALSE );
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->opt_link_target ), FALSE );
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->opt_as_root ), FALSE );
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->opt_new_file ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->opt_copy ), FALSE );
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->opt_link ), FALSE );
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->opt_copy_target ), FALSE );
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->opt_link_target ), FALSE );
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->opt_as_root ), FALSE );
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->opt_new_file ), FALSE );
+#endif
     g_signal_connect( G_OBJECT( mset->opt_new_file ), "focus",
                                             G_CALLBACK( on_button_focus ), mset );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->opt_new_folder ), FALSE );
+    gtk_widget_set_focus_on_click( GTK_BUTTON( mset->opt_new_link ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->opt_new_folder ), FALSE );
     gtk_button_set_focus_on_click( GTK_BUTTON( mset->opt_new_link ), FALSE );
+#endif
     gtk_widget_set_sensitive( mset->opt_copy_target, mset->is_link && !target_missing );
     gtk_widget_set_sensitive( mset->opt_link_target, mset->is_link );
 

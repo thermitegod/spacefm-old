@@ -2733,7 +2733,11 @@ GtkWidget* fm_main_window_create_tab_label( FMMainWindow* main_window,
 
     if ( !app_settings.hide_close_tab_buttons ) {
         close_btn = gtk_button_new ();
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_set_focus_on_click ( GTK_BUTTON ( close_btn ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_button_set_focus_on_click ( GTK_BUTTON ( close_btn ), FALSE );
+#endif
         gtk_button_set_relief( GTK_BUTTON ( close_btn ), GTK_RELIEF_NONE );
         pixbuf = vfs_load_icon( icon_theme, GTK_STOCK_CLOSE, 16 );
         if ( pixbuf )

@@ -1608,10 +1608,17 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
     else
         gtk_window_set_default_size( GTK_WINDOW( ctxt->dlg ), 800, 600 );
 
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( gtk_dialog_add_button(
+                                                GTK_DIALOG( ctxt->dlg ),
+                                                GTK_STOCK_HELP,
+                                                GTK_RESPONSE_HELP ) ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( gtk_dialog_add_button(
                                                 GTK_DIALOG( ctxt->dlg ),
                                                 GTK_STOCK_HELP,
                                                 GTK_RESPONSE_HELP ) ), FALSE );
+#endif
     gtk_dialog_add_button( GTK_DIALOG( ctxt->dlg ), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL );
     ctxt->btn_ok = GTK_BUTTON( gtk_dialog_add_button( GTK_DIALOG( ctxt->dlg ),
                                                 GTK_STOCK_OK, GTK_RESPONSE_OK ) );
@@ -1667,7 +1674,11 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
     gtk_table_attach( table, label, 0, 1, row, row + 1,
                                     GTK_FILL, GTK_SHRINK, 0, 0 );
     ctxt->item_key = gtk_button_new_with_label( " " );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( ctxt->item_key ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( ctxt->item_key ), FALSE );
+#endif
     gtk_table_attach( table, ctxt->item_key, 1, 2, row, row + 1,
                                     GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0 );
 
@@ -1681,7 +1692,11 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
     gtk_button_set_image( GTK_BUTTON( ctxt->icon_choose_btn ),
                                   xset_get_image( GTK_STOCK_OPEN,
                                                   GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( ctxt->icon_choose_btn ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( ctxt->icon_choose_btn ), FALSE );
+#endif
 #if (GTK_MAJOR_VERSION == 3)
     // keep this
     gtk_button_set_always_show_image( GTK_BUTTON( ctxt->icon_choose_btn ), TRUE );
@@ -1732,14 +1747,22 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
     gtk_button_set_image( GTK_BUTTON( ctxt->item_choose ),
                                   xset_get_image( GTK_STOCK_OPEN,
                                                   GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( ctxt->item_choose ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( ctxt->item_choose ), FALSE );
+#endif
     //align = gtk_alignment_new( 1, 0.5, 0.2, 1 );
     //gtk_container_add ( GTK_CONTAINER ( align ), ctxt->item_choose );
     gtk_box_pack_start( GTK_BOX( hbox ),
                         GTK_WIDGET( ctxt->item_choose ), FALSE, TRUE, 12 );
 
     ctxt->item_browse = gtk_button_new_with_mnemonic( _("_Browse") );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( ctxt->item_browse ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( ctxt->item_browse ), FALSE );
+#endif
     //align = gtk_alignment_new( 1, 0.5, 0.2, 1 );
     //gtk_container_add ( GTK_CONTAINER ( align ), ctxt->item_browse );
     gtk_box_pack_start( GTK_BOX( hbox ),
@@ -1803,21 +1826,33 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
     ctxt->btn_remove = GTK_BUTTON( gtk_button_new_with_mnemonic( _("_Remove") ) );
     gtk_button_set_image( ctxt->btn_remove, xset_get_image( "GTK_STOCK_REMOVE",
                                                         GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( ctxt->btn_remove, FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( ctxt->btn_remove, FALSE );
+#endif
     g_signal_connect( G_OBJECT( ctxt->btn_remove ), "clicked",
                           G_CALLBACK( on_context_button_press ), ctxt );
 
     ctxt->btn_add = GTK_BUTTON( gtk_button_new_with_mnemonic( _("_Add") ) );
     gtk_button_set_image( ctxt->btn_add, xset_get_image( "GTK_STOCK_ADD",
                                                         GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( ctxt->btn_add, FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( ctxt->btn_add, FALSE );
+#endif
     g_signal_connect( G_OBJECT( ctxt->btn_add ), "clicked",
                           G_CALLBACK( on_context_button_press ), ctxt );
 
     ctxt->btn_apply = GTK_BUTTON( gtk_button_new_with_mnemonic( _("A_pply") ) );
     gtk_button_set_image( ctxt->btn_apply, xset_get_image( "GTK_STOCK_APPLY",
                                                         GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( ctxt->btn_apply, FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( ctxt->btn_apply, FALSE );
+#endif
     g_signal_connect( G_OBJECT( ctxt->btn_apply ), "clicked",
                           G_CALLBACK( on_context_button_press ), ctxt );
 
@@ -2077,13 +2112,21 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
     gtk_box_pack_start( GTK_BOX( hbox ),
                         GTK_WIDGET( ctxt->cmd_opt_script ), FALSE, TRUE, 0 );
     ctxt->cmd_edit = gtk_button_new_with_mnemonic( _("Open In _Editor") );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( ctxt->cmd_edit ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( ctxt->cmd_edit ), FALSE );
+#endif
     g_signal_connect( G_OBJECT( ctxt->cmd_edit ), "clicked",
                           G_CALLBACK( on_edit_button_press ), ctxt );
     gtk_box_pack_start( GTK_BOX( hbox ),
                         GTK_WIDGET( ctxt->cmd_edit ), FALSE, TRUE, 24 );
     ctxt->cmd_edit_root = gtk_button_new_with_mnemonic( _("_Root Editor") );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( ctxt->cmd_edit_root ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( ctxt->cmd_edit_root ), FALSE );
+#endif
     g_signal_connect( G_OBJECT( ctxt->cmd_edit_root ), "clicked",
                           G_CALLBACK( on_edit_button_press ), ctxt );
     gtk_box_pack_start( GTK_BOX( hbox ),

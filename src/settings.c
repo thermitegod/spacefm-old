@@ -7560,7 +7560,11 @@ int xset_msg_dialog( GtkWidget* parent, int action, const char* title, GtkWidget
         gtk_dialog_add_action_widget( GTK_DIALOG( dlg ), btn_help, GTK_RESPONSE_HELP );
         gtk_button_set_image( GTK_BUTTON( btn_help ), xset_get_image( "GTK_STOCK_HELP",
                                                             GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_set_focus_on_click( GTK_BUTTON( btn_help ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_button_set_focus_on_click( GTK_BUTTON( btn_help ), FALSE );
+#endif
         gtk_widget_set_can_focus( btn_help, FALSE );
     }
 
@@ -7926,7 +7930,11 @@ gboolean xset_text_dialog( GtkWidget* parent, const char* title, GtkWidget* imag
         gtk_dialog_add_action_widget( GTK_DIALOG( dlg ), btn_help, GTK_RESPONSE_HELP );
         gtk_button_set_image( GTK_BUTTON( btn_help ), xset_get_image( "GTK_STOCK_HELP",
                                                             GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_set_focus_on_click( GTK_BUTTON( btn_help ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_button_set_focus_on_click( GTK_BUTTON( btn_help ), FALSE );
+#endif
     }
 
     if ( edit_care )
@@ -7935,7 +7943,11 @@ gboolean xset_text_dialog( GtkWidget* parent, const char* title, GtkWidget* imag
         gtk_dialog_add_action_widget( GTK_DIALOG( dlg ), btn_edit, GTK_RESPONSE_YES );
         gtk_button_set_image( GTK_BUTTON( btn_edit ), xset_get_image( "GTK_STOCK_DIALOG_WARNING",
                                                             GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_set_focus_on_click( GTK_BUTTON( btn_edit ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_button_set_focus_on_click( GTK_BUTTON( btn_edit ), FALSE );
+#endif
         gtk_text_view_set_editable( input, FALSE );
     }
 
@@ -7953,7 +7965,11 @@ gboolean xset_text_dialog( GtkWidget* parent, const char* title, GtkWidget* imag
                                         defstring && defstring[0] ? defstring :
                                         GTK_STOCK_OPEN,
                                         GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_set_focus_on_click( GTK_BUTTON( btn_icon_choose ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_button_set_focus_on_click( GTK_BUTTON( btn_icon_choose ), FALSE );
+#endif
         g_signal_connect( G_OBJECT( buf ), "changed",
                     G_CALLBACK( on_icon_buffer_changed ), btn_icon_choose );
 #if (GTK_MAJOR_VERSION == 3)
@@ -7969,7 +7985,11 @@ gboolean xset_text_dialog( GtkWidget* parent, const char* title, GtkWidget* imag
         gtk_button_set_image( GTK_BUTTON( btn_default ),
                                         xset_get_image( "GTK_STOCK_REVERT_TO_SAVED",
                                         GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_set_focus_on_click( GTK_BUTTON( btn_default ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_button_set_focus_on_click( GTK_BUTTON( btn_default ), FALSE );
+#endif
     }
 
     GtkWidget* btn_cancel = gtk_button_new_from_stock( GTK_STOCK_CANCEL );

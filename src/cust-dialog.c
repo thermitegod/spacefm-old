@@ -2784,7 +2784,11 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
         {
             w = gtk_button_new();
             gtk_button_set_use_underline( GTK_BUTTON( w ), TRUE );
+#if (GTK_MAJOR_VERSION == 3)
+            gtk_widget_set_focus_on_click( GTK_BUTTON( w ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
             gtk_button_set_focus_on_click( GTK_BUTTON( w ), FALSE );
+#endif
             el->widgets = g_list_append( el->widgets, w );
             if ( el->type == CDLG_BUTTON )
             {
@@ -3136,7 +3140,11 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
                 */
             }
             g_free( str );
+#if (GTK_MAJOR_VERSION == 3)
+            gtk_widget_set_focus_on_click( GTK_BUTTON( w ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
             gtk_button_set_focus_on_click( GTK_BUTTON( w ), FALSE );
+#endif
 
             // set font of label
             l = gtk_container_get_children( GTK_CONTAINER( w ) );
@@ -3660,7 +3668,11 @@ static void build_dialog( GList* elements )
     gtk_button_set_image( GTK_BUTTON( timeout_toggle ),
                                             xset_get_image( "GTK_STOCK_MEDIA_PAUSE",
                                             GTK_ICON_SIZE_BUTTON ) );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_BUTTON( timeout_toggle ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_button_set_focus_on_click( GTK_BUTTON( timeout_toggle ), FALSE );
+#endif
 
     // add elements
     for ( l = elements; l; l = l->next )
