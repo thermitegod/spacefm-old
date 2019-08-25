@@ -463,7 +463,7 @@ static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
             {
                 video_thumb->seek_percentage = 25;
                 video_thumb->overlay_film_strip = 1;
-                video_thumb->thumbnail_size = create_size;
+                video_thumbnailer_set_size(video_thumb, 0, 128);
                 video_thumbnailer_generate_thumbnail_to_file( video_thumb,
                                                 file_path, thumbnail_file );
                 video_thumbnailer_destroy( video_thumb );
