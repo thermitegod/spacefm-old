@@ -2737,10 +2737,7 @@ GtkWidget* xset_get_image( const char* icon, int icon_size )
         // icon is full path to image file
         // get real icon size from gtk icon size
         int icon_w, icon_h;
-        gtk_icon_size_lookup_for_settings(
-                                gtk_settings_get_default(),
-                                icon_size,
-                                &icon_w, &icon_h );
+        gtk_icon_size_lookup(icon_size, &icon_w, &icon_h);
         int real_icon_size = icon_w > icon_h ? icon_w : icon_h;
         GtkIconTheme* icon_theme = gtk_icon_theme_get_default();
         GdkPixbuf* pixbuf = vfs_load_icon( icon_theme, icon, real_icon_size );
