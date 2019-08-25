@@ -32,7 +32,7 @@ icon128_DATA = \
 			spacefm-128-pyramid-blue.png \
 			spacefm-128-pyramid-green.png \
 			spacefm-128-pyramid-red.png
-			
+
 faenzadir = $(datadir)/icons/Faenza/apps/48
 faenza_DATA = \
 			faenza/spacefm.png \
@@ -66,25 +66,19 @@ endif
 filedir = $(datadir)/spacefm
 uidir=$(filedir)/ui
 
-# sfm don't install mount.rules for no-hal build
-if USE_HAL
-file_DATA = \
-	mount.rules
-endif
-
 # html-doc
 htmldir = @htmldir@
 html_DATA = spacefm-manual-en.html
 
 # GtkBuilder UI definition files
 ui_in_files= \
-	ui/prefdlg.glade \
 	ui/prefdlg2.glade \
+	ui/prefdlg3.glade \
 	ui/appchooserdlg.glade \
 	ui/file_properties.glade \
 	ui/about-dlg.glade \
-	ui/find-files.glade \
 	ui/find-files2.glade \
+	ui/find-files3.glade \
 	ui/godlg.glade
 ui_DATA = $(ui_in_files:.glade=.ui)
 
@@ -93,7 +87,7 @@ EXTRA_DIST = \
 	$(icon_DATA) \
 	$(file_DATA) \
 	$(ui_DATA)
-	
+
 CLEANFILES = spacefm.desktop \
 		 spacefm-find.desktop \
 		 spacefm-folder-handler.desktop

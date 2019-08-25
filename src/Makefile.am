@@ -2,10 +2,8 @@
 
 AM_CPPFLAGS = \
     -I$(top_srcdir)/src/mime-type \
-    -I$(top_srcdir)/src/compat \
     -I$(top_srcdir)/src/ptk \
     -I$(top_srcdir)/src/vfs \
-    -I$(top_srcdir)/src/libmd5-rfc \
     -I$(top_srcdir)/src/desktop \
     -I$(top_srcdir)/src/exo \
     -DPACKAGE_DATA_DIR=\""$(datadir)/spacefm"\" \
@@ -22,24 +20,8 @@ MIMETYE_SOURCES = \
     mime-type/mime-action.c mime-type/mime-action.h \
     mime-type/mime-cache.c mime-type/mime-cache.h
 
-MD5_SOURCES = \
-    libmd5-rfc/md5.c libmd5-rfc/md5.h
-
-VOLUME_HAL_SOURCES= \
-    vfs/vfs-volume-hal.c \
-    vfs/vfs-volume-hal-options.h \
-    vfs/vfs-volume-hal-options.c
-
-VOLUME_NOHAL_SOURCES= \
-    vfs/vfs-volume-nohal.c
-
-if USE_HAL
 VOLUME_SOURCES= \
-    $(VOLUME_HAL_SOURCES)
-else
-VOLUME_SOURCES= \
-    $(VOLUME_NOHAL_SOURCES)
-endif
+    vfs/vfs-volume-udev.c
 
 VFS_SOURCES = \
     vfs/vfs-file-monitor.c vfs/vfs-file-monitor.h \
@@ -101,16 +83,9 @@ EXO_SOURCES = \
     exo/exo-cell-renderer-ellipsized-text.c exo/exo-cell-renderer-ellipsized-text.h \
     exo/exo-common.h
 
-COMPAT_SOURCES = \
-    compat/glib-mem.h \
-    compat/glib-utils.h \
-    compat/glib-utils.c
-
 spacefm_SOURCES = \
     $(MIMETYE_SOURCES) \
     $(VFS_SOURCES) \
-    $(MD5_SOURCES) \
-    $(COMPAT_SOURCES) \
     $(PTK_SOURCES) \
     $(EXO_SOURCES) \
     $(DESKTOP_SOURCES) \
@@ -127,7 +102,6 @@ spacefm_SOURCES = \
 spacefm_CFLAGS = \
     @GTK_CFLAGS@ \
     @SN_CFLAGS@ \
-    @HAL_CFLAGS@ \
     @LIBUDEV_CFLAGS@ \
     @FFMPEG_CFLAGS@ \
     @G_CAST_CHECKS@ \
@@ -136,8 +110,6 @@ spacefm_CFLAGS = \
 spacefm_LDADD = \
     @GTK_LIBS@ \
     $(INTLLIBS) \
-    @FAM_LIBS@ \
-    @HAL_LIBS@ \
     @SN_LIBS@ \
     @LIBUDEV_LIBS@ \
     @FFMPEG_LIBS@

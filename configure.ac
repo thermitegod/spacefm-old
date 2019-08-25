@@ -2,17 +2,19 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT([spacefm], [1.0.6])
 AC_CONFIG_SRCDIR([src/main.c])
-AM_INIT_AUTOMAKE([dist-bzip2] [subdir-objects])
+AM_INIT_AUTOMAKE([dist-xz] [subdir-objects] [foreign])
 AM_MAINTAINER_MODE
 
 AM_DISABLE_STATIC
 
 AC_ISC_POSIX
+
 AC_PROG_CC
 AM_PROG_LIBTOOL
 AM_PROG_CC_STDC
 AC_PROG_INTLTOOL
 AC_HEADER_STDC
+
 
 # sysconfdir defaults to /usr/local/etc if this is not done:
 test "$sysconfdir" = '${prefix}/etc' && sysconfdir=/etc
@@ -31,7 +33,7 @@ AC_CHECK_LIB(X11, XClearWindow)
 AC_DEFINE(G_DISABLE_ASSERT, [1], [do not enable g_asserts])
 AC_DEFINE(G_LOG_DOMAIN, "SpaceFM")
 
-AC_ARG_WITH([bash-path], 
+AC_ARG_WITH([bash-path],
         AC_HELP_STRING([--with-bash-path=PATH], [Absolute path to GENUINE bash v4 - other shells lack features REQUIRED by SpaceFM (default: /bin/bash)]),
         AC_DEFINE_UNQUOTED(BASHPATH, "$withval", [path to bash]),
         AC_DEFINE_UNQUOTED(BASHPATH, "/bin/bash", [path to bash]))
@@ -46,19 +48,17 @@ if test ! -z "$bash_path"; then
     echo "Modifying spacefm-auth to use bash path..."
     bash_esc="${bash_path//\//\\/}"
     sed "s/\(\/bin\/bash\)/$bash_esc/" src/spacefm-auth.bash > src/spacefm-auth
-else
-    cp -pf src/spacefm-auth.bash src/spacefm-auth
 fi
 
 # gtk2 or gtk3
 PKG_PROG_PKG_CONFIG
-gtk2_modules="gtk+-2.0 >= 2.18.0 \
+gtk2_modules="gtk+-2.0 >= 2.24.0 \
               gthread-2.0 \
               gobject-2.0"
-gtk3_modules="gtk+-3.0 >= 3.0.0 \
+gtk3_modules="gtk+-3.0 >= 3.24.0 \
               gthread-2.0 \
               gobject-2.0"
-              
+
 AC_ARG_WITH([gtk3], AS_HELP_STRING([--with-gtk3], [Build with GTK3 interface instead of GTK2 (default: with GTK2 unless GTK2 not installed)]), with_gtk3=$withval, with_gtk3="no")
 
 AC_ARG_WITH([gtk2], AS_HELP_STRING([--with-gtk2], [Build with GTK2 interface only (default: with GTK2 unless GTK2 not installed)]), with_gtk2=$withval, with_gtk2="no")
@@ -86,7 +86,7 @@ AC_SUBST([GTK_LIBS])
 
 # Default make options
 # disable deprecated warnings for now due to GTK2/GTK3 build compat
-CPPFLAGS="$CPPFLAGS -Wno-deprecated-declarations -Wformat -Wformat-security -Wreturn-type -Wunused-value"
+CFLAGS="$CFLAGS -Wno-deprecated-declarations -Wformat -Wformat-security -Wreturn-type -Wunused-value -Wparentheses -Wswitch-default -Wimplicit-fallthrough"
 
 # start-notification is optional - will be used if installed and no --disable
 AC_ARG_ENABLE(
@@ -134,7 +134,7 @@ case `$LD -Bsymbolic-functions -v 2>&1 </dev/null` in
   LDFLAGS="$LDFLAGS -Wl,-Bsymbolic-functions"
   AC_MSG_RESULT([yes])
   ;;
-*)                                                                              
+*)
   AC_MSG_RESULT([no])
   ;;
 esac
@@ -150,70 +150,10 @@ if test x"$cast_checks" = "xno"; then
 fi
 AC_SUBST(G_CAST_CHECKS)
 
-AC_ARG_ENABLE(
-    [hal],
-    AS_HELP_STRING([--enable-hal],
-                   [build with Linux HAL support (disables udisks) (default: no)]),
-    use_hal=$enableval, use_hal="no")
+PKG_CHECK_MODULES(LIBUDEV, [libudev >= 143])
+AC_SUBST(LIBUDEV_CFLAGS)
+AC_SUBST(LIBUDEV_LIBS)
 
-if test x"$use_hal" = x"yes"; then
-dnl Check HAL support
-    hal_modules="dbus-glib-1 >= 0.31 hal >= 0.5.0 hal-storage"
-    PKG_CHECK_MODULES(HAL, [$hal_modules], [have_hal=yes], [have_hal=no])
-
-    if test x"$have_hal" = x"yes"; then
-        AC_DEFINE([HAVE_HAL], [1], [Define to 1 if you have HAL.])
-    else
-        AC_MSG_ERROR([To use HAL support, you must have development packages of dbus-glib-1 (>=0.31), hal(>=0.5.0), and hal-storage, or you can use --disable-hal to disable HAL support.])
-    fi
-else
-    PKG_CHECK_MODULES(LIBUDEV, [libudev >= 143])
-    AC_SUBST(LIBUDEV_CFLAGS)
-    AC_SUBST(LIBUDEV_LIBS)
-fi
-AM_CONDITIONAL(USE_HAL, test "$use_hal" = "yes")
-AC_SUBST(HAL_CFLAGS)
-AC_SUBST(HAL_LIBS)
-
-AC_ARG_ENABLE([inotify],
-    AS_HELP_STRING([--disable-inotify],
-        [disable Linux inotify kernel support (requires fam/gamin instead) (default: enable)]),
-    use_inotify=$enableval, use_inotify="yes")
-
-if test x"$use_inotify" = x"yes"; then
-    dnl Linux inotify is enabled.
-    dnl So, both of FAM and gamin are not needed.
-  AC_DEFINE(USE_INOTIFY, 1, [Whether to enable Linux inotify support])
-else
-    dnl ***************************
-    dnl *** Check for Gamin/FAM ***
-    dnl ***************************
-    dnl *Modified from XFCE Thunar*
-
-    FAM_CFLAGS=""
-    FAM_LIBS=""
-    have_libfam=no
-    AC_CHECK_HEADERS([fam.h],
-    [
-        AC_CHECK_LIB([fam], [FAMOpen], [have_libfam="yes" FAM_LIBS="-lfam"])
-    ])
-
-    if test x"$have_libfam" = x"yes"; then
-        dnl Define appropriate symbols
-        AC_DEFINE([HAVE_FAM_H], [1], [Define to 1 if you have the <fam.h> header file.])
-        AC_DEFINE([HAVE_LIBFAM], [1], [Define to 1 if the File Alteration Monitor is available.])
-
-        dnl Check for FAMNoExists (currently Gamin only)
-        save_LIBS="$LIBS"
-        LIBS="$LIBS $FAM_LIBS"
-        AC_CHECK_FUNCS([FAMNoExists])
-        LIBS="$save_LIBS"
-    else
-        AC_MSG_ERROR([Fatal Error: no fam or gamin detected.])
-    fi
-fi
-AC_SUBST([FAM_CFLAGS])
-AC_SUBST([FAM_LIBS])
 
 AC_ARG_ENABLE([largefile],
     AS_HELP_STRING([--enable-largefile],
@@ -248,11 +188,21 @@ AC_ARG_ENABLE(
     [desktop-integration],
     AS_HELP_STRING([--disable-desktop-integration],
                    [disable desktop manager integration (default: enable)]),
-    desktop_integration=$enableval, desktop_integration="yes")
+    desktop_integration=$enableval, desktop_integration="no")
 if test x"$desktop_integration" = "xyes"; then
   AC_DEFINE(DESKTOP_INTEGRATION, 1, [Whether to integrate desktop or not.])
 fi
 AM_CONDITIONAL(DESKTOP_INTEGRATION, test "$desktop_integration" = "yes")
+
+AC_ARG_ENABLE(
+    [deprecated_hw],
+    AS_HELP_STRING([--enable-deprecated-hw],
+                   [enable deprecated hardware support (firewire,audiocd,dvd) (default: disable)]),
+    deprecated_hw=$enableval, deprecated_hw="no")
+if test x"$deprecated_hw" = "xyes"; then
+  AC_DEFINE(DEPRECATED_HW, 1, [Whether to build depercated hw support.])
+fi
+AM_CONDITIONAL(DEPRECATED_HW, test "$deprecated_hw" = "yes")
 
 AC_ARG_ENABLE(
     [video-thumbnails],
@@ -297,7 +247,6 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])
 
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="af ar da ca cs de es et eu fa fi fr gl he hr hu id it ja ko lt ml ms nb nl nn pl ps pt pt_BR ru sk sl sv tr uk ur ur_PK vi zh_CN zh_TW"
-AM_GLIB_GNU_GETTEXT
 
 AC_OUTPUT([
 Makefile
@@ -332,16 +281,8 @@ echo Documentation Dir............................ : "$resolve_htmldir/"
 if test ! -z "$bash_path"; then
 echo Custom path to bash v4....................... : "$bash_path"
 fi
-if test x"$use_hal" = x"yes"; then
-echo Linux device support......................... : hal
-else
 echo Linux device support......................... : libudev
-fi
-if test x"$use_inotify" = x"yes"; then
 echo Linux file change monitor support............ : inotify
-else
-echo Linux file change monitor support............ : fam/gamin
-fi
 echo 64-bit Large file support.................... : $largefile
 #echo Show warnings if run as super user........... : $superuser_checks
 if test ! -z "$preferable_sudo"; then
@@ -353,6 +294,7 @@ else
 echo 'GTK+ Version................................. : GTK 2'
 fi
 echo Desktop manager integration.................. : $desktop_integration
+echo Deprecated Hardware support.................. : $deprecated_hw
 echo Startup notification......................... : $use_sn
 echo Video thumbnail support...................... : $video_thumbnails
 echo
