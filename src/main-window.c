@@ -784,8 +784,6 @@ void main_window_root_bar_all()
         color.blue = 1000;
         color.green = 0;
 
-        //gdk_color_parse( "#ffffff", &color_white );
-
         for ( l = all_windows; l; l = l->next )
         {
             a_window = (FMMainWindow*)l->data;

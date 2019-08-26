@@ -1101,7 +1101,11 @@ void ptk_file_browser_status_change( PtkFileBrowser* file_browser,
     if ( panel_focus )
     {
         scolor = xset_get_s( "status_text" );
+#if (GTK_MAJOR_VERSION == 3)
+        if ( scolor && gdk_rgba_parse( scolor, &color ) )
+#elif (GTK_MAJOR_VERSION == 2)
         if ( scolor && gdk_color_parse( scolor, &color ) )
+#endif
             gtk_widget_modify_fg( GTK_WIDGET( file_browser->status_label ),
                                                     GTK_STATE_NORMAL, &color );
         else
@@ -1116,7 +1120,11 @@ void ptk_file_browser_status_change( PtkFileBrowser* file_browser,
     if ( panel_focus )
     {
         scolor = xset_get_s( "status_border" );
+#if (GTK_MAJOR_VERSION == 3)
+        if ( scolor && gdk_rgba_parse( scolor, &color ) )
+#elif (GTK_MAJOR_VERSION == 2)
         if ( scolor && gdk_color_parse( scolor, &color ) )
+#endif
             gtk_widget_modify_bg( GTK_WIDGET( file_browser->status_frame ),
                                                     GTK_STATE_NORMAL, &color );
         else

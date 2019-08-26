@@ -8296,10 +8296,18 @@ char* xset_file_dialog( GtkWidget* parent, GtkFileChooserAction action,
 
 char* xset_color_dialog( GtkWidget* parent, char* title, char* defcolor )
 {
+#if (GTK_MAJOR_VERSION == 3)
+    GdkRGBA color;
+#elif (GTK_MAJOR_VERSION == 2)
     GdkColor color;
+#endif
     char* scolor = NULL;
     GtkWidget* dlgparent = parent ? gtk_widget_get_toplevel( parent ) : NULL;
+#if (GTK_MAJOR_VERSION == 3)
+    GtkWidget* dlg = gtk_color_chooser_dialog_new( title, 0 );
+#elif (GTK_MAJOR_VERSION == 2)
     GtkWidget* dlg = gtk_color_selection_dialog_new( title );
+#endif
     GtkWidget* color_sel;
     GtkWidget* help_button;
 
@@ -8313,13 +8321,20 @@ char* xset_color_dialog( GtkWidget* parent, char* title, char* defcolor )
 
     if ( defcolor && defcolor[0] != '\0' )
     {
+#if (GTK_MAJOR_VERSION == 3)
+        if ( gdk_rgba_parse( defcolor, &color ) )
+#elif (GTK_MAJOR_VERSION == 2)
         if ( gdk_color_parse( defcolor, &color ) )
+#endif
         {
+#if (GTK_MAJOR_VERSION == 3)
+            //printf( "        gdk_rgba_to_string = %s\n", gdk_rgba_to_string( &color ) );
+            gtk_color_chooser_set_rgba( GTK_COLOR_SELECTION( color_sel ), &color );
+#elif (GTK_MAJOR_VERSION == 2)
             //printf( "        gdk_color_to_string = %s\n", gdk_color_to_string( &color ) );
-            color_sel = gtk_color_selection_dialog_get_color_selection(
-                                            GTK_COLOR_SELECTION_DIALOG( dlg ) );
-            gtk_color_selection_set_current_color( GTK_COLOR_SELECTION( color_sel ),
-                                                                        &color );
+            color_sel = gtk_color_selection_dialog_get_color_selection(GTK_COLOR_SELECTION_DIALOG(dlg));
+            gtk_color_selection_set_current_color( GTK_COLOR_SELECTION( color_sel ), &color );
+#endif
         }
     }
 
@@ -8329,11 +8344,19 @@ char* xset_color_dialog( GtkWidget* parent, char* title, char* defcolor )
     if ( response == GTK_RESPONSE_OK )
     {
         // color_sel must be set directly before get_current_color
-        color_sel = gtk_color_selection_dialog_get_color_selection(
-                                            GTK_COLOR_SELECTION_DIALOG( dlg ) );
-        gtk_color_selection_get_current_color( GTK_COLOR_SELECTION( color_sel ),
-                                            &color );
+
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_color_chooser_get_rgba( GTK_COLOR_SELECTION( color_sel ), &color );
+#elif (GTK_MAJOR_VERSION == 2)
+        color_sel = gtk_color_selection_dialog_get_color_selection(GTK_COLOR_SELECTION_DIALOG(dlg));
+        gtk_color_selection_get_current_color( GTK_COLOR_SELECTION( color_sel ), &color );
+#endif
+
+#if (GTK_MAJOR_VERSION == 3)
+        scolor = gdk_rgba_to_string( &color );
+#elif (GTK_MAJOR_VERSION == 2)
         scolor = gdk_color_to_string( &color );
+#endif
     }
     else if ( response == GTK_RESPONSE_HELP )
         scolor = NULL;
