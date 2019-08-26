@@ -36,12 +36,15 @@
 /* resurrect dead gdk apis for Gtk3
  * This is easier than using #ifs everywhere
  */
+
+/*
 #if (GTK_MAJOR_VERSION == 3)
 #ifdef gdk_cursor_unref
 #undef gdk_cursor_unref
 #endif
 #define gdk_cursor_unref(cursor) g_object_unref (cursor)
 #endif
+*/
 
 #if defined(G_PARAM_STATIC_NAME) && defined(G_PARAM_STATIC_NICK) && defined(G_PARAM_STATIC_BLURB)
 #define EXO_PARAM_READABLE  (G_PARAM_READABLE \
@@ -595,7 +598,12 @@ exo_tree_view_motion_notify_event (GtkWidget      *widget,
                     /* setup the hand cursor to indicate that the row at the pointer can be activated with a single click */
                     cursor = gdk_cursor_new_for_display(gdk_window_get_display(event->window), GDK_HAND2);
                     gdk_window_set_cursor (event->window, cursor);
+
+#if (GTK_MAJOR_VERSION == 3)
+                    g_object_unref (cursor);
+#elif (GTK_MAJOR_VERSION == 2)
                     gdk_cursor_unref (cursor);
+#endif
                 }
                 else
                 {

@@ -7816,7 +7816,11 @@ char* xset_icon_chooser_dialog( GtkWindow* parent, const char* def_icon )
     {
         gdk_window_set_cursor( gtk_widget_get_window( GTK_WIDGET( parent ) ),
                                                                 cursor );
+#if (GTK_MAJOR_VERSION == 3)
+        g_object_unref( cursor );
+#elif (GTK_MAJOR_VERSION == 2)
         gdk_cursor_unref( cursor );
+#endif
         while( gtk_events_pending() )
             gtk_main_iteration();
     }

@@ -697,9 +697,18 @@ static void on_start_search( GtkWidget* btn, FindFile* data )
         g_signal_connect( data->task, "finish", G_CALLBACK( on_search_finish ), data );
         vfs_async_task_execute( data->task );
 
+#if (GTK_MAJOR_VERSION == 3)
+        busy_cursor = gdk_cursor_new_for_display( NULL, GDK_WATCH );
+#elif (GTK_MAJOR_VERSION == 2)
         busy_cursor = gdk_cursor_new( GDK_WATCH );
+#endif
         gdk_window_set_cursor( gtk_widget_get_window (data->search_result), busy_cursor );
+
+#if (GTK_MAJOR_VERSION == 3)
+        g_object_unref( busy_cursor );
+#elif (GTK_MAJOR_VERSION == 2)
         gdk_cursor_unref( busy_cursor );
+#endif
     }
     else
     {

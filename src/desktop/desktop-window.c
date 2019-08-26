@@ -463,7 +463,11 @@ void desktop_window_finalize(GObject *object)
 #endif
 
     if( self->hand_cursor )
+#if (GTK_MAJOR_VERSION == 3)
+        g_object_unref( self->hand_cursor );
+#elif (GTK_MAJOR_VERSION == 2)
         gdk_cursor_unref( self->hand_cursor );
+#endif
 
     if ( link_icon )
         g_object_unref( link_icon );
@@ -4310,7 +4314,11 @@ void desktop_window_set_single_click( DesktopWindow* win, gboolean single_click 
     }
     else
     {
+#if (GTK_MAJOR_VERSION == 3)
+        g_object_unref( win->hand_cursor );
+#elif (GTK_MAJOR_VERSION == 2)
         gdk_cursor_unref( win->hand_cursor );
+#endif
         win->hand_cursor = NULL;
         if( gtk_widget_get_realized( (GtkWidget*)win ) )
             gdk_window_set_cursor( gtk_widget_get_window((GtkWidget*)win), NULL );
