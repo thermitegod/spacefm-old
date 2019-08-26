@@ -8695,7 +8695,7 @@ static void set_gtk3_widget_padding( GtkWidget* widget, int left_right,
                             "padding-top: %dpx; padding-bottom: %dpx; }",
                             left_right, left_right, top_bottom, top_bottom );
 
-    GtkCssProvider* provider = gtk_css_provider_get_default();
+    GtkCssProvider* provider = gtk_css_provider_new();
     gtk_css_provider_load_from_data ( GTK_CSS_PROVIDER( provider ),
                                         str, -1, NULL );
     GtkStyleContext* context = gtk_widget_get_style_context( widget );
