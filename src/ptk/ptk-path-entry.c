@@ -792,7 +792,11 @@ GtkWidget* ptk_path_entry_new( PtkFileBrowser* file_browser )
     {
         PangoFontDescription* font_desc = pango_font_description_from_string(
                         xset_get_s_panel( file_browser->mypanel, "font_path" ) );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_override_font( entry, font_desc );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_widget_modify_font( entry, font_desc );
+#endif
         pango_font_description_free( font_desc );
     }
 

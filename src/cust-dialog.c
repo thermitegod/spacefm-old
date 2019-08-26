@@ -57,7 +57,11 @@ static void set_font( GtkWidget* w, const char* font )
     if ( w && font )
     {
         PangoFontDescription* font_desc = pango_font_description_from_string( font );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_override_font( w, font_desc );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_widget_modify_font( w, font_desc );
+#endif
         pango_font_description_free( font_desc );
     }
 }

@@ -2532,9 +2532,15 @@ void on_textview_font_change( GtkMenuItem* item, HandlerData* hnd )
     char* fontname = xset_get_s( "context_dlg" );
     PangoFontDescription* font_desc = fontname ?
                         pango_font_description_from_string( fontname ) : NULL;
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_override_font( GTK_WIDGET( hnd->view_handler_compress ), font_desc );
+    gtk_widget_override_font( GTK_WIDGET( hnd->view_handler_extract ), font_desc );
+    gtk_widget_override_font( GTK_WIDGET( hnd->view_handler_list ), font_desc );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_widget_modify_font( GTK_WIDGET( hnd->view_handler_compress ), font_desc );
     gtk_widget_modify_font( GTK_WIDGET( hnd->view_handler_extract ), font_desc );
     gtk_widget_modify_font( GTK_WIDGET( hnd->view_handler_list ), font_desc );
+#endif
     if ( font_desc )
         pango_font_description_free( font_desc );
 }

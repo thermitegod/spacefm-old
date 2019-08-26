@@ -1184,7 +1184,22 @@ void on_font_change( GtkMenuItem* item, MoveSet* mset )
     if ( xset_get_s( "move_dlg_font" ) )
         font_desc = pango_font_description_from_string(
                                                 xset_get_s( "move_dlg_font" ) );
-
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_override_font( GTK_WIDGET( mset->input_name ), font_desc );
+    gtk_widget_override_font( GTK_WIDGET( mset->entry_ext ), font_desc );
+    gtk_widget_override_font( GTK_WIDGET( mset->input_full_name ), font_desc );
+    gtk_widget_override_font( GTK_WIDGET( mset->input_path ), font_desc );
+    gtk_widget_override_font( GTK_WIDGET( mset->input_full_path ), font_desc );
+    gtk_widget_override_font( GTK_WIDGET( mset->label_mime ), font_desc );
+    if ( mset->entry_target )
+        gtk_widget_override_font( GTK_WIDGET( mset->entry_target ), font_desc );
+    if ( mset->create_new )
+    {
+        // doesn't change drop-down font
+        gtk_widget_override_font(GTK_WIDGET( gtk_bin_get_child(GTK_BIN( mset->combo_template))), font_desc);
+        gtk_widget_override_font(GTK_WIDGET(gtk_bin_get_child(GTK_BIN(mset->combo_template_dir))), font_desc);
+    }
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_widget_modify_font( GTK_WIDGET( mset->input_name ), font_desc );
     gtk_widget_modify_font( GTK_WIDGET( mset->entry_ext ), font_desc );
     gtk_widget_modify_font( GTK_WIDGET( mset->input_full_name ), font_desc );
@@ -1196,13 +1211,10 @@ void on_font_change( GtkMenuItem* item, MoveSet* mset )
     if ( mset->create_new )
     {
         // doesn't change drop-down font
-        //gtk_widget_modify_font( GTK_WIDGET( mset->combo_template ), font_desc );
-        gtk_widget_modify_font( GTK_WIDGET( gtk_bin_get_child(
-                                GTK_BIN( mset->combo_template ) ) ), font_desc );
-        //gtk_widget_modify_font( GTK_WIDGET( mset->combo_template_dir ), font_desc );
-        gtk_widget_modify_font( GTK_WIDGET( gtk_bin_get_child(
-                                GTK_BIN( mset->combo_template_dir ) ) ), font_desc );
+        gtk_widget_modify_font(GTK_WIDGET( gtk_bin_get_child(GTK_BIN( mset->combo_template))), font_desc);
+        gtk_widget_modify_font(GTK_WIDGET(gtk_bin_get_child(GTK_BIN(mset->combo_template_dir))), font_desc);
     }
+#endif
 
     if ( font_desc )
         pango_font_description_free( font_desc );

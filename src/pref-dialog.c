@@ -183,7 +183,11 @@ static void font_button_set_font( GtkWidget* button,
     if ( !font_desc && !font_name )
     {
         gtk_button_set_label( GTK_BUTTON( button ), _("Default") );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_override_font( GTK_WIDGET( button ), NULL );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_widget_modify_font( GTK_WIDGET( button ), NULL );
+#endif
     }
     else
     {

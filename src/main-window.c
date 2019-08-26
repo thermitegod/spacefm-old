@@ -849,8 +849,11 @@ void main_update_fonts( GtkWidget* widget, PtkFileBrowser* file_browser )
             if ( fontname )
             {
                 font_desc = pango_font_description_from_string( fontname );
-                gtk_widget_modify_font( GTK_WIDGET( a_browser->folder_view ),
-                                                                    font_desc );
+#if (GTK_MAJOR_VERSION == 3)
+                gtk_widget_override_font(GTK_WIDGET(a_browser->folder_view), font_desc);
+#elif (GTK_MAJOR_VERSION == 2)
+                gtk_widget_modify_font(GTK_WIDGET(a_browser->folder_view), font_desc);
+#endif
 
                 if ( a_browser->view_mode != PTK_FB_LIST_VIEW )
                 {
@@ -861,15 +864,24 @@ void main_update_fonts( GtkWidget* widget, PtkFileBrowser* file_browser )
                 }
 
                 if ( a_browser->side_dir )
-                    gtk_widget_modify_font( GTK_WIDGET( a_browser->side_dir ),
-                                                                    font_desc );
+#if (GTK_MAJOR_VERSION == 3)
+                    gtk_widget_override_font(GTK_WIDGET(a_browser->side_dir), font_desc);
+#elif (GTK_MAJOR_VERSION == 2)
+                    gtk_widget_modify_font(GTK_WIDGET(a_browser->side_dir), font_desc);
+#endif
                 pango_font_description_free( font_desc );
             }
             else
             {
+#if (GTK_MAJOR_VERSION == 3)
+                gtk_widget_override_font( GTK_WIDGET( a_browser->folder_view ), NULL );
+                if ( a_browser->side_dir )
+                    gtk_widget_override_font( GTK_WIDGET( a_browser->side_dir ), NULL );
+#elif (GTK_MAJOR_VERSION == 2)
                 gtk_widget_modify_font( GTK_WIDGET( a_browser->folder_view ), NULL );
                 if ( a_browser->side_dir )
                     gtk_widget_modify_font( GTK_WIDGET( a_browser->side_dir ), NULL );
+#endif
             }
             // devices
             if ( a_browser->side_dev )
@@ -878,12 +890,19 @@ void main_update_fonts( GtkWidget* widget, PtkFileBrowser* file_browser )
                 if ( fontname )
                 {
                     font_desc = pango_font_description_from_string( fontname );
-                    gtk_widget_modify_font( GTK_WIDGET( a_browser->side_dev ),
-                                                                    font_desc );
+#if (GTK_MAJOR_VERSION == 3)
+                    gtk_widget_override_font(GTK_WIDGET(a_browser->side_dev), font_desc);
+#elif (GTK_MAJOR_VERSION == 2)
+                    gtk_widget_modify_font(GTK_WIDGET(a_browser->side_dev), font_desc);
+#endif
                     pango_font_description_free( font_desc );
                 }
                 else
+#if (GTK_MAJOR_VERSION == 3)
+                    gtk_widget_override_font( GTK_WIDGET( a_browser->side_dev ), NULL );
+#elif (GTK_MAJOR_VERSION == 2)
                     gtk_widget_modify_font( GTK_WIDGET( a_browser->side_dev ), NULL );
+#endif
             }
             // bookmarks
             if ( a_browser->side_book )
@@ -892,13 +911,19 @@ void main_update_fonts( GtkWidget* widget, PtkFileBrowser* file_browser )
                 if ( fontname )
                 {
                     font_desc = pango_font_description_from_string( fontname );
-                    gtk_widget_modify_font( GTK_WIDGET( a_browser->side_book ),
-                                                                    font_desc );
+#if (GTK_MAJOR_VERSION == 3)
+                    gtk_widget_override_font(GTK_WIDGET(a_browser->side_book), font_desc);
+#elif (GTK_MAJOR_VERSION == 2)
+                    gtk_widget_modify_font(GTK_WIDGET(a_browser->side_book), font_desc);
+#endif
                     pango_font_description_free( font_desc );
                 }
                 else
-                    gtk_widget_modify_font( GTK_WIDGET( a_browser->side_book ),
-                                                                        NULL );
+#if (GTK_MAJOR_VERSION == 3)
+                    gtk_widget_override_font(GTK_WIDGET(a_browser->side_book), NULL);
+#elif (GTK_MAJOR_VERSION == 2)
+                    gtk_widget_modify_font(GTK_WIDGET(a_browser->side_book), NULL);
+#endif
             }
             // pathbar
             if ( a_browser->path_bar )
@@ -907,13 +932,19 @@ void main_update_fonts( GtkWidget* widget, PtkFileBrowser* file_browser )
                 if ( fontname )
                 {
                     font_desc = pango_font_description_from_string( fontname );
-                    gtk_widget_modify_font( GTK_WIDGET( a_browser->path_bar ),
-                                                                    font_desc );
+#if (GTK_MAJOR_VERSION == 3)
+                    gtk_widget_override_font(GTK_WIDGET(a_browser->path_bar), font_desc);
+#elif (GTK_MAJOR_VERSION == 2)
+                    gtk_widget_modify_font(GTK_WIDGET(a_browser->path_bar), font_desc);
+#endif
                     pango_font_description_free( font_desc );
                 }
-                else
-                    gtk_widget_modify_font( GTK_WIDGET( a_browser->path_bar ),
-                                                                        NULL );
+		else
+#if (GTK_MAJOR_VERSION == 3)
+                    gtk_widget_override_font(GTK_WIDGET(a_browser->path_bar), NULL);
+#elif (GTK_MAJOR_VERSION == 2)
+                    gtk_widget_modify_font(GTK_WIDGET(a_browser->path_bar), NULL);
+#endif
             }
 
             // status bar font and icon
@@ -923,13 +954,19 @@ void main_update_fonts( GtkWidget* widget, PtkFileBrowser* file_browser )
                 if ( fontname )
                 {
                     font_desc = pango_font_description_from_string( fontname );
-                    gtk_widget_modify_font( GTK_WIDGET( a_browser->status_label ),
-                                                                    font_desc );
+#if (GTK_MAJOR_VERSION == 3)
+                    gtk_widget_override_font(GTK_WIDGET(a_browser->status_label), font_desc);
+#elif (GTK_MAJOR_VERSION == 2)
+                    gtk_widget_modify_font(GTK_WIDGET(a_browser->status_label), font_desc);
+#endif
                     pango_font_description_free( font_desc );
                 }
-                else
-                    gtk_widget_modify_font( GTK_WIDGET( a_browser->status_label ),
-                                                                        NULL );
+		else
+#if (GTK_MAJOR_VERSION == 3)
+                    gtk_widget_override_font(GTK_WIDGET(a_browser->status_label), NULL);
+#elif (GTK_MAJOR_VERSION == 2)
+                    gtk_widget_modify_font(GTK_WIDGET(a_browser->status_label), NULL);
+#endif
 
                 gtk_image_set_from_icon_name( GTK_IMAGE( a_browser->status_image ),
                                                 icon_name, GTK_ICON_SIZE_MENU );
@@ -950,11 +987,19 @@ void main_update_fonts( GtkWidget* widget, PtkFileBrowser* file_browser )
         if ( fontname )
         {
             font_desc = pango_font_description_from_string( fontname );
+#if (GTK_MAJOR_VERSION == 3)
+            gtk_widget_override_font( GTK_WIDGET( main_window->task_view ), font_desc );
+#elif (GTK_MAJOR_VERSION == 2)
             gtk_widget_modify_font( GTK_WIDGET( main_window->task_view ), font_desc );
+#endif
             pango_font_description_free( font_desc );
         }
         else
+#if (GTK_MAJOR_VERSION == 3)
+            gtk_widget_override_font( GTK_WIDGET( main_window->task_view ), NULL );
+#elif (GTK_MAJOR_VERSION == 2)
             gtk_widget_modify_font( GTK_WIDGET( main_window->task_view ), NULL );
+#endif
 
         // panelbar
         gtk_image_set_from_icon_name( GTK_IMAGE( main_window->panel_image[p-1] ),
@@ -2711,7 +2756,11 @@ GtkWidget* fm_main_window_create_tab_label( FMMainWindow* main_window,
     {
 
         PangoFontDescription* font_desc = pango_font_description_from_string( fontname );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_override_font( tab_text, font_desc );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_widget_modify_font( tab_text, font_desc );
+#endif
         pango_font_description_free( font_desc );
     }
 
@@ -6002,7 +6051,11 @@ GtkWidget* main_task_view_new( FMMainWindow* main_window )
     {
         PangoFontDescription* font_desc = pango_font_description_from_string(
                                                 xset_get_s( "font_task" ) );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_override_font( view, font_desc );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_widget_modify_font( view, font_desc );
+#endif
         pango_font_description_free( font_desc );
     }
 

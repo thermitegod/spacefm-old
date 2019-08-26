@@ -548,7 +548,11 @@ GtkWidget* ptk_location_view_new( PtkFileBrowser* file_browser )
     {
         PangoFontDescription* font_desc = pango_font_description_from_string(
                         xset_get_s_panel( file_browser->mypanel, "font_dev" ) );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_override_font( view, font_desc );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_widget_modify_font( view, font_desc );
+#endif
         pango_font_description_free( font_desc );
     }
     return view;
@@ -4584,7 +4588,11 @@ GtkWidget* ptk_bookmark_view_new( PtkFileBrowser* file_browser )
     {
         PangoFontDescription* font_desc = pango_font_description_from_string(
                         xset_get_s_panel( file_browser->mypanel, "font_book" ) );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_override_font( view, font_desc );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_widget_modify_font( view, font_desc );
+#endif
         pango_font_description_free( font_desc );
     }
 
