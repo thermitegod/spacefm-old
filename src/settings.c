@@ -540,10 +540,7 @@ void load_settings( char* config_dir )
     if ( geteuid() == 0 )
     {
         if ( !g_file_test( settings_shared_tmp_dir, G_FILE_TEST_EXISTS ) )
-            g_mkdir_with_parents( settings_shared_tmp_dir,
-                                        S_IRWXU | S_IRWXG | S_IRWXO | S_ISVTX );
-        chown( settings_shared_tmp_dir, 0, 0 );
-        chmod( settings_shared_tmp_dir, S_IRWXU | S_IRWXG | S_IRWXO | S_ISVTX );
+            g_mkdir_with_parents( settings_shared_tmp_dir, S_IRWXU | S_IRWXG | S_IRWXO | S_ISVTX );
     }
 
     // copy /etc/xdg/spacefm
