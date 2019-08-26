@@ -8789,8 +8789,8 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         gtk_button_set_relief( GTK_BUTTON( btn ), GTK_RELIEF_NONE );
         // These don't seem to do anything
 #if (GTK_MAJOR_VERSION == 3)
-        gtk_widget_set_margin_left( btn, 0 );
-        gtk_widget_set_margin_right( btn, 0 );
+        gtk_widget_set_margin_start( btn, 0 );
+        gtk_widget_set_margin_end( btn, 0 );
         gtk_widget_set_margin_top( btn, 0 );
         gtk_widget_set_margin_bottom( btn, 0 );
         gtk_widget_set_hexpand( btn, FALSE );
@@ -8847,8 +8847,8 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( btn ),
                                                     xset_get_b_set( set ) );
 #if (GTK_MAJOR_VERSION == 3)
-        gtk_widget_set_margin_left( btn, 0 );
-        gtk_widget_set_margin_right( btn, 0 );
+        gtk_widget_set_margin_start( btn, 0 );
+        gtk_widget_set_margin_end( btn, 0 );
         gtk_widget_set_margin_top( btn, 0 );
         gtk_widget_set_margin_bottom( btn, 0 );
         gtk_widget_set_hexpand( btn, FALSE );
@@ -8945,8 +8945,8 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         gtk_button_set_image( GTK_BUTTON( btn ), image );
         gtk_button_set_relief( GTK_BUTTON( btn ), GTK_RELIEF_NONE );
 #if (GTK_MAJOR_VERSION == 3)
-        gtk_widget_set_margin_left( btn, 0 );
-        gtk_widget_set_margin_right( btn, 0 );
+        gtk_widget_set_margin_start( btn, 0 );
+        gtk_widget_set_margin_end( btn, 0 );
         gtk_widget_set_margin_top( btn, 0 );
         gtk_widget_set_margin_bottom( btn, 0 );
         gtk_widget_set_hexpand( btn, FALSE );
@@ -9011,8 +9011,8 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
             gtk_button_set_relief( GTK_BUTTON( btn ), GTK_RELIEF_NONE );
         }
 #if (GTK_MAJOR_VERSION == 3)
-        gtk_widget_set_margin_left( btn, 0 );
-        gtk_widget_set_margin_right( btn, 0 );
+        gtk_widget_set_margin_start( btn, 0 );
+        gtk_widget_set_margin_end( btn, 0 );
         gtk_widget_set_margin_top( btn, 0 );
         gtk_widget_set_margin_bottom( btn, 0 );
         gtk_widget_set_hexpand( btn, FALSE );
@@ -9139,8 +9139,8 @@ void xset_fill_toolbar( GtkWidget* parent, PtkFileBrowser* file_browser,
     // These don't seem to do anything
     gtk_container_set_border_width( GTK_CONTAINER( toolbar ), 0 );
 #if (GTK_MAJOR_VERSION == 3)
-    gtk_widget_set_margin_left( toolbar, 0 );
-    gtk_widget_set_margin_right( toolbar, 0 );
+    gtk_widget_set_margin_start( toolbar, 0 );
+    gtk_widget_set_margin_end( toolbar, 0 );
     gtk_widget_set_margin_top( toolbar, 0 );
     gtk_widget_set_margin_bottom( toolbar, 0 );
 
