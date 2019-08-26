@@ -2867,7 +2867,11 @@ static GtkWidget* add_popup_menuitem( GtkWidget* popup,
                                       int job,
                                       HandlerData* hnd )
 {
+#if (GTK_MAJOR_VERSION == 3)
+    GtkWidget* item = gtk_menu_item_new_with_mnemonic( label );
+#elif (GTK_MAJOR_VERSION == 2)
     GtkWidget* item = gtk_image_menu_item_new_with_mnemonic( label );
+#endif
     if ( image )
         gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM( item ),
                         xset_get_image( image, GTK_ICON_SIZE_MENU ) );

@@ -2856,7 +2856,11 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
 
     GtkWidget* image;
     set = xset_get( "dev_menu_remove" );
+#if (GTK_MAJOR_VERSION == 3)
+    item = gtk_menu_item_new_with_mnemonic( set->menu_label );
+#elif (GTK_MAJOR_VERSION == 2)
     item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
+#endif
     if ( set->icon )
     {
         image = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );
@@ -2869,7 +2873,11 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
     gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
 
     set = xset_get( "dev_menu_unmount" );
+#if (GTK_MAJOR_VERSION == 3)
+    item = gtk_menu_item_new_with_mnemonic( set->menu_label );
+#elif (GTK_MAJOR_VERSION == 2)
     item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
+#endif
     if ( set->icon )
     {
         image = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );
@@ -2885,7 +2893,11 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
     gtk_menu_shell_append( GTK_MENU_SHELL( popup ), gtk_separator_menu_item_new() );
 
     set = xset_get( "dev_menu_open" );
+#if (GTK_MAJOR_VERSION == 3)
+    item = gtk_menu_item_new_with_mnemonic( set->menu_label );
+#elif (GTK_MAJOR_VERSION == 2)
     item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
+#endif
     if ( set->icon )
     {
         image = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );
@@ -2901,7 +2913,11 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
         g_signal_connect( item, "activate", G_CALLBACK( on_open ), vol );
 
     set = xset_get( "dev_menu_mount" );
+#if (GTK_MAJOR_VERSION == 3)
+    item = gtk_menu_item_new_with_mnemonic( set->menu_label );
+#elif (GTK_MAJOR_VERSION == 2)
     item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
+#endif
     if ( set->icon )
     {
         image = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );
@@ -2920,7 +2936,11 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
                               || strstr( vol->device_file, ":/" ) ) )
     {
         set = xset_get( "dev_menu_mark" );
+#if (GTK_MAJOR_VERSION == 3)
+        item = gtk_menu_item_new_with_mnemonic( set->menu_label );
+#elif (GTK_MAJOR_VERSION == 2)
         item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
+#endif
         if ( set->icon )
         {
             image = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );
@@ -2937,7 +2957,11 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
     gtk_menu_shell_append( GTK_MENU_SHELL( popup ), gtk_separator_menu_item_new() );
 
     set = xset_get( "dev_prop" );
+#if (GTK_MAJOR_VERSION == 3)
+    item = gtk_menu_item_new_with_mnemonic( set->menu_label );
+#elif (GTK_MAJOR_VERSION == 2)
     item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
+#endif
     if ( set->icon )
     {
         image = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );

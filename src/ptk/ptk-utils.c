@@ -52,7 +52,11 @@ void ptk_menu_add_items_from_data( GtkWidget* menu,
       }
       else if( G_LIKELY(ent->stock_icon) )  {
         if( G_LIKELY( ent->stock_icon > (char *)2 ) )  {
+#if (GTK_MAJOR_VERSION == 3)
+          menu_item = gtk_menu_item_new_with_mnemonic(_(ent->label));
+#elif (GTK_MAJOR_VERSION == 2)
           menu_item = gtk_image_menu_item_new_with_mnemonic(_(ent->label));
+#endif
           image = gtk_image_new_from_stock( ent->stock_icon, GTK_ICON_SIZE_MENU );
           gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM(menu_item), image );
         }

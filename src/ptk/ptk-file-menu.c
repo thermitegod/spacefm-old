@@ -2230,7 +2230,11 @@ GtkWidget* app_menu_additem( GtkWidget* menu, char* label, gchar* stock_icon,
             item = gtk_check_menu_item_new_with_mnemonic( label );
         else
         {
+#if (GTK_MAJOR_VERSION == 3)
+            item = gtk_menu_item_new_with_mnemonic( label );
+#elif (GTK_MAJOR_VERSION == 2)
             item = gtk_image_menu_item_new_with_mnemonic( label );
+#endif
             GtkWidget* image = gtk_image_new_from_stock( stock_icon,
                                                             GTK_ICON_SIZE_MENU );
             if ( image )
@@ -2386,7 +2390,11 @@ static void show_app_menu( GtkWidget* menu, GtkWidget* app_item, PtkFileMenu* da
     gtk_container_add ( GTK_CONTAINER ( app_menu ), gtk_separator_menu_item_new() );
 
     // /usr submenu
+#if (GTK_MAJOR_VERSION == 3)
+    newitem = gtk_menu_item_new_with_mnemonic( "/_usr" );
+#elif (GTK_MAJOR_VERSION == 2)
     newitem = gtk_image_menu_item_new_with_mnemonic( "/_usr" );
+#endif
     submenu = gtk_menu_new();
     gtk_menu_item_set_submenu( GTK_MENU_ITEM( newitem ), submenu );
     gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( newitem ),

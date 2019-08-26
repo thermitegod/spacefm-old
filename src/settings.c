@@ -2801,7 +2801,11 @@ GtkWidget* xset_new_menuitem( const char* label, const char* icon )
         g_free( str );
     }
     else
+#if (GTK_MAJOR_VERSION == 3)
+        item = gtk_menu_item_new_with_mnemonic( label );
+#elif (GTK_MAJOR_VERSION == 2)
         item = gtk_image_menu_item_new_with_mnemonic( label );
+#endif
     if ( !( icon && icon[0] ) )
         return item;
     image = xset_get_image( icon, GTK_ICON_SIZE_MENU );
@@ -6777,7 +6781,11 @@ GtkWidget* xset_design_additem( GtkWidget* menu, const char* label,
             item = gtk_check_menu_item_new_with_mnemonic( label );
         else
         {
+#if (GTK_MAJOR_VERSION == 3)
+            item = gtk_menu_item_new_with_mnemonic( label );
+#elif (GTK_MAJOR_VERSION == 2)
             item = gtk_image_menu_item_new_with_mnemonic( label );
+#endif
             GtkWidget* image = gtk_image_new_from_stock( stock_icon,
                                                     GTK_ICON_SIZE_MENU );
             if ( image )
@@ -6900,7 +6908,11 @@ GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
                                     || !g_strcmp0( set->name, "main_book" ) );
 
     //// New submenu
+#if (GTK_MAJOR_VERSION == 3)
+    newitem = gtk_menu_item_new_with_mnemonic( _("_New") );
+#elif (GTK_MAJOR_VERSION == 2)
     newitem = gtk_image_menu_item_new_with_mnemonic( _("_New") );
+#endif
     submenu = gtk_menu_new();
     gtk_menu_item_set_submenu( GTK_MENU_ITEM( newitem ), submenu );
     gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( newitem ),
@@ -6938,7 +6950,11 @@ GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
                                 NULL, XSET_JOB_SEP, insert_set );
 
     // New > Import >
+#if (GTK_MAJOR_VERSION == 3)
+    newitem = gtk_menu_item_new_with_mnemonic( _("_Import") );
+#elif (GTK_MAJOR_VERSION == 2)
     newitem = gtk_image_menu_item_new_with_mnemonic( _("_Import") );
+#endif
     submenu2 = gtk_menu_new();
     gtk_menu_item_set_submenu( GTK_MENU_ITEM( newitem ), submenu2 );
     //gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( newitem ),
@@ -6961,7 +6977,11 @@ GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
     if ( insert_set->tool )
     {
         // "Add" submenu for builtin tool items
+#if (GTK_MAJOR_VERSION == 3)
+        newitem = gtk_menu_item_new_with_mnemonic( _("_Add") );
+#elif (GTK_MAJOR_VERSION == 2)
         newitem = gtk_image_menu_item_new_with_mnemonic( _("_Add") );
+#endif
         submenu = gtk_menu_new();
         gtk_menu_item_set_submenu( GTK_MENU_ITEM( newitem ), submenu );
         gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( newitem ),
