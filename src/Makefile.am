@@ -9,7 +9,7 @@ AM_CPPFLAGS = \
     -DPACKAGE_DATA_DIR=\""$(datadir)/spacefm"\" \
     -DPACKAGE_UI_DIR=\""$(datadir)/spacefm/ui"\" \
     -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	-DSYSCONFDIR=\""$(sysconfdir)"\"
+    -DSYSCONFDIR=\""$(sysconfdir)"\"
 
 bin_PROGRAMS = spacefm
 
@@ -114,8 +114,8 @@ spacefm_LDADD = \
     @LIBUDEV_LIBS@ \
     @FFMPEG_LIBS@
 
-noinst_PROGRAMS=xml-purge
-xml_purge_SOURCES=xml-purge.c
-xml_purge_CFLAGS=@GTK_CFLAGS@
-xml_purge_LDADD=@GTK_LIBS@
+#noinst_PROGRAMS=xml-purge
+#xml_purge_SOURCES=xml-purge.c
+#xml_purge_CFLAGS=@GTK_CFLAGS@
+#xml_purge_LDADD=@GTK_LIBS@
 

@@ -88,7 +88,7 @@ AC_SUBST([GTK_CFLAGS])
 AC_SUBST([GTK_LIBS])
 
 # Default make options
-CFLAGS="$CFLAGS -D_FORTIFY_SOURCE=2 -D_DEFAULT_SOURCE -std=c18 -O2 -Wformat -Wformat-security -Wreturn-type -Wunused-value -Wparentheses -Wswitch-default -Wimplicit-fallthrough"
+CFLAGS="$CFLAGS -D_FORTIFY_SOURCE=2 -D_DEFAULT_SOURCE -std=c18 -Wall -Wformat-security -Wswitch-default -Wimplicit-fallthrough=3"
 
 # start-notification is optional - will be used if installed and no --disable
 AC_ARG_ENABLE(
@@ -97,11 +97,8 @@ AC_ARG_ENABLE(
                    [disable use of libstartup-notification (default: enable if installed)]),
     use_sn=$enableval, use_sn="yes")
 if test x"$use_sn" = x"yes"; then
-    sn_modules_old="libstartup-notification-0.9"
     sn_modules="libstartup-notification-1.0"
-    PKG_CHECK_MODULES(SN, [$sn_modules_old], use_sn="yes", [
-       PKG_CHECK_MODULES(SN, [$sn_modules], use_sn="yes", use_sn="no (not installed)")
-    ])
+    PKG_CHECK_MODULES(SN, [$sn_modules], use_sn="yes", use_sn="no (not installed)")
     if test x"$use_sn" = x"yes"; then
         AC_SUBST(SN_CFLAGS)
         AC_SUBST(SN_LIBS)
@@ -155,15 +152,6 @@ AC_SUBST(G_CAST_CHECKS)
 PKG_CHECK_MODULES(LIBUDEV, [libudev >= 143])
 AC_SUBST(LIBUDEV_CFLAGS)
 AC_SUBST(LIBUDEV_LIBS)
-
-AC_ARG_ENABLE(
-    [superuser-checks],
-    AS_HELP_STRING([--disable-superuser-checks],
-                   [disable checks running as super user (no current function) (default: enable)]),
-    superuser_checks=$enableval, superuser_checks="yes")
-if test x"$superuser_checks" = "xyes"; then
-  AC_DEFINE(SUPER_USER_CHECKS, 1, [Whether to check running as super user or not])
-fi
 
 AC_ARG_WITH(
     [preferable-sudo],
@@ -274,7 +262,6 @@ echo Custom path to bash v4....................... : "$bash_path"
 fi
 echo Linux device support......................... : libudev
 echo Linux file change monitor support............ : inotify
-#echo Show warnings if run as super user........... : $superuser_checks
 if test ! -z "$preferable_sudo"; then
 echo Additional graphical su program.............. : $preferable_sudo
 fi
