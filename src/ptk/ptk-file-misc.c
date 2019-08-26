@@ -2371,7 +2371,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
 
         // template combo
         mset->combo_template = GTK_COMBO_BOX( gtk_combo_box_text_new_with_entry() );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_set_focus_on_click( mset->combo_template, FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_combo_box_set_focus_on_click( mset->combo_template, FALSE );
+#endif
 
         // add entries
         gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( mset->combo_template ),
@@ -2402,7 +2406,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
 
         // template_dir combo
         mset->combo_template_dir = GTK_COMBO_BOX( gtk_combo_box_text_new_with_entry() );
+#if (GTK_MAJOR_VERSION == 3)
+        gtk_widget_set_focus_on_click( mset->combo_template_dir, FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_combo_box_set_focus_on_click( mset->combo_template_dir, FALSE );
+#endif
 
         // add entries
         gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( mset->combo_template_dir ),

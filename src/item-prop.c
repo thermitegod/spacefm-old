@@ -1661,7 +1661,11 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
     gtk_table_attach( table, label, 0, 1, row, row + 1,
                                     GTK_FILL, GTK_SHRINK, 0, 0 );
     ctxt->item_type = gtk_combo_box_text_new();
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_COMBO_BOX( ctxt->item_type ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_combo_box_set_focus_on_click( GTK_COMBO_BOX( ctxt->item_type ), FALSE );
+#endif
     //align = gtk_alignment_new( 0, 0.5, 1, 1 );
     //gtk_container_add ( GTK_CONTAINER ( align ), GTK_WIDGET( ctxt->item_type ) );
     gtk_table_attach( table, ctxt->item_type, 1, 2, row, row + 1,
@@ -1866,20 +1870,32 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
 
     // boxes
     ctxt->box_sub = gtk_combo_box_text_new();
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_COMBO_BOX( ctxt->box_sub ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_combo_box_set_focus_on_click( GTK_COMBO_BOX( ctxt->box_sub ), FALSE );
+#endif
     for ( i = 0; i < G_N_ELEMENTS( context_sub ); i++ )
         gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( ctxt->box_sub ), _(context_sub[i]) );
     g_signal_connect( G_OBJECT( ctxt->box_sub ), "changed",
                       G_CALLBACK( on_context_sub_changed ), ctxt );
 
     ctxt->box_comp = gtk_combo_box_text_new();
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_COMBO_BOX( ctxt->box_comp ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_combo_box_set_focus_on_click( GTK_COMBO_BOX( ctxt->box_comp ), FALSE );
+#endif
     for ( i = 0; i < G_N_ELEMENTS( context_comp ); i++ )
         gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( ctxt->box_comp ),
                                                             _(context_comp[i]) );
 
     ctxt->box_value = gtk_combo_box_text_new_with_entry();
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_COMBO_BOX( ctxt->box_value ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_combo_box_set_focus_on_click( GTK_COMBO_BOX( ctxt->box_value ), FALSE );
+#endif
 #if (GTK_MAJOR_VERSION == 3)
     // see https://github.com/IgnorantGuru/spacefm/issues/43
     // this seems to have no effect
@@ -1887,7 +1903,11 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
 #endif
 
     ctxt->box_match = gtk_combo_box_text_new();
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_COMBO_BOX( ctxt->box_match ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_combo_box_set_focus_on_click( GTK_COMBO_BOX( ctxt->box_match ), FALSE );
+#endif
     gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( ctxt->box_match ),
                                                     _("matches any rule:") );
     gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( ctxt->box_match ),
@@ -1900,7 +1920,11 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
                       G_CALLBACK( on_context_action_changed ), ctxt );
 
     ctxt->box_action = gtk_combo_box_text_new();
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_COMBO_BOX( ctxt->box_action ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_combo_box_set_focus_on_click( GTK_COMBO_BOX( ctxt->box_action ), FALSE );
+#endif
     gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( ctxt->box_action ),
                                                     _("Show") );
     gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( ctxt->box_action ),
@@ -1999,7 +2023,11 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
                         GTK_WIDGET( gtk_label_new( _("If enabled, use as handler for:") ) ),
                         FALSE, TRUE, 0 );
     ctxt->opener = gtk_combo_box_text_new();
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_COMBO_BOX( ctxt->opener ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_combo_box_set_focus_on_click( GTK_COMBO_BOX( ctxt->opener ), FALSE );
+#endif
     gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( ctxt->opener ),
                                                     _("none") );
     gtk_combo_box_text_append_text( GTK_COMBO_BOX_TEXT( ctxt->opener ),
@@ -2294,7 +2322,11 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
     gtk_box_pack_start( GTK_BOX( hbox ),
                         GTK_WIDGET( label ), FALSE, TRUE, 0 );
     ctxt->open_browser = gtk_combo_box_text_new();
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_widget_set_focus_on_click( GTK_COMBO_BOX( ctxt->open_browser ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_combo_box_set_focus_on_click( GTK_COMBO_BOX( ctxt->open_browser ), FALSE );
+#endif
 
     char* path;
     if ( rset->plugin )

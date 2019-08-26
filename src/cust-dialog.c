@@ -3200,7 +3200,11 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             }
             g_signal_connect( G_OBJECT( w ), "changed",
                                 G_CALLBACK( on_combo_changed ), el );
+#if (GTK_MAJOR_VERSION == 3)
+            gtk_widget_set_focus_on_click( GTK_COMBO_BOX( w ), FALSE );
+#elif (GTK_MAJOR_VERSION == 2)
             gtk_combo_box_set_focus_on_click( GTK_COMBO_BOX( w ), FALSE );
+#endif
             set_font( w, font );
             gtk_box_pack_start( GTK_BOX( box ), w, expand, TRUE, pad );
             el->widgets = g_list_append( el->widgets, w );
