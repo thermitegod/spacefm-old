@@ -787,11 +787,15 @@ void main_window_root_bar_all()
         for ( l = all_windows; l; l = l->next )
         {
             a_window = (FMMainWindow*)l->data;
-            gtk_widget_modify_bg( GTK_WIDGET( a_window ), GTK_STATE_NORMAL, &color );
-            gtk_widget_modify_bg( GTK_WIDGET( a_window->menu_bar ),
-                                                        GTK_STATE_NORMAL, &color );
-            gtk_widget_modify_bg( GTK_WIDGET( a_window->panelbar ),
-                                                        GTK_STATE_NORMAL, &color );
+#if (GTK_MAJOR_VERSION == 3)
+            gtk_widget_override_background_color(GTK_WIDGET(a_window), GTK_STATE_NORMAL, &color);
+            gtk_widget_override_background_color(GTK_WIDGET(a_window->menu_bar), GTK_STATE_NORMAL, &color);
+            gtk_widget_override_background_color(GTK_WIDGET(a_window->panelbar), GTK_STATE_NORMAL, &color);
+#elif (GTK_MAJOR_VERSION == 2)
+            gtk_widget_modify_bg(GTK_WIDGET(a_window), GTK_STATE_NORMAL, &color);
+            gtk_widget_modify_bg(GTK_WIDGET(a_window->menu_bar), GTK_STATE_NORMAL, &color);
+            gtk_widget_modify_bg(GTK_WIDGET(a_window->panelbar), GTK_STATE_NORMAL, &color);
+#endif
             // how to change menu bar text color?
             //gtk_widget_modify_fg( GTK_MENU_ITEM( a_window->file_menu_item ), GTK_STATE_NORMAL, &color_white );
         }
@@ -801,12 +805,15 @@ void main_window_root_bar_all()
         for ( l = all_windows; l; l = l->next )
         {
             a_window = (FMMainWindow*)l->data;
-            gtk_widget_modify_bg( GTK_WIDGET( a_window ), GTK_STATE_NORMAL, NULL );
-            gtk_widget_modify_bg( GTK_WIDGET( a_window->menu_bar ),
-                                                        GTK_STATE_NORMAL, NULL );
-            gtk_widget_modify_bg( GTK_WIDGET( a_window->panelbar ),
-                                                        GTK_STATE_NORMAL, NULL );
-            //gtk_widget_modify_fg( a_window->menu_bar, GTK_STATE_NORMAL, NULL );
+#if (GTK_MAJOR_VERSION == 3)
+            gtk_widget_override_background_color(GTK_WIDGET(a_window), GTK_STATE_NORMAL, NULL);
+            gtk_widget_override_background_color(GTK_WIDGET(a_window->menu_bar), GTK_STATE_NORMAL, NULL);
+            gtk_widget_override_background_color(GTK_WIDGET(a_window->panelbar), GTK_STATE_NORMAL, NULL);
+#elif (GTK_MAJOR_VERSION == 2)
+            gtk_widget_modify_bg(GTK_WIDGET(a_window), GTK_STATE_NORMAL, NULL);
+            gtk_widget_modify_bg(GTK_WIDGET(a_window->menu_bar), GTK_STATE_NORMAL, NULL);
+            gtk_widget_modify_bg(GTK_WIDGET(a_window->panelbar), GTK_STATE_NORMAL, NULL);
+#endif
         }
     }
 }
