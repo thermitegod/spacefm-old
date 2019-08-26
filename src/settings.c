@@ -2793,7 +2793,11 @@ GtkWidget* xset_new_menuitem( const char* label, const char* icon )
     {
         // allow escape of underscore
         char* str = clean_label( label, FALSE, FALSE );
+#if (GTK_MAJOR_VERSION == 3)
+        item = gtk_menu_item_new_with_label( str );
+#elif (GTK_MAJOR_VERSION == 2)
         item = gtk_image_menu_item_new_with_label( str );
+#endif
         g_free( str );
     }
     else

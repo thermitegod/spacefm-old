@@ -962,8 +962,11 @@ GtkWidget* ptk_file_menu_new( DesktopWindow* desktop, PtkFileBrowser* browser,
             for ( sl = handlers_slist; sl; sl = sl->next )
             {
                 set = (XSet*)sl->data;
-                app_menu_item = gtk_image_menu_item_new_with_label(
-                                                        set->menu_label );
+#if (GTK_MAJOR_VERSION == 3)
+                app_menu_item = gtk_menu_item_new_with_label(set->menu_label);
+#elif (GTK_MAJOR_VERSION == 2)
+                app_menu_item = gtk_image_menu_item_new_with_label(set->menu_label);
+#endif
                 gtk_container_add ( GTK_CONTAINER ( submenu ), app_menu_item );
                 g_signal_connect( G_OBJECT( app_menu_item ), "activate",
                                   G_CALLBACK( on_popup_run_app ), ( gpointer ) data );
@@ -1027,10 +1030,17 @@ GtkWidget* ptk_file_menu_new( DesktopWindow* desktop, PtkFileBrowser* browser,
                 }
                 desktop_file = vfs_app_desktop_new( *app );
                 app_name = vfs_app_desktop_get_disp_name( desktop_file );
+#if (GTK_MAJOR_VERSION == 3)
+                if ( app_name )
+                    app_menu_item = gtk_menu_item_new_with_label(app_name);
+                else
+                    app_menu_item = gtk_menu_item_new_with_label(*app);
+#elif (GTK_MAJOR_VERSION == 2)
                 if ( app_name )
                     app_menu_item = gtk_image_menu_item_new_with_label ( app_name );
                 else
                     app_menu_item = gtk_image_menu_item_new_with_label ( *app );
+#endif
                 gtk_container_add ( GTK_CONTAINER ( submenu ), app_menu_item );
                 g_signal_connect( G_OBJECT( app_menu_item ), "activate",
                                   G_CALLBACK( on_popup_run_app ), ( gpointer ) data );

@@ -3064,8 +3064,11 @@ void ptk_location_view_dev_menu( GtkWidget* parent, PtkFileBrowser* file_browser
     for ( l = names; l; l = l->next )
     {
         vol = (VFSVolume*)l->data;
-        item = gtk_image_menu_item_new_with_label(
-                                        vfs_volume_get_disp_name( vol ) );
+#if (GTK_MAJOR_VERSION == 3)
+        item = gtk_menu_item_new_with_label(vfs_volume_get_disp_name(vol));
+#elif (GTK_MAJOR_VERSION == 2)
+        item = gtk_image_menu_item_new_with_label(vfs_volume_get_disp_name(vol));
+#endif
         if ( vfs_volume_get_icon( vol ) )
         {
             GtkWidget* image = xset_get_image( vfs_volume_get_icon( vol ),
