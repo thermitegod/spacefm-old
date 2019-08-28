@@ -9,10 +9,6 @@
 *
 */
 
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE  // euidaccess
-#endif
-
 #include "vfs-dir.h"
 #include "vfs-thumbnail-loader.h"
 
@@ -40,9 +36,6 @@ static void vfs_dir_get_property ( GObject *obj,
                                    guint prop_id,
                                    GValue *value,
                                    GParamSpec *pspec );
-
-char* gethidden( const char* path );  //MOD added
-gboolean ishidden( const char* hidden, const char* file_name );  //MOD added
 
 /* constructor is private */
 static VFSDir* vfs_dir_new( const char* path );
@@ -518,103 +511,6 @@ static gboolean is_dir_virtual( const char* path )
     return FALSE;   /* FIXME: not implemented */
 }
 
-char* gethidden( const char* path )  //MOD added
-{
-    // Read .hidden into string
-    char* hidden_path = g_build_filename( path, ".hidden", NULL );
-
-    // test access first because open() on missing file may cause
-    // long delay on nfs
-    int acc;
-#if defined(HAVE_EUIDACCESS)
-    acc = euidaccess( hidden_path, R_OK );
-#elif defined(HAVE_EACCESS)
-    acc = eaccess( hidden_path, R_OK );
-#else
-    acc = 0;
-#endif
-    if ( acc != 0 )
-    {
-        g_free( hidden_path );
-        return NULL;
-    }
-
-    int fd = open( hidden_path, O_RDONLY );
-    g_free( hidden_path );
-    if ( fd != -1 )
-    {
-        struct stat s;   // skip stat
-        if ( G_LIKELY( fstat( fd, &s ) != -1 ) )
-        {
-            char* buf = g_malloc( s.st_size + 1 );
-            if( (s.st_size = read( fd, buf, s.st_size )) != -1 )
-            {
-                buf[ s.st_size ] = 0;
-                close( fd );
-                return buf;
-            }
-            else
-                g_free( buf );
-        }
-        close( fd );
-    }
-    return NULL;
-}
-
-gboolean ishidden( const char* hidden, const char* file_name )  //MOD added
-{   // assumes hidden,file_name != NULL
-    char* str;
-    char c;
-    str = strstr( hidden, file_name );
-    while ( str )
-    {
-        if ( str == hidden )
-        {
-            // file_name is at start of buffer
-            c = hidden[ strlen( file_name ) ];
-            if ( c == '\n' || c == '\0' )
-                return TRUE;
-        }
-        else
-        {
-            c = str[ strlen( file_name ) ];
-            if ( str[-1] == '\n' && ( c == '\n' || c == '\0' ) )
-                return TRUE;
-        }
-        str = strstr( ++str, file_name );
-    }
-    return FALSE;
-}
-
-gboolean vfs_dir_add_hidden( const char* path, const char* file_name )
-{
-    gboolean ret = TRUE;
-    char* hidden = gethidden( path );
-
-    if ( !( hidden && ishidden( hidden, file_name ) ) )
-    {
-        char* buf = g_strdup_printf( "%s\n", file_name );
-        char* file_path = g_build_filename( path, ".hidden", NULL );
-        int fd = open( file_path, O_WRONLY | O_CREAT | O_APPEND, 0644 );
-        g_free( file_path );
-
-        if ( fd != -1 )
-        {
-            if ( write( fd, buf, strlen( buf ) ) == -1 )
-                ret = FALSE;
-            close( fd );
-        }
-        else
-            ret = FALSE;
-
-        g_free( buf );
-    }
-
-    if ( hidden )
-        g_free( hidden );
-    return ret;
-}
-
 void vfs_dir_load( VFSDir* dir )
 {
     if ( G_LIKELY(dir->path) )
@@ -660,11 +556,9 @@ gpointer vfs_dir_load_thread(  VFSAsyncTask* task, VFSDir* dir )
     char* full_path;
     GDir* dir_content;
     VFSFileInfo* file;
-    char* hidden = NULL;  //MOD added
 
     dir->file_listed = 0;
     dir->load_complete = 0;
-    dir->xhidden_count = 0;  //MOD
     if ( dir->path )
     {
         /* Install file alteration monitor */
@@ -681,9 +575,6 @@ gpointer vfs_dir_load_thread(  VFSAsyncTask* task, VFSDir* dir )
             if( G_UNLIKELY(dir->is_trash) )
                 kf = g_key_file_new();
 
-            // MOD  dir contains .hidden file?
-            hidden = gethidden( dir->path );
-
             while ( ! vfs_async_task_is_cancelled( dir->task )
                         && ( file_name = g_dir_read_name( dir_content ) ) )
             {
@@ -691,12 +582,6 @@ gpointer vfs_dir_load_thread(  VFSAsyncTask* task, VFSDir* dir )
                 if ( !full_path )
                     continue;
 
-                //MOD ignore if in .hidden
-                if ( hidden && ishidden( hidden, file_name ) )
-                {
-                    dir->xhidden_count++;
-                    continue;
-                }
                 /* FIXME: Is locking GDK needed here? */
                 /* GDK_THREADS_ENTER(); */
                 file = vfs_file_info_new();
@@ -747,8 +632,6 @@ gpointer vfs_dir_load_thread(  VFSAsyncTask* task, VFSDir* dir )
                 g_free( full_path );
             }
             g_dir_close( dir_content );
-            if ( hidden )
-                g_free( hidden );
 
             if( G_UNLIKELY(dir->is_trash) )
                 g_key_file_free( kf );

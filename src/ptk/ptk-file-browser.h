@@ -258,9 +258,6 @@ void ptk_file_browser_view_as_list ( PtkFileBrowser* file_browser );
 void ptk_file_browser_create_new_file( PtkFileBrowser* file_browser,
                                        gboolean create_folder );
 
-void ptk_file_browser_hide_selected( PtkFileBrowser* file_browser,
-                                                    GList* files, char* cwd );
-
 void ptk_file_browser_show_thumbnails( PtkFileBrowser* file_browser,
                                        int max_file_size );
 

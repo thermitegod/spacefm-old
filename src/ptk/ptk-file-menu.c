@@ -396,12 +396,6 @@ void on_archive_show_config( GtkMenuItem *menuitem, PtkFileMenu* data )
                                                                     NULL );
 }
 
-void on_hide_file( GtkMenuItem *menuitem, PtkFileMenu* data )
-{
-    if ( data->browser )
-        ptk_file_browser_hide_selected( data->browser, data->sel_files, data->cwd );
-}
-
 void on_permission( GtkMenuItem *menuitem, PtkFileMenu* data )
 {
     if ( data->browser )
@@ -1331,7 +1325,6 @@ GtkWidget* ptk_file_menu_new( DesktopWindow* desktop, PtkFileBrowser* browser,
             xset_set_ob1( set, "set", set );
             set->disable = !sel_files;
 
-        set = xset_set_cb( "edit_hide", on_hide_file, data );
         set->disable = !sel_files || no_write_access || desktop || !browser;
 
         if ( browser )
@@ -3114,8 +3107,6 @@ void ptk_file_menu_action( DesktopWindow* desktop, PtkFileBrowser* browser,
             on_popup_rename_activate( NULL, data );
         else if ( !strcmp( xname, "delete" ) )
             on_popup_delete_activate( NULL, data );
-        else if ( !strcmp( xname, "hide" ) )
-            on_hide_file( NULL, data );
         else if ( !strcmp( xname, "canon" ) )
         {
             if ( browser )

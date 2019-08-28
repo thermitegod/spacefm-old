@@ -67,7 +67,6 @@ struct _VFSDir
 
     GSList* changed_files;
     GSList* created_files;  //MOD
-    glong xhidden_count;  //MOD
 };
 
 struct _VFSDirClass
@@ -107,8 +106,6 @@ void vfs_dir_flush_notify_cache();
 
 /* get the path of desktop dir */
 const char* vfs_get_desktop_dir();
-
-gboolean vfs_dir_add_hidden( const char* path, const char* file_name );  //MOD added
 
 /* Get the path of user's trash dir under home dir.
  * NOTE:

@@ -5565,37 +5565,6 @@ void ptk_file_browser_copycmd( PtkFileBrowser* file_browser, GList* sel_files,
     }
 }
 
-void ptk_file_browser_hide_selected( PtkFileBrowser* file_browser,
-                                                    GList* files, char* cwd )
-{
-    if ( xset_msg_dialog( GTK_WIDGET( file_browser ), 0, _("Hide File"), NULL,
-                GTK_BUTTONS_OK_CANCEL,
-                _("The names of the selected files will be added to the '.hidden' file located in this folder, which will hide them from view in SpaceFM.  You may need to refresh the view or restart SpaceFM for the files to disappear.\n\nTo unhide a file, open the .hidden file in your text editor, remove the name of the file, and refresh."),
-                NULL, NULL ) != GTK_RESPONSE_OK )
-        return;
-
-    VFSFileInfo* file;
-    GList *l;
-
-    if ( files )
-    {
-        for ( l = files; l; l = l->next )
-        {
-            file = ( VFSFileInfo* ) l->data;
-            if ( !vfs_dir_add_hidden( cwd, vfs_file_info_get_name( file ) ) )
-                ptk_show_error( GTK_WINDOW( gtk_widget_get_toplevel(
-                            GTK_WIDGET( file_browser ) ) ),
-                            _("Error"), _("Error hiding files") );
-        }
-        // refresh from here causes a segfault occasionally
-        //ptk_file_browser_refresh( NULL, file_browser );
-    }
-    else
-        ptk_show_error( GTK_WINDOW( gtk_widget_get_toplevel(
-                            GTK_WIDGET( file_browser ) ) ),
-                            _("Error"), _( "No files are selected" ) );
-}
-
 void ptk_file_browser_file_properties( PtkFileBrowser* file_browser, int page )
 {
     GtkWidget * parent;

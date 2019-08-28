@@ -3459,7 +3459,7 @@ void on_file_browser_open_item( PtkFileBrowser* file_browser,
 void fm_main_window_update_status_bar( FMMainWindow* main_window,
                                        PtkFileBrowser* file_browser )
 {
-    int num_sel, num_vis, num_hid, num_hidx;
+    int num_sel, num_vis;
     guint64 total_size;
     char *msg;
     char size_str[ 64 ];
@@ -3612,32 +3612,10 @@ void fm_main_window_update_status_bar( FMMainWindow* main_window,
         else
             dirmsg = g_strdup_printf( "./ → %s", canon );
 
-        // MOD add count for .hidden files
-        char* xhidden;
-        num_hid = ptk_file_browser_get_n_all_files( file_browser ) - num_vis;
-        if ( num_hid < 0 ) num_hid = 0;  // needed due to bug in get_n_visible_files?
-        num_hidx = file_browser->dir ? file_browser->dir->xhidden_count : 0;
-        //VFSDir* xdir = file_browser->dir;
-        if ( num_hid || num_hidx )
-        {
-            if ( num_hidx )
-                xhidden = g_strdup_printf( "+%d", num_hidx );
-            else
-                xhidden = g_strdup( "" );
+	msg = g_strdup_printf( ngettext( "%s%d item   %s",
+                                         "%s%d items   %s", num_vis ),
+                                             free_space, num_vis, dirmsg );
 
-            char hidden[128];
-            char *hnc = NULL;
-            char* hidtext = ngettext( "hidden", "hidden", num_hid);
-            g_snprintf( hidden, 127, g_strdup_printf( "%d%s %s", num_hid,
-                                                xhidden, hidtext ), num_hid );
-            msg = g_strdup_printf( ngettext( "%s%d visible (%s)   %s",
-                                             "%s%d visible (%s)   %s", num_vis ),
-                                             free_space, num_vis, hidden, dirmsg );
-        }
-        else
-            msg = g_strdup_printf( ngettext( "%s%d item   %s",
-                                             "%s%d items   %s", num_vis ),
-                                                  free_space, num_vis, dirmsg );
         g_free( dirmsg );
     }
     gtk_statusbar_push( GTK_STATUSBAR( file_browser->status_bar ), 0, msg );
