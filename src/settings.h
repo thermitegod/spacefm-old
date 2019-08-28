@@ -43,7 +43,6 @@ typedef struct
     int small_icon_size;
     int tool_icon_size;
 
-    gboolean use_trash_can;
     gboolean single_click;
     gboolean no_single_hover;
 

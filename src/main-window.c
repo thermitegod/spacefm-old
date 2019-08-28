@@ -4375,7 +4375,6 @@ void main_context_fill( PtkFileBrowser* file_browser, XSetContext* c )
     {
         "move",
         "copy",
-        "trash",
         "delete",
         "link",
         "change",
@@ -4837,7 +4836,6 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
     {
          "move",
          "copy",
-         "trash",
          "delete",
          "link",
          "change",
@@ -5657,7 +5655,6 @@ void main_task_view_update_task( PtkFileTask* ptask )
         {
             N_( "moving" ),
             N_( "copying" ),
-            N_( "trashing" ),
             N_( "deleting" ),
             N_( "linking" ),
             N_( "changing" ),

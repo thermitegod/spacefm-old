@@ -58,8 +58,6 @@ const int tool_icon_size_default = 0;
 const gboolean single_click_default = FALSE;
 const gboolean no_single_hover_default = FALSE;
 
-/* FIXME: temporarily disable trash since it's not finished */
-const gboolean use_trash_can_default = FALSE;
 const int view_mode_default = PTK_FB_ICON_VIEW;
 const int sort_order_default = PTK_FB_SORT_BY_NAME;
 const int sort_type_default = GTK_SORT_ASCENDING;
@@ -243,11 +241,6 @@ static void parse_general_settings( char* line )
                             app_settings.tool_icon_size > GTK_ICON_SIZE_DIALOG )
             app_settings.tool_icon_size = tool_icon_size_default;
     }
-    /* FIXME: temporarily disable trash since it's not finished */
-#if 0
-    else if ( 0 == strcmp( name, "use_trash_can" ) )
-        app_settings.use_trash_can = atoi(value);
-#endif
     else if ( 0 == strcmp( name, "single_click" ) )
         app_settings.single_click = atoi(value);
     else if ( 0 == strcmp( name, "no_single_hover" ) )
@@ -510,7 +503,6 @@ void load_settings( char* config_dir )
     app_settings.big_icon_size = big_icon_size_default;
     app_settings.small_icon_size = small_icon_size_default;
     app_settings.tool_icon_size = tool_icon_size_default;
-    app_settings.use_trash_can = use_trash_can_default;
     app_settings.use_si_prefix = use_si_prefix_default;
     app_settings.no_execute = TRUE;   //MOD
     app_settings.no_confirm = FALSE;   //MOD
@@ -860,10 +852,6 @@ char* save_settings( gpointer main_window_ptr )
         fprintf( file, "big_icon_size=%d\n", app_settings.big_icon_size );
         fprintf( file, "small_icon_size=%d\n", app_settings.small_icon_size );
         fprintf( file, "tool_icon_size=%d\n", app_settings.tool_icon_size );
-#if 0
-        /* FIXME: temporarily disable trash since it's not finished */
-        fprintf( file, "use_trash_can=%d\n", app_settings.use_trash_can );
-#endif
         fprintf( file, "single_click=%d\n", app_settings.single_click );
         fprintf( file, "no_single_hover=%d\n", app_settings.no_single_hover );
         fprintf( file, "sort_order=%d\n", app_settings.sort_order );

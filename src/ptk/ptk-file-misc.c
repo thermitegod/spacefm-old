@@ -155,7 +155,7 @@ void ptk_delete_files( GtkWindow* parent_win,
     if ( ! sel_files )
         return ;
 
-    if( ! app_settings.use_trash_can && ! app_settings.no_confirm ) //MOD
+    if( ! app_settings.no_confirm )
     {
         // count
         int count = g_list_length( sel_files );
@@ -187,7 +187,8 @@ void ptk_delete_files( GtkWindow* parent_win,
         file_list = g_list_prepend( file_list, file_path );
     }
     /* file_list = g_list_reverse( file_list ); */
-    task = ptk_file_task_new( app_settings.use_trash_can ? VFS_FILE_TASK_TRASH : VFS_FILE_TASK_DELETE,
+    task = ptk_file_task_new(
+                              VFS_FILE_TASK_DELETE,
                               file_list,
                               NULL,
                               parent_win ? GTK_WINDOW( parent_win ) : NULL,

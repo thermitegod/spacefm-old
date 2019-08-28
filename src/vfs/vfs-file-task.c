@@ -447,9 +447,7 @@ vfs_file_task_do_copy( VFSFileTask* task,
                 update_file_display( dest_file );
 
             /* Move files to different device: Need to delete source dir */
-            if ( ( task->type == VFS_FILE_TASK_MOVE
-                 || task->type == VFS_FILE_TASK_TRASH )
-                 && !should_abort( task ) && !copy_fail )
+            if ((task->type == VFS_FILE_TASK_MOVE) && !should_abort(task) && !copy_fail)
             {
                 if ( (result = rmdir( src_file )) )
                 {
@@ -500,9 +498,7 @@ vfs_file_task_do_copy( VFSFileTask* task,
                 //chmod( dest_file, file_stat.st_mode );
 
                 /* Move files to different device: Need to delete source files */
-                if ( ( task->type == VFS_FILE_TASK_MOVE
-                                            || task->type == VFS_FILE_TASK_TRASH )
-                                            && !copy_fail )
+                if ((task->type == VFS_FILE_TASK_MOVE) && !copy_fail)
                 {
                     result = unlink( src_file );
                     if ( result )
@@ -610,8 +606,7 @@ vfs_file_task_do_copy( VFSFileTask* task,
                         update_file_display( dest_file );
 
                     /* Move files to different device: Need to delete source files */
-                    if ( (task->type == VFS_FILE_TASK_MOVE || task->type == VFS_FILE_TASK_TRASH)
-                         && !should_abort( task ) )
+                    if ((task->type == VFS_FILE_TASK_MOVE) && !should_abort(task))
                     {
                         result = unlink( src_file );
                         if ( result )
@@ -778,7 +773,6 @@ vfs_file_task_move( char* src_file, VFSFileTask* task )
     struct stat dest_stat;
     gchar* file_name;
     gchar* dest_file;
-    GKeyFile* kf;   /* for trash info */
     int tmpfd = -1;
 
     if ( should_abort( task ) )
@@ -789,18 +783,8 @@ vfs_file_task_move( char* src_file, VFSFileTask* task )
     g_mutex_unlock( task->mutex );
 
     file_name = g_path_get_basename( src_file );
-    if( task->type == VFS_FILE_TASK_TRASH )
-    {
-        dest_file = g_strconcat( task->dest_dir, "/",  file_name, "XXXXXX", NULL );
-        tmpfd = mkstemp( dest_file );
-        if( tmpfd < 0 )
-        {
-            goto on_error;
-        }
-        g_debug( dest_file, NULL );
-    }
-    else
-        dest_file = g_build_filename( task->dest_dir, file_name, NULL );
+
+    dest_file = g_build_filename( task->dest_dir, file_name, NULL );
 
     g_free(file_name );
 
@@ -833,14 +817,6 @@ vfs_file_task_move( char* src_file, VFSFileTask* task )
     }
     else
         vfs_file_task_error( task, errno, _("Accessing"), src_file );
-
-on_error:
-    if( tmpfd >= 0 )
-    {
-        close( tmpfd );
-        unlink( dest_file );
-    }
-    g_free(dest_file );
 }
 
 static void
@@ -2043,7 +2019,6 @@ static gpointer vfs_file_task_thread ( VFSFileTask* task )
     off_t size;
     GFunc funcs[] = {( GFunc ) vfs_file_task_move,
                      ( GFunc ) vfs_file_task_copy,
-                     ( GFunc ) vfs_file_task_move,  /* trash */
                      ( GFunc ) vfs_file_task_delete,
                      ( GFunc ) vfs_file_task_link,
                      ( GFunc ) vfs_file_task_chown_chmod,
@@ -2059,13 +2034,6 @@ static gpointer vfs_file_task_thread ( VFSFileTask* task )
                         task->src_paths ? (char*)task->src_paths->data : NULL );
     task->total_size = 0;
 
-    if( task->type == VFS_FILE_TASK_TRASH )
-    {
-        task->dest_dir = g_build_filename( vfs_get_trash_dir(), "files", NULL );
-        /* Create the trash dir if it doesn't exist */
-        if( ! g_file_test( task->dest_dir, G_FILE_TEST_EXISTS ) )
-            g_mkdir_with_parents( task->dest_dir, 0700 );
-    }
     g_mutex_unlock( task->mutex );
 
     if ( task->abort )
@@ -2130,15 +2098,13 @@ static gpointer vfs_file_task_thread ( VFSFileTask* task )
                 // sfm why does this code change task->recursive back and forth?
                 if ( S_ISLNK( file_stat.st_mode ) )      // Don't do deep copy for symlinks
                     task->recursive = FALSE;
-                else if ( task->type == VFS_FILE_TASK_MOVE || task->type == VFS_FILE_TASK_TRASH )
+                else if ( task->type == VFS_FILE_TASK_MOVE )
                     task->recursive = ( file_stat.st_dev != dest_dev );
                 else
                     task->recursive = FALSE;
                 if ( task->recursive )
                 */
-                if ( ( task->type == VFS_FILE_TASK_MOVE ||
-                                                task->type == VFS_FILE_TASK_TRASH )
-                                                && file_stat.st_dev != dest_dev )
+                if ((task->type == VFS_FILE_TASK_MOVE) && file_stat.st_dev != dest_dev)
                 {
                     // recursive size
                     size = 0;
@@ -2180,8 +2146,7 @@ static gpointer vfs_file_task_thread ( VFSFileTask* task )
             if ( task->type == VFS_FILE_TASK_MOVE ||
                                                 task->type == VFS_FILE_TASK_COPY )
                 exlimit = 10485760;     // 10M
-            else if ( task->type == VFS_FILE_TASK_DELETE ||
-                                                task->type == VFS_FILE_TASK_TRASH )
+            else if (task->type == VFS_FILE_TASK_DELETE)
                 exlimit = 5368709120;   // 5G
             else
                 exlimit = 0;            // always exception for other types

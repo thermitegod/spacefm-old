@@ -43,7 +43,6 @@ static int n_vols = 0;
 static guint theme_changed = 0; /* GtkIconTheme::"changed" handler */
 
 static gboolean has_desktop_dir = TRUE;
-static gboolean show_trash_can = FALSE;
 
 GdkPixbuf* global_icon_bookmark = NULL;
 GdkPixbuf* global_icon_submenu = NULL;

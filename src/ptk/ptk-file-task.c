@@ -759,7 +759,7 @@ void set_progress_icon( PtkFileTask* ptask )
                                                 task->type == VFS_FILE_TASK_LINK )
         pixbuf = gtk_icon_theme_load_icon( gtk_icon_theme_get_default(),
                             "stock_copy", 16, GTK_ICON_LOOKUP_USE_BUILTIN, NULL );
-    else if ( task->type == VFS_FILE_TASK_TRASH || task->type == VFS_FILE_TASK_DELETE )
+    else if (task->type == VFS_FILE_TASK_DELETE)
         pixbuf = gtk_icon_theme_load_icon( gtk_icon_theme_get_default(),
                             "stock_delete", 16, GTK_ICON_LOOKUP_USE_BUILTIN, NULL );
     else if ( task->type == VFS_FILE_TASK_EXEC && task->exec_icon )
@@ -797,7 +797,6 @@ void ptk_file_task_progress_open( PtkFileTask* ptask )
         {
             N_( "Move: " ),
             N_( "Copy: " ),
-            N_( "Trash: " ),
             N_( "Delete: " ),
             N_( "Link: " ),
             N_( "Change: " ),
@@ -807,7 +806,6 @@ void ptk_file_task_progress_open( PtkFileTask* ptask )
         {
             N_( "Moving..." ),
             N_( "Copying..." ),
-            N_( "Trashing..." ),
             N_( "Deleting..." ),
             N_( "Linking..." ),
             N_( "Changing..." ),

@@ -24,7 +24,6 @@ gboolean ptk_location_view_chdir( GtkTreeView* location_view, const char* path )
 char* ptk_location_view_get_selected_dir( GtkTreeView* location_view );
 gboolean ptk_location_view_is_item_volume(  GtkTreeView* location_view, GtkTreeIter* it );
 VFSVolume* ptk_location_view_get_volume(  GtkTreeView* location_view, GtkTreeIter* it );
-void ptk_location_view_show_trash_can( gboolean show );
 void ptk_location_view_on_action( GtkWidget* view, XSet* set );
 VFSVolume* ptk_location_view_get_selected_vol( GtkTreeView* location_view );
 void update_volume_icons();

@@ -20,7 +20,6 @@ typedef enum
 {
     VFS_FILE_TASK_MOVE = 0,
     VFS_FILE_TASK_COPY,
-    VFS_FILE_TASK_TRASH,
     VFS_FILE_TASK_DELETE,
     VFS_FILE_TASK_LINK,
     VFS_FILE_TASK_CHMOD_CHOWN,         /* These two kinds of operation have lots in common,
