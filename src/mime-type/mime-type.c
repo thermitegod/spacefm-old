@@ -21,10 +21,6 @@
 
 /* Currently this library is NOT MT-safe */
 
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE  // euidaccess
-#endif
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -428,13 +424,7 @@ char* mime_type_get_desc_icon( const char* type, const char* locale,
      */
     /* FIXME: This path shouldn't be hard-coded. */
     g_snprintf( file_path, 256, "%s/mime/%s.xml", g_get_user_data_dir(), type );
-#if defined(HAVE_EUIDACCESS)
-    acc = euidaccess( file_path, F_OK );
-#elif defined(HAVE_EACCESS)
-    acc = eaccess( file_path, F_OK );
-#else
-    acc = 0;
-#endif
+    acc = access( file_path, F_OK );
     if ( acc != -1 )
     {
         desc = _mime_type_get_desc_icon( file_path, locale, TRUE, icon_name );
@@ -448,13 +438,7 @@ char* mime_type_get_desc_icon( const char* type, const char* locale,
     {
         /* FIXME: This path shouldn't be hard-coded. */
         g_snprintf( file_path, 256, "%s/mime/%s.xml", *dir, type );
-#if defined(HAVE_EUIDACCESS)
-        acc = euidaccess( file_path, F_OK );
-#elif defined(HAVE_EACCESS)
-        acc = eaccess( file_path, F_OK );
-#else
-        acc = 0;
-#endif
+        acc = access( file_path, F_OK );
         if ( acc != -1 )
         {
             desc = _mime_type_get_desc_icon( file_path, locale, FALSE,

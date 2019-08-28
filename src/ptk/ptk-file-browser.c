@@ -2,9 +2,6 @@
 #include <config.h>
 #endif
 
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif
 #include <unistd.h>
 
 #include <gtk/gtk.h>
@@ -6207,11 +6204,7 @@ int ptk_file_browser_no_access( const char* cwd, const char* smode )
         mode = W_OK;
 
     int no_access = 0;
-    #if defined(HAVE_EUIDACCESS)
-        no_access = euidaccess( cwd, mode );
-    #elif defined(HAVE_EACCESS)
-        no_access = eaccess( cwd, mode );
-    #endif
+        no_access = access( cwd, mode );
     return no_access;
 }
 

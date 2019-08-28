@@ -12,10 +12,6 @@
 #  include <config.h>
 #endif
 
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE  // euidaccess
-#endif
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -5078,46 +5074,14 @@ XSet* xset_custom_new()
 
 gboolean have_x_access( const char* path )
 {
-#if defined(HAVE_EUIDACCESS)
-    return ( euidaccess( path, R_OK | X_OK ) == 0 );
-#elif defined(HAVE_EACCESS)
-    return ( eaccess( path, R_OK | X_OK ) == 0 );
-#else
-    struct stat results;
-
-    stat( path, &results );
-    if ( ( results.st_mode & S_IXOTH ) )
-        return TRUE;
-    if ( ( results.st_mode & S_IXUSR ) && ( geteuid() == results.st_uid ) )
-        return TRUE;
-    if ( ( results.st_mode & S_IXGRP ) && ( getegid() == results.st_gid ) )
-        return TRUE;
-    return FALSE;
-#endif
+    return ( access( path, R_OK | X_OK ) == 0 );
 }
 
 gboolean have_rw_access( const char* path )
 {
     if ( !path )
         return FALSE;
-#if defined(HAVE_EUIDACCESS)
-    return ( euidaccess( path, R_OK | W_OK ) == 0 );
-#elif defined(HAVE_EACCESS)
-    return ( eaccess( path, R_OK | W_OK ) == 0 );
-#else
-    struct stat results;
-
-    stat( path, &results );
-    if ( ( results.st_mode & S_IROTH ) && ( results.st_mode & S_IWOTH ) )
-        return TRUE;
-    if ( ( results.st_mode & S_IRUSR ) && ( results.st_mode & S_IWUSR )
-                                    && ( geteuid() == results.st_uid ) )
-        return TRUE;
-    if ( ( results.st_mode & S_IRGRP ) && ( results.st_mode & S_IWGRP )
-                                    && ( getegid() == results.st_gid ) )
-        return TRUE;
-    return FALSE;
-#endif
+    return ( access( path, R_OK | W_OK ) == 0 );
 }
 
 gboolean dir_has_files( const char* path )
