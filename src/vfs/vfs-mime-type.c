@@ -297,10 +297,9 @@ GdkPixbuf* vfs_mime_type_get_icon( VFSMimeType* mime_type, gboolean big )
             {
                 /* maybe we can find a legacy icon named gnome-mime-foo-bar */
                 g_strlcpy( icon_name, "gnome-mime-", sizeof(icon_name) );
-                strncat( icon_name, mime_type->type,
-                                                ( sep - mime_type->type ) );
-                strcat( icon_name, "-" );
-                strcat( icon_name, sep + 1 );
+                g_strlcat( icon_name, mime_type->type, ( sep - mime_type->type ) );
+                g_strlcat( icon_name, "-", sizeof(icon_name) );
+                g_strlcat( icon_name, sep + 1, sizeof(icon_name) );
                 icon = vfs_load_icon ( icon_theme, icon_name, size );
             }
             // hack for x-xz-compressed-tar missing icon
@@ -317,8 +316,7 @@ GdkPixbuf* vfs_mime_type_get_icon( VFSMimeType* mime_type, gboolean big )
             if ( G_UNLIKELY( ! icon ) )
             {
                 icon_name[ 11 ] = '\0'; /* strlen("gnome-mime-") = 11 */
-                strncat( icon_name, mime_type->type,
-                                                ( sep - mime_type->type ) );
+                g_strlcat( icon_name, mime_type->type, ( sep - mime_type->type ) );
                 icon = vfs_load_icon ( icon_theme, icon_name, size );
             }
             /* try foo-x-generic */
@@ -326,7 +324,7 @@ GdkPixbuf* vfs_mime_type_get_icon( VFSMimeType* mime_type, gboolean big )
             {
                 g_strlcpy( icon_name, mime_type->type, ( sep - mime_type->type ) );
                 icon_name[ (sep - mime_type->type) ] = '\0';
-                strcat( icon_name, "-x-generic" );
+                g_strlcat( icon_name, "-x-generic", sizeof(icon_name) );
                 icon = vfs_load_icon ( icon_theme, icon_name, size );
             }
         }
