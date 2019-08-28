@@ -1235,7 +1235,7 @@ char* randhex8()
     uint n;
 
     n = rand();
-    sprintf(hex, "%08x", n);
+    g_snprintf(hex, sizeof(hex), "%08x", n);
     return g_strdup( hex );
 }
 

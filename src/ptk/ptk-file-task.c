@@ -1667,7 +1667,7 @@ void ptk_file_task_update( PtkFileTask* ptask )
         if ( task->total_size )
             vfs_file_size_to_string_format( buf2, task->total_size, NULL );
         else
-            sprintf( buf2, "??" );  // total_size calculation timed out
+            g_snprintf( buf2, sizeof(buf2), "??" );  // total_size calculation timed out
         size_tally = g_strdup_printf( "%s / %s", buf1, buf2 );
         // cur speed display
         if ( task->last_speed != 0 )

@@ -440,7 +440,7 @@ static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
                 GdkPixbuf* thumbnail_old = thumbnail;
                 thumbnail = gdk_pixbuf_apply_embedded_orientation( thumbnail );
                 g_object_unref( thumbnail_old );
-                sprintf( mtime_str, "%lu", mtime );
+                g_snprintf( mtime_str, sizeof(mtime_str), "%lu", mtime );
                 gdk_pixbuf_save( thumbnail, thumbnail_file, "png", NULL,
                                  "tEXt::Thumb::URI", uri, "tEXt::Thumb::MTime",
                                  mtime_str, NULL );

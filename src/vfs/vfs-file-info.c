@@ -338,7 +338,7 @@ const char* vfs_file_info_get_disp_owner( VFSFileInfo* fi )
             user_name = puser->pw_name;
         else
         {
-            sprintf( uid_str_buf, "%d", fi->uid );
+            g_snprintf( uid_str_buf, sizeof(uid_str_buf), "%d", fi->uid );
             user_name = uid_str_buf;
         }
 
@@ -347,7 +347,7 @@ const char* vfs_file_info_get_disp_owner( VFSFileInfo* fi )
             group_name = pgroup->gr_name;
         else
         {
-            sprintf( gid_str_buf, "%d", fi->gid );
+            g_snprintf( gid_str_buf, sizeof(gid_str_buf), "%d", fi->gid );
             group_name = gid_str_buf;
         }
         fi->disp_owner = g_strdup_printf ( "%s:%s", user_name, group_name );
@@ -527,15 +527,15 @@ void vfs_file_size_to_string_format( char* buf, guint64 size, char* format ) //M
     else
     {
         unit = _("B"); //size > 1 ? _("B") : _("B");
-        sprintf( buf, "%u %s", ( guint ) size, unit );
+        g_snprintf( buf, sizeof(buf), "%u %s", ( guint ) size, unit );
         return ;
     }
     if ( format )
-        sprintf( buf, format, val, unit );  // "%.0f%s"
+        g_snprintf( buf, sizeof(buf), format, val, unit );  // "%.0f%s"
     else if ( val < 10 )
-        sprintf( buf, "%.1f %s", val, unit );
+        g_snprintf( buf, sizeof(buf), "%.1f %s", val, unit );
     else
-        sprintf( buf, "%.0f %s", val, unit );
+        g_snprintf( buf, sizeof(buf), "%.0f %s", val, unit );
 }
 
 void vfs_file_size_to_string( char* buf, guint64 size )
@@ -627,11 +627,11 @@ void vfs_file_size_to_string( char* buf, guint64 size )
     {
         //unit = size > 1 ? "Bytes" : "Byte";
         unit = _("B");
-        sprintf( buf, "%u %s", ( guint ) size, unit );
+        g_snprintf( buf, sizeof(buf), "%u %s", ( guint ) size, unit );
         return ;
     }
-    /* sprintf( buf, "%llu.%u %s", size, point, unit ); */
-    sprintf( buf, "%.1f %s", val, unit );
+    /* g_snprintf( buf, sizeof(buf), "%llu.%u %s", size, point, unit ); */
+    g_snprintf( buf, sizeof(buf), "%.1f %s", val, unit );
 }
 
 gboolean vfs_file_info_is_dir( VFSFileInfo* fi )
