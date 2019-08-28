@@ -43,7 +43,8 @@
  * (Refer to the man page of mmap for detail)
  * So here I undef HAVE_MMAP to disable the implementation using mmap.
  */
-#undef HAVE_MMAP
+//could not replicate
+//#undef HAVE_MMAP
 
 #ifdef HAVE_MMAP
 #include <sys/mman.h>
