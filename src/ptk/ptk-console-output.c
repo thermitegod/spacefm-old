@@ -70,7 +70,7 @@ static gboolean on_output( GIOChannel* ch, GIOCondition cond, gpointer user_data
     {
         if( data->chstdo == ch )
         {
-            strcpy(buffer, _("\nComplete!"));
+            strlcpy(buffer, _("\nComplete!"), sizeof(buffer));
             rlen = strlen(buffer);
 
             GDK_THREADS_ENTER();

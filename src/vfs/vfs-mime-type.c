@@ -289,14 +289,14 @@ GdkPixbuf* vfs_mime_type_get_icon( VFSMimeType* mime_type, gboolean big )
         if ( sep )
         {
             /* convert mime-type foo/bar to foo-bar */
-            strcpy( icon_name, mime_type->type );
+            g_strlcpy( icon_name, mime_type->type, sizeof(icon_name) );
             icon_name[ (sep - mime_type->type) ] = '-';
             /* is there an icon named foo-bar? */
             icon = vfs_load_icon ( icon_theme, icon_name, size );
             if ( ! icon )
             {
                 /* maybe we can find a legacy icon named gnome-mime-foo-bar */
-                strcpy( icon_name, "gnome-mime-" );
+                g_strlcpy( icon_name, "gnome-mime-", sizeof(icon_name) );
                 strncat( icon_name, mime_type->type,
                                                 ( sep - mime_type->type ) );
                 strcat( icon_name, "-" );
@@ -324,8 +324,7 @@ GdkPixbuf* vfs_mime_type_get_icon( VFSMimeType* mime_type, gboolean big )
             /* try foo-x-generic */
             if ( G_UNLIKELY( ! icon ) )
             {
-                strncpy( icon_name, mime_type->type,
-                                                ( sep - mime_type->type ) );
+                g_strlcpy( icon_name, mime_type->type, ( sep - mime_type->type ) );
                 icon_name[ (sep - mime_type->type) ] = '\0';
                 strcat( icon_name, "-x-generic" );
                 icon = vfs_load_icon ( icon_theme, icon_name, size );

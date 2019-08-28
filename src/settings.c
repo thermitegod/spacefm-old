@@ -215,7 +215,7 @@ static void parse_general_settings( char* line )
     value = sep + 1;
     *sep = '\0';
     if ( 0 == strcmp( name, "encoding" ) )
-        strcpy( app_settings.encoding, value );
+        g_strlcpy( app_settings.encoding, value, sizeof(app_settings.encoding) );
     else if ( 0 == strcmp( name, "show_thumbnail" ) )
         app_settings.show_thumbnail = atoi( value );
     else if ( 0 == strcmp( name, "max_thumb_size" ) )
