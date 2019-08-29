@@ -444,7 +444,6 @@ static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
                 gdk_pixbuf_save( thumbnail, thumbnail_file, "png", NULL,
                                  "tEXt::Thumb::URI", uri, "tEXt::Thumb::MTime",
                                  mtime_str, NULL );
-                chmod( thumbnail_file, 0600 );  /* only the owner can read it. */
             }
         }
 #ifdef HAVE_FFMPEG
@@ -468,7 +467,6 @@ static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
                                                 file_path, thumbnail_file );
                 video_thumbnailer_destroy( video_thumb );
 
-                chmod( thumbnail_file, 0600 );  /* only the owner can read it. */
                 thumbnail = gdk_pixbuf_new_from_file( thumbnail_file, NULL );
             }
         }
