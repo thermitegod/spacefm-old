@@ -4443,10 +4443,9 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
 
     if ( !file )
         return FALSE;
-    result = fputs( "# source\n\n", file );
-    if ( result < 0 ) return FALSE;
 
-    write_src_functions( file );
+    if ((fputs( "\n#source", file)) < 0)
+        return FALSE;
 
     // selected files
     sel_files = desktop_window_get_selected_files( win );
@@ -4495,13 +4494,6 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
     g_fprintf( file, "fm_file=\"${fm_files[0]}\"\n" );
     g_fprintf( file, "fm_filename=\"${fm_filenames[0]}\"\n" );
 
-    // command
-    if ( vtask->exec_command )
-    {
-        esc_path = bash_quote( vtask->exec_command );
-        g_fprintf( file, "fm_command=%s\n", esc_path );
-        g_free( esc_path );
-    }
     // user
     const char* this_user = g_get_user_name();
     if ( this_user )

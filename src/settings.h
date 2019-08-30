@@ -417,7 +417,6 @@ XSet* xset_set_b_panel_mode( int panel, const char* name, char mode,
 
 XSetContext* xset_context_new();
 XSet* xset_get_plugin_mirror( XSet* set );
-void write_src_functions( FILE* file );
 char* xset_custom_get_script( XSet* set, gboolean create );
 gboolean have_rw_access( const char* path );
 gboolean have_x_access( const char* path );

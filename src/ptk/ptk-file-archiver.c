@@ -226,30 +226,28 @@ static char* generate_bash_error_function( gboolean run_in_terminal,
     const char *finished_with_errors = NULL;
     if (run_in_terminal)
     {
-        error_pause = "       read\n";
-        finished_with_errors = "[ Finished With Errors ]  Press Enter "
-                               "to close: ";
+        error_pause = "read -p";
+        finished_with_errors = "[ Finished With Errors ]  Press Enter to close: ";
     }
     else
     {
-        error_pause = "";
+        error_pause = "echo";
         finished_with_errors = "[ Finished With Errors ]";
     }
 
     return g_strdup_printf( ""
-        "fm_handle_err() {\n"
+        "fm_handle_err(){\n"
         "    fm_err=$?\n"
         "%s%s%s"
-        "    if [ $fm_err -ne 0 ]; then\n"
-        "       echo; echo -n '%s'\n"
-        "%s"
+        "    if [ $fm_err -ne 0 ];then\n"
+        "       echo;%s \"%s\"\n"
         "       exit $fm_err\n"
         "    fi\n"
         "}",
         parent_quote ? "    rmdir --ignore-fail-on-non-empty " : "",
         parent_quote ? parent_quote : "",
         parent_quote ? "\n" : "",
-        finished_with_errors, error_pause );
+        error_pause, finished_with_errors);
 }
 
 char* replace_archive_subs( const char* line, const char* n, const char* N,

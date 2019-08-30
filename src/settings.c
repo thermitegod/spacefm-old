@@ -136,7 +136,7 @@ void xset_free( XSet* set );
 
 const char* user_manual_url = "http://ignorantguru.github.io/spacefm/spacefm-manual-en.html";
 
-const char* enter_command_line = N_("Enter program or bash command line:\n\nUse:\n\t%%F\tselected files  or  %%f first selected file\n\t%%N\tselected filenames  or  %%n first selected filename\n\t%%d\tcurrent directory\n\t%%v\tselected device (eg /dev/sda1)\n\t%%m\tdevice mount point (eg /media/dvd);  %%l device label\n\t%%b\tselected bookmark\n\t%%t\tselected task directory;  %%p task pid\n\t%%a\tmenu item value\n\t$fm_panel, $fm_tab, $fm_command, etc");
+const char* enter_command_line = N_("Enter program or bash command line:\n\nUse:\n\t%%F\tselected files  or  %%f first selected file\n\t%%N\tselected filenames  or  %%n first selected filename\n\t%%d\tcurrent directory\n\t%%v\tselected device (eg /dev/sda1)\n\t%%m\tdevice mount point (eg /media/dvd);  %%l device label\n\t%%b\tselected bookmark\n\t%%t\tselected task directory;  %%p task pid\n\t%%a\tmenu item value\n\t$fm_panel, $fm_tab, etc");
 
 const char* icon_desc = N_("Enter an icon name, icon file path, or stock item name:\n\nOr click Choose to select an icon.  Not all icons may work properly due to various issues.");
 
@@ -2473,11 +2473,6 @@ void read_root_settings()
     fclose( file );
 }
 
-void write_src_functions( FILE* file )
-{
-    fputs( "\nfm_randhex4()  # generate a four digit random hex number\n{\n    fm_rand1=$RANDOM\n    fm_rand2=$RANDOM\n    (( fm_rand = fm_rand1 + fm_rand2 ))\n    let \"fm_rand \%= 65536\"\n    fm_randhex=`printf \"\%04X\" $fm_rand | tr A-Z a-z`\n    if [ \"$fm_randhex\" = \"\" ]; then\n        fm_randhex=$RANDOM  # failsafe\n    fi\n}\n\nfm_new_tmp()\n{\n    fm_randhex4\n    fm_tmp1=\"$fm_tmp_dir/$$-$fm_randhex.tmp\"\n    fm_count1=0\n    while ! mkdir \"$fm_tmp1\" 2>/dev/null; do\n        fm_randhex4\n        fm_tmp1=\"$fm_tmp_dir/$$-$fm_randhex.tmp\"\n        if (( fm_count1++ > 1000 )); then\n            echo 'spacefm: error creating temporary directory' 1>&2\n          unset fm_tmp1 fm_randhex fm_count1\n            echo \"\"\n            return 1\n        fi\n    done\n    echo \"$fm_tmp1\"\n    unset fm_tmp1 fm_randhex fm_count1\n}\n\nfm_edit()\n{\n    spacefm -s set edit_file \"$1\"\n}\n\n", file );
-}
-
 XSetContext* xset_context_new()
 {
     int i;
@@ -3209,8 +3204,8 @@ char* xset_custom_get_script( XSet* set, gboolean create )
     {
         FILE* file;
         int i;
-        char* script_head = g_strdup_printf("#!%s\n$fm_import #import file manager variables\n#\n#Script goes here\n", BASHPATH);
-        const char* script_tail = "exit $?\n#for all spacefm variables run, man spacefm-scripts";
+        char* script_head = g_strdup_printf("#!%s\n%s\n\n#import file manager variables\n$fm_import\n\n#For all spacefm variables see man page: spacefm-scripts\n\n#Start script\n", BASHPATH, SHELL_SETTINGS);
+        const char* script_tail = "#End script\nexit $?";
         file = fopen( path, "w" );
 
         if ( file )
@@ -4159,7 +4154,7 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
             book = " || [ -e main_book ]";
     }
 
-    task->task->exec_command = g_strdup_printf( "rm -rf %s ; mkdir -p %s && cd %s %s&& tar --exclude='/*' --keep-old-files -x%sf %s ; err=$?; if [ $err -ne 0 ] || [ ! -e plugin ]%s; then rm -rf %s ; echo 'Error installing plugin (invalid plugin file?)'; exit 1 ; fi ; %s %s",
+    task->task->exec_command = g_strdup_printf( "rm -rf %s ; mkdir -p %s && cd %s %s&& tar --exclude='/*' --keep-old-files -x%sf %s ; err=$?; if [ $err -ne 0 ] || [ ! -e plugin ]%s;then rm -rf %s ; echo 'Error installing plugin (invalid plugin file?)'; exit 1 ; fi ; %s %s",
                                 plug_dir_q, plug_dir_q, plug_dir_q,
                                 wget, compression, file_path_q, book,
                                 plug_dir_q, own, rem );
@@ -4378,9 +4373,9 @@ void xset_custom_export( GtkWidget* parent, PtkFileBrowser* file_browser,
     char* plug_dir_q = bash_quote( plug_dir );
     char* path_q = bash_quote( path );
     if ( !set->plugin )
-        task->task->exec_command = g_strdup_printf( "tar --numeric-owner -czf %s * ; err=$? ; rm -rf %s ; if [ $err -ne 0 ]; then rm -f %s; fi; exit $err", path_q, plug_dir_q, path_q );
+        task->task->exec_command = g_strdup_printf( "tar --numeric-owner -czf %s * ; err=$? ; rm -rf %s ; if [ $err -ne 0 ];then rm -f %s; fi; exit $err", path_q, plug_dir_q, path_q );
     else
-        task->task->exec_command = g_strdup_printf( "tar --numeric-owner -czf %s * ; err=$? ; if [ $err -ne 0 ]; then rm -f %s; fi; exit $err", path_q, path_q );
+        task->task->exec_command = g_strdup_printf( "tar --numeric-owner -czf %s * ; err=$? ; if [ $err -ne 0 ];then rm -f %s; fi; exit $err", path_q, path_q );
     g_free( plug_dir_q );
     g_free( path_q );
     task->task->exec_sync = TRUE;
@@ -9290,9 +9285,9 @@ char *replace_string( const char* orig, const char* str, const char* replace,
 char* bash_quote( const char* str )
 {
     if ( !str )
-        return g_strdup( "''" );
-    char* s1 = replace_string( str, "'", "'\\''", FALSE );
-    char* s2 = g_strdup_printf( "'%s'", s1 );
+        return g_strdup( "\"\"" );
+    char* s1 = replace_string( str, "\"", "\\\"", FALSE );
+    char* s2 = g_strdup_printf( "\"%s\"", s1 );
     g_free( s1 );
     return s2;
 }

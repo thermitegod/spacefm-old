@@ -1549,11 +1549,13 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
 
         // open file
         file = fopen( task->exec_script, "w" );
-        if ( !file ) goto _exit_with_error;
+        if ( !file )
+            goto _exit_with_error;
 
         // build - header
-        result = g_fprintf( file, "#!%s\n#\n# Temporary SpaceFM exec script - it is safe to delete this file\n\n", BASHPATH );
-        if ( result < 0 ) goto _exit_with_error;
+        result = g_fprintf( file, "#!%s\n%s\n#tmp exec script\n", BASHPATH, SHELL_SETTINGS );
+        if ( result < 0 )
+            goto _exit_with_error;
 
         // build - exports
         if ( task->exec_export && ( task->exec_browser || task->exec_desktop ) )
@@ -1566,7 +1568,8 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
 #else
                 success = FALSE;
 #endif
-            if ( !success ) goto _exit_with_error;
+            if ( !success )
+                goto _exit_with_error;
         }
         else
         {
@@ -1578,8 +1581,9 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         }
 
         // build - run
-        result = g_fprintf( file, "# run\n\nif [ \"$1\" == \"run\" ]; then\n\n" );
-        if ( result < 0 ) goto _exit_with_error;
+        result = g_fprintf( file, "#run\nif [ \"$1\" == \"run\" ];then\n\n" );
+        if ( result < 0 )
+            goto _exit_with_error;
 
         // build - write root settings
         if ( task->exec_write_root && geteuid() != 0 )
@@ -1604,12 +1608,14 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
 
         // build - export vars
         if ( task->exec_export )
-            result = g_fprintf( file, "export fm_import='source %s'\n", task->exec_script );
+            result = g_fprintf( file, "export fm_import=\"source %s\"\n", task->exec_script );
         else
-            result = g_fprintf( file, "export fm_import=''\n" );
-        if ( result < 0 ) goto _exit_with_error;
-        result = g_fprintf( file, "export fm_source='%s'\n\n", task->exec_script );
-        if ( result < 0 ) goto _exit_with_error;
+            result = g_fprintf( file, "export fm_import=\"\"\n" );
+        if ( result < 0 )
+            goto _exit_with_error;
+        result = g_fprintf( file, "export fm_source=\"%s\"\n\n", task->exec_script );
+        if ( result < 0 )
+            goto _exit_with_error;
 
         // build - trap rm
         /* These terminals provide no option to start a new instance, child
@@ -1636,52 +1642,54 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
                                    * ptk-location-view.c:ptk_location_view_mount_network()
                                    * pref-dialog.c Line ~777 */
         {
-            result = g_fprintf( file, "trap \"rm -f %s; exit\" EXIT SIGINT SIGTERM SIGQUIT SIGHUP\n\n",
-                                                    task->exec_script );
-            if ( result < 0 ) goto _exit_with_error;
+            result = g_fprintf( file, "trap \"rm -f %s; exit\" EXIT SIGINT SIGTERM SIGQUIT SIGHUP\n\n", task->exec_script );
+            if ( result < 0 )
+                goto _exit_with_error;
             task->exec_keep_tmp = TRUE;
         }
         else if ( !task->exec_keep_tmp && geteuid() != 0 && task->exec_as_user
                                         && !strcmp( task->exec_as_user, "root" ) )
         {
             // run as root command, clean up
-            result = g_fprintf( file, "trap \"rm -f %s; exit\" EXIT SIGINT SIGTERM SIGQUIT SIGHUP\n\n",
-                                                    task->exec_script );
-            if ( result < 0 ) goto _exit_with_error;
+            result = g_fprintf( file, "trap \"rm -f %s; exit\" EXIT SIGINT SIGTERM SIGQUIT SIGHUP\n\n", task->exec_script );
+            if ( result < 0 )
+                goto _exit_with_error;
         }
 
         // build - command
         g_printf("\nTASK_COMMAND(%p)=%s\n", task->exec_ptask, task->exec_command );
         result = g_fprintf( file, "%s\nfm_err=$?\n", task->exec_command );
-        if ( result < 0 ) goto _exit_with_error;
+        if ( result < 0 )
+            goto _exit_with_error;
 
         // build - press enter to close
         if ( terminal && task->exec_keep_terminal )
         {
             if ( geteuid() == 0 ||
                     ( task->exec_as_user && !strcmp( task->exec_as_user, "root" ) ) )
-                result = g_fprintf( file, "\necho\necho -n '%s: '\nread s",
-                                        "[ Finished ]  Press Enter to close" );
+                result = g_fprintf( file, "\necho;read -p '[ Finished ]  Press Enter to close: '\n" );
             else
             {
-                result = g_fprintf( file, "\necho\necho -n '%s: '\nread s\nif [ \"$s\" = 's' ]; then\n    if [ \"$(whoami)\" = \"root\" ]; then\n        echo\n        echo '[ %s ]'\n    fi\n    echo\n    %s\nfi\n\n", "[ Finished ]  Press Enter to close or s + Enter for a shell", "You are ROOT", BASHPATH );
+                result = g_fprintf( file, "\necho;read -p '[ Finished ]  Press Enter to close or s + Enter for a shell: ' s\nif [ \"$s\" = 's' ];then\n    if [ \"$(whoami)\" = \"root\" ];then\n        echo '\n[ %s ]'\n    fi\n    echo\n    %s\nfi\n\n", "You are ROOT", BASHPATH );
             }
-            if ( result < 0 ) goto _exit_with_error;
+            if ( result < 0 )
+                goto _exit_with_error;
         }
 
         result = g_fprintf( file, "\nexit $fm_err\nfi\n" );
-        if ( result < 0 ) goto _exit_with_error;
+        if ( result < 0 )
+            goto _exit_with_error;
 
         // close file
         result = fclose( file );
         file = NULL;
-        if ( result ) goto _exit_with_error;
+        if ( result )
+            goto _exit_with_error;
 
         // set permissions
         if ( task->exec_as_user && strcmp( task->exec_as_user, "root" ) )
             // run as a non-root user
-            chmod( task->exec_script,
-                            S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH );
+            chmod( task->exec_script, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH );
         else
             // run as self or as root
             chmod( task->exec_script, S_IRWXU );

@@ -50,6 +50,9 @@ if test ! -z "$bash_path"; then
     sed "s/\(\/bin\/bash\)/$bash_esc/" src/spacefm-auth >| src/spacefm-auth
 fi
 
+#-u is too strict
+AC_DEFINE_UNQUOTED(SHELL_SETTINGS, "set -o pipefail\nshopt -s failglob")
+
 # gtk2 or gtk3
 PKG_PROG_PKG_CONFIG
 gtk2_modules="gtk+-2.0 >= 2.24.0 \

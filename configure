@@ -14508,6 +14508,12 @@ if test ! -z "$bash_path"; then
     sed "s/\(\/bin\/bash\)/$bash_esc/" src/spacefm-auth >| src/spacefm-auth
 fi
 
+#-u is too strict
+cat >>confdefs.h <<_ACEOF
+#define SHELL_SETTINGS "set -o pipefail\nshopt -s failglob"
+_ACEOF
+
+
 # gtk2 or gtk3
 
 
