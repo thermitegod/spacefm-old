@@ -117,7 +117,7 @@ VFSFileMonitor* vfs_file_monitor_add( char* path,
     char resolved_path[PATH_MAX];
     char* real_path;
 
-//printf( "vfs_file_monitor_add  %s\n", path );
+//g_printf( "vfs_file_monitor_add  %s\n", path );
 
     if ( ! monitor_hash )
         return NULL;
@@ -185,7 +185,7 @@ VFSFileMonitor* vfs_file_monitor_add( char* path,
                         real_path, path, errno, msg );
             return NULL;
         }
-//printf("vfs_file_monitor_add  %s (%s) %d\n", real_path, path, monitor->wd );
+//g_printf("vfs_file_monitor_add  %s (%s) %d\n", real_path, path, monitor->wd );
     }
 
     if( G_LIKELY(monitor) )
@@ -209,7 +209,7 @@ void vfs_file_monitor_remove( VFSFileMonitor * fm,
     int i;
     VFSFileMonitorCallbackEntry* callbacks;
 
-//printf( "vfs_file_monitor_remove\n" );
+//g_printf( "vfs_file_monitor_remove\n" );
     if ( cb && fm && fm->callbacks )
     {
         callbacks = ( VFSFileMonitorCallbackEntry* ) fm->callbacks->data;
@@ -225,7 +225,7 @@ void vfs_file_monitor_remove( VFSFileMonitor * fm,
 
     if ( fm && g_atomic_int_dec_and_test( &fm->n_ref ) )  //MOD added "fm &&"
     {
-//printf( "vfs_file_monitor_remove  %d\n", fm->wd );
+//g_printf( "vfs_file_monitor_remove  %d\n", fm->wd );
         inotify_rm_watch ( inotify_fd, fm->wd );
 
         g_hash_table_remove( monitor_hash, fm->path );
@@ -233,7 +233,7 @@ void vfs_file_monitor_remove( VFSFileMonitor * fm,
         g_array_free( fm->callbacks, TRUE );
         g_slice_free( VFSFileMonitor, fm );
     }
-//printf( "vfs_file_monitor_remove   DONE\n" );
+//g_printf( "vfs_file_monitor_remove   DONE\n" );
 }
 
 static void reconnect_inotify( gpointer key,
@@ -381,11 +381,11 @@ else if ( ievent->mask & ( IN_MODIFY | IN_ATTRIB ) )
 if ( !strcmp( monitor->path, "/tmp" ) && g_str_has_prefix( file_name, "vte" ) )
 { } // due to current vte scroll problems creating and deleting massive numbers of
 // /tmp/vte8CBO7V types of files, ignore these (creates feedback loop when
-// spacefm is run in terminal because each printf triggers a scroll,
-// which triggers another printf below, which triggers another file change)
+// spacefm is run in terminal because each g_printf triggers a scroll,
+// which triggers another g_printf below, which triggers another file change)
 // https://bugs.launchpad.net/ubuntu/+source/vte/+bug/778872
 else
-    printf("inotify-event %s: %s///%s\n", desc, monitor->path, file_name);
+    g_printf("inotify-event %s: %s///%s\n", desc, monitor->path, file_name);
 //g_debug("inotify (%d) :%s", ievent->mask, file_name);
 */
             dispatch_event( monitor,

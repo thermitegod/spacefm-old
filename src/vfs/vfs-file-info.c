@@ -131,7 +131,7 @@ gboolean vfs_file_info_get( VFSFileInfo* fi,
         fi->uid = file_stat.st_uid;
         fi->gid = file_stat.st_gid;
         fi->size = file_stat.st_size;
-//printf("size %s %llu\n", fi->name, fi->size );
+//g_printf("size %s %llu\n", fi->name, fi->size );
         fi->mtime = file_stat.st_mtime;
         fi->atime = file_stat.st_atime;
         fi->blksize = file_stat.st_blksize;

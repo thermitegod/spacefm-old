@@ -17,6 +17,8 @@
 #include <gdk/gdkkeysyms.h>
 #include <sys/wait.h>   // WIFEXITED
 
+#include <glib/gprintf.h>
+
 #include "ptk-handler.h"
 #include "exo-tree-view.h"
 #include "gtk2-compat.h"
@@ -823,7 +825,7 @@ char* ptk_handler_save_script( int mode, int cmd, XSet* handler_set,
     else
         text = "";
 
-//printf("WRITE %s\n", script );
+//g_printf("WRITE %s\n", script );
     // write script
     FILE* file = 0;
     if ((file = fopen(script, "w")))
@@ -1318,11 +1320,11 @@ void ptk_handler_import( int mode, GtkWidget* handler_dlg, XSet* set )
     char* msg;
     gboolean ret;
     gint exit_status;
-    printf( "COMMAND=%s\n", command );
+    g_printf( "COMMAND=%s\n", command );
     ret = g_spawn_command_line_sync( command, &stdout, &stderr, &exit_status,
                                                                     NULL );
     g_free( command );
-    printf( "%s%s", stdout, stderr );
+    g_printf( "%s%s", stdout, stderr );
 
     if ( !ret || ( exit_status && WIFEXITED( exit_status ) ) )
     {
@@ -1340,7 +1342,7 @@ void ptk_handler_import( int mode, GtkWidget* handler_dlg, XSet* set )
         g_free( stdout );
     stderr = stdout = NULL;
     command = g_strdup_printf( "chmod -R go-rwx %s", path_dest );
-    printf( "COMMAND=%s\n", command );
+    g_printf( "COMMAND=%s\n", command );
     g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
     g_free( command );
     g_free( path_dest );

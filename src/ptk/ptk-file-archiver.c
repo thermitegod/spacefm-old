@@ -22,6 +22,8 @@
 #include "vfs-mime-type.h"
 #include "settings.h"
 
+#include <glib/gprintf.h>
+
 //#include "gtk2-compat.h"
 
 // Archive handlers treeview model enum
@@ -1329,7 +1331,7 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
             g_free( full_path );
             continue;
         }
-        printf( "Archive Handler Selected: %s\n", handler_xset->menu_label );
+        g_printf( "Archive Handler Selected: %s\n", handler_xset->menu_label );
 
         /* Handler found - fetching the 'run in terminal' preference, if
          * the operation is listing then the terminal should be kept

@@ -550,7 +550,7 @@ gboolean on_expose( GtkWidget* w, GdkEventExpose* evt )
 
 void on_size_allocate( GtkWidget* w, GtkAllocation* alloc )
 {
-    //printf("on_size_allocate  %p  x,y=%d, %d    w,h=%d, %d\n", w, alloc->x,
+    //g_printf("on_size_allocate  %p  x,y=%d, %d    w,h=%d, %d\n", w, alloc->x,
     //                                alloc->y, alloc->width, alloc->height);
     GdkPixbuf* pix;
     DesktopWindow* self = (DesktopWindow*)w;
@@ -923,7 +923,7 @@ void on_size_request( GtkWidget* w, GtkRequisition* req )
     GdkScreen* scr = gtk_widget_get_screen( w );
     req->width = gdk_screen_get_width( scr );
     req->height = gdk_screen_get_height( scr );
-    //printf("on_size_request  %p  w,h=%d, %d\n", w, req->width, req->height );
+    //g_printf("on_size_request  %p  w,h=%d, %d\n", w, req->width, req->height );
 }
 
 #if (GTK_MAJOR_VERSION == 3)
@@ -1637,7 +1637,7 @@ gboolean on_drag_drop( GtkWidget* w, GdkDragContext* ctx, gint x, gint y, guint 
 {
     DesktopWindow* self = (DesktopWindow*)w;
     GdkAtom target = get_best_target_at_dest( self, ctx, x, y );
-    //printf("DROP: %s\n", gdk_atom_name(target) );
+    //g_printf("DROP: %s\n", gdk_atom_name(target) );
     if( target == GDK_NONE )
         return FALSE;
     if( target == text_uri_list_atom || target == desktop_icon_atom )
@@ -1762,7 +1762,7 @@ void move_desktop_items( DesktopWindow* self, GdkDragContext* ctx,
         if ( !target_l )
         {
             // no target - add to end
-            //printf( "NO TARGET\n" );
+            //g_printf( "NO TARGET\n" );
             ll->data = g_slice_new0( DesktopItem );  // new empty
             ((DesktopItem*)ll->data)->fi = NULL;
             self->items = g_list_append( self->items, l->data );
@@ -1770,7 +1770,7 @@ void move_desktop_items( DesktopWindow* self, GdkDragContext* ctx,
         else if ( !((DesktopItem*)target_l->data)->fi )
         {
             // target is empty, swap them
-            //printf( "SWAP %p -> %p\n", l->data, target_l->data );
+            //g_printf( "SWAP %p -> %p\n", l->data, target_l->data );
             ll->data = target_l->data;
             target_l->data = l->data;
             target_l = target_l->next;
@@ -1778,7 +1778,7 @@ void move_desktop_items( DesktopWindow* self, GdkDragContext* ctx,
         else
         {
             // target is not empty, insert before
-            //printf( "INSERT %p before %p\n", l->data, target_l->data );
+            //g_printf( "INSERT %p before %p\n", l->data, target_l->data );
             ll->data = g_slice_new0( DesktopItem );  // new empty
             ((DesktopItem*)ll->data)->fi = NULL;
             self->items = g_list_insert_before( self->items, target_l, l->data );
@@ -1903,7 +1903,7 @@ void on_drag_data_received( GtkWidget* w, GdkDragContext* ctx, gint x, gint y,
             gdk_drag_status( ctx, suggested_action, time );
             return;
         }
-        //printf("on_drag_data_received  text_uri_list_atom  %s\n", text_hit ? "text_hit" : item ? "item" : "no-item" );
+        //g_printf("on_drag_data_received  text_uri_list_atom  %s\n", text_hit ? "text_hit" : item ? "item" : "no-item" );
 
         switch ( gdk_drag_context_get_selected_action( ctx ) )
         {
@@ -1978,7 +1978,7 @@ void on_drag_data_received( GtkWidget* w, GdkDragContext* ctx, gint x, gint y,
     {   // moving desktop icon to desktop
         if ( self->sort_by == DW_SORT_CUSTOM )
         {
-            //printf("on_drag_data_received - desktop_icon_atom\n");
+            //g_printf("on_drag_data_received - desktop_icon_atom\n");
             if ( !hit_test_text( self, x, y, &item ) )
                 item = hit_test_box( self, x, y );
             move_desktop_items( self, ctx, item );
@@ -1994,7 +1994,7 @@ void on_drag_data_received( GtkWidget* w, GdkDragContext* ctx, gint x, gint y,
                 move_item( self, item, x_off, y_off, TRUE );
                 #endif
                 DesktopItem* hit_item = hit_test_box( self, x, y );
-                printf( "    move: %s, %d (%d), %d (%d) -> %s\n", item->fi ? vfs_file_info_get_name( item->fi ) : "Empty", x, x_off, y, y_off, hit_item ? hit_item->fi ? vfs_file_info_get_name( hit_item->fi ) : "EMPTY" : "MISS" );
+                g_printf( "    move: %s, %d (%d), %d (%d) -> %s\n", item->fi ? vfs_file_info_get_name( item->fi ) : "Empty", x, x_off, y, y_off, hit_item ? hit_item->fi ? vfs_file_info_get_name( hit_item->fi ) : "EMPTY" : "MISS" );
             }
             g_list_free( sels );
             */
@@ -2921,9 +2921,9 @@ start_layout:
         item->text_rect.y = item->box.y + self->y_pad + self->icon_size + self->spacing;
         /*
         if ( !item->fi )
-            printf( "LAY EMPTY %d, %d  %p\n", x, y, item );
+            g_printf( "LAY EMPTY %d, %d  %p\n", x, y, item );
         else
-            printf( "LAY %s %d, %d  %p\n", vfs_file_info_get_name( item->fi ), x, y, item );
+            g_printf( "LAY %s %d, %d  %p\n", vfs_file_info_get_name( item->fi ), x, y, item );
         */
     }
     self->order_rows = 0;  // reset
@@ -2931,7 +2931,7 @@ start_layout:
     if ( self->sort_by == DW_SORT_CUSTOM )
     {
         // add empty boxes to fill window
-        //printf("---------- ADD_EMPTY_BOXES\n");
+        //g_printf("---------- ADD_EMPTY_BOXES\n");
         do
         {
             item = g_slice_new0( DesktopItem );
@@ -2948,14 +2948,14 @@ start_layout:
             if ( x + item->box.width > right )
             {
                 // right side reached - stop adding empty boxes
-                //printf( "RIGHT reached - stop adding empty %d, %d\n", x, y );
+                //g_printf( "RIGHT reached - stop adding empty %d, %d\n", x, y );
                 g_slice_free( DesktopItem, item );
                 break;
             }
 
             item->box.x = x;
             item->box.y = y;
-            //printf( "ADD empty %d, %d  %p\n", x, y, item );
+            //g_printf( "ADD empty %d, %d  %p\n", x, y, item );
             y += item->box.height; // go to next row
 
             // add to list
@@ -2964,7 +2964,7 @@ start_layout:
         } while ( 1 );
         custom_order_write( self );
     }
-    //printf("    box_count = %d\n", self->box_count );
+    //g_printf("    box_count = %d\n", self->box_count );
     gtk_widget_queue_draw( GTK_WIDGET(self) );
 }
 
@@ -3659,7 +3659,7 @@ DesktopItem* hit_test_box( DesktopWindow* self, int x, int y )  //sfm
             closest_l = l;
         }
     }
-    //printf( "MISS %p  dist = %f\n", closest_l ? closest_l->data : NULL, dist_min );
+    //g_printf( "MISS %p  dist = %f\n", closest_l ? closest_l->data : NULL, dist_min );
     if ( !closest_l )
         return NULL;
     if ( !((DesktopItem*)closest_l->data)->fi )
@@ -3941,19 +3941,19 @@ void desktop_window_sort_items( DesktopWindow* win, DWSortType sort_by,
         // remove empty boxes for non-custom sort
         DesktopItem* item;
         GList* items = win->items;
-        //printf("\n-------------------\nREMOVE\n" );
+        //g_printf("\n-------------------\nREMOVE\n" );
         while ( items )
         {
             if ( ((DesktopItem*)items->data)->fi )
             {
-                //item = (DesktopItem*)items->data; printf( "KEEP %s %d, %d  %p\n", vfs_file_info_get_name( item->fi ), item->box.x, item->box.y, item );
+                //item = (DesktopItem*)items->data; g_printf( "KEEP %s %d, %d  %p\n", vfs_file_info_get_name( item->fi ), item->box.x, item->box.y, item );
                 items = items->next;
             }
             else
             {
                 // remove
                 item = (DesktopItem*)items->data;
-                //printf("REMOVE empty %d, %d  %p\n", item->box.x, item->box.y, item );
+                //g_printf("REMOVE empty %d, %d  %p\n", item->box.x, item->box.y, item );
                 items = items->next;
                 win->items = g_list_remove( win->items, item );
                 desktop_item_free( item );
@@ -4200,7 +4200,7 @@ GdkFilterReturn on_rootwin_event ( GdkXEvent *xevent,
         {
             /* working area is resized */
             get_working_area( gtk_widget_get_screen((GtkWidget*)self), &self->wa );
-            //printf("working area is resized   x,y=%d, %d   w,h=%d, %d\n",
+            //g_printf("working area is resized   x,y=%d, %d   w,h=%d, %d\n",
             //        self->wa.x, self->wa.y, self->wa.width, self->wa.height);
 
             /* This doesn't seem to have the desired effect, and also
@@ -4211,7 +4211,7 @@ GdkFilterReturn on_rootwin_event ( GdkXEvent *xevent,
             int width = gdk_screen_get_width( screen );
             int height = gdk_screen_get_height( screen );
             if ( width && height )
-                printf( "    screen size   w,h=%d, %d\n", width, height );
+                g_printf( "    screen size   w,h=%d, %d\n", width, height );
             gtk_window_resize( GTK_WINDOW( self ), self->wa.width, self->wa.height );
             gtk_window_move( GTK_WINDOW( self ), 0, 0 );
             // update wallpaper
@@ -4598,15 +4598,15 @@ gboolean on_configure_event( GtkWidget* w, GdkEventConfigure *event )
 {
     DesktopWindow* self = (DesktopWindow*) w;
 
-    printf("on_configure_event %p  x,y=%d, %d    w,h=%d, %d  file_listed = %s\n", self, event->x, event->y, event->width, event->height, self->file_listed ? "TRUE" : "FALSE" );
+    g_printf("on_configure_event %p  x,y=%d, %d    w,h=%d, %d  file_listed = %s\n", self, event->x, event->y, event->width, event->height, self->file_listed ? "TRUE" : "FALSE" );
     get_working_area( gtk_widget_get_screen((GtkWidget*)self), &self->wa ); //temp
-    printf("    working area is   x,y=%d, %d   w,h=%d, %d\n",
+    g_printf("    working area is   x,y=%d, %d   w,h=%d, %d\n",
                         self->wa.x, self->wa.y, self->wa.width, self->wa.height);
 
     if ( self->file_listed )  // skip initial configure events
     {
         // possible desktop resize - get working area and redo layout
-        printf( "    get_working_area\n");
+        g_printf( "    get_working_area\n");
         get_working_area( gtk_widget_get_screen(w), &self->wa );
         if ( self->sort_by == DW_SORT_CUSTOM )
             self->order_rows = self->row_count; // possible change of row count in new layout

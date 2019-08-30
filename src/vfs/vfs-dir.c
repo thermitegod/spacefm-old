@@ -199,7 +199,7 @@ void vfs_dir_init( VFSDir* dir )
 void vfs_dir_finalize( GObject *obj )
 {
     VFSDir * dir = VFS_DIR( obj );
-//printf("vfs_dir_finalize  %s\n", dir->path );
+//g_printf("vfs_dir_finalize  %s\n", dir->path );
     do{}
     while( g_source_remove_by_user_data( dir ) );
 
@@ -207,7 +207,7 @@ void vfs_dir_finalize( GObject *obj )
     {
         g_signal_handlers_disconnect_by_func( dir->task, on_list_task_finished, dir );
         /* FIXME: should we generate a "file-list" signal to indicate the dir loading was cancelled? */
-//printf("spacefm: vfs_dir_finalize -> vfs_async_task_cancel\n");
+//g_printf("spacefm: vfs_dir_finalize -> vfs_async_task_cancel\n");
         vfs_async_task_cancel( dir->task );
         g_object_unref( dir->task );
         dir->task = NULL;
@@ -380,7 +380,7 @@ void vfs_dir_emit_file_changed( VFSDir* dir, const char* file_name,
                                         VFSFileInfo* file, gboolean force )
 {
     GList* l;
-//printf("vfs_dir_emit_file_changed dir=%s file_name=%s avoid=%s\n", dir->path, file_name, dir->avoid_changes ? "TRUE" : "FALSE" );
+//g_printf("vfs_dir_emit_file_changed dir=%s file_name=%s avoid=%s\n", dir->path, file_name, dir->avoid_changes ? "TRUE" : "FALSE" );
 
     if ( !force && dir->avoid_changes )
         return;
@@ -461,7 +461,7 @@ VFSDir* vfs_dir_new( const char* path )
     dir->path = g_strdup( path );
 
     dir->avoid_changes = vfs_volume_dir_avoid_changes( path );
-//printf("vfs_dir_new %s  avoid_changes=%s\n", dir->path, dir->avoid_changes ? "TRUE" : "FALSE" );
+//g_printf("vfs_dir_new %s  avoid_changes=%s\n", dir->path, dir->avoid_changes ? "TRUE" : "FALSE" );
     return dir;
 }
 
@@ -592,7 +592,7 @@ void vfs_cancel_load( VFSDir* dir )
     dir->cancel = TRUE;
     if ( dir->task )
     {
-printf("spacefm: vfs_cancel_load -> vfs_async_task_cancel\n");
+//g_printf("spacefm: vfs_cancel_load -> vfs_async_task_cancel\n");
         vfs_async_task_cancel( dir->task );
         /* don't do g_object_unref on task here since this is done in the handler of "finish" signal. */
         dir->task = NULL;
@@ -970,7 +970,7 @@ VFSDir* mime_dir = NULL;
 
 gboolean on_mime_change_timer( gpointer user_data )
 {
-    //printf("MIME-UPDATE on_timer\n" );
+    //g_printf("MIME-UPDATE on_timer\n" );
     char* cmd = g_strdup_printf( "update-mime-database %s/mime",
                                                     g_get_user_data_dir() );
     g_spawn_command_line_async( cmd, NULL );
@@ -989,7 +989,7 @@ void mime_change( gpointer user_data )
     if ( mime_change_timer )
     {
         // timer is already running, so ignore request
-        //printf("MIME-UPDATE already set\n" );
+        //g_printf("MIME-UPDATE already set\n" );
         return;
     }
     if ( mime_dir )
@@ -997,7 +997,7 @@ void mime_change( gpointer user_data )
         // update mime database in 2 seconds
         mime_change_timer = g_timeout_add_seconds( 2,
                                     ( GSourceFunc ) on_mime_change_timer, NULL );
-        //printf("MIME-UPDATE timer started\n" );
+        //g_printf("MIME-UPDATE timer started\n" );
     }
 }
 
@@ -1017,7 +1017,7 @@ void vfs_dir_monitor_mime()
             g_signal_connect( mime_dir, "file-deleted", G_CALLBACK( mime_change ), NULL );
             g_signal_connect( mime_dir, "file-changed", G_CALLBACK( mime_change ), NULL );
         }
-        //printf("MIME-UPDATE watch started\n" );
+        //g_printf("MIME-UPDATE watch started\n" );
     }
     g_free( path );
 }

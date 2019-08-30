@@ -371,7 +371,7 @@ vfs_file_task_do_copy( VFSFileTask* task,
 
     if ( should_abort( task ) )
         return FALSE;
-//printf("vfs_file_task_do_copy( %s, %s )\n", src_file, dest_file );
+//g_printf("vfs_file_task_do_copy( %s, %s )\n", src_file, dest_file );
     g_mutex_lock( task->mutex );
     string_copy_free( &task->current_file, src_file );
     string_copy_free( &task->current_dest, dest_file );
@@ -1120,7 +1120,7 @@ char* vfs_file_task_get_cpids( GPid pid )
             }
         }
         g_free(stdout );
-        //printf("vfs_file_task_get_cpids %d\n[\n%s]\n", pid, cpids );
+        //g_printf("vfs_file_task_get_cpids %d\n[\n%s]\n", pid, cpids );
         return cpids;
     }
     if ( stdout )
@@ -1149,7 +1149,7 @@ void vfs_file_task_kill_cpids( char* cpids, int signal )
         g_free(pida );
         if ( pidi )
         {
-            //printf("KILL_CPID %d %d\n", pidi, signal );
+            //g_printf("KILL_CPID %d %d\n", pidi, signal );
             kill( pidi, signal );
         }
     }
@@ -1157,15 +1157,15 @@ void vfs_file_task_kill_cpids( char* cpids, int signal )
 
 static void cb_exec_child_cleanup( GPid pid, gint status, char* tmp_file )
 {   // delete tmp files after async task terminates
-//printf("cb_exec_child_cleanup pid=%d status=%d file=%s\n", pid, status, tmp_file );
+//g_printf("cb_exec_child_cleanup pid=%d status=%d file=%s\n", pid, status, tmp_file );
     g_spawn_close_pid( pid );
     if ( tmp_file )
     {
         unlink( tmp_file );
         g_free( tmp_file );
     }
-    printf("async child finished  pid=%d\n", pid );
-//printf("cb_exec_child_cleanup DONE\n", pid, status);
+    g_printf("async child finished  pid=%d\n", pid );
+//g_printf("cb_exec_child_cleanup DONE\n", pid, status);
 }
 
 static void cb_exec_child_watch( GPid pid, gint status, VFSFileTask* task )
@@ -1193,7 +1193,7 @@ static void cb_exec_child_watch( GPid pid, gint status, VFSFileTask* task )
         if ( task->exec_script )
             unlink( task->exec_script );
     }
-    printf("child finished  pid=%d exit_status=%d\n", pid,
+    g_printf("child finished  pid=%d exit_status=%d\n", pid,
                                     bad_status ? -1 : task->exec_exit_status );
     if ( !task->exec_exit_status && !bad_status )
     {
@@ -1212,32 +1212,32 @@ static gboolean cb_exec_out_watch( GIOChannel *channel, GIOCondition cond,
 {
 
 /*
-printf("cb_exec_out_watch %p\n", channel);
+g_printf("cb_exec_out_watch %p\n", channel);
 if ( cond & G_IO_IN )
-    printf("    G_IO_IN\n");
+    g_printf("    G_IO_IN\n");
 if ( cond & G_IO_OUT )
-    printf("    G_IO_OUT\n");
+    g_printf("    G_IO_OUT\n");
 if ( cond & G_IO_PRI )
-    printf("    G_IO_PRI\n");
+    g_printf("    G_IO_PRI\n");
 if ( cond & G_IO_ERR )
-    printf("    G_IO_ERR\n");
+    g_printf("    G_IO_ERR\n");
 if ( cond & G_IO_HUP )
-    printf("    G_IO_HUP\n");
+    g_printf("    G_IO_HUP\n");
 if ( cond & G_IO_NVAL )
-    printf("    G_IO_NVAL\n");
+    g_printf("    G_IO_NVAL\n");
 
 if ( !( cond & G_IO_NVAL ) )
 {
     gint fd = g_io_channel_unix_get_fd( channel );
-    printf("    fd=%d\n", fd);
+    g_printf("    fd=%d\n", fd);
     if ( fcntl(fd, F_GETFL) != -1 || errno != EBADF )
     {
         int flags = g_io_channel_get_flags( channel );
         if ( flags & G_IO_FLAG_IS_READABLE )
-            printf( "    G_IO_FLAG_IS_READABLE\n");
+            g_printf( "    G_IO_FLAG_IS_READABLE\n");
     }
     else
-        printf("    Invalid FD\n");
+        g_printf("    Invalid FD\n");
 }
 */
 
@@ -1290,13 +1290,13 @@ if ( !( cond & G_IO_NVAL ) )
         //task->err_count++;   //notify of new output - does not indicate error for exec
     }
     else
-        printf("cb_exec_out_watch: g_io_channel_read_chars != G_IO_STATUS_NORMAL\n");
+        g_printf("cb_exec_out_watch: g_io_channel_read_chars != G_IO_STATUS_NORMAL\n");
 
 /*
     // this hangs ????
     GError *error = NULL;
     gchar* buf;
-    printf("g_io_channel_read_to_end\n");
+    g_printf("g_io_channel_read_to_end\n");
     if ( g_io_channel_read_to_end( channel, &buf, &size, &error ) ==
                                                         G_IO_STATUS_NORMAL )
     {
@@ -1308,8 +1308,8 @@ if ( !( cond & G_IO_NVAL ) )
         task->ticks = 10000;
     }
     else
-        printf("cb_exec_out_watch: g_io_channel_read_to_end != G_IO_STATUS_NORMAL\n");
-    printf("g_io_channel_read_to_end DONE\n");
+        g_printf("cb_exec_out_watch: g_io_channel_read_to_end != G_IO_STATUS_NORMAL\n");
+    g_printf("g_io_channel_read_to_end DONE\n");
 */
 
 /*
@@ -1318,7 +1318,7 @@ if ( !( cond & G_IO_NVAL ) )
     if ( g_io_channel_read_line( channel, &line, &size, NULL, NULL ) ==
                                                     G_IO_STATUS_NORMAL )
     {
-        //printf("    line=%s", line );
+        //g_printf("    line=%s", line );
         gtk_text_buffer_get_iter_at_mark( task->exec_err_buf, &iter,
                                                             task->exec_mark_end );
         if ( task->exec_type == VFS_EXEC_UDISKS && strstr( line, "ount failed:" ) )
@@ -1336,7 +1336,7 @@ if ( !( cond & G_IO_NVAL ) )
         task->ticks = 10000;
     }
     else
-        printf("cb_exec_out_watch: g_io_channel_read_line != G_IO_STATUS_NORMAL\n");
+        g_printf("cb_exec_out_watch: g_io_channel_read_line != G_IO_STATUS_NORMAL\n");
 */
 
     // don't enable this or last lines are lost
@@ -1417,7 +1417,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
     int i;
     char buf[ PATH_MAX + 1 ];
 
-//printf("vfs_file_task_exec\n");
+//g_printf("vfs_file_task_exec\n");
 //task->exec_keep_tmp = TRUE;
 
     g_mutex_lock( task->mutex );
@@ -1654,7 +1654,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         }
 
         // build - command
-        printf("\nTASK_COMMAND(%p)=%s\n", task->exec_ptask, task->exec_command );
+        g_printf("\nTASK_COMMAND(%p)=%s\n", task->exec_ptask, task->exec_command );
         result = g_fprintf( file, "%s\nfm_err=$?\n", task->exec_command );
         if ( result < 0 ) goto _exit_with_error;
 
@@ -1889,14 +1889,14 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
     if ( gsu )
         g_free( gsu );
 
-    printf( "SPAWN=" );
+    g_printf( "SPAWN=" );
     i = 0;
     while ( argv[i] )
     {
-        printf( "%s%s", i == 0 ? "" : "  ", argv[i] );
+        g_printf( "%s%s", i == 0 ? "" : "  ", argv[i] );
         i++;
     }
-    printf( "\n" );
+    g_printf( "\n" );
 
     char* first_arg = g_strdup( argv[0] );
     if ( task->exec_sync )
@@ -1914,7 +1914,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
 
     if( !result )
     {
-        printf("    result=%d ( %s )\n", errno, g_strerror( errno ));
+        g_printf("    result=%d ( %s )\n", errno, g_strerror( errno ));
         if ( !task->exec_keep_tmp && task->exec_sync )
         {
             if ( task->exec_script )
@@ -1928,7 +1928,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         return;
     }
     else
-        printf( "    pid = %d\n", pid );
+        g_printf( "    pid = %d\n", pid );
     g_free( first_arg );
 
     if ( !task->exec_sync )
@@ -1982,7 +1982,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
     g_source_remove( child_watch );
     g_mutex_unlock( task->mutex );
 */
-//printf("vfs_file_task_exec DONE\n");
+//g_printf("vfs_file_task_exec DONE\n");
     return;  // exit thread
 
 // out and err can/should be closed too?
@@ -2002,7 +2002,7 @@ _exit_with_error_lean:
     g_free( su );
     g_free( gsu );
     call_state_callback( task, VFS_FILE_TASK_FINISH );
-//printf("vfs_file_task_exec DONE ERROR\n");
+//g_printf("vfs_file_task_exec DONE ERROR\n");
 }
 
 gboolean on_size_timeout( VFSFileTask* task )
@@ -2379,12 +2379,12 @@ void add_task_dev( VFSFileTask* task, dev_t dev )
     dev_t parent = 0;
     if ( !g_slist_find( task->devs, GUINT_TO_POINTER( dev ) ) )
     {
-//printf("add_task_dev %d:%d\n", major(dev), minor(dev) );
+//g_printf("add_task_dev %d:%d\n", major(dev), minor(dev) );
         g_mutex_lock( task->mutex );
         task->devs = g_slist_append( task->devs, GUINT_TO_POINTER( dev ) );
         if ( parent && !g_slist_find( task->devs, GUINT_TO_POINTER( parent ) ) )
         {
-//printf("add_task_dev PARENT %d:%d\n", major(parent), minor(parent) );
+//g_printf("add_task_dev PARENT %d:%d\n", major(parent), minor(parent) );
             task->devs = g_slist_append( task->devs, GUINT_TO_POINTER( parent ) );
         }
         g_mutex_unlock( task->mutex );

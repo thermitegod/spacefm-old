@@ -1598,7 +1598,7 @@ void parse_mounts( gboolean report )
     gchar **lines;
     GError *error;
     guint n;
-//printf("\n@@@@@@@@@@@@@ parse_mounts %s\n\n", report ? "TRUE" : "FALSE" );
+//g_printf("\n@@@@@@@@@@@@@ parse_mounts %s\n\n", report ? "TRUE" : "FALSE" );
     contents = NULL;
     lines = NULL;
     struct udev_device *udevice;
@@ -1673,19 +1673,19 @@ void parse_mounts( gboolean report )
         if ( subdir_mount )
         {
             // get mount source
-            //printf("subdir_mount %u:%u %s root=%s\n", major, minor, encoded_mount_point, encoded_root );
+            //g_printf("subdir_mount %u:%u %s root=%s\n", major, minor, encoded_mount_point, encoded_root );
             gchar typebuf[PATH_MAX];
             gchar mount_source[PATH_MAX];
             const gchar *sep;
             sep = strstr( lines[n], " - " );
             if ( sep && sscanf( sep + 3, "%s %s", typebuf, mount_source ) == 2 )
             {
-                //printf( "    source=%s\n", mount_source );
+                //g_printf( "    source=%s\n", mount_source );
                 if ( g_str_has_prefix( mount_source, "/dev/" ) )
                 {
                     /* is a subdir mount on a local device, eg a bind mount
                      * so don't include this mount point */
-                    //printf( "        local\n" );
+                    //g_printf( "        local\n" );
                     continue;
                 }
             }
@@ -1710,7 +1710,7 @@ void parse_mounts( gboolean report )
                 str[0] = '\0';
         }
 
-//printf("mount_point(%d:%d)=%s\n", major, minor, mount_point );
+//g_printf("mount_point(%d:%d)=%s\n", major, minor, mount_point );
         devmount = NULL;
         for ( l = newmounts; l; l = l->next )
         {
@@ -1723,7 +1723,7 @@ void parse_mounts( gboolean report )
         }
         if ( !devmount )
         {
-//printf("     new devmount %s\n", mount_point);
+//g_printf("     new devmount %s\n", mount_point);
             if ( report )
             {
                 if ( subdir_mount )
@@ -1776,7 +1776,7 @@ void parse_mounts( gboolean report )
 
         if ( devmount && !g_list_find( devmount->mounts, mount_point ) )
         {
-//printf("    prepended\n");
+//g_printf("    prepended\n");
             devmount->mounts = g_list_prepend( devmount->mounts, mount_point );
         }
         else
@@ -1784,7 +1784,7 @@ void parse_mounts( gboolean report )
     }
     g_free( contents );
     g_strfreev( lines );
-//printf("\nLINES DONE\n\n");
+//g_printf("\nLINES DONE\n\n");
     // translate each mount points list to string
     gchar *points, *old_points;
     GList* m;
@@ -1805,7 +1805,7 @@ void parse_mounts( gboolean report )
         g_list_free( devmount->mounts );
         devmount->mounts = NULL;
         devmount->mount_points = points;
-//printf( "translate %d:%d %s\n", devmount->major, devmount->minor, points );
+//g_printf( "translate %d:%d %s\n", devmount->major, devmount->minor, points );
     }
 
     // compare old and new lists
@@ -1815,16 +1815,16 @@ void parse_mounts( gboolean report )
         for ( l = newmounts; l; l = l->next )
         {
             devmount = (devmount_t*)l->data;
-//printf("finding %d:%d\n", devmount->major, devmount->minor );
+//g_printf("finding %d:%d\n", devmount->major, devmount->minor );
             found = g_list_find_custom( devmounts, (gconstpointer)devmount,
                                                     (GCompareFunc)cmp_devmounts );
             if ( found )
             {
-//printf("    found\n");
+//g_printf("    found\n");
                 if ( !g_strcmp0( ((devmount_t*)found->data)->mount_points,
                                                         devmount->mount_points ) )
                 {
-//printf("    freed\n");
+//g_printf("    freed\n");
                     // no change to mount points, so remove from old list
                     devmount = (devmount_t*)found->data;
                     g_free( devmount->mount_points );
@@ -1836,7 +1836,7 @@ void parse_mounts( gboolean report )
             else
             {
                 // new mount
-//printf("    new mount %d:%d %s\n", devmount->major, devmount->minor, devmount->mount_points );
+//g_printf("    new mount %d:%d %s\n", devmount->major, devmount->minor, devmount->mount_points );
                 devmount_t* devcopy = g_slice_new0( devmount_t );
                 devcopy->major = devmount->major;
                 devcopy->minor = devmount->minor;
@@ -1847,12 +1847,12 @@ void parse_mounts( gboolean report )
             }
         }
     }
-//printf( "\nREMAINING\n\n");
+//g_printf( "\nREMAINING\n\n");
     // any remaining devices in old list have changed mount status
     for ( l = devmounts; l; l = l->next )
     {
         devmount = (devmount_t*)l->data;
-//printf("remain %d:%d\n", devmount->major, devmount->minor );
+//g_printf("remain %d:%d\n", devmount->major, devmount->minor );
         if ( report )
         {
             changed = g_list_prepend( changed, devmount );
@@ -1883,7 +1883,7 @@ void parse_mounts( gboolean report )
             if ( devnode )
             {
                 // block device
-                printf( "mount changed: %s\n", devnode );
+                g_printf( "mount changed: %s\n", devnode );
                 if ((volume = vfs_volume_read_by_device(udevice)))
                     vfs_volume_device_added( volume, TRUE );  //frees volume if needed
                 g_free( devnode );
@@ -1894,7 +1894,7 @@ void parse_mounts( gboolean report )
                 if ((volume = vfs_volume_read_by_mount(devnum,
                                                 devmount->mount_points)))
                 {
-                    printf( "special mount changed: %s (%u:%u) on %s\n",
+                    g_printf( "special mount changed: %s (%u:%u) on %s\n",
                                         volume->device_file,
                                         (unsigned int)MAJOR( volume->devnum ),
                                         (unsigned int)MINOR( volume->devnum ),
@@ -1911,7 +1911,7 @@ void parse_mounts( gboolean report )
         }
         g_list_free( changed );
     }
-//printf ( "END PARSE\n");
+//g_printf ( "END PARSE\n");
 }
 
 static void free_devmounts()
@@ -1951,7 +1951,7 @@ static gboolean cb_mount_monitor_watch( GIOChannel *channel, GIOCondition cond,
     if ( cond & ~G_IO_ERR )
         return TRUE;
 
-    //printf ("@@@ /proc/self/mountinfo changed\n");
+    //g_printf ("@@@ /proc/self/mountinfo changed\n");
     parse_mounts( TRUE );
 
     return TRUE;
@@ -1964,30 +1964,30 @@ static gboolean cb_udev_monitor_watch( GIOChannel *channel, GIOCondition cond,
 /*
 printf("cb_monitor_watch %d\n", channel);
 if ( cond & G_IO_IN )
-    printf("    G_IO_IN\n");
+    g_printf("    G_IO_IN\n");
 if ( cond & G_IO_OUT )
-    printf("    G_IO_OUT\n");
+    g_printf("    G_IO_OUT\n");
 if ( cond & G_IO_PRI )
-    printf("    G_IO_PRI\n");
+    g_printf("    G_IO_PRI\n");
 if ( cond & G_IO_ERR )
-    printf("    G_IO_ERR\n");
+    g_printf("    G_IO_ERR\n");
 if ( cond & G_IO_HUP )
-    printf("    G_IO_HUP\n");
+    g_printf("    G_IO_HUP\n");
 if ( cond & G_IO_NVAL )
-    printf("    G_IO_NVAL\n");
+    g_printf("    G_IO_NVAL\n");
 
 if ( !( cond & G_IO_NVAL ) )
 {
     gint fd = g_io_channel_unix_get_fd( channel );
-    printf("    fd=%d\n", fd);
+    g_printf("    fd=%d\n", fd);
     if ( fcntl(fd, F_GETFL) != -1 || errno != EBADF )
     {
         int flags = g_io_channel_get_flags( channel );
         if ( flags & G_IO_FLAG_IS_READABLE )
-            printf( "    G_IO_FLAG_IS_READABLE\n");
+            g_printf( "    G_IO_FLAG_IS_READABLE\n");
     }
     else
-        printf("    Invalid FD\n");
+        g_printf("    Invalid FD\n");
 }
 */
     if ( ( cond & G_IO_NVAL ) )
@@ -2037,7 +2037,7 @@ if ( !( cond & G_IO_NVAL ) )
             else if ( !strcmp( action, "move" ) )
                 acted = "moved:   ";
             if ( acted )
-                printf( "udev %s%s\n", acted, devnode );
+                g_printf( "udev %s%s\n", acted, devnode );
 
             // add/remove volume
             if ( !strcmp( action, "add" ) || !strcmp( action, "change" ) )
@@ -2549,23 +2549,23 @@ VFSVolume* vfs_volume_read_by_device( struct udev_device *udevice )
 
     vfs_volume_set_info( volume );
 /*
-    printf( "====devnum=%u:%u\n", MAJOR( volume->devnum ), MINOR( volume->devnum ) );
-    printf( "    device_file=%s\n", volume->device_file );
-    printf( "    udi=%s\n", volume->udi );
-    printf( "    label=%s\n", volume->label );
-    printf( "    icon=%s\n", volume->icon );
-    printf( "    is_mounted=%d\n", volume->is_mounted );
-    printf( "    is_mountable=%d\n", volume->is_mountable );
-    printf( "    is_optical=%d\n", volume->is_optical );
-    printf( "    is_audiocd=%d\n", volume->is_audiocd );
-    printf( "    is_blank=%d\n", volume->is_blank );
-    printf( "    is_table=%d\n", volume->is_table );
-    printf( "    is_removable=%d\n", volume->is_removable );
-    printf( "    requires_eject=%d\n", volume->requires_eject );
-    printf( "    is_user_visible=%d\n", volume->is_user_visible );
-    printf( "    mount_point=%s\n", volume->mount_point );
-    printf( "    size=%u\n", volume->size );
-    printf( "    disp_name=%s\n", volume->disp_name );
+    g_printf( "====devnum=%u:%u\n", MAJOR( volume->devnum ), MINOR( volume->devnum ) );
+    g_printf( "    device_file=%s\n", volume->device_file );
+    g_printf( "    udi=%s\n", volume->udi );
+    g_printf( "    label=%s\n", volume->label );
+    g_printf( "    icon=%s\n", volume->icon );
+    g_printf( "    is_mounted=%d\n", volume->is_mounted );
+    g_printf( "    is_mountable=%d\n", volume->is_mountable );
+    g_printf( "    is_optical=%d\n", volume->is_optical );
+    g_printf( "    is_audiocd=%d\n", volume->is_audiocd );
+    g_printf( "    is_blank=%d\n", volume->is_blank );
+    g_printf( "    is_table=%d\n", volume->is_table );
+    g_printf( "    is_removable=%d\n", volume->is_removable );
+    g_printf( "    requires_eject=%d\n", volume->requires_eject );
+    g_printf( "    is_user_visible=%d\n", volume->is_user_visible );
+    g_printf( "    mount_point=%s\n", volume->mount_point );
+    g_printf( "    size=%u\n", volume->size );
+    g_printf( "    disp_name=%s\n", volume->disp_name );
 */
     return volume;
 }
@@ -3345,7 +3345,7 @@ char* vfs_volume_handler_cmd( int mode, int action, VFSVolume* vol,
         return NULL;
 
     // show selected handler
-    printf( "\n%s '%s': %s%s %s\n", mode == HANDLER_MODE_FS ?
+    g_printf( "\n%s '%s': %s%s %s\n", mode == HANDLER_MODE_FS ?
                                                 _("Selected Device Handler") :
                                                 _("Selected Protocol Handler"),
                               set->menu_label,
@@ -3917,7 +3917,7 @@ void exec_task( const char* command, gboolean run_in_terminal )
 
 void vfs_volume_exec( VFSVolume* vol, const char* command )
 {
-//printf( "vfs_volume_exec %s %s\n", vol->device_file, command );
+//g_printf( "vfs_volume_exec %s %s\n", vol->device_file, command );
     if ( !( command && command[0] ) || vol->device_type != DEVICE_TYPE_BLOCK )
         return;
 
@@ -3927,7 +3927,7 @@ void vfs_volume_exec( VFSVolume* vol, const char* command )
     s1 = replace_string( s2, "%v", vol->device_file, FALSE );
     g_free( s2 );
 
-    printf( _("\nAutoexec: %s\n"), s1 );
+    g_printf( _("\nAutoexec: %s\n"), s1 );
     exec_task( s1, FALSE );
     g_free( s1 );
 }
@@ -3972,7 +3972,7 @@ void vfs_volume_autoexec( VFSVolume* vol )
                     FMMainWindow* main_window = fm_main_window_get_last_active();
                     if ( main_window )
                     {
-                        printf( _("\nAuto Open Tab for %s in %s\n"), vol->device_file,
+                        g_printf( _("\nAuto Open Tab for %s in %s\n"), vol->device_file,
                                                                 vol->mount_point );
                         //PtkFileBrowser* file_browser =
                         //        (PtkFileBrowser*)fm_main_window_get_current_file_browser(
@@ -3984,7 +3984,7 @@ void vfs_volume_autoexec( VFSVolume* vol )
                         GDK_THREADS_ENTER();
                         fm_main_window_add_new_tab( main_window, vol->mount_point );
                         GDK_THREADS_LEAVE();
-                        //printf("DONE Auto Open Tab for %s in %s\n", vol->device_file,
+                        //g_printf("DONE Auto Open Tab for %s in %s\n", vol->device_file,
                         //                                        vol->mount_point );
                     }
                     else
@@ -4019,12 +4019,12 @@ void vfs_volume_autounmount( VFSVolume* vol )
     char* line = vfs_volume_device_unmount_cmd( vol, &run_in_terminal );
     if ( line )
     {
-        printf( _("\nAuto-Unmount: %s\n"), line );
+        g_printf( _("\nAuto-Unmount: %s\n"), line );
         exec_task( line, run_in_terminal );
         g_free( line );
     }
     else
-        printf( _("\nAuto-Unmount: error: no unmount command available\n") );
+        g_printf( _("\nAuto-Unmount: error: no unmount command available\n") );
 }
 
 void vfs_volume_automount( VFSVolume* vol )
@@ -4046,12 +4046,12 @@ void vfs_volume_automount( VFSVolume* vol )
                         xset_get_s( "dev_mount_options" ), &run_in_terminal );
     if ( line )
     {
-        printf( _("\nAutomount: %s\n"), line );
+        g_printf( _("\nAutomount: %s\n"), line );
         exec_task( line, run_in_terminal );
         g_free( line );
     }
     else
-        printf( _("\nAutomount: error: no mount command available\n") );
+        g_printf( _("\nAutomount: error: no mount command available\n") );
 }
 
 static void vfs_volume_device_added( VFSVolume* volume, gboolean automount )
@@ -4197,7 +4197,7 @@ static gboolean vfs_volume_nonblock_removed( dev_t devnum )
         {
             // remove volume
             volume = (VFSVolume*)l->data;
-            printf( "special mount removed: %s (%u:%u) on %s\n",
+            g_printf( "special mount removed: %s (%u:%u) on %s\n",
                                         volume->device_file,
                                         (unsigned int)MAJOR( volume->devnum ),
                                         (unsigned int)MINOR( volume->devnum ),
@@ -4230,7 +4230,7 @@ static void vfs_volume_device_removed( struct udev_device* udevice )
         {
             // remove volume
             volume = (VFSVolume*)l->data;
-            //printf("remove volume %s\n", volume->device_file );
+            //g_printf("remove volume %s\n", volume->device_file );
             vfs_volume_exec( volume, xset_get_s( "dev_exec_remove" ) );
             if ( volume->is_mounted && volume->is_removable )
                 unmount_if_mounted( volume );
@@ -4263,7 +4263,7 @@ void unmount_if_mounted( VFSVolume* vol )
                                                 vol->device_file, mtab, str );
     g_free( str );
     g_free( mtab_path );
-    printf( _("Unmount-If-Mounted: %s\n"), line );
+    g_printf( _("Unmount-If-Mounted: %s\n"), line );
     exec_task( line, run_in_terminal );
     g_free( line );
 }
@@ -4288,7 +4288,7 @@ gboolean vfs_volume_init()
     udev = udev_new();
     if ( !udev )
     {
-        printf( "spacefm: unable to initialize udev\n" );
+        g_printf( "spacefm: unable to initialize udev\n" );
         return TRUE;
     }
 
@@ -4324,24 +4324,24 @@ gboolean vfs_volume_init()
     umonitor = udev_monitor_new_from_netlink( udev, "udev" );
     if ( !umonitor )
     {
-        printf( "spacefm: cannot create udev monitor\n" );
+        g_printf( "spacefm: cannot create udev monitor\n" );
         goto finish_;
     }
     if ( udev_monitor_enable_receiving( umonitor ) )
     {
-        printf( "spacefm: cannot enable udev monitor receiving\n");
+        g_printf( "spacefm: cannot enable udev monitor receiving\n");
         goto finish_;
     }
     if ( udev_monitor_filter_add_match_subsystem_devtype( umonitor, "block", NULL ) )
     {
-        printf( "spacefm: cannot set udev filter\n");
+        g_printf( "spacefm: cannot set udev filter\n");
         goto finish_;
     }
 
     gint ufd = udev_monitor_get_fd( umonitor );
     if ( ufd == 0 )
     {
-        printf( "spacefm: cannot get udev monitor socket file descriptor\n");
+        g_printf( "spacefm: cannot get udev monitor socket file descriptor\n");
         goto finish_;
     }
     global_inhibit_auto = TRUE; // don't autoexec during startup
@@ -4363,7 +4363,7 @@ gboolean vfs_volume_init()
     else
     {
         free_devmounts();
-        printf( "spacefm: error monitoring %s: %s\n", MOUNTINFO, error->message );
+        g_printf( "spacefm: error monitoring %s: %s\n", MOUNTINFO, error->message );
         g_error_free (error);
     }
 
@@ -4603,7 +4603,7 @@ gboolean vfs_volume_dir_avoid_changes( const char* dir )
     const char* devnode;
     gboolean ret;
 
-//printf("vfs_volume_dir_avoid_changes( %s )\n", dir );
+//g_printf("vfs_volume_dir_avoid_changes( %s )\n", dir );
     if ( !udev || !dir )
         return FALSE;
 
@@ -4617,7 +4617,7 @@ gboolean vfs_volume_dir_avoid_changes( const char* dir )
     struct stat stat_buf;   // skip stat
     if ( stat( canon, &stat_buf ) == -1 )
         return FALSE;
-    //printf("    stat_buf.st_dev = %d:%d\n", major(stat_buf.st_dev), minor( stat_buf.st_dev) );
+    //g_printf("    stat_buf.st_dev = %d:%d\n", major(stat_buf.st_dev), minor( stat_buf.st_dev) );
 
     struct udev_device* udevice = udev_device_new_from_devnum( udev, 'b',
                                                             stat_buf.st_dev );
@@ -4631,7 +4631,7 @@ gboolean vfs_volume_dir_avoid_changes( const char* dir )
         // not a block device
         const char* fstype = get_devmount_fstype( major( stat_buf.st_dev ),
                                             minor( stat_buf.st_dev ) );
-        //printf("    !udevice || !devnode  fstype=%s\n", fstype );
+        //g_printf("    !udevice || !devnode  fstype=%s\n", fstype );
         ret = FALSE;
         if ( fstype && fstype[0] )
         {
@@ -4649,7 +4649,7 @@ gboolean vfs_volume_dir_avoid_changes( const char* dir )
                                               ptr[len] == ',' ||
                                               ptr[len] == '\0' ) )
                     {
-                        printf("Change Detection Blacklist: fstype '%s' on %s\n",
+                        g_printf("Change Detection Blacklist: fstype '%s' on %s\n",
                                                                     fstype, dir );
                         ret = TRUE;
                         break;
@@ -4678,7 +4678,7 @@ gboolean vfs_volume_dir_avoid_changes( const char* dir )
 
     if ( udevice )
         udev_device_unref( udevice );
-//printf( "    avoid_changes = %s\n", ret ? "TRUE" : "FALSE" );
+//g_printf( "    avoid_changes = %s\n", ret ? "TRUE" : "FALSE" );
     return ret;
 }
 

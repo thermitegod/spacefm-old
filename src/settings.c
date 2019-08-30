@@ -540,7 +540,7 @@ void load_settings( char* config_dir )
     {
         char* command = g_strdup_printf( "cp -r %s '%s'",
                                         xdg_path, settings_config_dir );
-        printf( "COMMAND=%s\n", command );
+        g_printf( "COMMAND=%s\n", command );
         g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
         g_free( command );
         chmod( settings_config_dir, S_IRWXU );
@@ -759,7 +759,7 @@ char* save_settings( gpointer main_window_ptr )
     char* tabs;
     char* old_tabs;
     FMMainWindow* main_window;
-//printf("save_settings\n");
+//g_printf("save_settings\n");
 
     xset_set( "config_version", "s", CONFIG_VERSION );
 
@@ -1013,11 +1013,11 @@ const char* xset_get_user_tmp_dir()
 
 static gboolean idle_save_settings( gpointer ptr )
 {
-    //printf("AUTOSAVE *** idle_save_settings\n" );
+    //g_printf("AUTOSAVE *** idle_save_settings\n" );
     char* err_msg = save_settings( NULL );
     if ( err_msg )
     {
-        printf( _("SpaceFM Error: Unable to autosave session file ( %s )\n"),
+        g_printf( _("SpaceFM Error: Unable to autosave session file ( %s )\n"),
                                                                     err_msg );
         g_free( err_msg );
     }
@@ -1026,7 +1026,7 @@ static gboolean idle_save_settings( gpointer ptr )
 
 static void auto_save_start( gboolean delay )
 {
-    //printf("AUTOSAVE auto_save_start\n" );
+    //g_printf("AUTOSAVE auto_save_start\n" );
     if ( !delay )
     {
         g_idle_add( ( GSourceFunc ) idle_save_settings, NULL );
@@ -1038,13 +1038,13 @@ static void auto_save_start( gboolean delay )
     {
         xset_autosave_timer = g_timeout_add_seconds( 10,
                             ( GSourceFunc ) on_autosave_timer, NULL );
-        //printf("AUTOSAVE timer started\n" );
+        //g_printf("AUTOSAVE timer started\n" );
     }
 }
 
 gboolean on_autosave_timer( gpointer ptr )
 {
-    //printf("AUTOSAVE timeout\n" );
+    //g_printf("AUTOSAVE timeout\n" );
     if ( xset_autosave_timer )
     {
         g_source_remove( xset_autosave_timer );
@@ -1062,7 +1062,7 @@ void xset_autosave( gboolean force, gboolean delay )
         // autosave timer is running, so request save on timeout to prevent
         // saving too frequently, unless force
         xset_autosave_request = TRUE;
-        //printf("AUTOSAVE request\n" );
+        //g_printf("AUTOSAVE request\n" );
     }
     else
     {
@@ -1072,18 +1072,18 @@ void xset_autosave( gboolean force, gboolean delay )
             xset_autosave_timer = 0;
         }
         /* if ( force )
-            printf("AUTOSAVE force\n" );
+            g_printf("AUTOSAVE force\n" );
         else if ( delay )
-            printf("AUTOSAVE delay\n" );
+            g_printf("AUTOSAVE delay\n" );
         else
-            printf("AUTOSAVE normal\n" ); */
+            g_printf("AUTOSAVE normal\n" ); */
         auto_save_start( !force && delay );
     }
 }
 
 void xset_autosave_cancel()
 {
-    //printf("AUTOSAVE cancel\n" );
+    //g_printf("AUTOSAVE cancel\n" );
     xset_autosave_request = FALSE;
     if ( xset_autosave_timer )
     {
@@ -2350,7 +2350,7 @@ gboolean xset_opener( DesktopWindow* desktop, PtkFileBrowser* file_browser,
             set->browser = file_browser;
             set->desktop = desktop;
             char* clean = clean_label( set->menu_label, FALSE, FALSE );
-            printf( _("\nSelected Menu Item '%s' As Handler\n"), clean );
+            g_printf( _("\nSelected Menu Item '%s' As Handler\n"), clean );
             g_free( clean );
             xset_menu_cb( NULL, set );  // also does custom activate
         }
@@ -2422,7 +2422,7 @@ void read_root_settings()
 
     char* root_set_path= g_strdup_printf(
                     "%s/spacefm/%s-as-root", SYSCONFDIR, g_get_user_name() );
-    //printf("%s\n", root_set_path);
+    //g_printf("%s\n", root_set_path);
     if ( !g_file_test( root_set_path, G_FILE_TEST_EXISTS ) )
     {
         g_free( root_set_path );
@@ -2982,7 +2982,7 @@ GtkWidget* xset_add_menuitem( DesktopWindow* desktop, PtkFileBrowser* file_brows
     int context_action = CONTEXT_SHOW;
     XSet* mset;
     char* icon_file = NULL;
-//printf("xset_add_menuitem %s\n", set->name );
+//g_printf("xset_add_menuitem %s\n", set->name );
 
     // plugin?
     mset = xset_get_plugin_mirror( set );
@@ -3353,7 +3353,7 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
     gboolean ret;
     gint exit_status;
 
-//printf("xset_custom_copy_files( %s, %s )\n", src->name, dest->name );
+//g_printf("xset_custom_copy_files( %s, %s )\n", src->name, dest->name );
 
     // copy command dir
 
@@ -3361,9 +3361,9 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
         path_src = g_build_filename( src->plug_dir, src->plug_name, NULL );
     else
         path_src = g_build_filename( settings_config_dir, "scripts", src->name, NULL );
-//printf("    path_src=%s\n", path_src );
+//g_printf("    path_src=%s\n", path_src );
 
-//printf("    path_src EXISTS\n");
+//g_printf("    path_src EXISTS\n");
     path_dest = g_build_filename(settings_config_dir, "scripts", NULL);
     g_mkdir_with_parents(path_dest, 0700);
     chmod(path_dest, 0700);
@@ -3375,11 +3375,11 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
 
     if ( command )
     {
-//printf("    path_dest=%s\n", path_dest );
-        printf( "COMMAND=%s\n", command );
+//g_printf("    path_dest=%s\n", path_dest );
+        g_printf( "COMMAND=%s\n", command );
         ret = g_spawn_command_line_sync( command, &stdout, &stderr, &exit_status, NULL );
         g_free( command );
-        printf( "%s%s", stdout, stderr );
+        g_printf( "%s%s", stdout, stderr );
 
         if ( !ret || ( exit_status && WIFEXITED( exit_status ) ) )
         {
@@ -3395,7 +3395,7 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
             g_free( stdout );
         stderr = stdout = NULL;
         command = g_strdup_printf( "chmod -R go-rwx %s", path_dest );
-        printf( "COMMAND=%s\n", command );
+        g_printf( "COMMAND=%s\n", command );
         g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
         g_free( command );
         g_free( path_dest );
@@ -3412,10 +3412,10 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
         command = g_strdup_printf( "cp -a %s %s", path_src, path_dest );
         g_free( path_src );
         stderr = stdout = NULL;
-        printf( "COMMAND=%s\n", command );
+        g_printf( "COMMAND=%s\n", command );
         ret = g_spawn_command_line_sync( command, &stdout, &stderr, &exit_status, NULL );
         g_free( command );
-        printf( "%s%s", stdout, stderr );
+        g_printf( "%s%s", stdout, stderr );
         if ( !ret || ( exit_status && WIFEXITED( exit_status ) ) )
         {
             msg = g_strdup_printf( _("An error occured copying command data files\n\n%s"),
@@ -3431,7 +3431,7 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
         stderr = stdout = NULL;
         command = g_strdup_printf( "chmod -R go-rwx %s", path_dest );
         g_free( path_dest );
-        printf( "COMMAND=%s\n", command );
+        g_printf( "COMMAND=%s\n", command );
         g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
         g_free( command );
     }
@@ -3439,7 +3439,7 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
 
 XSet* xset_custom_copy( XSet* set, gboolean copy_next, gboolean delete_set )
 {
-//printf("\nxset_custom_copy( %s, %s, %s)\n", set->name, copy_next ? "TRUE" : "FALSE", delete_set ? "TRUE" : "FALSE" );
+//g_printf("\nxset_custom_copy( %s, %s, %s)\n", set->name, copy_next ? "TRUE" : "FALSE", delete_set ? "TRUE" : "FALSE" );
     XSet* mset = set;
     // if a plugin with a mirror, get the mirror
     if ( set->plugin && set->shared_key )
@@ -3477,7 +3477,7 @@ XSet* xset_custom_copy( XSet* set, gboolean copy_next, gboolean delete_set )
     if ( set->menu_style == XSET_MENU_SUBMENU && set->child )
     {
         XSet* set_child = xset_get( set->child );
-//printf("    copy submenu %s\n", set_child->name );
+//g_printf("    copy submenu %s\n", set_child->name );
         XSet* newchild = xset_custom_copy( set_child, TRUE, delete_set );
         newset->child = g_strdup( newchild->name );
         newchild->parent = g_strdup( newset->name );
@@ -3486,7 +3486,7 @@ XSet* xset_custom_copy( XSet* set, gboolean copy_next, gboolean delete_set )
     if ( copy_next && set->next )
     {
         XSet* set_next = xset_get( set->next );
-//printf("    copy next %s\n", set_next->name );
+//g_printf("    copy next %s\n", set_next->name );
         XSet* newnext = xset_custom_copy( set_next, TRUE, delete_set );
         newnext->prev = g_strdup( newset->name );
         newset->next = g_strdup( newnext->name );
@@ -3545,7 +3545,7 @@ _redo:
                 g_dir_close( dir );
                 command = g_strdup_printf( "rm -rf %s/%s", path, name );
                 stderr = stdout = NULL;
-                printf( "COMMAND=%s\n", command );
+                g_printf( "COMMAND=%s\n", command );
                 g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
                 g_free( command );
                 if ( stderr )
@@ -3891,7 +3891,7 @@ void on_install_plugin_cb( VFSFileTask* task, PluginData* plugin_data )
 {
     XSet* set;
     char* msg;
-//printf("on_install_plugin_cb\n");
+//g_printf("on_install_plugin_cb\n");
     if ( plugin_data->job == PLUGIN_JOB_REMOVE ) // uninstall
     {
         if ( !g_file_test( plugin_data->plug_dir, G_FILE_TEST_EXISTS ) )
@@ -4235,7 +4235,7 @@ gboolean xset_custom_export_files( XSet* set, char* plug_dir )
     }
     g_free( path_src );
     g_free( path_dest );
-    printf( "COMMAND=%s\n", command );
+    g_printf( "COMMAND=%s\n", command );
     gboolean ret = g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
     g_free( command );
     if ( stderr )
@@ -4820,7 +4820,7 @@ void xset_custom_delete( XSet* set, gboolean delete_next )
     g_free(path2);
     if (command)
     {
-        printf( "COMMAND=%s\n", command );
+        g_printf( "COMMAND=%s\n", command );
         g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
         g_free( command );
     }
@@ -4835,15 +4835,15 @@ XSet* xset_custom_remove( XSet* set )
     XSet* set_child;
 
 /*
-printf("xset_custom_remove %s (%s)\n", set->name, set->menu_label );
-printf("    set->parent = %s\n", set->parent );
-printf("    set->prev = %s\n", set->prev );
-printf("    set->next = %s\n", set->next );
+g_printf("xset_custom_remove %s (%s)\n", set->name, set->menu_label );
+g_printf("    set->parent = %s\n", set->parent );
+g_printf("    set->prev = %s\n", set->prev );
+g_printf("    set->next = %s\n", set->next );
 */
     if ( set->prev )
     {
         set_prev = xset_get( set->prev );
-        //printf("        set->prev = %s (%s)\n", set_prev->name, set_prev->menu_label );
+        //g_printf("        set->prev = %s (%s)\n", set_prev->name, set_prev->menu_label );
         if ( set_prev->next )
             g_free( set_prev->next );
         if ( set->next )
@@ -5660,7 +5660,7 @@ void xset_design_job( GtkWidget* item, XSet* set )
     int job = GPOINTER_TO_INT( g_object_get_data( G_OBJECT(item), "job" ) );
     int cmd_type = xset_get_int_set( set, "x" );
 
-//printf("activate job %d %s\n", job, set->name);
+//g_printf("activate job %d %s\n", job, set->name);
     switch ( job ) {
     case XSET_JOB_KEY:
         xset_set_key( parent, set );
@@ -6702,7 +6702,7 @@ gboolean xset_design_menu_keypress( GtkWidget* widget, GdkEventKey* event,
 
 void xset_design_destroy( GtkWidget* item, GtkWidget* design_menu )
 {
-//printf( "xset_design_destroy\n");
+//g_printf( "xset_design_destroy\n");
     // close design_menu if menu deactivated
     gtk_widget_set_sensitive( item, TRUE );
     gtk_menu_shell_deactivate( GTK_MENU_SHELL( design_menu ) );
@@ -7458,7 +7458,7 @@ void xset_menu_cb( GtkWidget* item, XSet* set )
         // test purpose only
         char* file = xset_file_dialog( parent, GTK_FILE_CHOOSER_ACTION_SAVE,
                         rset->title, rset->s, "foobar.xyz" );
-        //printf("file=%s\n", file );
+        //g_printf("file=%s\n", file );
     }
     else if ( rset->menu_style == XSET_MENU_ICON )
     {
@@ -8317,10 +8317,10 @@ char* xset_color_dialog( GtkWidget* parent, char* title, char* defcolor )
 #endif
         {
 #if (GTK_MAJOR_VERSION == 3)
-            //printf( "        gdk_rgba_to_string = %s\n", gdk_rgba_to_string( &color ) );
+            //g_printf( "        gdk_rgba_to_string = %s\n", gdk_rgba_to_string( &color ) );
             gtk_color_chooser_set_rgba( GTK_COLOR_SELECTION( color_sel ), &color );
 #elif (GTK_MAJOR_VERSION == 2)
-            //printf( "        gdk_color_to_string = %s\n", gdk_color_to_string( &color ) );
+            //g_printf( "        gdk_color_to_string = %s\n", gdk_color_to_string( &color ) );
             color_sel = gtk_color_selection_dialog_get_color_selection(GTK_COLOR_SELECTION_DIALOG(dlg));
             gtk_color_selection_set_current_color( GTK_COLOR_SELECTION( color_sel ), &color );
 #endif
@@ -8370,7 +8370,7 @@ void xset_builtin_tool_activate( char tool_type, XSet* set,
         g_warning( "xset_builtin_tool_activate invalid" );
         return;
     }
-    //printf("xset_builtin_tool_activate  %s\n", set->menu_label );
+    //g_printf("xset_builtin_tool_activate  %s\n", set->menu_label );
 
     // get current browser, panel, and mode
     if ( main_window )
@@ -8479,7 +8479,7 @@ gboolean on_tool_icon_button_press( GtkWidget *widget,
 {
     int job = -1;
 
-    //printf("on_tool_icon_button_press  %s   button = %d\n", set->menu_label,
+    //g_printf("on_tool_icon_button_press  %s   button = %d\n", set->menu_label,
     //                                                    event->button );
     if ( event->type != GDK_BUTTON_PRESS )
         return FALSE;
@@ -8619,7 +8619,7 @@ gboolean on_tool_icon_button_press( GtkWidget *widget,
 gboolean on_tool_menu_button_press( GtkWidget *widget,
                                     GdkEventButton* event, XSet* set )
 {
-    //printf("on_tool_menu_button_press  %s   button = %d\n", set->menu_label,
+    //g_printf("on_tool_menu_button_press  %s   button = %d\n", set->menu_label,
     //                                                    event->button );
     if ( event->type != GDK_BUTTON_PRESS )
         return FALSE;
@@ -9095,12 +9095,12 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
     g_free( icon_file );
     gtk_toolbar_insert( GTK_TOOLBAR( toolbar ), GTK_TOOL_ITEM( item ), -1 );
 
-//printf("    set=%s   set->next=%s\n", set->name, set->next );
+//g_printf("    set=%s   set->next=%s\n", set->name, set->next );
     // next toolitem
 _next_toolitem:
     if ((set_next = xset_is(set->next)))
     {
-//printf("    NEXT %s\n", set_next->name );
+//g_printf("    NEXT %s\n", set_next->name );
         xset_add_toolitem( parent, file_browser, toolbar, icon_size, set_next,
                                                             show_tooltips );
     }
@@ -9126,7 +9126,7 @@ void xset_fill_toolbar( GtkWidget* parent, PtkFileBrowser* file_browser,
     XSet* set;
     XSet* set_target;
 
-    //printf("xset_fill_toolbar %s\n", set_parent->name );
+    //g_printf("xset_fill_toolbar %s\n", set_parent->name );
     if ( !( file_browser && toolbar && set_parent ) )
         return;
 

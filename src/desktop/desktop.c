@@ -63,7 +63,7 @@ static void on_icon_theme_changed( GtkIconTheme* theme, gpointer data )
 #include <glib-object.h>   // for g_signal_connect
 void on_size_changed( GdkScreen *screen, GtkWidget* w )
 {
-    printf( "screen size changed  %d, %d\n", gdk_screen_get_width( screen ),
+    g_printf( "screen size changed  %d, %d\n", gdk_screen_get_width( screen ),
                                              gdk_screen_get_height( screen ) );
 }
 */
@@ -89,7 +89,7 @@ void fm_turn_on_desktop_icons(gboolean transparent)
     for ( i = 0; i < n_screens; i++ )
     {
         desktops[ i ] = desktop_window_new(transparent);
-        //printf("added desktop window %p to screen %d on display %p (%s)\n",
+        //g_printf("added desktop window %p to screen %d on display %p (%s)\n",
         //                  desktops[ i ], i, gdpy, g_getenv( "DISPLAY" ) );
         ((DesktopWindow*)desktops[ i ])->screen_index = i;
         desktop_window_set_icon_size( (DesktopWindow*)desktops[ i ], big );

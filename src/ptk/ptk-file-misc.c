@@ -40,6 +40,8 @@
 #include "ptk-handler.h"
 #include "gtk2-compat.h"
 
+#include <glib/gprintf.h>
+
 #include <linux/limits.h> //PATH_MAX
 
 typedef struct
@@ -544,7 +546,7 @@ void on_move_change( GtkWidget* widget, MoveSet* mset )
         path = g_path_get_dirname( full_path );
     }
 
-//printf("path=%s   full=%s\n", path, full_path );
+//g_printf("path=%s   full=%s\n", path, full_path );
 
     // tests
     struct stat statbuf;
@@ -596,11 +598,11 @@ void on_move_change( GtkWidget* widget, MoveSet* mset )
 
 
 /*
-    printf( "\nTEST\n    full_path_same %d %d\n", full_path_same, mset->full_path_same );
-    printf( "    full_path_exists %d %d\n", full_path_exists, mset->full_path_exists );
-    printf( "    full_path_exists_dir %d %d\n", full_path_exists_dir, mset->full_path_exists_dir );
-    printf( "    path_missing %d %d\n", path_missing, mset->path_missing );
-    printf( "    path_exists_file %d %d\n", path_exists_file, mset->path_exists_file );
+    g_printf( "\nTEST\n    full_path_same %d %d\n", full_path_same, mset->full_path_same );
+    g_printf( "    full_path_exists %d %d\n", full_path_exists, mset->full_path_exists );
+    g_printf( "    full_path_exists_dir %d %d\n", full_path_exists_dir, mset->full_path_exists_dir );
+    g_printf( "    path_missing %d %d\n", path_missing, mset->path_missing );
+    g_printf( "    path_exists_file %d %d\n", path_exists_file, mset->path_exists_file );
 */
     // update display
     if ( mset->full_path_same != full_path_same
@@ -3615,7 +3617,7 @@ static void open_files_with_handler( ParentInfo* parent,
     char* command;
     char* name;
 
-    printf( "\nSelected File Handler '%s'\n", handler_set->menu_label );
+    g_printf( "\nSelected File Handler '%s'\n", handler_set->menu_label );
 
     // get command - was already checked as non-empty
     char* err_msg = ptk_handler_load_script( HANDLER_MODE_FILE,
@@ -3786,7 +3788,7 @@ static gboolean open_files_with_app( ParentInfo* parent,
         else
             screen = gdk_screen_get_default();
 
-        printf("EXEC(%s)=%s\n", app->full_path ? app->full_path : app_desktop,
+        g_printf("EXEC(%s)=%s\n", app->full_path ? app->full_path : app_desktop,
                                                                     app->exec );
         if ( ! vfs_app_desktop_open_files( screen, parent->cwd, app, files, &err ) )
         {

@@ -1858,11 +1858,11 @@ static void cb_file_value_change( VFSFileMonitor* fm,
                                         const char* file_name,
                                         CustomElement* el )
 {
-    //printf( "cb_file_value_change %d %s\n", event, file_name );
+    //g_printf( "cb_file_value_change %d %s\n", event, file_name );
     switch( event )
     {
     case VFS_FILE_MONITOR_DELETE:
-        //printf ("    DELETE\n");
+        //g_printf ("    DELETE\n");
         if ( el->monitor )
             vfs_file_monitor_remove( el->monitor, el->callback, el );
         el->monitor = NULL;
@@ -1873,7 +1873,7 @@ static void cb_file_value_change( VFSFileMonitor* fm,
     case VFS_FILE_MONITOR_CHANGE:
     case VFS_FILE_MONITOR_CREATE:
     default:
-        //printf ("    CREATE/CHANGE\n");
+        //g_printf ("    CREATE/CHANGE\n");
         break;
     }
     if ( !el->update_timeout )
@@ -2376,7 +2376,7 @@ void on_combo_changed( GtkComboBox* box, CustomElement* el )
 gboolean on_list_button_press( GtkTreeView* view, GdkEventButton* evt,
                                 CustomElement* el )
 {
-    printf("on_list_button_press\n");
+    g_printf("on_list_button_press\n");
     if ( evt->type == GDK_2BUTTON_PRESS && evt->button == 1 )
     {
         gtk_tree_view_row_activated( view, NULL, NULL );
@@ -3132,17 +3132,17 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             {
                 /*
                 GSList* l;
-                printf("LIST-BEFORE %#x\n", *radio );
+                g_printf("LIST-BEFORE %#x\n", *radio );
                 for ( l = *radio; l; l = l->next )
-                    printf( "    button=%#x\n", l->data );
+                    g_printf( "    button=%#x\n", l->data );
                 */
                 w = gtk_radio_button_new_with_mnemonic( *radio, str );
                 *radio = gtk_radio_button_get_group( GTK_RADIO_BUTTON( w ) );
-                //printf("BUTTON=%#x\n", w );
+                //g_printf("BUTTON=%#x\n", w );
                 /*
-                printf("LIST-AFTER %#x\n", *radio );
+                g_printf("LIST-AFTER %#x\n", *radio );
                 for ( l = *radio; l; l = l->next )
-                    printf( "    button=%#x\n", l->data );
+                    g_printf( "    button=%#x\n", l->data );
                 */
             }
             g_free( str );

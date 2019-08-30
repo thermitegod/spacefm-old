@@ -3979,7 +3979,7 @@ exo_icon_view_queue_draw_item (ExoIconView     *icon_view,
 
     if (icon_view->priv->bin_window)
     {
-        //printf("draw_item %d,%d %dx%d\n", rect.x, rect.y, rect.width, rect.height );
+        //g_printf("draw_item %d,%d %dx%d\n", rect.x, rect.y, rect.width, rect.height );
         gdk_window_invalidate_rect (icon_view->priv->bin_window, &rect, TRUE);
     }
 }

@@ -524,15 +524,15 @@ void receive_socket_command( int client, GString* args )  //sfm
 /*
     if ( argv )
     {
-        printf( "receive:\n");
+        g_printf( "receive:\n");
         for ( arg = argv; *arg; ++arg )
         {
             if ( ! **arg )  // skip empty string
             {
-                printf( "    (skipped empty)\n");
+                g_printf( "    (skipped empty)\n");
                 continue;
             }
-            printf( "    %s\n", *arg );
+            g_printf( "    %s\n", *arg );
         }
     }
 */
@@ -845,7 +845,7 @@ gboolean handle_parsed_commandline_args()
     if( new_tab || reuse_tab )
     {
         main_window = fm_main_window_get_on_current_desktop();
-//printf("    fm_main_window_get_on_current_desktop = %p  %s %s\n", main_window,
+//g_printf("    fm_main_window_get_on_current_desktop = %p  %s %s\n", main_window,
 //                                                            new_tab ? "new_tab" : "",
 //                                                            reuse_tab ? "reuse_tab" : "" );
     }
@@ -894,7 +894,7 @@ gboolean handle_parsed_commandline_args()
             //xset_autosave( TRUE, FALSE );
             char* err_msg = save_settings( fm_main_window_get_last_active() );
             if ( err_msg )
-                printf( _("spacefm: Error: Unable to save session\n       %s\n"),
+                g_printf( _("spacefm: Error: Unable to save session\n       %s\n"),
                                                                     err_msg );
             if( desktop && app_settings.show_wallpaper )
             {
@@ -1001,7 +1001,7 @@ gboolean handle_parsed_commandline_args()
             }
         }
     }
-//printf("    handle_parsed_commandline_args mw = %p\n\n", main_window );
+//g_printf("    handle_parsed_commandline_args mw = %p\n\n", main_window );
 
 
 #ifdef DESKTOP_INTEGRATION
@@ -1085,7 +1085,7 @@ int main ( int argc, char *argv[] )
     /* initialize GTK+ and parse the command line arguments */
     if( G_UNLIKELY( ! gtk_init_with_args( &argc, &argv, "", opt_entries, GETTEXT_PACKAGE, &err ) ) )
     {
-        printf( "spacefm: %s\n", err->message );
+        g_printf( "spacefm: %s\n", err->message );
         g_error_free( err );
         return 1;
     }
@@ -1107,42 +1107,42 @@ int main ( int argc, char *argv[] )
     // --version
     if ( version_opt )
     {
-        printf( "spacefm %s\n", VERSION );
+        g_printf( "spacefm %s\n", VERSION );
 #if (GTK_MAJOR_VERSION == 3)
-        printf( "GTK3 " );
+        g_printf( "GTK3 " );
 #elif (GTK_MAJOR_VERSION == 2)
-        printf( "GTK2 " );
+        g_printf( "GTK2 " );
 #endif
-        printf( "UDEV " );
-        printf( "INOTIFY " );
+        g_printf( "UDEV " );
+        g_printf( "INOTIFY " );
 #ifdef DESKTOP_INTEGRATION
-        printf( "DESKTOP " );
+        g_printf( "DESKTOP " );
 #endif
 #ifdef HAVE_SN
-        printf( "SNOTIFY " );
+        g_printf( "SNOTIFY " );
 #endif
 #ifdef HAVE_STATVFS
-        printf( "STATVFS " );
+        g_printf( "STATVFS " );
 #endif
 #ifdef HAVE_FFMPEG
-        printf( "FFMPEG " );
+        g_printf( "FFMPEG " );
 #endif
 #ifdef ENABLE_NLS
-        printf( "NLS " );
+        g_printf( "NLS " );
 #endif
 #ifdef DEPRECATED_HW
-        printf( "DEPRECATED_HW " );
+        g_printf( "DEPRECATED_HW " );
 #endif
 #ifdef HAVE_MMAP
-        printf( "MMAP " );
+        g_printf( "MMAP " );
 #endif
 #ifdef SUN_LEN
-        printf( "SUN_LEN " );
+        g_printf( "SUN_LEN " );
 #endif
 #ifdef _DEBUG_THREAD
-        printf( "DEBUG_THREAD " );
+        g_printf( "DEBUG_THREAD " );
 #endif
-        printf( "\n" );
+        g_printf( "\n" );
         return 0;
     }
 
@@ -1217,7 +1217,7 @@ int main ( int argc, char *argv[] )
     {
         char* err_msg = save_settings();
         if ( err_msg )
-            printf( "spacefm: Error: Unable to save session\n       %s\n", err_msg );
+            g_printf( "spacefm: Error: Unable to save session\n       %s\n", err_msg );
     }
 */
     vfs_volume_finalize();
