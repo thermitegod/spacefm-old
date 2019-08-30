@@ -56,6 +56,8 @@
 #include "desktop.h"
 #endif
 
+#include <glib/gprintf.h>
+
 #include "cust-dialog.h"
 
 #include <linux/limits.h> //PATH_MAX
@@ -345,7 +347,7 @@ gboolean single_instance_check()
 
     if ( ( sock = socket( AF_UNIX, SOCK_STREAM, 0 ) ) == -1 )
     {
-        fprintf( stderr, "spacefm: socket init failure\n" );
+        g_fprintf( stderr, "spacefm: socket init failure\n" );
         ret = 1;
         goto _exit;
     }
@@ -571,14 +573,14 @@ int send_socket_command( int argc, char* argv[], char** reply )   //sfm
     *reply = NULL;
     if ( argc < 3 )
     {
-        fprintf( stderr, _("spacefm: --socket-cmd requires an argument\n") );
+        g_fprintf( stderr, _("spacefm: --socket-cmd requires an argument\n") );
         return 1;
     }
 
     // create socket
     if ( ( sock = socket( AF_UNIX, SOCK_STREAM, 0 ) ) == -1 )
     {
-        fprintf( stderr, _("spacefm: could not create socket\n") );
+        g_fprintf( stderr, _("spacefm: could not create socket\n") );
         return 1;
     }
 
@@ -593,7 +595,7 @@ int send_socket_command( int argc, char* argv[], char** reply )   //sfm
 
     if ( connect( sock, ( struct sockaddr* ) & addr, addr_len ) != 0 )
     {
-        fprintf( stderr, _("spacefm: could not connect to socket (not running? or DISPLAY not set?)\n") );
+        g_fprintf( stderr, _("spacefm: could not connect to socket (not running? or DISPLAY not set?)\n") );
         return 1;
     }
 
@@ -636,7 +638,7 @@ int send_socket_command( int argc, char* argv[], char** reply )   //sfm
     }
     else
     {
-        fprintf( stderr, _("spacefm: invalid response from socket\n") );
+        g_fprintf( stderr, _("spacefm: invalid response from socket\n") );
         ret = 1;
     }
     g_string_free( sock_reply, TRUE );
@@ -1074,7 +1076,7 @@ int main ( int argc, char *argv[] )
             char* reply = NULL;
             int ret = send_socket_command( argc, argv, &reply );
             if ( reply && reply[0] )
-                fprintf( ret ? stderr : stdout, "%s", reply );
+                g_fprintf( ret ? stderr : stdout, "%s", reply );
             g_free( reply );
             return ret;
         }
@@ -1091,14 +1093,14 @@ int main ( int argc, char *argv[] )
     // dialog mode with other options?
     if ( custom_dialog )
     {
-        fprintf( stderr, "spacefm: %s\n", _("--dialog must be first option") );
+        g_fprintf( stderr, "spacefm: %s\n", _("--dialog must be first option") );
         return 1;
     }
 
     // socket command with other options?
     if ( socket_cmd )
     {
-        fprintf( stderr, "spacefm: %s\n", _("--socket-cmd must be first option") );
+        g_fprintf( stderr, "spacefm: %s\n", _("--socket-cmd must be first option") );
         return 1;
     }
 

@@ -21,6 +21,8 @@
 #include "settings.h"
 #include "cust-dialog.h"
 
+#include <glib/gprintf.h>
+
 #include "gtk2-compat.h"
 
 #define DEFAULT_TITLE "SpaceFM Dialog"
@@ -69,7 +71,7 @@ static void set_font( GtkWidget* w, const char* font )
 static void dlg_warn( const char* msg, const char* a, const char* b )
 {
     char* str = g_strdup_printf( "** spacefm-dialog: %s\n", msg );
-    fprintf( stderr, str, a, b );
+    g_fprintf( stderr, str, a, b );
     g_free( str );
 }
 
@@ -1176,7 +1178,7 @@ static char* get_command_value( CustomElement* el, char* cmdline, char* xvalue )
     if ( line[0] == '\0' )
         return line;
 
-    //fprintf( stderr, "spacefm-dialog: SYNC=%s\n", line );
+    //g_fprintf( stderr, "spacefm-dialog: SYNC=%s\n", line );
     argv[0] = g_strdup( "bash" );
     argv[1] = g_strdup( "-c" );
     argv[2] = line;
@@ -1393,7 +1395,7 @@ static void internal_command( CustomElement* el, int icmd, GList* args, char* xv
         }
     }
 
-    //fprintf( stderr, "spacefm-dialog: INTERNAL=%s %s %s\n", cdlg_cmd[icmd*3],
+    //g_fprintf( stderr, "spacefm-dialog: INTERNAL=%s %s %s\n", cdlg_cmd[icmd*3],
     //                                                        cname, cvalue );
     switch ( icmd )
     {
@@ -1538,10 +1540,10 @@ static void run_command( CustomElement* el, GList* argslist, char* xvalue )
             {
                 argv[a++] = NULL;
                 /*
-                fprintf( stderr, "spacefm-dialog: ASYNC=" );
+                g_fprintf( stderr, "spacefm-dialog: ASYNC=" );
                 for ( i = 0; i < a - 1; i++ )
-                    fprintf( stderr, "%s%s", i == 0 ? "" : "  ", argv[i] );
-                fprintf( stderr, "\n" );
+                    g_fprintf( stderr, "%s%s", i == 0 ? "" : "  ", argv[i] );
+                g_fprintf( stderr, "\n" );
                 */
                 error = NULL;
                 if ( !g_spawn_async( NULL, argv, NULL,
@@ -1712,32 +1714,32 @@ static gboolean cb_pipe_watch( GIOChannel *channel, GIOCondition cond,
                                CustomElement* el )
 {
 /*
-fprintf( stderr, "cb_pipe_watch %d\n", channel);
+g_fprintf( stderr, "cb_pipe_watch %d\n", channel);
 if ( cond & G_IO_IN )
-    fprintf( stderr, "    G_IO_IN\n");
+    g_fprintf( stderr, "    G_IO_IN\n");
 if ( cond & G_IO_OUT )
-    fprintf( stderr, "    G_IO_OUT\n");
+    g_fprintf( stderr, "    G_IO_OUT\n");
 if ( cond & G_IO_PRI )
-    fprintf( stderr, "    G_IO_PRI\n");
+    g_fprintf( stderr, "    G_IO_PRI\n");
 if ( cond & G_IO_ERR )
-    fprintf( stderr, "    G_IO_ERR\n");
+    g_fprintf( stderr, "    G_IO_ERR\n");
 if ( cond & G_IO_HUP )
-    fprintf( stderr, "    G_IO_HUP\n");
+    g_fprintf( stderr, "    G_IO_HUP\n");
 if ( cond & G_IO_NVAL )
-    fprintf( stderr, "    G_IO_NVAL\n");
+    g_fprintf( stderr, "    G_IO_NVAL\n");
 
 if ( !( cond & G_IO_NVAL ) )
 {
     gint fd = g_io_channel_unix_get_fd( channel );
-    fprintf( stderr, "    fd=%d\n", fd);
+    g_fprintf( stderr, "    fd=%d\n", fd);
     if ( fcntl(fd, F_GETFL) != -1 || errno != EBADF )
     {
         int flags = g_io_channel_get_flags( channel );
         if ( flags & G_IO_FLAG_IS_READABLE )
-            fprintf( stderr, "    G_IO_FLAG_IS_READABLE\n");
+            g_fprintf( stderr, "    G_IO_FLAG_IS_READABLE\n");
     }
     else
-        fprintf( stderr, "    Invalid FD\n");
+        g_fprintf( stderr, "    Invalid FD\n");
 }
 */
     if ( ( cond & G_IO_NVAL ) )
@@ -2005,7 +2007,7 @@ static void write_value( FILE* file, const char* prefix, const char* name,
         quoted = replace_string( str, "\t", "'$'\\t''", FALSE );
         g_free( str );
     }
-    fprintf( file, "%s_%s%s%s=%s\n", prefix, name, sub ? "_" : "", sub ? sub : "",
+    g_fprintf( file, "%s_%s%s%s=%s\n", prefix, name, sub ? "_" : "", sub ? sub : "",
                                                                     quoted );
     g_free( quoted );
 }
@@ -2048,7 +2050,7 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
 
     // write values
     int button_count = 0;
-    fprintf( out, "#!%s\n# SpaceFM Dialog source output - execute this output to set variables\n# Example:  eval \"`spacefm --dialog --label \"Message\" --button ok`\"\n\n", BASHPATH );
+    g_fprintf( out, "#!%s\n# SpaceFM Dialog source output - execute this output to set variables\n# Example:  eval \"`spacefm --dialog --label \"Message\" --button ok`\"\n\n", BASHPATH );
     if ( !el_pressed )
     {
         // no button press caused dialog closure
@@ -2195,7 +2197,7 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
         case CDLG_LIST:
         case CDLG_MLIST:
             str = get_tree_view_selected( el, prefix );
-            fprintf( out, str, NULL );
+            g_fprintf( out, str, NULL );
             g_free( str );
             break;
         case CDLG_PROGRESS:
@@ -2237,18 +2239,18 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
                                                     el->widgets->next->data ) );
                 GSList* sl;
                 if ( !files )
-                    fprintf( out, "%s_%s=''\n", prefix, el->name );
+                    g_fprintf( out, "%s_%s=''\n", prefix, el->name );
                 else
                 {
-                    fprintf( out, "%s_%s=(", prefix, el->name );
+                    g_fprintf( out, "%s_%s=(", prefix, el->name );
                     for ( sl = files; sl; sl = sl->next )
                     {
                         str = bash_quote( (char*)sl->data );
-                        fprintf( out, "\n%s", str );
+                        g_fprintf( out, "\n%s", str );
                         g_free( str );
                         g_free( sl->data );
                     }
-                    fprintf( out, ")\n" );
+                    g_fprintf( out, ")\n" );
                     g_slist_free( files );
                 }
             }
@@ -3813,7 +3815,7 @@ int custom_dialog_init( int argc, char *argv[] )
     {
         if ( !g_utf8_validate( argv[ac], -1, NULL ) )
         {
-            fprintf( stderr, _("spacefm: argument is not valid UTF-8\n") );
+            g_fprintf( stderr, _("spacefm: argument is not valid UTF-8\n") );
             free_elements( elements );
             return 1;
         }
@@ -3854,7 +3856,7 @@ int custom_dialog_init( int argc, char *argv[] )
         }
         if ( !el )
         {
-            fprintf( stderr, "spacefm: %s '%s'\n", _("invalid dialog option"), argv[ac] );
+            g_fprintf( stderr, "spacefm: %s '%s'\n", _("invalid dialog option"), argv[ac] );
             return 1;
         }
         el->args = g_list_append( el->args, argv[ac] );

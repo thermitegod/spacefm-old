@@ -46,6 +46,8 @@
 #include <cairo-xlib.h>
 #endif
 
+#include <glib/gprintf.h>
+
 #include <string.h>
 
 /* for stat */
@@ -4111,13 +4113,13 @@ static void custom_order_write( DesktopWindow* self )
     {
         GList* l;
 
-        fprintf( file, "~rows=%d\n", self->row_count );
+        g_fprintf( file, "~rows=%d\n", self->row_count );
 
         int i = 1; // start from 1 to detect atoi failure
         for ( l = self->items; l; l = l->next )
         {
             if ( ((DesktopItem*)l->data)->fi )
-                fprintf( file, "%d=%s\n", i,
+                g_fprintf( file, "%d=%s\n", i,
                         vfs_file_info_get_name( ((DesktopItem*)l->data)->fi ) );
             i++;
         }
@@ -4450,7 +4452,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
     sel_files = desktop_window_get_selected_files( win );
     if ( sel_files )
     {
-        fprintf( file, "fm_desktop_files=(\n" );
+        g_fprintf( file, "fm_desktop_files=(\n" );
         for ( l = sel_files; l; l = l->next )
         {
             fi = (VFSFileInfo*)l->data;
@@ -4460,13 +4462,13 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
             }
             path = g_build_filename( cwd, fi->name, NULL );
             esc_path = bash_quote( path );
-            fprintf( file, "%s\n", esc_path );
+            g_fprintf( file, "%s\n", esc_path );
             g_free( esc_path );
             g_free( path );
         }
         fputs( ")\n", file );
 
-        fprintf( file, "fm_filenames=(\n" );
+        g_fprintf( file, "fm_filenames=(\n" );
         for ( l = sel_files; l; l = l->next )
         {
             fi = (VFSFileInfo*)l->data;
@@ -4475,7 +4477,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
                 continue;
             }
             esc_path = bash_quote( fi->name );
-            fprintf( file, "%s\n", esc_path );
+            g_fprintf( file, "%s\n", esc_path );
             g_free( esc_path );
         }
         fputs( ")\n", file );
@@ -4486,18 +4488,18 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
 
     // my selected files
     esc_path = bash_quote( cwd );
-    fprintf( file, "fm_pwd=%s\n", esc_path );
-    fprintf( file, "fm_desktop_pwd=%s\n", esc_path );
+    g_fprintf( file, "fm_pwd=%s\n", esc_path );
+    g_fprintf( file, "fm_desktop_pwd=%s\n", esc_path );
     g_free( esc_path );
-    fprintf( file, "\nfm_files=(\"${fm_desktop_files[@]}\")\n" );
-    fprintf( file, "fm_file=\"${fm_files[0]}\"\n" );
-    fprintf( file, "fm_filename=\"${fm_filenames[0]}\"\n" );
+    g_fprintf( file, "\nfm_files=(\"${fm_desktop_files[@]}\")\n" );
+    g_fprintf( file, "fm_file=\"${fm_files[0]}\"\n" );
+    g_fprintf( file, "fm_filename=\"${fm_filenames[0]}\"\n" );
 
     // command
     if ( vtask->exec_command )
     {
         esc_path = bash_quote( vtask->exec_command );
-        fprintf( file, "fm_command=%s\n", esc_path );
+        g_fprintf( file, "fm_command=%s\n", esc_path );
         g_free( esc_path );
     }
     // user
@@ -4505,7 +4507,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
     if ( this_user )
     {
         esc_path = bash_quote( this_user );
-        fprintf( file, "fm_user=%s\n", esc_path );
+        g_fprintf( file, "fm_user=%s\n", esc_path );
         g_free( esc_path );
         //g_free( this_user );  DON'T
     }
@@ -4513,15 +4515,15 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
     if ( value )
     {
         esc_path = bash_quote( value );
-        fprintf( file, "fm_value=%s\n", esc_path );
+        g_fprintf( file, "fm_value=%s\n", esc_path );
         g_free( esc_path );
     }
 
     // utils
     esc_path = bash_quote( xset_get_s( "editor" ) );
-    fprintf( file, "fm_editor=%s\n", esc_path );
+    g_fprintf( file, "fm_editor=%s\n", esc_path );
     g_free( esc_path );
-    fprintf( file, "fm_editor_terminal=%d\n", xset_get_b( "editor" ) ? 1 : 0 );
+    g_fprintf( file, "fm_editor_terminal=%d\n", xset_get_b( "editor" ) ? 1 : 0 );
 
     // set
     if ( set )
@@ -4542,7 +4544,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
                                                             set->name, NULL );
         }
         esc_path = bash_quote( path );
-        fprintf( file, "fm_cmd_dir=%s\n", esc_path );
+        g_fprintf( file, "fm_cmd_dir=%s\n", esc_path );
         g_free( esc_path );
         g_free( path );
 
@@ -4557,7 +4559,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
             path = g_build_filename( xset_get_config_dir(), "plugin-data",
                                                         set->name, NULL );
         esc_path = bash_quote( path );
-        fprintf( file, "fm_cmd_data=%s\n", esc_path );
+        g_fprintf( file, "fm_cmd_data=%s\n", esc_path );
         g_free( esc_path );
         g_free( path );
 
@@ -4565,7 +4567,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
         if ( set->plugin )
         {
             esc_path = bash_quote( set->plug_dir );
-            fprintf( file, "fm_plugin_dir=%s\n", esc_path );
+            g_fprintf( file, "fm_plugin_dir=%s\n", esc_path );
             g_free( esc_path );
         }
 
@@ -4573,7 +4575,7 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
         if ( set->menu_label )
         {
             esc_path = bash_quote( set->menu_label );
-            fprintf( file, "fm_cmd_name=%s\n", esc_path );
+            g_fprintf( file, "fm_cmd_name=%s\n", esc_path );
             g_free( esc_path );
         }
     }
@@ -4581,9 +4583,9 @@ gboolean desktop_write_exports( VFSFileTask* vtask, const char* value, FILE* fil
     // tmp
     if ( geteuid() != 0 && vtask->exec_as_user
                                     && !strcmp( vtask->exec_as_user, "root" ) )
-        fprintf( file, "fm_tmp_dir=%s\n", xset_get_shared_tmp_dir() );
+        g_fprintf( file, "fm_tmp_dir=%s\n", xset_get_shared_tmp_dir() );
     else
-        fprintf( file, "fm_tmp_dir=%s\n", xset_get_user_tmp_dir() );
+        g_fprintf( file, "fm_tmp_dir=%s\n", xset_get_user_tmp_dir() );
 
 
     result = fputs( "\n", file );

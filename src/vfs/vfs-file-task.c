@@ -36,6 +36,8 @@
 #include "desktop-window.h"
 #include "vfs-volume.h"
 
+#include <glib/gprintf.h>
+
 #include <linux/limits.h> //PATH_MAX
 
 const mode_t chmod_flags[] =
@@ -1553,7 +1555,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         if ( !file ) goto _exit_with_error;
 
         // build - header
-        result = fprintf( file, "#!%s\n#\n# Temporary SpaceFM exec script - it is safe to delete this file\n\n", BASHPATH );
+        result = g_fprintf( file, "#!%s\n#\n# Temporary SpaceFM exec script - it is safe to delete this file\n\n", BASHPATH );
         if ( result < 0 ) goto _exit_with_error;
 
         // build - exports
@@ -1579,7 +1581,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         }
 
         // build - run
-        result = fprintf( file, "# run\n\nif [ \"$1\" == \"run\" ]; then\n\n" );
+        result = g_fprintf( file, "# run\n\nif [ \"$1\" == \"run\" ]; then\n\n" );
         if ( result < 0 ) goto _exit_with_error;
 
         // build - write root settings
@@ -1605,11 +1607,11 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
 
         // build - export vars
         if ( task->exec_export )
-            result = fprintf( file, "export fm_import='source %s'\n", task->exec_script );
+            result = g_fprintf( file, "export fm_import='source %s'\n", task->exec_script );
         else
-            result = fprintf( file, "export fm_import=''\n" );
+            result = g_fprintf( file, "export fm_import=''\n" );
         if ( result < 0 ) goto _exit_with_error;
-        result = fprintf( file, "export fm_source='%s'\n\n", task->exec_script );
+        result = g_fprintf( file, "export fm_source='%s'\n\n", task->exec_script );
         if ( result < 0 ) goto _exit_with_error;
 
         // build - trap rm
@@ -1637,7 +1639,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
                                    * ptk-location-view.c:ptk_location_view_mount_network()
                                    * pref-dialog.c Line ~777 */
         {
-            result = fprintf( file, "trap \"rm -f %s; exit\" EXIT SIGINT SIGTERM SIGQUIT SIGHUP\n\n",
+            result = g_fprintf( file, "trap \"rm -f %s; exit\" EXIT SIGINT SIGTERM SIGQUIT SIGHUP\n\n",
                                                     task->exec_script );
             if ( result < 0 ) goto _exit_with_error;
             task->exec_keep_tmp = TRUE;
@@ -1646,14 +1648,14 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
                                         && !strcmp( task->exec_as_user, "root" ) )
         {
             // run as root command, clean up
-            result = fprintf( file, "trap \"rm -f %s; exit\" EXIT SIGINT SIGTERM SIGQUIT SIGHUP\n\n",
+            result = g_fprintf( file, "trap \"rm -f %s; exit\" EXIT SIGINT SIGTERM SIGQUIT SIGHUP\n\n",
                                                     task->exec_script );
             if ( result < 0 ) goto _exit_with_error;
         }
 
         // build - command
         printf("\nTASK_COMMAND(%p)=%s\n", task->exec_ptask, task->exec_command );
-        result = fprintf( file, "%s\nfm_err=$?\n", task->exec_command );
+        result = g_fprintf( file, "%s\nfm_err=$?\n", task->exec_command );
         if ( result < 0 ) goto _exit_with_error;
 
         // build - press enter to close
@@ -1661,16 +1663,16 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         {
             if ( geteuid() == 0 ||
                     ( task->exec_as_user && !strcmp( task->exec_as_user, "root" ) ) )
-                result = fprintf( file, "\necho\necho -n '%s: '\nread s",
+                result = g_fprintf( file, "\necho\necho -n '%s: '\nread s",
                                         "[ Finished ]  Press Enter to close" );
             else
             {
-                result = fprintf( file, "\necho\necho -n '%s: '\nread s\nif [ \"$s\" = 's' ]; then\n    if [ \"$(whoami)\" = \"root\" ]; then\n        echo\n        echo '[ %s ]'\n    fi\n    echo\n    %s\nfi\n\n", "[ Finished ]  Press Enter to close or s + Enter for a shell", "You are ROOT", BASHPATH );
+                result = g_fprintf( file, "\necho\necho -n '%s: '\nread s\nif [ \"$s\" = 's' ]; then\n    if [ \"$(whoami)\" = \"root\" ]; then\n        echo\n        echo '[ %s ]'\n    fi\n    echo\n    %s\nfi\n\n", "[ Finished ]  Press Enter to close or s + Enter for a shell", "You are ROOT", BASHPATH );
             }
             if ( result < 0 ) goto _exit_with_error;
         }
 
-        result = fprintf( file, "\nexit $fm_err\nfi\n" );
+        result = g_fprintf( file, "\nexit $fm_err\nfi\n" );
         if ( result < 0 ) goto _exit_with_error;
 
         // close file

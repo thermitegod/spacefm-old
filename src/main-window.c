@@ -47,6 +47,8 @@
 #include "item-prop.h"
 #include "find-files.h"
 
+#include <glib/gprintf.h>
+
 #ifdef DESKTOP_INTEGRATION
 #include "desktop.h"
 #endif
@@ -1037,7 +1039,7 @@ void update_window_icon( GtkWindow* window, GtkIconTheme* theme )
     else if ( error != NULL )
     {
         // An error occured on loading the icon
-        fprintf( stderr, "spacefm: Unable to load the window icon "
+        g_fprintf( stderr, "spacefm: Unable to load the window icon "
         "'%s' in - update_window_icon - %s\n", name, error->message);
         g_error_free( error );
     }
@@ -4013,7 +4015,7 @@ static long get_desktop_index( GtkWindow* win )
     Atom net_wm_desktop = gdk_x11_get_xatom_by_name_for_display ( display, atom_name );
 
     if ( net_wm_desktop == None )
-        fprintf( stderr, "spacefm: %s atom not found\n", atom_name );
+        g_fprintf( stderr, "spacefm: %s atom not found\n", atom_name );
     else if ( XGetWindowProperty( GDK_DISPLAY_XDISPLAY( display ),
                                   GDK_WINDOW_XID( window ),
                                   net_wm_desktop, 0, 1,
@@ -4022,13 +4024,13 @@ static long get_desktop_index( GtkWindow* win )
                                   &data ) != Success || type == None || data == NULL )
     {
         if ( type == None )
-            fprintf( stderr, "spacefm: No such property from XGetWindowProperty() %s\n",
+            g_fprintf( stderr, "spacefm: No such property from XGetWindowProperty() %s\n",
                                                                     atom_name );
         else if ( data == NULL )
-            fprintf( stderr, "spacefm: No data returned from XGetWindowProperty() %s\n",
+            g_fprintf( stderr, "spacefm: No data returned from XGetWindowProperty() %s\n",
                                                                     atom_name );
         else
-            fprintf( stderr, "spacefm: XGetWindowProperty() %s failed\n",
+            g_fprintf( stderr, "spacefm: XGetWindowProperty() %s failed\n",
                                                                     atom_name );
     }
     else
@@ -4487,30 +4489,30 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
         if ((cwd_needs_quote = !!strchr(cwd, '\'')))
         {
             path = bash_quote( cwd );
-            fprintf( file, "\nfm_pwd_panel[%d]=%s\n", p, path );
+            g_fprintf( file, "\nfm_pwd_panel[%d]=%s\n", p, path );
             g_free( path );
         }
         else
-            fprintf( file, "\nfm_pwd_panel[%d]='%s'\n", p, cwd );
-        fprintf( file, "\nfm_tab_panel[%d]=%d\n", p, i + 1 );
+            g_fprintf( file, "\nfm_pwd_panel[%d]='%s'\n", p, cwd );
+        g_fprintf( file, "\nfm_tab_panel[%d]=%d\n", p, i + 1 );
 
         // selected files
         sel_files = ptk_file_browser_get_selected_files( a_browser );
         if ( sel_files )
         {
-            fprintf( file, "fm_panel%d_files=(\n", p );
+            g_fprintf( file, "fm_panel%d_files=(\n", p );
             for ( l = sel_files; l; l = l->next )
             {
                 path = (char*)vfs_file_info_get_name( (VFSFileInfo*)l->data );
                 if ( G_LIKELY( !cwd_needs_quote && !strchr( path, '\'' ) ) )
-                    fprintf( file, "'%s%s%s'\n", cwd,
+                    g_fprintf( file, "'%s%s%s'\n", cwd,
                                 ( cwd[0] != '\0' && cwd[1] == '\0' ) ? "" : "/",
                                 path );
                 else
                 {
                     path = g_build_filename( cwd, path, NULL );
                     esc_path = bash_quote( path );
-                    fprintf( file, "%s\n", esc_path );
+                    g_fprintf( file, "%s\n", esc_path );
                     g_free( esc_path );
                     g_free( path );
                 }
@@ -4519,16 +4521,16 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
 
             if ( file_browser == a_browser )
             {
-                fprintf( file, "fm_filenames=(\n" );
+                g_fprintf( file, "fm_filenames=(\n" );
                 for ( l = sel_files; l; l = l->next )
                 {
                     path = (char*)vfs_file_info_get_name( (VFSFileInfo*)l->data );
                     if ( G_LIKELY( !strchr( path, '\'' ) ) )
-                        fprintf( file, "'%s'\n", path );
+                        g_fprintf( file, "'%s'\n", path );
                     else
                     {
                         esc_path = bash_quote( path );
-                        fprintf( file, "%s\n", esc_path );
+                        g_fprintf( file, "%s\n", esc_path );
                         g_free( esc_path );
                     }
                 }
@@ -4542,20 +4544,20 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
         // cwd
         cwd = ptk_file_browser_get_cwd( a_browser );
         path = bash_quote( cwd );
-        fprintf( file, "\nfm_panel%d_pwd=%s\n", p, path );
+        g_fprintf( file, "\nfm_panel%d_pwd=%s\n", p, path );
         g_free( path );
 
         // selected files
         sel_files = ptk_file_browser_get_selected_files( a_browser );
         if ( sel_files )
         {
-            fprintf( file, "fm_panel%d_files=(\n", p );
+            g_fprintf( file, "fm_panel%d_files=(\n", p );
             for ( l = sel_files; l; l = l->next )
             {
                 path = g_build_filename( cwd,
                         vfs_file_info_get_name( (VFSFileInfo*)l->data ), NULL );
                 esc_path = bash_quote( path );
-                fprintf( file, "%s\n", esc_path );
+                g_fprintf( file, "%s\n", esc_path );
                 g_free( esc_path );
                 g_free( path );
             }
@@ -4563,11 +4565,11 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
 
             if ( file_browser == a_browser )
             {
-                fprintf( file, "fm_filenames=(\n", p );
+                g_fprintf( file, "fm_filenames=(\n", p );
                 for ( l = sel_files; l; l = l->next )
                 {
                     esc_path = bash_quote( vfs_file_info_get_name( (VFSFileInfo*)l->data ) );
-                    fprintf( file, "%s\n", esc_path );
+                    g_fprintf( file, "%s\n", esc_path );
                     g_free( esc_path );
                 }
                 fputs( ")\n", file );
@@ -4586,8 +4588,8 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
             {
                 esc_path = bash_quote( path );
                 if ( file_browser == a_browser )
-                    fprintf( file, "fm_bookmark=%s\n", esc_path );
-                fprintf( file, "fm_panel%d_bookmark=%s\n", p, esc_path );
+                    g_fprintf( file, "fm_bookmark=%s\n", esc_path );
+                g_fprintf( file, "fm_panel%d_bookmark=%s\n", p, esc_path );
                 g_free( esc_path );
             }
         }
@@ -4601,112 +4603,112 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
             {
                 if ( file_browser == a_browser )
                 {
-                    fprintf( file, "fm_device='%s'\n", vol->device_file );
+                    g_fprintf( file, "fm_device='%s'\n", vol->device_file );
                     if ( vol->udi )
                     {
                         esc_path = bash_quote( vol->udi );
-                        fprintf( file, "fm_device_udi=%s\n", esc_path );
+                        g_fprintf( file, "fm_device_udi=%s\n", esc_path );
                         g_free( esc_path );
                     }
                     if ( vol->mount_point )
                     {
                         esc_path = bash_quote( vol->mount_point );
-                        fprintf( file, "fm_device_mount_point=%s\n",
+                        g_fprintf( file, "fm_device_mount_point=%s\n",
                                                             esc_path );
                         g_free( esc_path );
                     }
                     if ( vol->label )
                     {
                         esc_path = bash_quote( vol->label );
-                        fprintf( file, "fm_device_label=%s\n", esc_path );
+                        g_fprintf( file, "fm_device_label=%s\n", esc_path );
                         g_free( esc_path );
                     }
                     if ( vol->fs_type )
-                        fprintf( file, "fm_device_fstype='%s'\n", vol->fs_type );
-                    fprintf( file, "fm_device_size=\"%lu\"\n", vol->size );
+                        g_fprintf( file, "fm_device_fstype='%s'\n", vol->fs_type );
+                    g_fprintf( file, "fm_device_size=\"%lu\"\n", vol->size );
                     if ( vol->disp_name )
                     {
                         esc_path = bash_quote( vol->disp_name );
-                        fprintf( file, "fm_device_display_name=%s\n", esc_path );
+                        g_fprintf( file, "fm_device_display_name=%s\n", esc_path );
                         g_free( esc_path );
                     }
-                    fprintf( file, "fm_device_icon='%s'\n", vol->icon );
-                    fprintf( file, "fm_device_is_mounted=%d\n",
+                    g_fprintf( file, "fm_device_icon='%s'\n", vol->icon );
+                    g_fprintf( file, "fm_device_is_mounted=%d\n",
                                                 vol->is_mounted ? 1 : 0 );
 #ifdef DEPRECATED_HW
-                    fprintf( file, "fm_device_is_optical=%d\n",
+                    g_fprintf( file, "fm_device_is_optical=%d\n",
                                                 vol->is_optical ? 1 : 0 );
 #endif
-                    fprintf( file, "fm_device_is_table=%d\n",
+                    g_fprintf( file, "fm_device_is_table=%d\n",
                                                 vol->is_table ? 1 : 0 );
-                    fprintf( file, "fm_device_is_removable=%d\n",
+                    g_fprintf( file, "fm_device_is_removable=%d\n",
                                                 vol->is_removable ? 1 : 0 );
 #ifdef DEPRECATED_HW
-                    fprintf( file, "fm_device_is_audiocd=%d\n",
+                    g_fprintf( file, "fm_device_is_audiocd=%d\n",
                                                 vol->is_audiocd ? 1 : 0 );
-                    fprintf( file, "fm_device_is_dvd=%d\n",
+                    g_fprintf( file, "fm_device_is_dvd=%d\n",
                                                 vol->is_dvd ? 1 : 0 );
-                    fprintf( file, "fm_device_is_blank=%d\n",
+                    g_fprintf( file, "fm_device_is_blank=%d\n",
                                                 vol->is_blank ? 1 : 0 );
 #endif
-                    fprintf( file, "fm_device_is_mountable=%d\n",
+                    g_fprintf( file, "fm_device_is_mountable=%d\n",
                                                 vol->is_mountable ? 1 : 0 );
-                    fprintf( file, "fm_device_nopolicy=%d\n",
+                    g_fprintf( file, "fm_device_nopolicy=%d\n",
                                                 vol->nopolicy ? 1 : 0 );
                 }
-                fprintf( file, "fm_panel%d_device='%s'\n", p, vol->device_file );
+                g_fprintf( file, "fm_panel%d_device='%s'\n", p, vol->device_file );
                 if ( vol->udi )
                 {
                     esc_path = bash_quote( vol->udi );
-                    fprintf( file, "fm_panel%d_device_udi=%s\n", p, esc_path );
+                    g_fprintf( file, "fm_panel%d_device_udi=%s\n", p, esc_path );
                     g_free( esc_path );
                 }
                 if ( vol->mount_point )
                 {
                     esc_path = bash_quote( vol->mount_point );
-                    fprintf( file, "fm_panel%d_device_mount_point=%s\n",
+                    g_fprintf( file, "fm_panel%d_device_mount_point=%s\n",
                                                         p, esc_path );
                     g_free( esc_path );
                 }
                 if ( vol->label )
                 {
                     esc_path = bash_quote( vol->label );
-                    fprintf( file, "fm_panel%d_device_label=%s\n", p, esc_path );
+                    g_fprintf( file, "fm_panel%d_device_label=%s\n", p, esc_path );
                     g_free( esc_path );
                 }
                 if ( vol->fs_type )
-                    fprintf( file, "fm_panel%d_device_fstype='%s'\n", p,
+                    g_fprintf( file, "fm_panel%d_device_fstype='%s'\n", p,
                                                                     vol->fs_type );
-                fprintf( file, "fm_panel%d_device_size=\"%lu\"\n", p, vol->size );
+                g_fprintf( file, "fm_panel%d_device_size=\"%lu\"\n", p, vol->size );
                 if ( vol->disp_name )
                 {
                     esc_path = bash_quote( vol->disp_name );
-                    fprintf( file, "fm_panel%d_device_display_name=%s\n", p,
+                    g_fprintf( file, "fm_panel%d_device_display_name=%s\n", p,
                                                                         esc_path );
                     g_free( esc_path );
                 }
-                fprintf( file, "fm_panel%d_device_icon='%s'\n", p, vol->icon );
-                fprintf( file, "fm_panel%d_device_is_mounted=%d\n",
+                g_fprintf( file, "fm_panel%d_device_icon='%s'\n", p, vol->icon );
+                g_fprintf( file, "fm_panel%d_device_is_mounted=%d\n",
                                             p, vol->is_mounted ? 1 : 0 );
 #ifdef DEPRECATED_HW
-                fprintf( file, "fm_panel%d_device_is_optical=%d\n",
+                g_fprintf( file, "fm_panel%d_device_is_optical=%d\n",
                                             p, vol->is_optical ? 1 : 0 );
 #endif
-                fprintf( file, "fm_panel%d_device_is_table=%d\n",
+                g_fprintf( file, "fm_panel%d_device_is_table=%d\n",
                                             p, vol->is_table ? 1 : 0 );
-                fprintf( file, "fm_panel%d_device_is_removable=%d\n",
+                g_fprintf( file, "fm_panel%d_device_is_removable=%d\n",
                                             p, vol->is_removable ? 1 : 0 );
 #ifdef DEPRECATED_HW
-                fprintf( file, "fm_panel%d_device_is_audiocd=%d\n",
+                g_fprintf( file, "fm_panel%d_device_is_audiocd=%d\n",
                                             p, vol->is_audiocd ? 1 : 0 );
-                fprintf( file, "fm_panel%d_device_is_dvd=%d\n",
+                g_fprintf( file, "fm_panel%d_device_is_dvd=%d\n",
                                             p, vol->is_dvd ? 1 : 0 );
-                fprintf( file, "fm_panel%d_device_is_blank=%d\n",
+                g_fprintf( file, "fm_panel%d_device_is_blank=%d\n",
                                             p, vol->is_blank ? 1 : 0 );
 #endif
-                fprintf( file, "fm_panel%d_device_is_mountable=%d\n",
+                g_fprintf( file, "fm_panel%d_device_is_mountable=%d\n",
                                             p, vol->is_mountable ? 1 : 0 );
-                fprintf( file, "fm_panel%d_device_nopolicy=%d\n",
+                g_fprintf( file, "fm_panel%d_device_nopolicy=%d\n",
                                             p, vol->nopolicy ? 1 : 0 );
             }
         }
@@ -4719,36 +4721,36 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
             t_browser = PTK_FILE_BROWSER( gtk_notebook_get_nth_page(
                                     GTK_NOTEBOOK( main_window->panel[p-1] ), i ) );
             path = bash_quote( ptk_file_browser_get_cwd( t_browser ) );
-            fprintf( file, "fm_pwd_panel%d_tab[%d]=%s\n", p, i + 1, path );
+            g_fprintf( file, "fm_pwd_panel%d_tab[%d]=%s\n", p, i + 1, path );
             if ( p == file_browser->mypanel )
             {
-                fprintf( file, "fm_pwd_tab[%d]=%s\n", i + 1, path );
+                g_fprintf( file, "fm_pwd_tab[%d]=%s\n", i + 1, path );
             }
             if ( file_browser == t_browser )
             {
                 // my browser
-                fprintf( file, "fm_pwd=%s\n", path );
-                fprintf( file, "fm_panel=%d\n", p );
-                fprintf( file, "fm_tab=%d\n", i + 1 );
+                g_fprintf( file, "fm_pwd=%s\n", path );
+                g_fprintf( file, "fm_panel=%d\n", p );
+                g_fprintf( file, "fm_tab=%d\n", i + 1 );
                 //if ( i > 0 )
-                //    fprintf( file, "fm_tab_prev=%d\n", i );
+                //    g_fprintf( file, "fm_tab_prev=%d\n", i );
                 //if ( i < num_pages - 1 )
-                //    fprintf( file, "fm_tab_next=%d\n", i + 2 );
+                //    g_fprintf( file, "fm_tab_next=%d\n", i + 2 );
             }
             g_free( path );
         }
     }
     // my selected files
-    fprintf( file, "\nfm_files=(\"${fm_panel%d_files[@]}\")\n",
+    g_fprintf( file, "\nfm_files=(\"${fm_panel%d_files[@]}\")\n",
                                                     file_browser->mypanel );
-    fprintf( file, "fm_file=\"${fm_panel%d_files[0]}\"\n",
+    g_fprintf( file, "fm_file=\"${fm_panel%d_files[0]}\"\n",
                                                     file_browser->mypanel );
-    fprintf( file, "fm_filename=\"${fm_filenames[0]}\"\n" );
+    g_fprintf( file, "fm_filename=\"${fm_filenames[0]}\"\n" );
     // command
     if ( vtask->exec_command )
     {
         esc_path = bash_quote( vtask->exec_command );
-        fprintf( file, "fm_command=%s\n", esc_path );
+        g_fprintf( file, "fm_command=%s\n", esc_path );
         g_free( esc_path );
     }
     // user
@@ -4756,7 +4758,7 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
     if ( this_user )
     {
         esc_path = bash_quote( this_user );
-        fprintf( file, "fm_user=%s\n", esc_path );
+        g_fprintf( file, "fm_user=%s\n", esc_path );
         g_free( esc_path );
         //g_free( this_user );  DON'T
     }
@@ -4764,22 +4766,22 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
     if ( value )
     {
         esc_path = bash_quote( value );
-        fprintf( file, "fm_value=%s\n", esc_path );
+        g_fprintf( file, "fm_value=%s\n", esc_path );
         g_free( esc_path );
     }
     if ( vtask->exec_ptask )
     {
-        fprintf( file, "fm_my_task=%p\n", vtask->exec_ptask );
-        fprintf( file, "fm_my_task_id=%p\n", vtask->exec_ptask );
+        g_fprintf( file, "fm_my_task=%p\n", vtask->exec_ptask );
+        g_fprintf( file, "fm_my_task_id=%p\n", vtask->exec_ptask );
     }
-    fprintf( file, "fm_my_window=%p\n", main_window );
-    fprintf( file, "fm_my_window_id=%p\n", main_window );
+    g_fprintf( file, "fm_my_window=%p\n", main_window );
+    g_fprintf( file, "fm_my_window_id=%p\n", main_window );
 
     // utils
     esc_path = bash_quote( xset_get_s( "editor" ) );
-    fprintf( file, "fm_editor=%s\n", esc_path );
+    g_fprintf( file, "fm_editor=%s\n", esc_path );
     g_free( esc_path );
-    fprintf( file, "fm_editor_terminal=%d\n", xset_get_b( "editor" ) ? 1 : 0 );
+    g_fprintf( file, "fm_editor_terminal=%d\n", xset_get_b( "editor" ) ? 1 : 0 );
 
     // set
     if ( set )
@@ -4800,7 +4802,7 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
                                                             set->name, NULL );
         }
         esc_path = bash_quote( path );
-        fprintf( file, "fm_cmd_dir=%s\n", esc_path );
+        g_fprintf( file, "fm_cmd_dir=%s\n", esc_path );
         g_free( esc_path );
         g_free( path );
 
@@ -4815,7 +4817,7 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
             path = g_build_filename( xset_get_config_dir(), "plugin-data",
                                                         set->name, NULL );
         esc_path = bash_quote( path );
-        fprintf( file, "fm_cmd_data=%s\n", esc_path );
+        g_fprintf( file, "fm_cmd_data=%s\n", esc_path );
         g_free( esc_path );
         g_free( path );
 
@@ -4823,7 +4825,7 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
         if ( set->plugin )
         {
             esc_path = bash_quote( set->plug_dir );
-            fprintf( file, "fm_plugin_dir=%s\n", esc_path );
+            g_fprintf( file, "fm_plugin_dir=%s\n", esc_path );
             g_free( esc_path );
         }
 
@@ -4831,7 +4833,7 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
         if ( set->menu_label )
         {
             esc_path = bash_quote( set->menu_label );
-            fprintf( file, "fm_cmd_name=%s\n", esc_path );
+            g_fprintf( file, "fm_cmd_name=%s\n", esc_path );
             g_free( esc_path );
         }
     }
@@ -4839,9 +4841,9 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
     // tmp
     if ( geteuid() != 0 && vtask->exec_as_user
                                     && !strcmp( vtask->exec_as_user, "root" ) )
-        fprintf( file, "fm_tmp_dir=%s\n", xset_get_shared_tmp_dir() );
+        g_fprintf( file, "fm_tmp_dir=%s\n", xset_get_shared_tmp_dir() );
     else
-        fprintf( file, "fm_tmp_dir=%s\n", xset_get_user_tmp_dir() );
+        g_fprintf( file, "fm_tmp_dir=%s\n", xset_get_user_tmp_dir() );
 
     // tasks
     const char* job_titles[] =
@@ -4855,43 +4857,43 @@ gboolean main_write_exports( VFSFileTask* vtask, const char* value, FILE* file )
     };
     if ((ptask = get_selected_task(file_browser->task_view)))
     {
-        fprintf( file, "\nfm_task_type='%s'\n", job_titles[ptask->task->type] );
+        g_fprintf( file, "\nfm_task_type='%s'\n", job_titles[ptask->task->type] );
         if ( ptask->task->type == VFS_FILE_TASK_EXEC )
         {
             esc_path = bash_quote( ptask->task->dest_dir );
-            fprintf( file, "fm_task_pwd=%s\n", esc_path );
+            g_fprintf( file, "fm_task_pwd=%s\n", esc_path );
             g_free( esc_path );
             esc_path = bash_quote( ptask->task->current_file );
-            fprintf( file, "fm_task_name=%s\n", esc_path );
+            g_fprintf( file, "fm_task_name=%s\n", esc_path );
             g_free( esc_path );
             esc_path = bash_quote( ptask->task->exec_command );
-            fprintf( file, "fm_task_command=%s\n", esc_path );
+            g_fprintf( file, "fm_task_command=%s\n", esc_path );
             g_free( esc_path );
             if ( ptask->task->exec_as_user )
-                fprintf( file, "fm_task_user='%s'\n", ptask->task->exec_as_user );
+                g_fprintf( file, "fm_task_user='%s'\n", ptask->task->exec_as_user );
             if ( ptask->task->exec_icon )
-                fprintf( file, "fm_task_icon='%s'\n", ptask->task->exec_icon );
+                g_fprintf( file, "fm_task_icon='%s'\n", ptask->task->exec_icon );
             if ( ptask->task->exec_pid )
-                fprintf( file, "fm_task_pid=%d\n", ptask->task->exec_pid );
+                g_fprintf( file, "fm_task_pid=%d\n", ptask->task->exec_pid );
         }
         else
         {
             esc_path = bash_quote( ptask->task->dest_dir );
-            fprintf( file, "fm_task_dest_dir=%s\n", esc_path );
+            g_fprintf( file, "fm_task_dest_dir=%s\n", esc_path );
             g_free( esc_path );
             esc_path = bash_quote( ptask->task->current_file );
-            fprintf( file, "fm_task_current_src_file=%s\n", esc_path );
+            g_fprintf( file, "fm_task_current_src_file=%s\n", esc_path );
             g_free( esc_path );
             esc_path = bash_quote( ptask->task->current_dest );
-            fprintf( file, "fm_task_current_dest_file=%s\n", esc_path );
+            g_fprintf( file, "fm_task_current_dest_file=%s\n", esc_path );
             g_free( esc_path );
         }
-        fprintf( file, "fm_task_id=%p\n", ptask );
+        g_fprintf( file, "fm_task_id=%p\n", ptask );
         if ( ptask->task_view &&
                     ( main_window = get_task_view_window( ptask->task_view ) ) )
         {
-            fprintf( file, "fm_task_window=%p\n", main_window );
-            fprintf( file, "fm_task_window_id=%p\n", main_window );
+            g_fprintf( file, "fm_task_window=%p\n", main_window );
+            g_fprintf( file, "fm_task_window_id=%p\n", main_window );
         }
     }
 

@@ -27,6 +27,8 @@
 #include <errno.h>
 #include <fcntl.h>
 
+#include <glib/gprintf.h>
+
 #ifdef DESKTOP_INTEGRATION
 #include "desktop.h"
 #endif
@@ -266,7 +268,7 @@ static void color_from_str( GdkColor* ret, const char* value )
 
 static void save_color( FILE* file, const char* name, GdkColor* color )
 {
-    fprintf( file, "%s=%d,%d,%d\n", name,
+    g_fprintf( file, "%s=%d,%d,%d\n", name,
              color->red, color->green, color->blue );
 }
 #endif
@@ -846,37 +848,37 @@ char* save_settings( gpointer main_window_ptr )
         if ( result < 0 )
             goto _save_error;
         fputs( "[General]\n", file );
-        fprintf( file, "encoding=%s\n", app_settings.encoding );
-        fprintf( file, "show_thumbnail=%d\n", !!app_settings.show_thumbnail );
-        fprintf( file, "max_thumb_size=%d\n", app_settings.max_thumb_size >> 10 );
-        fprintf( file, "big_icon_size=%d\n", app_settings.big_icon_size );
-        fprintf( file, "small_icon_size=%d\n", app_settings.small_icon_size );
-        fprintf( file, "tool_icon_size=%d\n", app_settings.tool_icon_size );
-        fprintf( file, "single_click=%d\n", app_settings.single_click );
-        fprintf( file, "no_single_hover=%d\n", app_settings.no_single_hover );
-        fprintf( file, "sort_order=%d\n", app_settings.sort_order );
-        fprintf( file, "sort_type=%d\n", app_settings.sort_type );
-        fprintf( file, "use_si_prefix=%d\n", !!app_settings.use_si_prefix );
-        fprintf( file, "no_execute=%d\n", !!app_settings.no_execute );  //MOD
-        fprintf( file, "no_confirm=%d\n", !!app_settings.no_confirm );  //MOD
+        g_fprintf( file, "encoding=%s\n", app_settings.encoding );
+        g_fprintf( file, "show_thumbnail=%d\n", !!app_settings.show_thumbnail );
+        g_fprintf( file, "max_thumb_size=%d\n", app_settings.max_thumb_size >> 10 );
+        g_fprintf( file, "big_icon_size=%d\n", app_settings.big_icon_size );
+        g_fprintf( file, "small_icon_size=%d\n", app_settings.small_icon_size );
+        g_fprintf( file, "tool_icon_size=%d\n", app_settings.tool_icon_size );
+        g_fprintf( file, "single_click=%d\n", app_settings.single_click );
+        g_fprintf( file, "no_single_hover=%d\n", app_settings.no_single_hover );
+        g_fprintf( file, "sort_order=%d\n", app_settings.sort_order );
+        g_fprintf( file, "sort_type=%d\n", app_settings.sort_type );
+        g_fprintf( file, "use_si_prefix=%d\n", !!app_settings.use_si_prefix );
+        g_fprintf( file, "no_execute=%d\n", !!app_settings.no_execute );  //MOD
+        g_fprintf( file, "no_confirm=%d\n", !!app_settings.no_confirm );  //MOD
 
         fputs( "\n[Window]\n", file );
-        fprintf( file, "width=%d\n", app_settings.width );
-        fprintf( file, "height=%d\n", app_settings.height );
-        fprintf( file, "maximized=%d\n", app_settings.maximized );
+        g_fprintf( file, "width=%d\n", app_settings.width );
+        g_fprintf( file, "height=%d\n", app_settings.height );
+        g_fprintf( file, "maximized=%d\n", app_settings.maximized );
 
 #ifdef DESKTOP_INTEGRATION
         /* Desktop */
         fputs( "\n[Desktop]\n", file );
-        fprintf( file, "show_wallpaper=%d\n", !!app_settings.show_wallpaper );
-        fprintf( file, "wallpaper=%s\n", app_settings.wallpaper );
-        fprintf( file, "wallpaper_mode=%d\n", app_settings.wallpaper_mode );
-        fprintf( file, "sort_by=%d\n", app_settings.desktop_sort_by );
-        fprintf( file, "sort_type=%d\n", app_settings.desktop_sort_type );
-        fprintf( file, "show_wm_menu=%d\n", app_settings.show_wm_menu );
-        fprintf( file, "desk_single_click=%d\n", app_settings.desk_single_click );
-        fprintf( file, "desk_no_single_hover=%d\n", app_settings.desk_no_single_hover );
-        fprintf( file, "desk_open_mime=%d\n", app_settings.desk_open_mime );
+        g_fprintf( file, "show_wallpaper=%d\n", !!app_settings.show_wallpaper );
+        g_fprintf( file, "wallpaper=%s\n", app_settings.wallpaper );
+        g_fprintf( file, "wallpaper_mode=%d\n", app_settings.wallpaper_mode );
+        g_fprintf( file, "sort_by=%d\n", app_settings.desktop_sort_by );
+        g_fprintf( file, "sort_type=%d\n", app_settings.desktop_sort_type );
+        g_fprintf( file, "show_wm_menu=%d\n", app_settings.show_wm_menu );
+        g_fprintf( file, "desk_single_click=%d\n", app_settings.desk_single_click );
+        g_fprintf( file, "desk_no_single_hover=%d\n", app_settings.desk_no_single_hover );
+        g_fprintf( file, "desk_open_mime=%d\n", app_settings.desk_open_mime );
 
         save_color( file, "bg1", &app_settings.desktop_bg1 );
         save_color( file, "bg2", &app_settings.desktop_bg2 );
@@ -885,20 +887,20 @@ char* save_settings( gpointer main_window_ptr )
 
         char* fontname = pango_font_description_to_string( app_settings.desk_font );
         if ( fontname )
-            fprintf( file, "font=%s\n", fontname );
+            g_fprintf( file, "font=%s\n", fontname );
         g_free( fontname );
 
-        fprintf( file, "margin_top=%d\n", app_settings.margin_top );
-        fprintf( file, "margin_left=%d\n", app_settings.margin_left );
-        fprintf( file, "margin_right=%d\n", app_settings.margin_right );
-        fprintf( file, "margin_bottom=%d\n", app_settings.margin_bottom );
-        fprintf( file, "margin_pad=%d\n", app_settings.margin_pad );
+        g_fprintf( file, "margin_top=%d\n", app_settings.margin_top );
+        g_fprintf( file, "margin_left=%d\n", app_settings.margin_left );
+        g_fprintf( file, "margin_right=%d\n", app_settings.margin_right );
+        g_fprintf( file, "margin_bottom=%d\n", app_settings.margin_bottom );
+        g_fprintf( file, "margin_pad=%d\n", app_settings.margin_pad );
 #endif
 
         /* Interface */
         fputs( "\n[Interface]\n", file );
-        fprintf( file, "always_show_tabs=%d\n", app_settings.always_show_tabs );
-        fprintf( file, "show_close_tab_buttons=%d\n", !app_settings.hide_close_tab_buttons );
+        g_fprintf( file, "always_show_tabs=%d\n", app_settings.always_show_tabs );
+        g_fprintf( file, "show_close_tab_buttons=%d\n", !app_settings.hide_close_tab_buttons );
 
         // MOD extra settings
         fputs( "\n[MOD]\n", file );
@@ -1773,17 +1775,17 @@ static void xset_write_set( FILE* file, XSet* set )
     if ( set->plugin )
         return;
     if ( set->s )
-        fprintf( file, "%s-s=%s\n", set->name, set->s );
+        g_fprintf( file, "%s-s=%s\n", set->name, set->s );
     if ( set->x )
-        fprintf( file, "%s-x=%s\n", set->name, set->x );
+        g_fprintf( file, "%s-x=%s\n", set->name, set->x );
     if ( set->y )
-        fprintf( file, "%s-y=%s\n", set->name, set->y );
+        g_fprintf( file, "%s-y=%s\n", set->name, set->y );
     if ( set->z )
-        fprintf( file, "%s-z=%s\n", set->name, set->z );
+        g_fprintf( file, "%s-z=%s\n", set->name, set->z );
     if ( set->key )
-        fprintf( file, "%s-key=%d\n", set->name, set->key );
+        g_fprintf( file, "%s-key=%d\n", set->name, set->key );
     if ( set->keymod )
-        fprintf( file, "%s-keymod=%d\n", set->name, set->keymod );
+        g_fprintf( file, "%s-keymod=%d\n", set->name, set->keymod );
     // menu label
     if ( set->menu_label )
     {
@@ -1793,11 +1795,11 @@ static void xset_write_set( FILE* file, XSet* set )
             if ( set->in_terminal == XSET_B_TRUE && set->menu_label &&
                                                     set->menu_label[0] )
                 // only save lbl if menu_label was customized
-                fprintf( file, "%s-lbl=%s\n", set->name, set->menu_label );
+                g_fprintf( file, "%s-lbl=%s\n", set->name, set->menu_label );
         }
         else
             // custom
-            fprintf( file, "%s-label=%s\n", set->name, set->menu_label );
+            g_fprintf( file, "%s-label=%s\n", set->name, set->menu_label );
     }
     // icon
     if ( set->lock )
@@ -1805,51 +1807,51 @@ static void xset_write_set( FILE* file, XSet* set )
         // built-in
         if ( set->keep_terminal == XSET_B_TRUE )
             // only save icn if icon was customized
-            fprintf( file, "%s-icn=%s\n", set->name, set->icon ? set->icon : "" );
+            g_fprintf( file, "%s-icn=%s\n", set->name, set->icon ? set->icon : "" );
     }
     else if ( set->icon )
         // custom
-        fprintf( file, "%s-icon=%s\n", set->name, set->icon );
+        g_fprintf( file, "%s-icon=%s\n", set->name, set->icon );
     if ( set->next )
-        fprintf( file, "%s-next=%s\n", set->name, set->next );
+        g_fprintf( file, "%s-next=%s\n", set->name, set->next );
     if ( set->child )
-        fprintf( file, "%s-child=%s\n", set->name, set->child );
+        g_fprintf( file, "%s-child=%s\n", set->name, set->child );
     if ( set->context )
-        fprintf( file, "%s-cxt=%s\n", set->name, set->context );
+        g_fprintf( file, "%s-cxt=%s\n", set->name, set->context );
     if ( set->b != XSET_B_UNSET )
-        fprintf( file, "%s-b=%d\n", set->name, set->b );
+        g_fprintf( file, "%s-b=%d\n", set->name, set->b );
     if ( set->tool != XSET_TOOL_NOT )
-        fprintf( file, "%s-tool=%d\n", set->name, set->tool );
+        g_fprintf( file, "%s-tool=%d\n", set->name, set->tool );
     if ( !set->lock )
     {
         if ( set->menu_style )
-            fprintf( file, "%s-style=%d\n", set->name, set->menu_style );
+            g_fprintf( file, "%s-style=%d\n", set->name, set->menu_style );
         if ( set->desc )
-            fprintf( file, "%s-desc=%s\n", set->name, set->desc );
+            g_fprintf( file, "%s-desc=%s\n", set->name, set->desc );
         if ( set->title )
-            fprintf( file, "%s-title=%s\n", set->name, set->title );
+            g_fprintf( file, "%s-title=%s\n", set->name, set->title );
         if ( set->prev )
-            fprintf( file, "%s-prev=%s\n", set->name, set->prev );
+            g_fprintf( file, "%s-prev=%s\n", set->name, set->prev );
         if ( set->parent )
-            fprintf( file, "%s-parent=%s\n", set->name, set->parent );
+            g_fprintf( file, "%s-parent=%s\n", set->name, set->parent );
         if ( set->line )
-            fprintf( file, "%s-line=%s\n", set->name, set->line );
+            g_fprintf( file, "%s-line=%s\n", set->name, set->line );
         if ( set->task != XSET_B_UNSET )
-            fprintf( file, "%s-task=%d\n", set->name, set->task );
+            g_fprintf( file, "%s-task=%d\n", set->name, set->task );
         if ( set->task_pop != XSET_B_UNSET )
-            fprintf( file, "%s-task_pop=%d\n", set->name, set->task_pop );
+            g_fprintf( file, "%s-task_pop=%d\n", set->name, set->task_pop );
         if ( set->task_err != XSET_B_UNSET )
-            fprintf( file, "%s-task_err=%d\n", set->name, set->task_err );
+            g_fprintf( file, "%s-task_err=%d\n", set->name, set->task_err );
         if ( set->task_out != XSET_B_UNSET )
-            fprintf( file, "%s-task_out=%d\n", set->name, set->task_out );
+            g_fprintf( file, "%s-task_out=%d\n", set->name, set->task_out );
         if ( set->in_terminal != XSET_B_UNSET )
-            fprintf( file, "%s-term=%d\n", set->name, set->in_terminal );
+            g_fprintf( file, "%s-term=%d\n", set->name, set->in_terminal );
         if ( set->keep_terminal != XSET_B_UNSET )
-            fprintf( file, "%s-keep=%d\n", set->name, set->keep_terminal );
+            g_fprintf( file, "%s-keep=%d\n", set->name, set->keep_terminal );
         if ( set->scroll_lock != XSET_B_UNSET )
-            fprintf( file, "%s-scroll=%d\n", set->name, set->scroll_lock );
+            g_fprintf( file, "%s-scroll=%d\n", set->name, set->scroll_lock );
         if ( set->opener != 0 )
-            fprintf( file, "%s-op=%d\n", set->name, set->opener );
+            g_fprintf( file, "%s-op=%d\n", set->name, set->opener );
     }
 }
 
@@ -2364,7 +2366,7 @@ void write_root_saver( FILE* file, const char* path, const char* name,
 
     char* save = g_strdup_printf( "%s-%s=%s", name, var, value );
     char* qsave = bash_quote( save );
-    fprintf( file, "echo %s >> \"%s\"\n", qsave, path );
+    g_fprintf( file, "echo %s >> \"%s\"\n", qsave, path );
     g_free( save );
     g_free( qsave );
 }
@@ -2377,7 +2379,7 @@ gboolean write_root_settings( FILE* file, const char* path )
     if ( !file )
         return FALSE;
 
-    fprintf( file, "\n# save root settings\nmkdir -p %s/spacefm\necho -e '# SpaceFM As-Root Session File\\n\\n# THIS FILE IS NOT DESIGNED TO BE EDITED\\n\\n' > '%s'\n", SYSCONFDIR, path );
+    g_fprintf( file, "\n# save root settings\nmkdir -p %s/spacefm\necho -e '# SpaceFM As-Root Session File\\n\\n# THIS FILE IS NOT DESIGNED TO BE EDITED\\n\\n' > '%s'\n", SYSCONFDIR, path );
 
     for ( l = xsets ; l; l = l->next )
     {
@@ -2398,13 +2400,13 @@ gboolean write_root_settings( FILE* file, const char* path )
                 write_root_saver( file, path, set->name, "x", set->x );
                 write_root_saver( file, path, set->name, "y", set->y );
                 if ( set->b != XSET_B_UNSET )
-                    fprintf( file, "echo '%s-b=%d' >> \"%s\"\n",
+                    g_fprintf( file, "echo '%s-b=%d' >> \"%s\"\n",
                                                         set->name, set->b, path );
             }
         }
     }
 
-    fprintf( file, "chmod -R go-w+rX %s/spacefm\n\n", SYSCONFDIR );
+    g_fprintf( file, "chmod -R go-w+rX %s/spacefm\n\n", SYSCONFDIR );
     return TRUE;
 }
 
@@ -9219,7 +9221,7 @@ void xset_set_window_icon( GtkWindow* win )
     else if ( error )
     {
         // An error occured on loading the icon
-        fprintf( stderr, "spacefm: Unable to load the window icon "
+        g_fprintf( stderr, "spacefm: Unable to load the window icon "
         "'%s' in - xset_set_window_icon - %s\n", name, error->message);
         g_error_free( error );
     }
