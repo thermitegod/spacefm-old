@@ -798,7 +798,6 @@ char* ptk_handler_save_script( int mode, int cmd, XSet* handler_set,
     if ( !g_file_test( parent_dir, G_FILE_TEST_IS_DIR ) )
     {
         g_mkdir_with_parents( parent_dir, 0700 );
-        chmod( parent_dir, 0700 );
     }
     g_free( parent_dir );
     // name script
@@ -1307,7 +1306,6 @@ void ptk_handler_import( int mode, GtkWidget* handler_dlg, XSet* set )
     char* path_src = g_build_filename( set->plug_dir, set->plug_name, NULL );
     char* path_dest = g_build_filename( xset_get_config_dir(), "scripts", NULL );
     g_mkdir_with_parents( path_dest, 0700 );
-    chmod( path_dest, 0700 );
     g_free( path_dest );
     path_dest = g_build_filename( xset_get_config_dir(), "scripts",
                                             new_handler_xset->name, NULL );

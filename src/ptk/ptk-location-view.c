@@ -742,7 +742,6 @@ char* ptk_location_view_get_mount_point_dir( const char* name )
                 g_free( value );
             }
             g_mkdir_with_parents( parent, 0700 );
-            chmod( parent, 0700 );
         }
         if ( !have_rw_access( parent ) )
         {

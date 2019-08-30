@@ -1028,7 +1028,6 @@ void on_open_browser( GtkComboBox* box, ContextData* ctxt )
         if ( !g_file_test( folder, G_FILE_TEST_EXISTS ) && !ctxt->set->plugin )
         {
             g_mkdir_with_parents( folder, 0700 );
-            chmod( folder, 0700 );
         }
     }
     else if ( job == 1 )
@@ -1046,7 +1045,6 @@ void on_open_browser( GtkComboBox* box, ContextData* ctxt )
         if ( !g_file_test( folder, G_FILE_TEST_EXISTS ) )
         {
             g_mkdir_with_parents( folder, 0700 );
-            chmod( folder, 0700 );
         }
     }
     else if ( job == 2 )

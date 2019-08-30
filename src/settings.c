@@ -973,10 +973,7 @@ const char* xset_get_shared_tmp_dir()
 {
     if ( !g_file_test( settings_shared_tmp_dir, G_FILE_TEST_EXISTS ) )
     {
-        g_mkdir_with_parents( settings_shared_tmp_dir,
-                                        S_IRWXU | S_IRWXG | S_IRWXO | S_ISVTX );
-        chmod( settings_shared_tmp_dir,
-                                    S_IRWXU | S_IRWXG | S_IRWXO | S_ISVTX );
+        g_mkdir_with_parents( settings_shared_tmp_dir, S_IRWXU | S_IRWXG | S_IRWXO | S_ISVTX );
     }
     return settings_shared_tmp_dir;
 }
@@ -3195,7 +3192,6 @@ char* xset_custom_get_script( XSet* set, gboolean create )
         if ( !g_file_test( path, G_FILE_TEST_EXISTS ) )
         {
             g_mkdir_with_parents( path, 0700 );
-            chmod( path, 0700 );
         }
         g_free( path );
     }
@@ -3249,7 +3245,6 @@ char* xset_custom_get_help( GtkWidget* parent, XSet* set )
         if ( !g_file_test( dir, G_FILE_TEST_EXISTS ) )
         {
             g_mkdir_with_parents( dir, 0700 );
-            chmod( dir, 0700 );
         }
     }
 
@@ -3366,7 +3361,6 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
 //g_printf("    path_src EXISTS\n");
     path_dest = g_build_filename(settings_config_dir, "scripts", NULL);
     g_mkdir_with_parents(path_dest, 0700);
-    chmod(path_dest, 0700);
     g_free(path_dest);
     path_dest = g_build_filename(settings_config_dir, "scripts", dest->name, NULL);
     command = g_strdup_printf("cp -a %s %s", path_src, path_dest);
@@ -4337,7 +4331,6 @@ void xset_custom_export( GtkWidget* parent, PtkFileBrowser* file_browser,
             g_free( hex8 );
         }
         g_mkdir_with_parents( plug_dir, 0700 );
-        chmod( plug_dir, 0700 );
 
         // Create plugin file
         s1 = g_build_filename( plug_dir, "plugin", NULL );
@@ -6247,7 +6240,6 @@ void xset_design_job( GtkWidget* item, XSet* set )
         if ( !g_file_test( folder, G_FILE_TEST_EXISTS ) && !set->plugin )
         {
             g_mkdir_with_parents( folder, 0700 );
-            chmod( folder, 0700 );
         }
 
         if ( set->browser )
@@ -6284,7 +6276,6 @@ void xset_design_job( GtkWidget* item, XSet* set )
         if ( !g_file_test( folder, G_FILE_TEST_EXISTS ) )
         {
             g_mkdir_with_parents( folder, 0700 );
-            chmod( folder, 0700 );
         }
 
         if ( set->browser )
