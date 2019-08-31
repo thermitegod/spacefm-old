@@ -285,7 +285,7 @@ void on_plugin_install( GtkMenuItem* item, FMMainWindow* main_window, XSet* set2
     if ( !set )
         return;
 
-    if ( g_str_has_suffix( set->name, "cfile" ) || g_str_has_suffix( set->name, "curl" ) )
+    if ( g_str_has_suffix( set->name, "cfile" ) )
         job = PLUGIN_JOB_COPY;
 
     if ( g_str_has_suffix( set->name, "file" ) )
@@ -308,13 +308,6 @@ void on_plugin_install( GtkMenuItem* item, FMMainWindow* main_window, XSet* set2
         if ( save->s )
             g_free( save->s );
         save->s = g_path_get_dirname( path );
-    }
-    else
-    {
-        // get url
-        if ( !xset_text_dialog( GTK_WIDGET( main_window ), _("Enter Plugin URL"), NULL, FALSE, _("Enter SpaceFM Plugin URL:\n\n(wget will be used to download the plugin file)"), NULL, NULL, &path, NULL, FALSE, job == 0 ? "#plugins-install" : "#plugins-import" ) || !path || path[0] == '\0' )
-            return;
-        type = 1;  //url
     }
 
     if ( job == PLUGIN_JOB_INSTALL )
@@ -423,8 +416,6 @@ GtkWidget* create_plugins_menu( FMMainWindow* main_window )
     set = xset_set_cb( "plug_iurl", on_plugin_install, main_window );
         xset_set_ob1( set, "set", set );
     set = xset_set_cb( "plug_cfile", on_plugin_install, main_window );
-        xset_set_ob1( set, "set", set );
-    set = xset_set_cb( "plug_curl", on_plugin_install, main_window );
         xset_set_ob1( set, "set", set );
 
     set = xset_get( "plug_install" );

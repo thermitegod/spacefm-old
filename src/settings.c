@@ -4075,7 +4075,6 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
                           const char* path, const char* plug_dir, int type,
                           int job, XSet* insert_set )
 {
-    char* wget;
     char* file_path;
     char* file_path_q;
     char* own;
@@ -4093,30 +4092,10 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
     if ( type == 0 )
     {
         // file
-        wget = g_strdup( "" );
-        if ( g_str_has_suffix( path, ".tar.xz" ) )
+        //if ( g_str_has_suffix( path, ".tar.xz" ) )
             //TODO: OmegaPhil reports -J is never required for any compression
-            compression = "J";
+            //compression = "J";
         file_path_q = bash_quote( path );
-    }
-    else
-    {
-        // url
-        if ( g_str_has_suffix( path, ".tar.xz" ) )
-        {
-            file_path = g_build_filename( plug_dir, "plugin-tmp.tar.xz", NULL );
-            compression = "J";
-        }
-        else
-            file_path = g_build_filename( plug_dir, "plugin-tmp.tar.gz", NULL );
-        file_path_q = bash_quote( file_path );
-        g_free( file_path );
-        char* url_q = bash_quote( path );
-        wget = g_strdup_printf( "&& wget --tries=1 --connect-timeout=30 -O %s %s ",
-                                                            file_path_q, url_q );
-        g_free( url_q );
-        g_free( rem );
-        rem = g_strdup_printf( "; rm -f %s", file_path_q );
     }
 
     if ( job == PLUGIN_JOB_INSTALL )
@@ -4154,9 +4133,9 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
             book = " || [ -e main_book ]";
     }
 
-    task->task->exec_command = g_strdup_printf( "rm -rf %s ; mkdir -p %s && cd %s %s&& tar --exclude='/*' --keep-old-files -x%sf %s ; err=$?; if [ $err -ne 0 ] || [ ! -e plugin ]%s;then rm -rf %s ; echo 'Error installing plugin (invalid plugin file?)'; exit 1 ; fi ; %s %s",
+    task->task->exec_command = g_strdup_printf( "rm -rf %s ; mkdir -p %s && cd %s && tar --exclude='/*' --keep-old-files -x%sf %s ; err=$?; if [ $err -ne 0 ] || [ ! -e plugin ]%s;then rm -rf %s ; echo 'Error installing plugin (invalid plugin file?)'; exit 1 ; fi ; %s %s",
                                 plug_dir_q, plug_dir_q, plug_dir_q,
-                                wget, compression, file_path_q, book,
+                                compression, file_path_q, book,
                                 plug_dir_q, own, rem );
     g_free( plug_dir_q );
     g_free( file_path_q );
@@ -5918,7 +5897,6 @@ void xset_design_job( GtkWidget* item, XSet* set )
             xset_custom_insert_after( set, newset );
         break;
     case XSET_JOB_IMPORT_FILE:
-    case XSET_JOB_IMPORT_URL:
         if ( job == XSET_JOB_IMPORT_FILE )
         {
             // get file path
@@ -5940,13 +5918,7 @@ void xset_design_job( GtkWidget* item, XSet* set )
                 g_free( save->s );
             save->s = g_path_get_dirname( file );
         }
-        else
-        {
-            // Get URL
-            file = NULL;
-            if ( !xset_text_dialog( GTK_WIDGET( parent ), _("Enter Plugin URL"), NULL, FALSE, _("Enter SpaceFM Plugin URL:\n\n(wget will be used to download the plugin file)"), NULL, NULL, &file, NULL, FALSE, "#designmode-designmenu-import" ) || !file || file[0] == '\0' )
-                break;
-        }
+
         // Make Plugin Dir
         const char* user_tmp = xset_get_user_tmp_dir();
         if ( !user_tmp )
@@ -6532,7 +6504,6 @@ gboolean xset_design_menu_keypress( GtkWidget* widget, GdkEventKey* event,
                 help = "#designmode-designmenu-separator";
                 break;
             case XSET_JOB_IMPORT_FILE:
-            case XSET_JOB_IMPORT_URL:
                 help = "#designmode-designmenu-import";
                 break;
             case XSET_JOB_CUT:
@@ -6907,8 +6878,6 @@ GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
 
         newitem = xset_design_additem( submenu2, _("_File"),
                                     NULL, XSET_JOB_IMPORT_FILE, insert_set );
-        newitem = xset_design_additem( submenu2, _("_URL"),
-                                    NULL, XSET_JOB_IMPORT_URL, insert_set );
         if ( is_bookmark )
             newitem = xset_design_additem( submenu2, _("_GTK Bookmarks"),
                                     NULL, XSET_JOB_IMPORT_GTK, set );
@@ -10142,15 +10111,12 @@ void xset_defaults()
     // Plugins
     set = xset_set( "plug_install", "lbl", _("_Install") );
     set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "desc", "plug_ifile plug_iurl" );
+    xset_set_set( set, "desc", "plug_ifile" );
     xset_set_set( set, "icn", "gtk-add" );
     set->line = g_strdup( "#plugins-install" );
 
         set = xset_set( "plug_ifile", "lbl", _("_File") );
         xset_set_set( set, "icn", "gtk-file" );
-        set->line = g_strdup( "#plugins-install" );
-        set = xset_set( "plug_iurl", "lbl", _("_URL") );
-        xset_set_set( set, "icn", "gtk-network" );
         set->line = g_strdup( "#plugins-install" );
 
     set = xset_get( "sep_p1" );
@@ -10158,15 +10124,12 @@ void xset_defaults()
 
     set = xset_set( "plug_copy", "lbl", _("_Import") );
     set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "desc", "plug_cfile plug_curl sep_p1 plug_cverb" );
+    xset_set_set( set, "desc", "plug_cfile sep_p1 plug_cverb" );
     xset_set_set( set, "icn", "gtk-copy" );
     set->line = g_strdup( "#plugins-import" );
 
         set = xset_set( "plug_cfile", "lbl", _("_File") );
         xset_set_set( set, "icn", "gtk-file" );
-        set->line = g_strdup( "#plugins-import" );
-        set = xset_set( "plug_curl", "lbl", _("_URL") );
-        xset_set_set( set, "icn", "gtk-network" );
         set->line = g_strdup( "#plugins-import" );
         set = xset_set( "plug_cverb", "lbl", _("_Verbose") );
         set->menu_style = XSET_MENU_CHECK;

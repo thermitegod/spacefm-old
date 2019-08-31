@@ -2809,13 +2809,7 @@ void on_option_cb( GtkMenuItem* item, HandlerData* hnd )
             g_free( save->s );
         save->s = g_path_get_dirname( file );
     }
-    else
-    {
-        // Get URL
-        file = NULL;
-        if ( !xset_text_dialog( GTK_WIDGET( hnd->dlg ), _("Enter Handler Plugin URL"), NULL, FALSE, _("Enter SpaceFM Handler Plugin URL:\n\n(wget will be used to download the handler plugin file)"), NULL, NULL, &file, NULL, FALSE, "#handlers-opt-impu" ) || !file || file[0] == '\0' )
-            return;
-    }
+
     // Make Plugin Dir
     const char* user_tmp = xset_get_user_tmp_dir();
     if ( !user_tmp )
