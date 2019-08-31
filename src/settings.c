@@ -546,36 +546,18 @@ void load_settings( char* config_dir )
         chmod( settings_config_dir, S_IRWXU );
     }
     g_free( xdg_path );
+
     if ( !g_file_test( settings_config_dir, G_FILE_TEST_EXISTS ) )
         g_mkdir_with_parents( settings_config_dir, 0700 );
 
     // load session
-    int x = 0;
-    do
-    {
-        if ( path )
-            g_free ( path );
-        path = NULL;
-        switch ( x )
-        {
-            case 0:
-                path = g_build_filename( settings_config_dir, "session", NULL );
-                break;
-            case 1:
-                path = g_build_filename( settings_config_dir, "session-old", NULL );
-                break;
-            default:
-                path = NULL;
-        }
-        x++;
-    } while ( path && !g_file_test( path, G_FILE_TEST_EXISTS ) );
-
-    if ( x == 1 )
+    path = g_build_filename( settings_config_dir, "session", NULL );
+    if (G_LIKELY(g_file_test(path, G_FILE_TEST_EXISTS)))
     {
         // copy session to session-old
         char* command = NULL;
         char* old = g_build_filename( settings_config_dir, "session-old", NULL );
-        if ( g_file_test( old, G_FILE_TEST_EXISTS ) )
+        if (g_file_test(old, G_FILE_TEST_EXISTS))
         {
             unlink(old);
         }
@@ -583,6 +565,12 @@ void load_settings( char* config_dir )
         g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
         g_free(command);
         g_free( old );
+    }
+    else
+    {
+        path = g_build_filename( settings_config_dir, "session-old", NULL );
+        if ( !g_file_test( path, G_FILE_TEST_EXISTS ) )
+            path = NULL;
     }
 
     if ( path )
@@ -592,6 +580,7 @@ void load_settings( char* config_dir )
     }
     else
         file = NULL;
+
     if ( file )
     {
         while ( fgets( line, sizeof( line ), file ) )
@@ -691,8 +680,6 @@ void load_settings( char* config_dir )
         {
             app_name = vfs_mime_type_get_default_action( mime_type );
             vfs_mime_type_unref( mime_type );
-            //int app_len = strlen( app_name );
-            //if ( app_len > 8 && !strcmp( app_name + app_len - 8, ".desktop" ) )
             if ( app_name )
             {
                 VFSAppDesktop* app = vfs_app_desktop_new( app_name );
