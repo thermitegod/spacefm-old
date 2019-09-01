@@ -474,21 +474,6 @@ void on_list_task_finished( VFSAsyncTask* task, gboolean is_cancelled, VFSDir* d
     dir->load_complete = 1;
 }
 
-static gboolean is_dir_mount_point( const char* path )
-{
-    return FALSE;   /* FIXME: not implemented */
-}
-
-static gboolean is_dir_remote( const char* path )
-{
-    return FALSE;   /* FIXME: not implemented */
-}
-
-static gboolean is_dir_virtual( const char* path )
-{
-    return FALSE;   /* FIXME: not implemented */
-}
-
 void vfs_dir_load( VFSDir* dir )
 {
     if ( G_LIKELY(dir->path) )
@@ -502,12 +487,6 @@ void vfs_dir_load( VFSDir* dir )
             dir->is_desktop = TRUE;
         else if( G_UNLIKELY( strcmp( dir->path, g_get_home_dir() ) == 0 ) )
             dir->is_home = TRUE;
-        if( G_UNLIKELY( is_dir_mount_point(dir->path)) )
-            dir->is_mount_point = TRUE;
-        if( G_UNLIKELY( is_dir_remote(dir->path)) )
-            dir->is_remote = TRUE;
-        if( G_UNLIKELY( is_dir_virtual(dir->path)) )
-            dir->is_virtual = TRUE;
 
         dir->task = vfs_async_task_new( (VFSAsyncFunc)vfs_dir_load_thread, dir );
         g_signal_connect( dir->task, "finish", G_CALLBACK(on_list_task_finished), dir );
