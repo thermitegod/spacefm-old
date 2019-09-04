@@ -4219,11 +4219,11 @@ gboolean xset_custom_export_write( FILE* file, XSet* set, char* plug_dir )
     return TRUE;
 }
 
-void xset_custom_export( GtkWidget* parent, PtkFileBrowser* file_browser,
-                                                                    XSet* set )
+void xset_custom_export(GtkWidget* parent, PtkFileBrowser* file_browser, XSet* set)
 {
     const char* deffolder;
     char* deffile;
+    char* type;
     char* s1;
     char* s2;
 
@@ -4236,6 +4236,7 @@ void xset_custom_export( GtkWidget* parent, PtkFileBrowser* file_browser,
         if ( !( deffolder = xset_get_s( "go_set_default" ) ) )
             deffolder = "/";
     }
+
     if ( !set->plugin )
     {
         s1 = clean_label( set->menu_label, TRUE, FALSE );
@@ -4246,26 +4247,31 @@ void xset_custom_export( GtkWidget* parent, PtkFileBrowser* file_browser,
             s2 = g_strdup( "Plugin" );
         }
         if ( !strcmp( set->name, "main_book" ) )
-            deffile = g_strdup_printf( "%s.spacefm-bookmarks.tar.gz", s2 );
+            type = g_strdup_printf("bookmarks");
         else if ( g_str_has_prefix( set->name, "hand_arc_" ) )
-            deffile = g_strdup_printf( "%s.spacefm-archive-handler.tar.gz", s2 );
+            type = g_strdup_printf("archive-handler");
         else if ( g_str_has_prefix( set->name, "hand_fs_" ) )
-            deffile = g_strdup_printf( "%s.spacefm-device-handler.tar.gz", s2 );
+            type = g_strdup_printf("device-handler");
         else if ( g_str_has_prefix( set->name, "hand_net_" ) )
-            deffile = g_strdup_printf( "%s.spacefm-protocol-handler.tar.gz", s2 );
+            type = g_strdup_printf("protocol-handler");
         else if ( g_str_has_prefix( set->name, "hand_f_" ) )
-            deffile = g_strdup_printf( "%s.spacefm-file-handler.tar.gz", s2 );
+            type = g_strdup_printf("file-handler");
         else
-            deffile = g_strdup_printf( "%s.spacefm-plugin.tar.gz", s2 );
+            type = g_strdup_printf("plugin");
+
+        deffile = g_strdup_printf( "%s.spacefm-%s.tar.xz", s2, type );
+
         g_free( s1 );
         g_free( s2 );
+        g_free(type);
     }
     else
     {
         s1 = g_path_get_basename( set->plug_dir );
-        deffile = g_strdup_printf( "%s.spacefm-plugin.tar.gz", s1 );
+        deffile = g_strdup_printf( "%s.spacefm-plugin.tar.xz", s1 );
         g_free( s1 );
     }
+
     char* path = xset_file_dialog( parent, GTK_FILE_CHOOSER_ACTION_SAVE,
                                 _("Save As Plugin File"), deffolder, deffile );
     g_free( deffile );
@@ -4299,7 +4305,7 @@ void xset_custom_export( GtkWidget* parent, PtkFileBrowser* file_browser,
         g_free( s1 );
         if ( !file )
             goto _rmtmp_error;
-        int result = fputs( "# SpaceFM Plugin File\n\n# THIS FILE IS NOT DESIGNED TO BE EDITED\n\n", file );
+        int result = fputs( "# SpaceFM Plugin File\n\n", file );
         if ( result < 0 )
         {
             fclose( file );
@@ -4339,9 +4345,9 @@ void xset_custom_export( GtkWidget* parent, PtkFileBrowser* file_browser,
     char* plug_dir_q = bash_quote( plug_dir );
     char* path_q = bash_quote( path );
     if ( !set->plugin )
-        task->task->exec_command = g_strdup_printf( "tar --numeric-owner -czf %s * ; err=$? ; rm -rf %s ; if [ $err -ne 0 ];then rm -f %s; fi; exit $err", path_q, plug_dir_q, path_q );
+        task->task->exec_command = g_strdup_printf( "tar --numeric-owner -cJf %s * ; err=$? ; rm -rf %s ; if [ $err -ne 0 ];then rm -f %s; fi; exit $err", path_q, plug_dir_q, path_q );
     else
-        task->task->exec_command = g_strdup_printf( "tar --numeric-owner -czf %s * ; err=$? ; if [ $err -ne 0 ];then rm -f %s; fi; exit $err", path_q, path_q );
+        task->task->exec_command = g_strdup_printf( "tar --numeric-owner -cJf %s * ; err=$? ; if [ $err -ne 0 ];then rm -f %s; fi; exit $err", path_q, path_q );
     g_free( plug_dir_q );
     g_free( path_q );
     task->task->exec_sync = TRUE;
