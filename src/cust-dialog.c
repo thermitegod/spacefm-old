@@ -25,6 +25,8 @@
 
 #include "gtk2-compat.h"
 
+#include "utils.h"
+
 #define DEFAULT_TITLE "SpaceFM Dialog"
 #define DEFAULT_ICON "spacefm-48-pyramid-blue"
 #define DEFAULT_PAD 4

@@ -18,6 +18,8 @@
 #include "vfs-file-task.h"
 #include "ptk-utils.h"  //MOD
 
+#include "utils.h"
+
 static GdkDragAction clipboard_action = GDK_ACTION_DEFAULT;
 static GList* clipboard_file_list = NULL;
 

@@ -36,6 +36,8 @@
 #include "ptk-file-list.h"  //sfm for sort extra
 #include "pref-dialog.h"
 
+#include "utils.h"
+
 #include "gtk2-compat.h"
 
 //#define get_toplevel_win(data)  ( (GtkWindow*) (data->browser ? ( gtk_widget_get_toplevel((GtkWidget*) data->browser) ) : NULL) )

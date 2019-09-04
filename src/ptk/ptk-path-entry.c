@@ -20,6 +20,8 @@
 #include "ptk-handler.h"
 #include "ptk-location-view.h"
 
+#include "utils.h"
+
 static void on_changed( GtkEntry* entry, gpointer user_data );
 
 enum

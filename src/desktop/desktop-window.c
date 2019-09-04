@@ -46,6 +46,8 @@
 #include <cairo-xlib.h>
 #endif
 
+#include "utils.h"
+
 #include <glib/gprintf.h>
 
 #include <string.h>

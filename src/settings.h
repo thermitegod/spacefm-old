@@ -374,24 +374,10 @@ typedef struct
     char* var[40];
 } XSetContext;
 
-
-char* randhex8();
-char* replace_string( const char* orig, const char* str, const char* replace,
-                                                            gboolean quote );
-char* replace_line_subs( const char* line );
-char* bash_quote( const char* str );
-void string_copy_free( char** s, const char* src );
-gboolean is_alphanum( char* str );
-char* get_name_extension( char* full_name, gboolean is_dir, char** ext );
-char* unescape( const char* t );
 void xset_autosave( gboolean force, gboolean delay );
 void xset_autosave_cancel();
 
-void open_in_prog( const char* path );
 void xset_set_window_icon( GtkWindow* win );
-char* get_valid_su();
-char* get_valid_gsu();
-gboolean dir_has_files( const char* path );
 XSet* xset_get( const char* name );
 char* xset_get_s( const char* name );
 gboolean xset_get_bool( const char* name, const char* var );
@@ -411,14 +397,11 @@ XSet* xset_get_panel_mode( int panel, const char* name, char mode );
 gboolean xset_get_b_panel_mode( int panel, const char* name, char mode );
 XSet* xset_set_panel_mode( int panel, const char* name, char mode,
                                       const char* var, const char* value );
-XSet* xset_set_b_panel_mode( int panel, const char* name, char mode,
-                                                            gboolean bval );
+XSet* xset_set_b_panel_mode( int panel, const char* name, char mode, gboolean bval );
 
 XSetContext* xset_context_new();
 XSet* xset_get_plugin_mirror( XSet* set );
 char* xset_custom_get_script( XSet* set, gboolean create );
-gboolean have_rw_access( const char* path );
-gboolean have_x_access( const char* path );
 char* xset_get_keyname( XSet* set, int key_val, int key_mod );
 void xset_set_key( GtkWidget* parent, XSet* set );
 
@@ -476,14 +459,10 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
                           int job, XSet* insert_set );
 XSet* xset_import_plugin( const char* plug_dir, gboolean* is_bookmarks );
 void clean_plugin_mirrors();
-char* plain_ascii_name( const char* orig_name );
-char* clean_label( const char* menu_label, gboolean kill_special, gboolean convert_amp );
 void xset_show_help( GtkWidget* parent, XSet* set, const char* anchor );
 gboolean xset_opener( DesktopWindow* desktop, PtkFileBrowser* file_browser,
                                                             char job );
 const char* xset_get_builtin_toolitem_label( char tool_type );
 char* xset_icon_chooser_dialog( GtkWindow* parent, const char* def_icon );
 
-
 #endif
-

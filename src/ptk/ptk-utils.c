@@ -19,6 +19,8 @@
 #include "gtk2-compat.h"
 #include <gdk/gdkkeysyms.h>
 
+#include "utils.h"
+
 GtkWidget* ptk_menu_new_from_data( PtkMenuItemEntry* entries,
                                    gpointer cb_data,
                                    GtkAccelGroup* accel_group )

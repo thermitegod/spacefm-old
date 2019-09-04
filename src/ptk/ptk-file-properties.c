@@ -35,6 +35,8 @@
 #include "ptk-app-chooser.h"
 #include "main-window.h"
 
+#include "utils.h"
+
 const char* chmod_names[] =
     {
         "owner_r", "owner_w", "owner_x",

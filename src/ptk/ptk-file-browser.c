@@ -61,6 +61,8 @@
 #include "find-files.h"  //MOD
 #include "main-window.h"
 
+#include "utils.h"
+
 #include "gtk2-compat.h"
 
 #include <linux/limits.h> //PATH_MAX

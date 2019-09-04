@@ -147,7 +147,7 @@ am__spacefm_SOURCES_DIST = mime-type/mime-type.c mime-type/mime-type.h \
 	main-window.c main-window.h settings.c settings.h \
 	pref-dialog.c pref-dialog.h find-files.c find-files.h \
 	go-dialog.c go-dialog.h cust-dialog.c cust-dialog.h \
-	item-prop.c item-prop.h
+	item-prop.c item-prop.h utils.c utils.h
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_1 = mime-type/spacefm-mime-type.$(OBJEXT) \
 	mime-type/spacefm-mime-action.$(OBJEXT) \
@@ -203,7 +203,8 @@ am_spacefm_OBJECTS = $(am__objects_1) $(am__objects_3) \
 	spacefm-main.$(OBJEXT) spacefm-main-window.$(OBJEXT) \
 	spacefm-settings.$(OBJEXT) spacefm-pref-dialog.$(OBJEXT) \
 	spacefm-find-files.$(OBJEXT) spacefm-go-dialog.$(OBJEXT) \
-	spacefm-cust-dialog.$(OBJEXT) spacefm-item-prop.$(OBJEXT)
+	spacefm-cust-dialog.$(OBJEXT) spacefm-item-prop.$(OBJEXT) \
+	spacefm-utils.$(OBJEXT)
 spacefm_OBJECTS = $(am_spacefm_OBJECTS)
 spacefm_DEPENDENCIES =
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -262,7 +263,7 @@ am__depfiles_remade = ./$(DEPDIR)/spacefm-cust-dialog.Po \
 	./$(DEPDIR)/spacefm-item-prop.Po \
 	./$(DEPDIR)/spacefm-main-window.Po ./$(DEPDIR)/spacefm-main.Po \
 	./$(DEPDIR)/spacefm-pref-dialog.Po \
-	./$(DEPDIR)/spacefm-settings.Po \
+	./$(DEPDIR)/spacefm-settings.Po ./$(DEPDIR)/spacefm-utils.Po \
 	desktop/$(DEPDIR)/spacefm-desktop-window.Po \
 	desktop/$(DEPDIR)/spacefm-desktop.Po \
 	desktop/$(DEPDIR)/spacefm-working-area.Po \
@@ -596,7 +597,8 @@ spacefm_SOURCES = \
     find-files.c find-files.h \
     go-dialog.c go-dialog.h \
     cust-dialog.c cust-dialog.h \
-    item-prop.c item-prop.h
+    item-prop.c item-prop.h \
+    utils.c utils.h
 
 spacefm_CFLAGS = \
     @GTK_CFLAGS@ \
@@ -882,6 +884,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spacefm-main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spacefm-pref-dialog.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spacefm-settings.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spacefm-utils.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@desktop/$(DEPDIR)/spacefm-desktop-window.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@desktop/$(DEPDIR)/spacefm-desktop.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@desktop/$(DEPDIR)/spacefm-working-area.Po@am__quote@ # am--include-marker
@@ -1760,6 +1763,20 @@ spacefm-item-prop.obj: item-prop.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o spacefm-item-prop.obj `if test -f 'item-prop.c'; then $(CYGPATH_W) 'item-prop.c'; else $(CYGPATH_W) '$(srcdir)/item-prop.c'; fi`
 
+spacefm-utils.o: utils.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT spacefm-utils.o -MD -MP -MF $(DEPDIR)/spacefm-utils.Tpo -c -o spacefm-utils.o `test -f 'utils.c' || echo '$(srcdir)/'`utils.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/spacefm-utils.Tpo $(DEPDIR)/spacefm-utils.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='utils.c' object='spacefm-utils.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o spacefm-utils.o `test -f 'utils.c' || echo '$(srcdir)/'`utils.c
+
+spacefm-utils.obj: utils.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT spacefm-utils.obj -MD -MP -MF $(DEPDIR)/spacefm-utils.Tpo -c -o spacefm-utils.obj `if test -f 'utils.c'; then $(CYGPATH_W) 'utils.c'; else $(CYGPATH_W) '$(srcdir)/utils.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/spacefm-utils.Tpo $(DEPDIR)/spacefm-utils.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='utils.c' object='spacefm-utils.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o spacefm-utils.obj `if test -f 'utils.c'; then $(CYGPATH_W) 'utils.c'; else $(CYGPATH_W) '$(srcdir)/utils.c'; fi`
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -1911,6 +1928,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/spacefm-main.Po
 	-rm -f ./$(DEPDIR)/spacefm-pref-dialog.Po
 	-rm -f ./$(DEPDIR)/spacefm-settings.Po
+	-rm -f ./$(DEPDIR)/spacefm-utils.Po
 	-rm -f desktop/$(DEPDIR)/spacefm-desktop-window.Po
 	-rm -f desktop/$(DEPDIR)/spacefm-desktop.Po
 	-rm -f desktop/$(DEPDIR)/spacefm-working-area.Po
@@ -2013,6 +2031,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/spacefm-main.Po
 	-rm -f ./$(DEPDIR)/spacefm-pref-dialog.Po
 	-rm -f ./$(DEPDIR)/spacefm-settings.Po
+	-rm -f ./$(DEPDIR)/spacefm-utils.Po
 	-rm -f desktop/$(DEPDIR)/spacefm-desktop-window.Po
 	-rm -f desktop/$(DEPDIR)/spacefm-desktop.Po
 	-rm -f desktop/$(DEPDIR)/spacefm-working-area.Po

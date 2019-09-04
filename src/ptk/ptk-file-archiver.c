@@ -22,6 +22,8 @@
 #include "vfs-mime-type.h"
 #include "settings.h"
 
+#include "utils.h"
+
 #include <glib/gprintf.h>
 
 //#include "gtk2-compat.h"

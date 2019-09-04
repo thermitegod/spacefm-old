@@ -42,6 +42,8 @@
 
 #include <glib/gprintf.h>
 
+#include "utils.h"
+
 #include <linux/limits.h> //PATH_MAX
 
 typedef struct

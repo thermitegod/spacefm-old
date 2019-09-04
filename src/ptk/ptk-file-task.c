@@ -22,6 +22,8 @@
 
 #include <glib/gprintf.h>
 
+#include "utils.h"
+
 #include "gtk2-compat.h"
 
 // waitpid

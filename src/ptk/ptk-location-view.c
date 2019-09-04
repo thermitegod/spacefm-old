@@ -35,6 +35,8 @@
 #include "vfs-app-desktop.h"
 #include "gtk2-compat.h"
 
+#include "utils.h"
+
 #include <linux/limits.h> //PATH_MAX
 
 static GtkTreeModel* model = NULL;

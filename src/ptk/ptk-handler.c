@@ -23,6 +23,8 @@
 #include "exo-tree-view.h"
 #include "gtk2-compat.h"
 
+#include "utils.h"
+
 #define INFO_EXAMPLE "# Enter command to show properties or leave blank for auto:\n\n\n# # Example:\n\n# echo MOUNT\n# mount | grep \" on %a \"\n# echo\n# echo PROCESSES\n# /usr/bin/lsof -w \"%a\" | head -n 500\n"
 
 enum {
