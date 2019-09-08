@@ -2114,7 +2114,7 @@ gboolean write_root_settings( FILE* file, const char* path )
     if ( !file )
         return FALSE;
 
-    g_fprintf( file, "\n# save root settings\nmkdir -p %s/spacefm\necho -e '# SpaceFM As-Root Session File\\n\\n# THIS FILE IS NOT DESIGNED TO BE EDITED\\n\\n' > '%s'\n", SYSCONFDIR, path );
+    g_fprintf( file, "\n#save root settings\nmkdir -p %s/spacefm\necho -e '#SpaceFM As-Root Session File\\n\\' > '%s'\n", SYSCONFDIR, path );
 
     for ( l = xsets ; l; l = l->next )
     {
