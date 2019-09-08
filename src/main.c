@@ -1115,6 +1115,9 @@ int main ( int argc, char *argv[] )
 #endif
         g_printf( "UDEV " );
         g_printf( "INOTIFY " );
+#ifdef USE_GIT
+        g_printf( "GIT " );
+#endif
 #ifdef DESKTOP_INTEGRATION
         g_printf( "DESKTOP " );
 #endif

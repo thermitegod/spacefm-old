@@ -183,6 +183,16 @@ fi
 AM_CONDITIONAL(DEPRECATED_HW, test "$deprecated_hw" = "yes")
 
 AC_ARG_ENABLE(
+    [git],
+    AS_HELP_STRING([--disable-git],
+		   [use git to keep history of session file (default: enable)]),
+    use_git=$enableval, use_git="yes")
+if test x"$use_git" = "xyes"; then
+  AC_DEFINE(USE_GIT, 1, [Whether to build git session support.])
+fi
+AM_CONDITIONAL(USE_GIT, test "$use_git" = "yes")
+
+AC_ARG_ENABLE(
     [video-thumbnails],
     AS_HELP_STRING([--disable-video-thumbnails],
                    [disable libffmpegthumbnailer video thumbnails (default: enable)]),
@@ -272,6 +282,7 @@ echo 'GTK+ Version................................. : GTK 2'
 fi
 echo Desktop manager integration.................. : $desktop_integration
 echo Deprecated Hardware support.................. : $deprecated_hw
+echo Git session backend.......................... : $use_git
 echo Startup notification......................... : $use_sn
 echo Video thumbnail support...................... : $video_thumbnails
 echo

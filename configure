@@ -639,6 +639,8 @@ NO_PIXMAPS_FALSE
 NO_PIXMAPS_TRUE
 FFMPEG_LIBS
 FFMPEG_CFLAGS
+USE_GIT_FALSE
+USE_GIT_TRUE
 DEPRECATED_HW_FALSE
 DEPRECATED_HW_TRUE
 DESKTOP_INTEGRATION_FALSE
@@ -828,6 +830,7 @@ enable_cast_checks
 with_preferable_sudo
 enable_desktop_integration
 enable_deprecated_hw
+enable_git
 enable_video_thumbnails
 enable_pixmaps
 '
@@ -1494,6 +1497,8 @@ Optional Features:
                           enable)
   --enable-deprecated-hw  enable deprecated hardware support
                           (firewire,audiocd,dvd) (default: disable)
+  --disable-git           use git to keep history of session file (default:
+                          enable)
   --disable-video-thumbnails
                           disable libffmpegthumbnailer video thumbnails
                           (default: enable)
@@ -15455,6 +15460,27 @@ else
 fi
 
 
+# Check whether --enable-git was given.
+if test "${enable_git+set}" = set; then :
+  enableval=$enable_git; use_git=$enableval
+else
+  use_git="yes"
+fi
+
+if test x"$use_git" = "xyes"; then
+
+$as_echo "#define USE_GIT 1" >>confdefs.h
+
+fi
+ if test "$use_git" = "yes"; then
+  USE_GIT_TRUE=
+  USE_GIT_FALSE='#'
+else
+  USE_GIT_TRUE='#'
+  USE_GIT_FALSE=
+fi
+
+
 # Check whether --enable-video-thumbnails was given.
 if test "${enable_video_thumbnails+set}" = set; then :
   enableval=$enable_video_thumbnails; video_thumbnails=$enableval
@@ -15814,6 +15840,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${DEPRECATED_HW_TRUE}" && test -z "${DEPRECATED_HW_FALSE}"; then
   as_fn_error $? "conditional \"DEPRECATED_HW\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${USE_GIT_TRUE}" && test -z "${USE_GIT_FALSE}"; then
+  as_fn_error $? "conditional \"USE_GIT\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${NO_PIXMAPS_TRUE}" && test -z "${NO_PIXMAPS_FALSE}"; then
@@ -17845,6 +17875,7 @@ echo 'GTK+ Version................................. : GTK 2'
 fi
 echo Desktop manager integration.................. : $desktop_integration
 echo Deprecated Hardware support.................. : $deprecated_hw
+echo Git session backend.......................... : $use_git
 echo Startup notification......................... : $use_sn
 echo Video thumbnail support...................... : $video_thumbnails
 echo

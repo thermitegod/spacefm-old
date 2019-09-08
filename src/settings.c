@@ -541,8 +541,7 @@ void load_settings( char* config_dir )
     if ( !g_file_test( settings_config_dir, G_FILE_TEST_EXISTS )
                 && g_file_test( xdg_path, G_FILE_TEST_IS_DIR ) )
     {
-        char* command = g_strdup_printf( "cp -r %s '%s'",
-                                        xdg_path, settings_config_dir );
+        char* command = g_strdup_printf( "cp -r %s '%s'", xdg_path, settings_config_dir );
         g_printf( "COMMAND=%s\n", command );
         g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
         g_free( command );
@@ -553,26 +552,51 @@ void load_settings( char* config_dir )
     if ( !g_file_test( settings_config_dir, G_FILE_TEST_EXISTS ) )
         g_mkdir_with_parents( settings_config_dir, 0700 );
 
-    // load session
-    path = g_build_filename( settings_config_dir, "session", NULL );
-    if (G_LIKELY(g_file_test(path, G_FILE_TEST_EXISTS)))
+    // check if .git exists
+#ifdef USE_GIT
+    path = g_build_filename(settings_config_dir, ".git", NULL);
+    if (!G_LIKELY(g_file_test(path, G_FILE_TEST_EXISTS)))
     {
-        // copy session to session-old
-        char* command = NULL;
-        char* old = g_build_filename( settings_config_dir, "session-old", NULL );
-        if (g_file_test(old, G_FILE_TEST_EXISTS))
-        {
-            unlink(old);
-        }
-        command = g_strdup_printf("cp -a  %s %s", path, old);
+        char* command = g_strdup_printf("%s -c \"cd %s && git init && git config commit.gpgsign false\"", BASHPATH, settings_config_dir);
+        g_printf("COMMAND=%s\n", command);
         g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
         g_free(command);
-        g_free( old );
+    }
+#endif
+
+    // load session
+    path = g_build_filename(settings_config_dir, "session", NULL);
+    if (G_LIKELY(g_file_test(path, G_FILE_TEST_EXISTS)))
+    {
+#ifdef USE_GIT
+        char* command = g_strdup_printf("%s -c \"cd %s && git add session && git commit -m 'Session File' 1>/dev/null\"", BASHPATH, settings_config_dir);
+        g_printf("COMMAND=%s\n", command);
+        g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
+        g_free(command);
+#else
+        // copy session to session-old
+        char* command = g_strdup_printf("cp -a  %s %s", path, old);
+        char* old = g_build_filename(settings_config_dir, "session-old", NULL);
+        if (g_file_test(old, G_FILE_TEST_EXISTS))
+            unlink(old);
+        g_printf("COMMAND=%s\n", command);
+        g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
+        g_free(command);
+        g_free(old);
+#endif
     }
     else
     {
-        path = g_build_filename( settings_config_dir, "session-old", NULL );
-        if ( !g_file_test( path, G_FILE_TEST_EXISTS ) )
+#ifdef USE_GIT
+        char* command = g_strdup_printf("%s -c \"cd %s && git checkout session\"", BASHPATH, settings_config_dir);
+        g_printf("COMMAND=%s\n", command);
+        g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
+        g_free(command);
+        path = g_build_filename(settings_config_dir, "session", NULL);
+#else
+        path = g_build_filename(settings_config_dir, "session-old", NULL);
+#endif
+        if (!g_file_test(path, G_FILE_TEST_EXISTS))
             path = NULL;
     }
 
