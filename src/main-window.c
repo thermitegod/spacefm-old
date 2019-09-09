@@ -7837,8 +7837,6 @@ gboolean run_event( FMMainWindow* main_window, PtkFileBrowser* file_browser,
         argv[2] = cmd;
         argv[3] = NULL;
         g_printf( "EVENT %s >>> %s\n", event, argv[2] );
-        //g_spawn_command_line_async( cmd, NULL );
-        //system( cmd );
         g_spawn_async( NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL,
                                                               NULL, NULL );
         return FALSE;

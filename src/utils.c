@@ -8,6 +8,8 @@
 #  include <config.h>
 #endif
 
+#include <glib/gprintf.h>
+
 #include "settings.h"
 #include "utils.h"
 
@@ -144,10 +146,11 @@ void open_in_prog( const char* path )
     if ( !prog )
         prog = g_strdup( "spacefm" );
     char* qpath = bash_quote( path );
-    char* line = g_strdup_printf( "%s %s", prog, qpath );
-    g_spawn_command_line_async( line, NULL );
+    char* command = g_strdup_printf("%s %s", prog, qpath);
+    g_printf("COMMAND=%s\n", command);
+    g_spawn_command_line_async(command, NULL);
     g_free( qpath );
-    g_free( line );
+    g_free(command);
     g_free( prog );
 }
 

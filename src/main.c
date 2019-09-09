@@ -1016,9 +1016,10 @@ out:
 
 void tmp_clean()
 {
-    char* cmd = g_strdup_printf( "rm -rf %s", xset_get_user_tmp_dir() );
-    g_spawn_command_line_async( cmd, NULL );
-    g_free( cmd );
+    char* command = g_strdup_printf("rm -rf %s", xset_get_user_tmp_dir());
+    g_printf("COMMAND=%s\n", command);
+    g_spawn_command_line_async(command, NULL);
+    g_free(command);
 }
 
 int main ( int argc, char *argv[] )

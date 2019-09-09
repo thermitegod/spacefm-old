@@ -38,6 +38,8 @@
 
 #include "utils.h"
 
+#include <glib/gprintf.h>
+
 #include "gtk2-compat.h"
 
 //#define get_toplevel_win(data)  ( (GtkWindow*) (data->browser ? ( gtk_widget_get_toplevel((GtkWidget*) data->browser) ) : NULL) )
@@ -1888,6 +1890,7 @@ void app_job( GtkWidget* item, GtkWidget* app_item )
             char* command = NULL;
             // need to copy
             command = g_strdup_printf("cp -a  %s %s", share_desktop, path);
+            g_printf("COMMAND=%s\n", command);
             g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
             g_free(command);
             g_free( share_desktop );
@@ -2074,12 +2077,13 @@ void app_job( GtkWidget* item, GtkWidget* app_item )
         vfs_dir_monitor_mime();
         break;
     case APP_JOB_UPDATE:
-        path = g_strdup_printf( "update-mime-database %s/mime",
-                                                        g_get_user_data_dir() );
+        path = g_strdup_printf( "update-mime-database %s/mime", g_get_user_data_dir() );
+        g_printf( "COMMAND=%s\n", path );
         g_spawn_command_line_async( path, NULL );
         g_free( path );
-        path = g_strdup_printf( "update-desktop-database %s/applications",
-                                                        g_get_user_data_dir() );
+
+        path = g_strdup_printf( "update-desktop-database %s/applications", g_get_user_data_dir() );
+        g_printf( "COMMAND=%s\n", path );
         g_spawn_command_line_async( path, NULL );
         g_free( path );
         break;

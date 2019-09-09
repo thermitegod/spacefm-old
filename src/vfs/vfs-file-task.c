@@ -1092,6 +1092,7 @@ char* vfs_file_task_get_cpids( GPid pid )
         return NULL;
 
     char* command = g_strdup_printf( "/bin/ps h --ppid %d -o pid", pid );
+    g_printf("COMMAND=%s\n", command);
     gboolean ret = g_spawn_command_line_sync( command, &stdout, NULL, NULL, NULL );
     g_free(command );
     if ( ret && stdout && stdout[0] != '\0' && strchr( stdout, '\n' ) )
@@ -1367,6 +1368,7 @@ char* get_sha256sum( char* path )
     char* stdout;
     char* sum;
     char* cmd = g_strdup_printf( "%s %s", sha256sum, path );
+    g_printf("COMMAND=%s\n", cmd);
     if ( g_spawn_command_line_sync( cmd, &stdout, NULL, NULL, NULL ) )
     {
         sum = g_strndup( stdout, 64 );

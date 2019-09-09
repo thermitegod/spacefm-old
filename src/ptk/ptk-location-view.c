@@ -35,6 +35,8 @@
 #include "vfs-app-desktop.h"
 #include "gtk2-compat.h"
 
+#include <glib/gprintf.h>
+
 #include "utils.h"
 
 #include <linux/limits.h> //PATH_MAX
@@ -804,11 +806,11 @@ void ptk_location_view_clean_mount_points()
     char* udevil = g_find_program_in_path( "udevil" );
     if ( udevil )
     {
-        char* line = g_strdup_printf( "bash -c \"sleep 1 ; %s clean\"", udevil );
-        //g_printf("Clean: %s\n", line );
+        char* command = g_strdup_printf("%s -c \"sleep 1 ; %s clean\"", BASHPATH, udevil);
         g_free( udevil );
-        g_spawn_command_line_async( line, NULL );
-        g_free( line );
+        g_printf("COMMAND=%s\n", command);
+        g_spawn_command_line_async(command, NULL);
+        g_free(command);
     }
 }
 
@@ -2155,7 +2157,8 @@ static void on_prop( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
     if ( base )
     {
         // /bin/ls -l /dev/disk/by-uuid | grep ../sdc2 | sed 's/.* \([a-fA-F0-9\-]*\) -> .*/\1/'
-        cmd = g_strdup_printf( "bash -c \"/bin/ls -l /dev/disk/by-uuid | grep '\\.\\./%s$' | sed 's/.* \\([a-fA-F0-9-]*\\) -> .*/\\1/'\"", base );
+        cmd = g_strdup_printf( "%s -c \"/bin/ls -l /dev/disk/by-uuid | grep '\\.\\./%s$' | sed 's/.* \\([a-fA-F0-9-]*\\) -> .*/\\1/'\"", BASHPATH, base );
+        g_printf("COMMAND=%s\n", cmd);
         g_spawn_command_line_sync( cmd, &uuid, NULL, NULL, NULL );
         g_free( cmd );
         if ( uuid && strlen( uuid ) < 9 )
@@ -2171,8 +2174,8 @@ static void on_prop( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
 
         if ( uuid )
         {
-            cmd = g_strdup_printf( "bash -c \"cat %s | grep -e '%s' -e '%s'\"",
-                                        fstab_path, uuid, vol->device_file );
+            cmd = g_strdup_printf( "%s -c \"cat %s | grep -e '%s' -e '%s'\"", BASHPATH, fstab_path, uuid, vol->device_file );
+            g_printf("COMMAND=%s\n", cmd);
             //cmd = g_strdup_printf( "bash -c \"cat /etc/fstab | grep -e ^[#\\ ]*UUID=$(/bin/ls -l /dev/disk/by-uuid | grep \\.\\./%s | sed 's/.* \\([a-fA-F0-9\-]*\\) -> \.*/\\1/')\\ */ -e '^[# ]*%s '\"", base, vol->device_file );
             g_spawn_command_line_sync( cmd, &fstab, NULL, NULL, NULL );
             g_free( cmd );
@@ -2180,8 +2183,8 @@ static void on_prop( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
 
         if ( !fstab )
         {
-            cmd = g_strdup_printf( "bash -c \"cat %s | grep '%s'\"",
-                                        fstab_path, vol->device_file );
+            cmd = g_strdup_printf( "%s -c \"cat %s | grep '%s'\"", BASHPATH, fstab_path, vol->device_file );
+            g_printf("COMMAND=%s\n", cmd);
             //cmd = g_strdup_printf( "bash -c \"cat /etc/fstab | grep '^[# ]*%s '\"", vol->device_file );
             g_spawn_command_line_sync( cmd, &fstab, NULL, NULL, NULL );
             g_free( cmd );
@@ -2430,11 +2433,12 @@ void open_external_tab( const char* path )
     if ( !prog )
         prog = g_strdup( "spacefm" );
     char* quote_path = bash_quote( path );
-    char* line = g_strdup_printf( "%s -t %s", prog, quote_path );
-    g_spawn_command_line_async( line, NULL );
+    char* command = g_strdup_printf( "%s -t %s", prog, quote_path );
+    g_printf("COMMAND=%s\n", command);
+    g_spawn_command_line_async( command, NULL );
     g_free( prog );
     g_free( quote_path );
-    g_free( line );
+    g_free(command);
 }
 
 gboolean volume_is_visible( VFSVolume* vol )

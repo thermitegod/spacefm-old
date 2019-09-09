@@ -4116,11 +4116,10 @@ void xset_custom_export(GtkWidget* parent, PtkFileBrowser* file_browser, XSet* s
 _rmtmp_error:
     if ( !set->plugin )
     {
-        s2 = bash_quote( plug_dir );
-        s1 = g_strdup_printf( "rm -rf %s", s2 );
-        g_spawn_command_line_sync( s1, NULL, NULL, NULL, NULL );
-        g_free( s1 );
-        g_free( s2 );
+        char* command = g_strdup_printf("rm -rf %s", bash_quote(plug_dir));
+        g_printf("COMMAND=%s\n", command);
+        g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
+        g_free(command);
     }
 _export_error:
     g_free( plug_dir );
@@ -5936,6 +5935,7 @@ void xset_design_job( GtkWidget* item, XSet* set )
                 prog = g_strdup( "spacefm" );
 
             command = g_strdup_printf( "%s %s", prog, folder );
+            g_printf("COMMAND=%s\n", command);
             g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
             g_free( prog );
             g_free( command );
@@ -5972,6 +5972,7 @@ void xset_design_job( GtkWidget* item, XSet* set )
                 prog = g_strdup( "spacefm" );
 
             command = g_strdup_printf( "%s %s", prog, folder );
+            g_printf("COMMAND=%s\n", command);
             g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
             g_free( prog );
             g_free( command );
@@ -5994,6 +5995,7 @@ void xset_design_job( GtkWidget* item, XSet* set )
                     prog = g_strdup( "spacefm" );
 
                 command = g_strdup_printf( "%s %s", prog, set->plug_dir );
+                g_printf("COMMAND=%s\n", command);
                 g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
                 g_free( prog );
                 g_free( command );
