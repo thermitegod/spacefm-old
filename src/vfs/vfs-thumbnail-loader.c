@@ -377,7 +377,7 @@ static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
     }
 #endif
 
-    if ( file_is_video == FALSE )
+    if (!file_is_video)
     {
         if ( !gdk_pixbuf_get_file_info( file_path, &w, &h ) )
             return NULL;   /* image format cannot be recognized */
@@ -429,7 +429,7 @@ static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
         if( thumbnail )
             g_object_unref( thumbnail );
         /* create new thumbnail */
-        if ( file_is_video == FALSE )
+        if (!file_is_video)
         {
             thumbnail = gdk_pixbuf_new_from_file_at_size( file_path,
                                             create_size, create_size, NULL );
