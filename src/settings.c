@@ -846,93 +846,88 @@ char* save_settings( gpointer main_window_ptr )
     if ( ! g_file_test( settings_config_dir, G_FILE_TEST_EXISTS ) )
     {
         result = g_mkdir_with_parents( settings_config_dir, 0700 );
-
         if (result < 0);
             goto _save_error;
     }
 
-    path = g_build_filename( settings_config_dir, "session.tmp", NULL );
+    path = g_build_filename(settings_config_dir, "session.tmp", NULL);
 
     file = fopen( path, "w" );
 
-    if ( file )
-    {
-        /* General */
-        result = fputs( _("#SpaceFM Session File\n\n"), file );
-        if ( result < 0 )
-            goto _save_error;
-        fputs( "[General]\n", file );
-        g_fprintf( file, "encoding=%s\n", app_settings.encoding );
-        g_fprintf( file, "show_thumbnail=%d\n", !!app_settings.show_thumbnail );
-        g_fprintf( file, "max_thumb_size=%d\n", app_settings.max_thumb_size >> 10 );
-        g_fprintf( file, "big_icon_size=%d\n", app_settings.big_icon_size );
-        g_fprintf( file, "small_icon_size=%d\n", app_settings.small_icon_size );
-        g_fprintf( file, "tool_icon_size=%d\n", app_settings.tool_icon_size );
-        g_fprintf( file, "single_click=%d\n", app_settings.single_click );
-        g_fprintf( file, "no_single_hover=%d\n", app_settings.no_single_hover );
-        g_fprintf( file, "sort_order=%d\n", app_settings.sort_order );
-        g_fprintf( file, "sort_type=%d\n", app_settings.sort_type );
-        g_fprintf( file, "use_si_prefix=%d\n", !!app_settings.use_si_prefix );
-        g_fprintf( file, "no_execute=%d\n", !!app_settings.no_execute );  //MOD
-        g_fprintf( file, "no_confirm=%d\n", !!app_settings.no_confirm );  //MOD
+    if (!file)
+        goto _save_error;
 
-        fputs( "\n[Window]\n", file );
-        g_fprintf( file, "width=%d\n", app_settings.width );
-        g_fprintf( file, "height=%d\n", app_settings.height );
-        g_fprintf( file, "maximized=%d\n", app_settings.maximized );
+    result = fputs("#SpaceFM Session File\n\n", file);
+    if (result < 0)
+        goto _save_error;
+
+    //General
+    fputs("[General]\n", file);
+    g_fprintf(file, "encoding=%s\n", app_settings.encoding);
+    g_fprintf(file, "show_thumbnail=%d\n", !!app_settings.show_thumbnail);
+    g_fprintf(file, "max_thumb_size=%d\n", app_settings.max_thumb_size >> 10);
+    g_fprintf(file, "big_icon_size=%d\n", app_settings.big_icon_size);
+    g_fprintf(file, "small_icon_size=%d\n", app_settings.small_icon_size);
+    g_fprintf(file, "tool_icon_size=%d\n", app_settings.tool_icon_size);
+    g_fprintf(file, "single_click=%d\n", app_settings.single_click);
+    g_fprintf(file, "no_single_hover=%d\n", app_settings.no_single_hover);
+    g_fprintf(file, "sort_order=%d\n", app_settings.sort_order);
+    g_fprintf(file, "sort_type=%d\n", app_settings.sort_type);
+    g_fprintf(file, "use_si_prefix=%d\n", !!app_settings.use_si_prefix);
+    g_fprintf(file, "no_execute=%d\n", !!app_settings.no_execute);
+    g_fprintf(file, "no_confirm=%d\n", !!app_settings.no_confirm);
+
+    fputs("\n[Window]\n", file);
+    g_fprintf(file, "width=%d\n", app_settings.width);
+    g_fprintf(file, "height=%d\n", app_settings.height);
+    g_fprintf(file, "maximized=%d\n", app_settings.maximized);
 
 #ifdef DESKTOP_INTEGRATION
-        /* Desktop */
-        fputs( "\n[Desktop]\n", file );
-        g_fprintf( file, "show_wallpaper=%d\n", !!app_settings.show_wallpaper );
-        g_fprintf( file, "wallpaper=%s\n", app_settings.wallpaper );
-        g_fprintf( file, "wallpaper_mode=%d\n", app_settings.wallpaper_mode );
-        g_fprintf( file, "sort_by=%d\n", app_settings.desktop_sort_by );
-        g_fprintf( file, "sort_type=%d\n", app_settings.desktop_sort_type );
-        g_fprintf( file, "show_wm_menu=%d\n", app_settings.show_wm_menu );
-        g_fprintf( file, "desk_single_click=%d\n", app_settings.desk_single_click );
-        g_fprintf( file, "desk_no_single_hover=%d\n", app_settings.desk_no_single_hover );
-        g_fprintf( file, "desk_open_mime=%d\n", app_settings.desk_open_mime );
+    //Desktop
+    fputs("\n[Desktop]\n", file);
+    g_fprintf(file, "show_wallpaper=%d\n", !!app_settings.show_wallpaper);
+    g_fprintf(file, "wallpaper=%s\n", app_settings.wallpaper);
+    g_fprintf(file, "wallpaper_mode=%d\n", app_settings.wallpaper_mode);
+    g_fprintf(file, "sort_by=%d\n", app_settings.desktop_sort_by);
+    g_fprintf(file, "sort_type=%d\n", app_settings.desktop_sort_type);
+    g_fprintf(file, "show_wm_menu=%d\n", app_settings.show_wm_menu);
+    g_fprintf(file, "desk_single_click=%d\n", app_settings.desk_single_click);
+    g_fprintf(file, "desk_no_single_hover=%d\n", app_settings.desk_no_single_hover);
+    g_fprintf(file, "desk_open_mime=%d\n", app_settings.desk_open_mime);
 
-        save_color( file, "bg1", &app_settings.desktop_bg1 );
-        save_color( file, "bg2", &app_settings.desktop_bg2 );
-        save_color( file, "text", &app_settings.desktop_text );
-        save_color( file, "shadow", &app_settings.desktop_shadow );
+    save_color(file, "bg1", &app_settings.desktop_bg1);
+    save_color(file, "bg2", &app_settings.desktop_bg2);
+    save_color(file, "text", &app_settings.desktop_text);
+    save_color(file, "shadow", &app_settings.desktop_shadow);
 
-        char* fontname = pango_font_description_to_string( app_settings.desk_font );
-        if ( fontname )
-            g_fprintf( file, "font=%s\n", fontname );
-        g_free( fontname );
+    char* fontname = pango_font_description_to_string(app_settings.desk_font);
+    g_fprintf(file, "font=%s\n", fontname);
+    g_free(fontname);
 
-        g_fprintf( file, "margin_top=%d\n", app_settings.margin_top );
-        g_fprintf( file, "margin_left=%d\n", app_settings.margin_left );
-        g_fprintf( file, "margin_right=%d\n", app_settings.margin_right );
-        g_fprintf( file, "margin_bottom=%d\n", app_settings.margin_bottom );
-        g_fprintf( file, "margin_pad=%d\n", app_settings.margin_pad );
+    g_fprintf(file, "margin_top=%d\n", app_settings.margin_top);
+    g_fprintf(file, "margin_left=%d\n", app_settings.margin_left);
+    g_fprintf(file, "margin_right=%d\n", app_settings.margin_right);
+    g_fprintf(file, "margin_bottom=%d\n", app_settings.margin_bottom);
+    g_fprintf(file, "margin_pad=%d\n", app_settings.margin_pad);
 #endif
 
-        /* Interface */
-        fputs( "\n[Interface]\n", file );
-        g_fprintf( file, "always_show_tabs=%d\n", app_settings.always_show_tabs );
-        g_fprintf( file, "show_close_tab_buttons=%d\n", !app_settings.hide_close_tab_buttons );
+    //Interface
+    fputs("\n[Interface]\n", file);
+    g_fprintf(file, "always_show_tabs=%d\n", app_settings.always_show_tabs);
+    g_fprintf(file, "show_close_tab_buttons=%d\n", !app_settings.hide_close_tab_buttons);
 
-        // MOD extra settings
-        fputs( "\n[MOD]\n", file );
-        xset_write( file );
+    //MOD extra settings
+    fputs("\n[MOD]\n", file);
+    xset_write(file);
 
-        result = fputs( "\n", file );
-        if ( result < 0 )
-            goto _save_error;
-        result = fclose( file );
-        if ( result )
-            goto _save_error;
-    }
-    else
+    result = fclose(file);
+    if (result)
         goto _save_error;
 
     // move
     char* session = g_build_filename( settings_config_dir, "session", NULL );
     unlink( session );
+
     if ( g_file_test( session, G_FILE_TEST_EXISTS ) )
         goto _save_error;
     result = rename( path, session );
