@@ -44,7 +44,7 @@
 #define GDK_PIXBUF_ENABLE_BACKEND
 #endif
 
-#if defined(__GNUC__) && defined(__MMX__)
+#if defined(__MMX__)
 #include <mmintrin.h>
 #endif
 
@@ -114,7 +114,7 @@ exo_gdk_pixbuf_colorize (const GdkPixbuf *source,
     dst_row_stride = gdk_pixbuf_get_rowstride (dst);
     src_row_stride = gdk_pixbuf_get_rowstride (source);
 
-#if defined(__GNUC__) && defined(__MMX__)
+#if defined(__MMX__)
     /* check if there's a good reason to use MMX */
     if (G_LIKELY (has_alpha && dst_row_stride == width * 4 && src_row_stride == width * 4 && (width * height) % 2 == 0))
     {
@@ -368,7 +368,7 @@ exo_gdk_pixbuf_spotlight (const GdkPixbuf *source)
     dst_row_stride = gdk_pixbuf_get_rowstride (dst);
     src_row_stride = gdk_pixbuf_get_rowstride (source);
 
-#if defined(__GNUC__) && defined(__MMX__)
+#if defined(__MMX__)
     /* check if there's a good reason to use MMX */
     if (G_LIKELY (has_alpha && dst_row_stride == width * 4 && src_row_stride == width * 4 && (width * height) % 2 == 0))
     {

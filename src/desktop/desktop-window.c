@@ -189,15 +189,9 @@ static GdkAtom desktop_icon_atom = 0;
 
 //sfm from ptk-file-icon-renderer.c
 static GdkPixbuf* link_icon = NULL;
+
 /* GdkPixbuf RGBA C-Source image dump */
-#ifdef __SUNPRO_C
-#pragma align 4 (link_icon_data)
-#endif
-#ifdef __GNUC__
 static const guint8 link_icon_data[] __attribute__ ((__aligned__ (4))) =
-#else
-static const guint8 link_icon_data[] =
-#endif
     { ""
       /* Pixbuf magic (0x47646b50) */
       "GdkP"
