@@ -853,7 +853,6 @@ char* save_settings( gpointer main_window_ptr )
     path = g_build_filename(settings_config_dir, "session.tmp", NULL);
 
     file = fopen( path, "w" );
-
     if (!file)
         goto _save_error;
 
@@ -861,7 +860,60 @@ char* save_settings( gpointer main_window_ptr )
     if (result < 0)
         goto _save_error;
 
+
+    //g_strdup_printf();
+
     //General
+    g_fprintf(file,
+                    "[General]\n"
+                    "encoding=%s\n"
+                    "show_thumbnail=%d\n"
+                    "max_thumb_size=%d\n"
+                    "big_icon_size=%d\n"
+                    "small_icon_size=%d\n"
+                    "tool_icon_size=%d\n"
+                    "single_click=%d\n"
+                    "no_single_hover=%d\n"
+                    "sort_order=%d\n"
+                    "sort_type=%d\n"
+                    "use_si_prefix=%d\n"
+                    "no_execute=%d\n"
+                    "no_confirm=%d\n",
+                    app_settings.encoding,
+                    !!app_settings.show_thumbnail,
+                    app_settings.max_thumb_size >> 10,
+                    app_settings.big_icon_size,
+                    app_settings.small_icon_size,
+                    app_settings.tool_icon_size,
+                    app_settings.single_click,
+                    app_settings.no_single_hover,
+                    app_settings.sort_order,
+                    app_settings.sort_type,
+                    !!app_settings.use_si_prefix,
+                    !!app_settings.no_execute,
+                    !!app_settings.no_confirm
+             );
+
+    g_fprintf(file,
+                    "\n[Window]\n"
+                    "width=%d\n"
+                    "height=%d\n"
+                    "maximized=%d\n",
+                    app_settings.width,
+                    app_settings.height,
+                    app_settings.maximized
+             );
+
+    g_fprintf(file,
+                    "\n[Interface]\n"
+                    "always_show_tabs=%d\n"
+                    "show_close_tab_buttons=%d\n",
+                    app_settings.always_show_tabs,
+                    !app_settings.hide_close_tab_buttons
+             );
+
+
+/*
     fputs("[General]\n", file);
     g_fprintf(file, "encoding=%s\n", app_settings.encoding);
     g_fprintf(file, "show_thumbnail=%d\n", !!app_settings.show_thumbnail);
@@ -881,6 +933,12 @@ char* save_settings( gpointer main_window_ptr )
     g_fprintf(file, "width=%d\n", app_settings.width);
     g_fprintf(file, "height=%d\n", app_settings.height);
     g_fprintf(file, "maximized=%d\n", app_settings.maximized);
+
+    //Interface
+    fputs("\n[Interface]\n", file);
+    g_fprintf(file, "always_show_tabs=%d\n", app_settings.always_show_tabs);
+    g_fprintf(file, "show_close_tab_buttons=%d\n", !app_settings.hide_close_tab_buttons);
+*/
 
 #ifdef DESKTOP_INTEGRATION
     //Desktop
@@ -910,11 +968,6 @@ char* save_settings( gpointer main_window_ptr )
     g_fprintf(file, "margin_bottom=%d\n", app_settings.margin_bottom);
     g_fprintf(file, "margin_pad=%d\n", app_settings.margin_pad);
 #endif
-
-    //Interface
-    fputs("\n[Interface]\n", file);
-    g_fprintf(file, "always_show_tabs=%d\n", app_settings.always_show_tabs);
-    g_fprintf(file, "show_close_tab_buttons=%d\n", !app_settings.hide_close_tab_buttons);
 
     //MOD extra settings
     fputs("\n[MOD]\n", file);
