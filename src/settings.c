@@ -2280,6 +2280,7 @@ XSetContext* xset_context_new()
 
 const char* icon_stock_to_id( const char* name )
 {
+#if (GTK_MAJOR_VERSION == 2)
     if ( !name )
         return NULL;
     else if ( !strncmp( name, "gtk-", 4 ) )
@@ -2468,6 +2469,7 @@ const char* icon_stock_to_id( const char* name )
             stockid = NULL;
         return stockid;
     }
+#endif
     return NULL;
 }
 
@@ -2570,7 +2572,11 @@ GtkWidget* xset_new_menuitem( const char* label, const char* icon )
     image = xset_get_image( icon, GTK_ICON_SIZE_MENU );
     if ( !image )
         return item;
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( item ), image );
+#endif
     return item;
 }
 
@@ -2886,10 +2892,14 @@ GtkWidget* xset_add_menuitem( DesktopWindow* desktop, PtkFileBrowser* file_brows
             if ( app_icon )
             {
                 GtkWidget* app_img = gtk_image_new_from_pixbuf( app_icon );
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
                 if ( app_img )
                     gtk_image_menu_item_set_image(
                                     GTK_IMAGE_MENU_ITEM( item ), app_img );
                 g_object_unref( app_icon );
+#endif
             }
         }
 
@@ -6447,9 +6457,12 @@ GtkWidget* xset_design_additem( GtkWidget* menu, const char* label,
 #endif
             GtkWidget* image = gtk_image_new_from_stock( stock_icon,
                                                     GTK_ICON_SIZE_MENU );
-            if ( image )
-                gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( item ),
-                                                    image );
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
+            if (image)
+                gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(item), image);
+#endif
         }
     }
     else
@@ -6559,8 +6572,12 @@ GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
 #endif
     submenu = gtk_menu_new();
     gtk_menu_item_set_submenu( GTK_MENU_ITEM( newitem ), submenu );
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( newitem ),
           gtk_image_new_from_stock( GTK_STOCK_ADD, GTK_ICON_SIZE_MENU ) );
+#endif
     gtk_container_add ( GTK_CONTAINER ( design_menu ), newitem );
     gtk_widget_set_sensitive( newitem, !set->plugin );
     g_object_set_data( G_OBJECT( newitem ), "job",
@@ -6601,8 +6618,12 @@ GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
 #endif
     submenu2 = gtk_menu_new();
     gtk_menu_item_set_submenu( GTK_MENU_ITEM( newitem ), submenu2 );
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
     //gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( newitem ),
     //       gtk_image_new_from_stock( GTK_STOCK_ADD, GTK_ICON_SIZE_MENU ) );
+#endif
     gtk_container_add ( GTK_CONTAINER ( submenu ), newitem );
     gtk_widget_set_sensitive( newitem, !insert_set->plugin );
     g_object_set_data( G_OBJECT( newitem ), "job",
@@ -6626,8 +6647,12 @@ GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
 #endif
         submenu = gtk_menu_new();
         gtk_menu_item_set_submenu( GTK_MENU_ITEM( newitem ), submenu );
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
         gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( newitem ),
               gtk_image_new_from_stock( GTK_STOCK_ADD, GTK_ICON_SIZE_MENU ) );
+#endif
         gtk_container_add ( GTK_CONTAINER ( design_menu ), newitem );
         g_object_set_data( G_OBJECT( newitem ), "job",
                                         GINT_TO_POINTER( XSET_JOB_HELP_ADD ) );

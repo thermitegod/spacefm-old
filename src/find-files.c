@@ -846,9 +846,14 @@ static void on_add_search_folder( GtkWidget* btn, FindFile* data )
 #elif (GTK_MAJOR_VERSION == 2)
     item = gtk_image_menu_item_new_with_label( g_get_home_dir() );
 #endif
+
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
     //img = gtk_image_new_from_icon_name( "gnome-fs-directory", GTK_ICON_SIZE_MENU );
     img = xset_get_image( "gtk-directory", GTK_ICON_SIZE_MENU );
     gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( item ), img );
+#endif
     gtk_menu_shell_append( GTK_MENU_SHELL( menu ), item );
     g_signal_connect( item, "activate", G_CALLBACK(on_add_search_home), data );
 
@@ -859,9 +864,14 @@ static void on_add_search_folder( GtkWidget* btn, FindFile* data )
 #elif (GTK_MAJOR_VERSION == 2)
         item = gtk_image_menu_item_new_with_label( dir );
 #endif
+
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
         //img = gtk_image_new_from_icon_name( "gnome-fs-desktop", GTK_ICON_SIZE_MENU );
         img = xset_get_image( "gtk-directory", GTK_ICON_SIZE_MENU );
         gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( item ), img );
+#endif
         gtk_menu_shell_append( GTK_MENU_SHELL( menu ), item );
         g_signal_connect( item, "activate", G_CALLBACK(on_add_search_desktop), data );
     }
@@ -871,9 +881,14 @@ static void on_add_search_folder( GtkWidget* btn, FindFile* data )
 #elif (GTK_MAJOR_VERSION == 2)
     item = gtk_image_menu_item_new_with_label( _("Local Volumes") );
 #endif
+
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
     //img = gtk_image_new_from_icon_name( "gnome-dev-harddisk", GTK_ICON_SIZE_MENU );
     img = xset_get_image( "gtk-harddisk", GTK_ICON_SIZE_MENU );
     gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( item ), img );
+#endif
     gtk_menu_shell_append( GTK_MENU_SHELL( menu ), item );
     g_signal_connect( item, "activate", G_CALLBACK(on_add_search_volumes), data );
 

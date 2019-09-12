@@ -2381,10 +2381,15 @@ static GtkWidget* add_history_menu_item( PtkFileBrowser* file_browser,
     menu_item = gtk_image_menu_item_new_with_label( disp_name );
 #endif
     g_object_set_data( G_OBJECT( menu_item ), "path", l );
+
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
     folder_image = gtk_image_new_from_icon_name( "gnome-fs-directory",
                                                  GTK_ICON_SIZE_MENU );
     gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM ( menu_item ),
                                     folder_image );
+#endif
     g_signal_connect( menu_item, "activate",
                       G_CALLBACK( on_history_menu_item_activate ),
                       file_browser );

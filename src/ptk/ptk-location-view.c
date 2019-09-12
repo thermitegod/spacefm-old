@@ -2882,6 +2882,10 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
 #elif (GTK_MAJOR_VERSION == 2)
     item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
 #endif
+
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
     if ( set->icon )
     {
         image = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );
@@ -2889,6 +2893,7 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
             gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM ( item ),
                                                             image );
     }
+#endif
     g_object_set_data( G_OBJECT( item ), "view", view );
     g_signal_connect( item, "activate", G_CALLBACK( on_eject ), vol );
     gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
@@ -2899,6 +2904,10 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
 #elif (GTK_MAJOR_VERSION == 2)
     item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
 #endif
+
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
     if ( set->icon )
     {
         image = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );
@@ -2906,6 +2915,7 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
             gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM ( item ),
                                                             image );
     }
+#endif
     g_object_set_data( G_OBJECT( item ), "view", view );
     g_signal_connect( item, "activate", G_CALLBACK( on_umount ), vol );
     gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
@@ -2919,6 +2929,10 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
 #elif (GTK_MAJOR_VERSION == 2)
     item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
 #endif
+
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
     if ( set->icon )
     {
         image = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );
@@ -2926,6 +2940,7 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
             gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM ( item ),
                                                             image );
     }
+#endif
     g_object_set_data( G_OBJECT( item ), "view", view );
     gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
     if ( file_browser )
@@ -2939,6 +2954,10 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
 #elif (GTK_MAJOR_VERSION == 2)
     item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
 #endif
+
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
     if ( set->icon )
     {
         image = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );
@@ -2946,6 +2965,7 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
             gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM ( item ),
                                                             image );
     }
+#endif
     g_object_set_data( G_OBJECT( item ), "view", view );
     g_signal_connect( item, "activate", G_CALLBACK( on_mount ), vol );
     gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
@@ -2962,6 +2982,10 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
 #elif (GTK_MAJOR_VERSION == 2)
         item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
 #endif
+
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
         if ( set->icon )
         {
             image = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );
@@ -2969,6 +2993,8 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
                 gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM ( item ),
                                                                 image );
         }
+#endif
+
         g_object_set_data( G_OBJECT( item ), "view", view );
         g_signal_connect( item, "activate", G_CALLBACK( on_bookmark_device ), vol );
         gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
@@ -2983,6 +3009,10 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
 #elif (GTK_MAJOR_VERSION == 2)
     item = gtk_image_menu_item_new_with_mnemonic( set->menu_label );
 #endif
+
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
     if ( set->icon )
     {
         image = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );
@@ -2990,6 +3020,7 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
             gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM ( item ),
                                                             image );
     }
+#endif
     g_object_set_data( G_OBJECT( item ), "view", view );
     g_signal_connect( item, "activate", G_CALLBACK( on_prop ), vol );
     gtk_menu_shell_append( GTK_MENU_SHELL( popup ), item );
@@ -3113,6 +3144,10 @@ void ptk_location_view_dev_menu( GtkWidget* parent, PtkFileBrowser* file_browser
 #elif (GTK_MAJOR_VERSION == 2)
         item = gtk_image_menu_item_new_with_label(vfs_volume_get_disp_name(vol));
 #endif
+
+#if (GTK_MAJOR_VERSION == 3)
+//TODO
+#elif (GTK_MAJOR_VERSION == 2)
         if ( vfs_volume_get_icon( vol ) )
         {
             GtkWidget* image = xset_get_image( vfs_volume_get_icon( vol ),
@@ -3121,6 +3156,7 @@ void ptk_location_view_dev_menu( GtkWidget* parent, PtkFileBrowser* file_browser
                 gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( item ),
                                                                     image );
         }
+#endif
         g_object_set_data( G_OBJECT( item ), "menu", menu );
         g_object_set_data( G_OBJECT( item ), "vol", vol );
         g_signal_connect( item, "button-press-event",
