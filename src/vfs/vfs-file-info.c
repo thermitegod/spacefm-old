@@ -712,7 +712,7 @@ gboolean vfs_file_info_open_file( VFSFileInfo* fi,
     if ( vfs_file_info_is_executable( fi, file_path ) )
     {
         argv[ 0 ] = (char *) file_path;
-        argv[ 1 ] = '\0';
+        argv[ 1 ] = NULL;
         ret = g_spawn_async( NULL, argv, NULL, G_SPAWN_STDOUT_TO_DEV_NULL|
                              G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, err );
     }
