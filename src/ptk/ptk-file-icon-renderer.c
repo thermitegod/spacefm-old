@@ -260,9 +260,11 @@ ptk_file_icon_renderer_get_property ( GObject *object,
         */
     case PROP_INFO:
         g_value_set_pointer( value, renderer->info ? vfs_file_info_ref(renderer->info) : NULL );
+	//fallthrough
 
     case PROP_FOLLOW_STATE:
         g_value_set_boolean ( value, renderer->follow_state );
+	//fallthrough
 
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, param_id, psec );

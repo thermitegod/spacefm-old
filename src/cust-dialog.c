@@ -2075,6 +2075,7 @@ static void write_source( GtkWidget* dlg, CustomElement* el_pressed,
             break;
         case CDLG_BUTTON:
             button_count++;
+            //fallthrough
         case CDLG_FREE_BUTTON:
         case CDLG_TIMEOUT:
             if ( el == el_pressed )
