@@ -4403,7 +4403,7 @@ void main_context_fill( PtkFileBrowser* file_browser, XSetContext* c )
         if ( gtk_tree_model_get_iter_first( model_task, &it ) )
         {
             task_count++;
-            while ( gtk_tree_model_iter_next( model_task, &it ) );
+            while (gtk_tree_model_iter_next(model_task, &it))
                 task_count++;
         }
         c->var[CONTEXT_TASK_COUNT] = g_strdup_printf( "%d", task_count );

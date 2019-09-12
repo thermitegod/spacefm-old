@@ -845,7 +845,7 @@ char* save_settings( gpointer main_window_ptr )
     if ( ! g_file_test( settings_config_dir, G_FILE_TEST_EXISTS ) )
     {
         result = g_mkdir_with_parents( settings_config_dir, 0700 );
-        if (result < 0);
+        if (result < 0)
             goto _save_error;
     }
 
