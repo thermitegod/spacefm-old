@@ -120,7 +120,10 @@ gboolean vfs_exec_on_screen( GdkScreen* screen,
     char** new_env = envp;
     int i, n_env = 0;
     char* display_name;
-    int display_index = -1, startup_id_index = -1;
+    int display_index = -1;
+#ifdef HAVE_SN
+    int startup_id_index = -1;
+#endif
 
     if ( ! envp )
         envp = environ;
@@ -135,8 +138,10 @@ gboolean vfs_exec_on_screen( GdkScreen* screen,
             display_index = i;
         else
         {
+#ifdef HAVE_SN
             if ( 0 == strncmp( envp[ i ], "DESKTOP_STARTUP_ID=", 19 ) )
                 startup_id_index = i;
+#endif
             new_env[i] = g_strdup( envp[ i ] );
         }
     }

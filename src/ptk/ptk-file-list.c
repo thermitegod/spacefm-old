@@ -380,7 +380,7 @@ gboolean ptk_file_list_get_iter ( GtkTreeModel *tree_model,
                                   GtkTreePath *path )
 {
     PtkFileList *list;
-    gint *indices, n, depth;
+    gint n;
     GList* l;
 
     g_assert(PTK_IS_FILE_LIST(tree_model));
@@ -388,8 +388,8 @@ gboolean ptk_file_list_get_iter ( GtkTreeModel *tree_model,
 
     list = PTK_FILE_LIST(tree_model);
 
-    indices = gtk_tree_path_get_indices(path);
-    depth   = gtk_tree_path_get_depth(path);
+    gint* indices = gtk_tree_path_get_indices(path);
+    gint depth = gtk_tree_path_get_depth(path);
 
     /* we do not allow children */
     g_assert(depth == 1); /* depth 1 = top level; a list only has top level nodes and no children */

@@ -464,8 +464,6 @@ void import_all_plugins( FMMainWindow* main_window )
     char* plug_file;
     char* bookmarks_dir;
     int i;
-    gboolean found = FALSE;
-    gboolean found_plugins = FALSE;
 
     // get potential locations
     char* path;
@@ -516,13 +514,7 @@ void import_all_plugins( FMMainWindow* main_window )
                      !g_file_test( bookmarks_dir, G_FILE_TEST_EXISTS ) )
                 {
                     plug_dir = g_build_filename( (char*)l->data, name, NULL );
-                    if ( xset_import_plugin( plug_dir, NULL ) )
-                    {
-                        found = TRUE;
-                        if ( i == 1 )
-                            found_plugins = TRUE;
-                    }
-                    else
+                    if (!xset_import_plugin( plug_dir, NULL ) )
                         g_printf( "Invalid Plugin Ignored: %s/\n", plug_dir );
                     g_free( plug_dir );
                 }
@@ -2835,7 +2827,6 @@ void fm_main_window_update_tab_label( FMMainWindow* main_window,
 {
     GtkWidget * label;
     GtkContainer* hbox;
-    GtkImage* icon;
     GtkLabel* text;
     GList* children;
     gchar* name;
@@ -2846,7 +2837,6 @@ void fm_main_window_update_tab_label( FMMainWindow* main_window,
     {
         hbox = GTK_CONTAINER( gtk_bin_get_child ( GTK_BIN( label ) ) );
         children = gtk_container_get_children( hbox );
-        icon = GTK_IMAGE( children->data );
         text = GTK_LABEL( children->next->data );
 
         // TODO: Change the icon

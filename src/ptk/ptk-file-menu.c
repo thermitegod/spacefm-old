@@ -718,7 +718,8 @@ GtkWidget* ptk_file_menu_new( DesktopWindow* desktop, PtkFileBrowser* browser,
     GtkWidget* app_img;
     int i;
     PtkFileMenu* data;
-    int no_write_access = 0, no_read_access = 0;
+    int no_write_access = 0;
+    //int no_read_access = 0;
     XSet* set, *set2;
     GtkMenuItem* item;
     GSList* handlers_slist;
@@ -754,7 +755,7 @@ GtkWidget* ptk_file_menu_new( DesktopWindow* desktop, PtkFileBrowser* browser,
 
     // test R/W access to cwd instead of selected file
     // Note: network filesystems may become unresponsive here
-    no_read_access = access( cwd, R_OK );
+    //no_read_access = access( cwd, R_OK );
     no_write_access = access( cwd, W_OK );
 
     GtkClipboard* clip = gtk_clipboard_get( GDK_SELECTION_CLIPBOARD );

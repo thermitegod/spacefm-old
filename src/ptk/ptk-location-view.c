@@ -4492,7 +4492,6 @@ static gboolean on_bookmark_button_release_event( GtkTreeView* view,
     GtkTreeIter it;
     GtkTreeSelection* tree_sel;
     GtkTreePath* tree_path;
-    int pos;
     GtkMenu* popup;
     GtkWidget* item;
     VFSVolume* vol;
@@ -4519,7 +4518,6 @@ static gboolean on_bookmark_button_release_event( GtkTreeView* view,
         tree_sel = gtk_tree_view_get_selection( view );
         gtk_tree_model_get_iter( gtk_tree_view_get_model( view ), &it,
                                                                 tree_path );
-        pos = gtk_tree_path_get_indices( tree_path ) [ 0 ];
         gtk_tree_selection_select_iter( tree_sel, &it );
 
         gtk_tree_view_row_activated( view, tree_path, NULL );

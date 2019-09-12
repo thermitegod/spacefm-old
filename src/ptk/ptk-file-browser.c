@@ -363,7 +363,6 @@ g_cclosure_marshal_VOID__POINTER_INT (GClosure     *closure,
 void ptk_file_browser_class_init( PtkFileBrowserClass* klass )
 {
     GObjectClass * object_class;
-    GtkWidgetClass *widget_class;
 
     object_class = ( GObjectClass * ) klass;
     parent_class = g_type_class_peek_parent ( klass );
@@ -371,8 +370,6 @@ void ptk_file_browser_class_init( PtkFileBrowserClass* klass )
     object_class->set_property = ptk_file_browser_set_property;
     object_class->get_property = ptk_file_browser_get_property;
     object_class->finalize = ptk_file_browser_finalize;
-
-    widget_class = GTK_WIDGET_CLASS ( klass );
 
     /* Signals */
 
@@ -1978,7 +1975,6 @@ void ptk_file_browser_update_tab_label( PtkFileBrowser* file_browser )
 {
     GtkWidget * label;
     GtkContainer* hbox;
-    GtkImage* icon;
     GtkLabel* text;
     GList* children;
     gchar* name;
@@ -1987,7 +1983,6 @@ void ptk_file_browser_update_tab_label( PtkFileBrowser* file_browser )
                                          GTK_WIDGET( file_browser ) );
     hbox = GTK_CONTAINER( gtk_bin_get_child ( GTK_BIN( label ) ) );
     children = gtk_container_get_children( hbox );
-    icon = GTK_IMAGE( children->data );
     text = GTK_LABEL( children->next->data );
     g_list_free( children );
 
@@ -3877,7 +3872,6 @@ on_folder_view_button_release_event ( GtkWidget *widget,
                                       GdkEventButton *event,
                                       PtkFileBrowser* file_browser )  //sfm
 {   // on left-click release on file, if not dnd or rubberbanding, unselect files
-    GtkTreeModel* model;
     GtkTreePath* tree_path = NULL;
     GtkTreeSelection* tree_sel;
 
@@ -3908,7 +3902,6 @@ on_folder_view_button_release_event ( GtkWidget *widget,
         //{
             tree_path = exo_icon_view_get_path_at_pos( EXO_ICON_VIEW( widget ),
                                                        event->x, event->y );
-            model = exo_icon_view_get_model( EXO_ICON_VIEW( widget ) );
             if ( tree_path )
             {
                 // unselect all but one file
@@ -3923,7 +3916,6 @@ on_folder_view_button_release_event ( GtkWidget *widget,
             return FALSE;
         if ( app_settings.single_click )
         {
-            model = gtk_tree_view_get_model( GTK_TREE_VIEW( widget ) );
             gtk_tree_view_get_path_at_pos( GTK_TREE_VIEW( widget ),
                                            event->x, event->y, &tree_path,
                                            NULL, NULL, NULL );
@@ -5048,8 +5040,6 @@ gboolean on_folder_view_drag_motion ( GtkWidget *widget,
                                       PtkFileBrowser* file_browser )
 {
     GtkScrolledWindow * scroll;
-    GtkAdjustment *vadj;
-    gdouble vpos;
     GtkTreeModel* model = NULL;
     GtkTreePath *tree_path;
     GtkTreeViewColumn* col;
@@ -5065,8 +5055,6 @@ gboolean on_folder_view_drag_motion ( GtkWidget *widget,
 
     scroll = GTK_SCROLLED_WINDOW( gtk_widget_get_parent ( widget ) );
 
-    vadj = gtk_scrolled_window_get_vadjustment( scroll ) ;
-    vpos = gtk_adjustment_get_value( vadj );
     gtk_widget_get_allocation( widget, &allocation );
 
     if ( y < 32 )
@@ -5265,14 +5253,12 @@ void on_folder_view_drag_end ( GtkWidget *widget,
 void ptk_file_browser_rename_selected_files( PtkFileBrowser* file_browser,
                                              GList* files, char* cwd )
 {
-    GtkWidget * parent;
     VFSFileInfo* file;
     GList* l;
 
     if ( !file_browser )
         return;
     gtk_widget_grab_focus( file_browser->folder_view );
-    parent = gtk_widget_get_toplevel( GTK_WIDGET( file_browser ) );
 
     if ( ! files )
         return;
@@ -5675,10 +5661,8 @@ static gboolean on_dir_tree_button_press( GtkWidget* view,
 GtkWidget* ptk_file_browser_create_dir_tree( PtkFileBrowser* file_browser )
 {
     GtkWidget * dir_tree;
-    GtkTreeSelection* dir_tree_sel;
     dir_tree = ptk_dir_tree_view_new( file_browser,
                                       file_browser->show_hidden_files );
-    dir_tree_sel = gtk_tree_view_get_selection( GTK_TREE_VIEW( dir_tree ) );
     g_signal_connect ( dir_tree, "row-activated",
                        G_CALLBACK ( on_dir_tree_row_activated ),
                        file_browser );

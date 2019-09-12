@@ -469,7 +469,6 @@ void load_settings( char* config_dir )
     FILE * file;
     gchar* path = NULL;
     char line[ 2048 ];
-    char* section_name;
     SettingsParseFunc func = NULL;
     XSet* set;
     char* str;
@@ -617,7 +616,7 @@ void load_settings( char* config_dir )
                 continue;
             if ( line[ 0 ] == '[' )
             {
-                section_name = strtok( line, "]" );
+                strtok( line, "]" );
                 if ( 0 == strcmp( line + 1, "General" ) )
                     func = &parse_general_settings;
                 else if ( 0 == strcmp( line + 1, "Window" ) )
@@ -3554,7 +3553,6 @@ void xset_parse_plugin( const char* plug_dir, char* line, int use )
 XSet* xset_import_plugin( const char* plug_dir, int* use )
 {
     char line[ 2048 ];
-    char* section_name;
     gboolean func;
     GList* l;
     XSet* set;
@@ -3597,7 +3595,7 @@ XSet* xset_import_plugin( const char* plug_dir, int* use )
             continue;
         if ( line[ 0 ] == '[' )
         {
-            section_name = strtok( line, "]" );
+            strtok( line, "]" );
             if ( 0 == strcmp( line + 1, "Plugin" ) )
                 func = TRUE;
             else
@@ -6490,9 +6488,7 @@ GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
     char* path;
     gboolean no_remove = FALSE;
     gboolean no_paste = FALSE;
-    gboolean open_all = FALSE;
     XSet* sett;
-    XSet* mset;
     XSet* insert_set;
     int i;
 
@@ -6503,9 +6499,7 @@ GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
     gboolean show_keys = !is_bookmark && !set->tool;
 
     if ( set->plugin && set->shared_key )
-        mset = xset_get_plugin_mirror( set );
-    else
-        mset = set;
+        xset_get_plugin_mirror( set );
 
     if ( set->plugin )
     {
@@ -6531,10 +6525,6 @@ GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
     else if ( set_clipboard->menu_style == XSET_MENU_SUBMENU )
         // don't allow paste of submenu to self or below
         no_paste = xset_clipboard_in_set( insert_set );
-
-    // control open_all item
-    if ( g_str_has_prefix( set->name, "open_all_type_" ) )
-        open_all = TRUE;
 
     GtkWidget* design_menu = gtk_menu_new();
     GtkAccelGroup* accel_group = gtk_accel_group_new();

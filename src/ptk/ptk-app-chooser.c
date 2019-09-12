@@ -637,7 +637,6 @@ gpointer load_all_known_apps_thread( VFSAsyncTask* task )
 {
     gchar* dir, **dirs;
     GtkListStore* list;
-    gboolean cancel = FALSE;
 
     GDK_THREADS_ENTER();
     list = GTK_LIST_STORE( vfs_async_task_get_data(task) );
@@ -647,16 +646,13 @@ gpointer load_all_known_apps_thread( VFSAsyncTask* task )
     load_all_apps_in_dir( dir, list, task );
     g_free( dir );
 
-    for( dirs = (gchar **) g_get_system_data_dirs(); ! task->cancel && *dirs; ++dirs )
+    for( dirs = (gchar **) g_get_system_data_dirs(); *dirs; ++dirs )
     {
         dir = g_build_filename( *dirs, "applications", NULL );
         load_all_apps_in_dir( dir, list, task );
         g_free( dir );
     }
 
-    vfs_async_task_lock( task );
-    cancel = task->cancel;
-    vfs_async_task_unlock( task );
     return NULL;
 }
 

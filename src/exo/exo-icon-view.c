@@ -3879,9 +3879,7 @@ exo_icon_view_paint_item (ExoIconView     *icon_view,
 {
     GtkCellRendererState flags;
     ExoIconViewCellInfo *info;
-    GtkStateType         state;
     GdkRectangle         cell_area;
-    gboolean             rtl;
     GList               *lp;
 
     if (G_UNLIKELY (icon_view->priv->model == NULL))
@@ -3889,17 +3887,14 @@ exo_icon_view_paint_item (ExoIconView     *icon_view,
 
     exo_icon_view_set_cell_data (icon_view, item);
 
-    rtl = gtk_widget_get_direction (GTK_WIDGET (icon_view)) == GTK_TEXT_DIR_RTL;
-
     if (item->selected)
     {
         flags = GTK_CELL_RENDERER_SELECTED;
-        state = gtk_widget_has_focus (GTK_WIDGET (icon_view)) ? GTK_STATE_SELECTED : GTK_STATE_ACTIVE;
+        gtk_widget_has_focus (GTK_WIDGET (icon_view)) ? GTK_STATE_SELECTED : GTK_STATE_ACTIVE;
     }
     else
     {
         flags = 0;
-        state = GTK_STATE_NORMAL;
     }
 
     if (G_UNLIKELY (icon_view->priv->prelit_item == item))

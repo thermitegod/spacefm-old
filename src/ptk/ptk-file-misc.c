@@ -3816,10 +3816,9 @@ static void open_files_with_each_app( gpointer key, gpointer value,
 
 static void free_file_list_hash( gpointer key, gpointer value, gpointer user_data )
 {
-    const char * app_desktop;
     GList* files;
 
-    app_desktop = ( const char* ) key;
+    const char* app_desktop = ( const char* ) key;
     files = ( GList* ) value;
     g_list_foreach( files, ( GFunc ) g_free, NULL );
     g_list_free( files );

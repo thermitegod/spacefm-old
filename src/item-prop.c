@@ -2114,7 +2114,7 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
     char* value;
     char* disp;
     GtkTreeIter it;
-    gboolean is_rules = FALSE;
+    //gboolean is_rules = FALSE;
     while ( get_rule_next( &elements, &sub, &comp, &value ) )
     {
         disp = context_display( sub, comp, value );
@@ -2128,7 +2128,7 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
         g_free( disp );
         if ( value )
             g_free( value );
-        is_rules = TRUE;
+        //is_rules = TRUE;
     }
     gtk_combo_box_set_active( GTK_COMBO_BOX( ctxt->box_sub ), 0 );
     //gtk_widget_set_sensitive( GTK_WIDGET( ctxt->btn_ok ), is_rules );
