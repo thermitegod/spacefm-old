@@ -857,7 +857,9 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
             gtk_window_set_transient_for( GTK_WINDOW( dlg ), parent );
         xset_set_window_icon( GTK_WINDOW( dlg ) );
 
+#ifdef SMALL_SCREEN
         ptk_dialog_fit_small_screen( GTK_DIALOG( dlg ) );
+#endif
         data->dlg = dlg;
         data->notebook = (GtkWidget*)gtk_builder_get_object( builder, "notebook" );
         gtk_dialog_set_alternative_button_order( GTK_DIALOG( dlg ), GTK_RESPONSE_OK, GTK_RESPONSE_CANCEL, -1 );

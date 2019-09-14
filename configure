@@ -639,6 +639,8 @@ NO_PIXMAPS_FALSE
 NO_PIXMAPS_TRUE
 FFMPEG_LIBS
 FFMPEG_CFLAGS
+SMALL_SCREEN_FALSE
+SMALL_SCREEN_TRUE
 USE_GIT_FALSE
 USE_GIT_TRUE
 DEPRECATED_HW_FALSE
@@ -831,6 +833,7 @@ with_preferable_sudo
 enable_desktop_integration
 enable_deprecated_hw
 enable_git
+enable_small_screen
 enable_video_thumbnails
 enable_pixmaps
 '
@@ -1499,6 +1502,8 @@ Optional Features:
                           (firewire,audiocd,dvd) (default: disable)
   --disable-git           use git to keep history of session file (default:
                           enable)
+  --enable-small-screen   enable dialog scaling on small screens (default:
+                          disable)
   --disable-video-thumbnails
                           disable libffmpegthumbnailer video thumbnails
                           (default: enable)
@@ -15481,6 +15486,27 @@ else
 fi
 
 
+# Check whether --enable-small_screen was given.
+if test "${enable_small_screen+set}" = set; then :
+  enableval=$enable_small_screen; small_screen=$enableval
+else
+  small_screen="no"
+fi
+
+if test x"$small_screen" = "xyes"; then
+
+$as_echo "#define SMALL_SCREEN 1" >>confdefs.h
+
+fi
+ if test "$small_screen" = "yes"; then
+  SMALL_SCREEN_TRUE=
+  SMALL_SCREEN_FALSE='#'
+else
+  SMALL_SCREEN_TRUE='#'
+  SMALL_SCREEN_FALSE=
+fi
+
+
 # Check whether --enable-video-thumbnails was given.
 if test "${enable_video_thumbnails+set}" = set; then :
   enableval=$enable_video_thumbnails; video_thumbnails=$enableval
@@ -15844,6 +15870,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${USE_GIT_TRUE}" && test -z "${USE_GIT_FALSE}"; then
   as_fn_error $? "conditional \"USE_GIT\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${SMALL_SCREEN_TRUE}" && test -z "${SMALL_SCREEN_FALSE}"; then
+  as_fn_error $? "conditional \"SMALL_SCREEN\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${NO_PIXMAPS_TRUE}" && test -z "${NO_PIXMAPS_FALSE}"; then
@@ -17875,6 +17905,7 @@ echo 'GTK+ Version................................. : GTK 2'
 fi
 echo Desktop manager integration.................. : $desktop_integration
 echo Deprecated Hardware support.................. : $deprecated_hw
+echo Small Screen Scaling......................... : $small_screen
 echo Git session backend.......................... : $use_git
 echo Startup notification......................... : $use_sn
 echo Video thumbnail support...................... : $video_thumbnails

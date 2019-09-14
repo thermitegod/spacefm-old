@@ -365,7 +365,9 @@ GtkWidget* file_properties_dlg_new( GtkWindow* parent,
     char *owner_group, *tmp;
 
     gtk_dialog_set_alternative_button_order( GTK_DIALOG(dlg), GTK_RESPONSE_OK, GTK_RESPONSE_CANCEL, -1 );
+#ifdef SMALL_SCREEN
     ptk_dialog_fit_small_screen( GTK_DIALOG(dlg) );
+#endif
 
     int width = xset_get_int( "app_dlg", "s" );
     int height = xset_get_int( "app_dlg", "z" );

@@ -13,7 +13,10 @@
 #include "ptk-utils.h"
 #include <glib.h>
 #include <glib/gi18n.h>
+
+#ifdef SMALL_SCREEN
 #include "working-area.h"
+#endif
 
 #include "settings.h"
 #include "gtk2-compat.h"
@@ -128,6 +131,7 @@ void ptk_show_error(GtkWindow* parent, const char* title, const char* message )
     gtk_widget_destroy( dlg );
 }
 
+#ifdef SMALL_SCREEN
 /* Make the size of dialogs smaller by breaking GNOME HIG
  * http://library.gnome.org/devel/hig-book/stable/design-window.html.en
  * According to GNOME HIG, spacings are increased by the multiples of 6.
@@ -254,6 +258,7 @@ void ptk_dialog_fit_small_screen( GtkDialog* dlg )
         gtk_window_set_default_size( GTK_WINDOW(dlg), dw, dh );
     }
 }
+#endif
 
 typedef struct
 {
