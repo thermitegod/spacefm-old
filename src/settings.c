@@ -5469,7 +5469,6 @@ void xset_design_job( GtkWidget* item, XSet* set )
         g_free( cscript );
         break;
     case XSET_JOB_CUSTOM:
-        _XSET_JOB_CUSTOM:
         if ( set->z && set->z[0] != '\0' )
         {
             folder = g_path_get_dirname( set->z );
