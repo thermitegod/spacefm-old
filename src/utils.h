@@ -7,6 +7,8 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+void check_for_errno();
+
 char* randhex8();
 gboolean have_rw_access( const char* path );
 gboolean have_x_access( const char* path );

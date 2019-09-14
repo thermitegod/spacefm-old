@@ -1633,7 +1633,10 @@ static void write_file_value( const char* path, const char* val )
             dlg_warn( _("error writing file %s: %s"), path + add,
                                                         g_strerror( errno ) );
         else if ( !strchr( val, '\n' ) )
-            write( f, "\n", 1 );
+        {
+            if (write(f, "\n", 1) == -1)
+                check_for_errno();
+        }
     }
     close( f );
 }

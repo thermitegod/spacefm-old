@@ -58,6 +58,10 @@
 
 #include <glib/gprintf.h>
 
+#include <errno.h>
+
+#include "utils.h"
+
 #include "cust-dialog.h"
 
 #include <linux/limits.h> //PATH_MAX
@@ -369,14 +373,16 @@ gboolean single_instance_check()
         if ( no_tabs )
         {
             cmd = CMD_NO_TABS;
-            write( sock, &cmd, sizeof(char) );
+            if (write(sock, &cmd, sizeof(char)) == -1)
+                check_for_errno();
             // another command always follows CMD_NO_TABS
             cmd = CMD_OPEN_TAB;
         }
         if ( reuse_tab )
         {
             cmd = CMD_REUSE_TAB;
-            write( sock, &cmd, sizeof(char) );
+            if (write(sock, &cmd, sizeof(char)) == -1)
+                check_for_errno();
             // another command always follows CMD_REUSE_TAB
             cmd = CMD_OPEN;
         }
@@ -414,11 +420,13 @@ gboolean single_instance_check()
         if ( cmd == CMD_OPEN_TAB && !files )
             cmd = CMD_OPEN;
 
-        write( sock, &cmd, sizeof(char) );
+        if (write(sock, &cmd, sizeof(char)) == -1)
+            check_for_errno();
         if( G_UNLIKELY( show_pref > 0 ) )
         {
             cmd = (unsigned char)show_pref;
-            write( sock, &cmd, sizeof(char) );
+            if (write(sock, &cmd, sizeof(char)) == -1)
+                check_for_errno();
         }
         else
         {
@@ -437,9 +445,11 @@ gboolean single_instance_check()
                            $PWDs resolution would not work. */
                         real_path = dup_to_absolute_file_path( file );
                     }
-                    write( sock, real_path, strlen( real_path ) );
+                    if (write(sock, real_path, strlen(real_path)) == -1)
+                        check_for_errno();
                     g_free( real_path );
-                    write( sock, "\n", 1 );
+                    if (write(sock, "\n", 1) == -1)
+                        check_for_errno();
                 }
             }
         }
@@ -556,9 +566,15 @@ void receive_socket_command( int client, GString* args )  //sfm
     g_free( inode_tag );
 
     // send response
-    write( client, &cmd, sizeof(char) );  // send exit status
-    if ( reply && reply[0] )
-        write( client, reply, strlen( reply ) ); // send reply or error msg
+    if (write(client, &cmd, sizeof(char)) == -1)  // send exit status
+        check_for_errno();
+
+    if (reply && reply[0])
+    {
+        if (write(client, reply, strlen(reply)) == -1) // send reply or error msg
+            check_for_errno();
+    }
+
     g_free( reply );
 }
 
@@ -599,22 +615,28 @@ int send_socket_command( int argc, char* argv[], char** reply )   //sfm
 
     // send command
     char cmd = CMD_SOCKET_CMD;
-    write( sock, &cmd, sizeof(char) );
+    if (write(sock, &cmd, sizeof(char)) == -1)
+        check_for_errno();
 
     // send inode tag
     char* inode_tag = get_inode_tag();
-    write( sock, inode_tag, strlen( inode_tag ) );
-    write( sock, "\n", 1 );
+    if (write(sock, inode_tag, strlen(inode_tag)) == -1)
+        check_for_errno();
+    if (write(sock, "\n", 1) == -1)
+        check_for_errno();
     g_free( inode_tag );
 
     // send arguments
     int i;
     for ( i = 2; i < argc; i++ )
     {
-        write( sock, argv[i], strlen( argv[i] ) );
-        write( sock, "\n", 1 );
+        if (write(sock, argv[i], strlen(argv[i])) == -1)
+            check_for_errno();
+        if (write(sock, "\n", 1) == -1)
+            check_for_errno();
     }
-    write( sock, "\n", 1 );
+    if (write(sock, "\n", 1) == -1)
+        check_for_errno();
 
     // get response
     GString* sock_reply = g_string_new_len( NULL, 2048 );
@@ -733,7 +755,8 @@ char* dup_to_absolute_file_path(char** file)
     cwd_path = malloc( cwd_size );
     if( cwd_path )
     {
-        getcwd( cwd_path, cwd_size );
+        if (getcwd(cwd_path, cwd_size) == NULL)
+            check_for_errno();
     }
 
     real_path = vfs_file_resolve_path( cwd_path, file_path );
