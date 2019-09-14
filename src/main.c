@@ -1349,12 +1349,9 @@ int main ( int argc, char *argv[] )
     }
 
     // bash installed?
-    if ( !( BASHPATH && g_file_test( BASHPATH, G_FILE_TEST_IS_EXECUTABLE ) ) )
+    if (G_UNLIKELY(!(BASHPATH && g_file_test(BASHPATH, G_FILE_TEST_IS_EXECUTABLE))))
     {
-        char* bash_error = g_strdup_printf( _( "SpaceFM requires bash to be installed.  Other shells are NOT equivalent as SpaceFM uses features only found in genuine bash (v4+).\n\nThe program %s was not found.  Install bash or use configure option --with-bash-path to specify a custom location at build time." ), BASHPATH );
-        fprintf( stderr, "spacefm: %s\n", bash_error );
-        ptk_show_error( NULL, _("Error"), bash_error );
-        g_free( bash_error );
+        ptk_show_error( NULL, "Error", "Can not find bash, this is fatal\n");
         return 1;
     }
 
