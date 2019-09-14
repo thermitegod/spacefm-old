@@ -13,6 +13,7 @@
 #include <glib/gprintf.h>
 
 #include "settings.h"
+#include "extern.h"
 #include "utils.h"
 
 

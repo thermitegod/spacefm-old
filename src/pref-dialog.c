@@ -35,6 +35,8 @@
 #include "ptk-file-browser.h"
 #include "ptk-location-view.h"
 
+#include "extern.h"
+
 #include "gtk2-compat.h"
 
 

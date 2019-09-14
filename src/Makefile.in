@@ -147,7 +147,7 @@ am__spacefm_SOURCES_DIST = mime-type/mime-type.c mime-type/mime-type.h \
 	main-window.c main-window.h settings.c settings.h \
 	pref-dialog.c pref-dialog.h find-files.c find-files.h \
 	go-dialog.c go-dialog.h cust-dialog.c cust-dialog.h \
-	item-prop.c item-prop.h utils.c utils.h
+	item-prop.c item-prop.h utils.c utils.h extern.h
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_1 = mime-type/spacefm-mime-type.$(OBJEXT) \
 	mime-type/spacefm-mime-action.$(OBJEXT) \
@@ -598,7 +598,8 @@ spacefm_SOURCES = \
     go-dialog.c go-dialog.h \
     cust-dialog.c cust-dialog.h \
     item-prop.c item-prop.h \
-    utils.c utils.h
+    utils.c utils.h \
+    extern.h
 
 spacefm_CFLAGS = \
     @GTK_CFLAGS@ \
