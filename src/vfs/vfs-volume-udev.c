@@ -421,7 +421,6 @@ void info_drive_connection( device_t *device )
 {
   char *s;
   char *p;
-  char *q;
   char *model;
   char *vendor;
   char *subsystem;
@@ -2231,7 +2230,6 @@ void vfs_free_volume_members( VFSVolume* volume )
 
 char* free_slash_total( const char* dir )
 {
-    guint64 total_size;
     char size_str[ 64 ];
 #ifdef HAVE_STATVFS
     struct statvfs fs_stat = {0};
@@ -2584,8 +2582,6 @@ gboolean path_is_mounted_mtab( const char* mtab_file,
     GError *error;
     guint n;
     gboolean ret = FALSE;
-    char* str;
-    char* file;
     char* point;
     gchar encoded_file[PATH_MAX];
     gchar encoded_point[PATH_MAX];
@@ -2857,9 +2853,8 @@ VFSVolume* vfs_volume_read_by_mount( dev_t devnum, const char* mount_points )
     VFSVolume* volume;
     char* str;
     int i;
-    struct stat statbuf;
+    struct stat;
     netmount_t *netmount = NULL;
-    XSet* set;
 
     if ( devnum == 0 || !mount_points )
         return NULL;
@@ -3939,7 +3934,9 @@ void vfs_volume_exec( VFSVolume* vol, const char* command )
 void vfs_volume_autoexec( VFSVolume* vol )
 {
     char* command = NULL;
+#ifdef DEPRECATED_HW
     char* path;
+#endif
 
     // Note: audiocd is is_mountable
     if ( !vol->is_mountable || global_inhibit_auto ||

@@ -390,7 +390,7 @@ const char* mime_cache_lookup_suffix( MimeCache* cache, const char* filename, co
     const char* root = cache->suffix_roots;
     int i, n = cache->n_suffix_roots;
     const char* mime_type = NULL, *ret = NULL, *prev_suffix_pos = (const char*)-1;
-    int fn_len, n_nodes;
+    int fn_len;
 
     if( G_UNLIKELY( ! filename || ! *filename || 0 == n ) )
         return NULL;

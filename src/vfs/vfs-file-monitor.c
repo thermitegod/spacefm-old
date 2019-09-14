@@ -113,7 +113,7 @@ VFSFileMonitor* vfs_file_monitor_add( char* path,
 {
     VFSFileMonitor * monitor;
     VFSFileMonitorCallbackEntry cb_ent;
-    struct stat file_stat;   // skip stat
+    struct stat;   // skip stat
     char resolved_path[PATH_MAX];
     char* real_path;
 

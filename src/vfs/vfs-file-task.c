@@ -774,7 +774,6 @@ vfs_file_task_move( char* src_file, VFSFileTask* task )
     struct stat dest_stat;
     gchar* file_name;
     gchar* dest_file;
-    int tmpfd = -1;
 
     if ( should_abort( task ) )
         return ;
@@ -1241,9 +1240,7 @@ if ( !( cond & G_IO_NVAL ) )
 }
 */
 
-    gchar *line;
     gsize  size;
-    GtkTextIter iter;
 
     if ( ( cond & G_IO_NVAL ) )
     {

@@ -336,7 +336,7 @@ GtkWidget* file_properties_dlg_new( GtkWindow* parent,
     FilePropertiesDialogData* data;
     gboolean need_calc_size = TRUE;
 
-    VFSFileInfo *file, *file2;
+    VFSFileInfo *file;
     VFSMimeType* mime;
 
     const char* multiple_files = _( "( multiple files )" );
@@ -773,7 +773,7 @@ on_dlg_response ( GtkDialog *dialog,
     GList* l;
     GList* file_list;
     char* file_path;
-    GtkWidget* ask_recursive;
+    //GtkWidget* ask_recursive;
     VFSFileInfo* file;
     GtkAllocation allocation;
 

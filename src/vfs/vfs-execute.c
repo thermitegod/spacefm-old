@@ -113,9 +113,9 @@ gboolean vfs_exec_on_screen( GdkScreen* screen,
 #ifdef HAVE_SN
     SnLauncherContext * ctx = NULL;
     SnDisplay* display;
+    GSpawnChildSetupFunc setup_func = NULL;
 #endif
     gboolean ret;
-    GSpawnChildSetupFunc setup_func = NULL;
     extern char **environ;
     char** new_env = envp;
     int i, n_env = 0;

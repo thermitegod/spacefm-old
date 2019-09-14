@@ -470,8 +470,6 @@ void load_settings( char* config_dir )
     gchar* path = NULL;
     char line[ 2048 ];
     SettingsParseFunc func = NULL;
-    XSet* set;
-    char* str;
 
     xset_cmd_history = NULL;
     app_settings.load_saved_tabs = TRUE;
@@ -746,10 +744,10 @@ void load_settings( char* config_dir )
     evt_tab_close = xset_get( "evt_tab_close" );
     evt_device = xset_get( "evt_device" );
 
+/*
     // config conversions
     int ver = xset_get_int( "config_version", "s" );
 
-/*
     if ( ver < 38 && !xset_is( "hand_net_+fuse" ) ) // < 1.0.6
     {
         // add missing fuse handler to bottom of list
@@ -1394,7 +1392,6 @@ gboolean xset_get_b_set( XSet* set )
 
 XSet* xset_is( const char* name )
 {
-    XSet* set;
     GList* l;
 
     if ( !name )
@@ -3277,7 +3274,6 @@ void clean_plugin_mirrors()
 {   // remove plugin mirrors for non-existent plugins
     GList* l;
     XSet* set;
-    XSet* set_key;
     gboolean redo = TRUE;
 
     while ( redo )
@@ -3859,7 +3855,6 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
                           const char* path, const char* plug_dir, int type,
                           int job, XSet* insert_set )
 {
-    char* file_path;
     char* file_path_q;
     char* own;
     char* rem = g_strdup( "" );
@@ -4428,7 +4423,6 @@ void xset_custom_activate( GtkWidget* item, XSet* set )
                 }
                 GList* file_paths = NULL;
                 GList* l;
-                char* path;
                 for ( l = sel_files; l; l = l->next )
                 {
                     file_paths = g_list_prepend( file_paths, g_build_filename(
@@ -5356,10 +5350,6 @@ void xset_set_key( GtkWidget* parent, XSet* set )
 
 void xset_design_job( GtkWidget* item, XSet* set )
 {
-    char* keymsg;
-    GtkWidget* vbox;
-    int newkey = 0, newkeymod = 0;
-    XSet* keyset;
     XSet* newset;
     XSet* mset;
     XSet* childset;
@@ -6134,10 +6124,8 @@ void on_design_radio_toggled( GtkCheckMenuItem* item, XSet* set )
 gboolean xset_job_is_valid( XSet* set, int job )
 {
     gboolean no_remove = FALSE;
-    gboolean toolexecsub = FALSE;
     gboolean no_paste = FALSE;
     gboolean open_all = FALSE;
-    XSet* sett;
 
     if ( !set )
         return FALSE;
@@ -6478,17 +6466,10 @@ GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
                                   guint button, guint32 time )
 {
     GtkWidget* newitem;
-    GtkWidget* newitem2;
-    GtkWidget* newitem3;
-    GtkWidget* newitem4;
     GtkWidget* submenu;
     GtkWidget* submenu2;
-    GSList* radio_group;
-    char* label;
-    char* path;
     gboolean no_remove = FALSE;
     gboolean no_paste = FALSE;
-    XSet* sett;
     XSet* insert_set;
     int i;
 
@@ -7165,8 +7146,9 @@ void xset_menu_cb( GtkWidget* item, XSet* set )
     else if ( rset->menu_style == XSET_MENU_FILEDLG )
     {
         // test purpose only
-        char* file = xset_file_dialog( parent, GTK_FILE_CHOOSER_ACTION_SAVE,
-                        rset->title, rset->s, "foobar.xyz" );
+        //char* file
+        xset_file_dialog( parent, GTK_FILE_CHOOSER_ACTION_SAVE,
+                          rset->title, rset->s, "foobar.xyz" );
         //g_printf("file=%s\n", file );
     }
     else if ( rset->menu_style == XSET_MENU_ICON )
@@ -7485,7 +7467,6 @@ static void on_icon_buffer_changed( GtkTextBuffer* buf, GtkWidget* button )
 
 char* xset_icon_chooser_dialog( GtkWindow* parent, const char* def_icon )
 {
-    GtkTextIter iter, siter;
     GtkAllocation allocation;
     int width, height;
     char* icon = NULL;
@@ -8000,7 +7981,7 @@ char* xset_color_dialog( GtkWidget* parent, char* title, char* defcolor )
     GdkColor color;
 #endif
     char* scolor = NULL;
-    GtkWidget* dlgparent = parent ? gtk_widget_get_toplevel( parent ) : NULL;
+    //GtkWidget* dlgparent = parent ? gtk_widget_get_toplevel( parent ) : NULL;
 #if (GTK_MAJOR_VERSION == 3)
     GtkWidget* dlg = gtk_color_chooser_dialog_new( title, 0 );
 #elif (GTK_MAJOR_VERSION == 2)
@@ -10622,7 +10603,7 @@ void xset_defaults()
 
 
     // PANELS
-    int p, i;
+    int p;
     for ( p = 1; p < 5; p++ )
     {
         set = xset_set_panel( p, "show_toolbox", "lbl", _("_Toolbar") );
@@ -10838,7 +10819,6 @@ void def_key( const char* name, int key, int keymod )
 
 void xset_default_keys()
 {
-    XSet* set;
     GList* l;
 
     // read all currently set or unset keys

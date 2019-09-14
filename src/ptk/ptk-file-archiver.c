@@ -326,7 +326,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
                                const char *cwd )
 {
     GList *l;
-    GtkWidget* combo, *dlg, *hbox;
+    GtkWidget* combo, *dlg;
     GtkFileFilter* filter;
 
     char *cmd_to_run = NULL, *desc = NULL, *dest_file = NULL,
@@ -1068,7 +1068,7 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
     char *dest_quote = NULL, *full_path = NULL, *full_quote = NULL,
         *perm = NULL, *cmd = NULL, *str = NULL, *final_command = NULL,
         *s1 = NULL, *extension = NULL;
-    int i, n, j, res;
+    int i, n, res;
     struct stat statbuf;
     GSList *handlers_slist = NULL;
 

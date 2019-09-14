@@ -2104,7 +2104,6 @@ gboolean app_menu_keypress( GtkWidget* menu, GdkEventKey* event,
                                                             PtkFileMenu* data )
 {
     int job = -1;
-    XSet* set;
     PtkFileMenu* app_data = NULL;
     VFSAppDesktop* desktop_file = NULL;
 
@@ -2283,7 +2282,7 @@ static void show_app_menu( GtkWidget* menu, GtkWidget* app_item, PtkFileMenu* da
         return ;
 
     GtkWidget* app_menu = gtk_menu_new();
-    GtkAccelGroup* accel_group = gtk_accel_group_new();
+    //GtkAccelGroup* accel_group = gtk_accel_group_new();
 
     // Set Default
     newitem = app_menu_additem( app_menu, _("_Set As Default"),
@@ -2471,7 +2470,7 @@ static void show_app_menu( GtkWidget* menu, GtkWidget* app_item, PtkFileMenu* da
 gboolean on_app_button_press( GtkWidget* item, GdkEventButton* event,
                                                             PtkFileMenu* data )
 {
-    int job = -1;
+    //int job = -1;
 
     GtkWidget* menu = (GtkWidget*)g_object_get_data( G_OBJECT(item), "menu" );
     int keymod = ( event->state & ( GDK_SHIFT_MASK | GDK_CONTROL_MASK |
@@ -2901,8 +2900,6 @@ void on_autoopen_create_cb( gpointer task, AutoOpenCreate* ao )
 
 static void create_new_file( PtkFileMenu* data, int create_new )
 {
-    char* cwd;
-
     if ( !data->cwd )
         return;
 

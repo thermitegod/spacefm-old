@@ -964,7 +964,7 @@ ptk_text_renderer_render ( GtkCellRenderer *cell,
     gint y_offset;
     gint width, height;
     gint focus_pad, focus_width;
-    gint x, y;
+    //gint x, y;
     gint xpad, ypad;
 #if (GTK_MAJOR_VERSION == 3)
     cairo_save ( cr );

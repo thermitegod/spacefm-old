@@ -85,8 +85,6 @@ static GList* mime_cb = NULL;
 static guint change_notify_timeout = 0;
 static guint theme_change_notify = 0;
 
-static char* desktop_dir = NULL;
-
 static gboolean is_desktop_set = FALSE;
 
 GType vfs_dir_get_type()
@@ -316,8 +314,6 @@ static GList* vfs_dir_find_file( VFSDir* dir, const char* file_name, VFSFileInfo
 /* signal handlers */
 void vfs_dir_emit_file_created( VFSDir* dir, const char* file_name, gboolean force )
 {
-    GList* l;
-
     // Ignore avoid_changes for creation of files
     //if ( !force && dir->avoid_changes )
     //    return;
@@ -523,8 +519,6 @@ gpointer vfs_dir_load_thread(  VFSAsyncTask* task, VFSDir* dir )
 
         if ( dir_content )
         {
-            GKeyFile* kf;
-
             while ( ! vfs_async_task_is_cancelled( dir->task )
                         && ( file_name = g_dir_read_name( dir_content ) ) )
             {
@@ -868,15 +862,8 @@ const char* vfs_get_desktop_dir()
 
     desktop_dir = g_get_user_special_dir( G_USER_DIRECTORY_DESKTOP );
 
-#if 0
-    /* FIXME: what should we do if the user has no desktop dir? */
-    if( ! g_file_test( desktop_dir, G_FILE_TEST_IS_DIR ) )
-    {
-        g_free( desktop_dir );
-        desktop_dir = NULL;
-    }
-#endif
     is_desktop_set = TRUE;
+
     return desktop_dir;
 }
 

@@ -220,9 +220,8 @@ void on_font_button_clicked( GtkButton* button, FMPrefDlg* data )
 static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
 {
     int i, n;
-    gboolean b;
     int ibig_icon = -1, ismall_icon = -1, itool_icon = -1;
-    const char* filename_encoding;
+    //const char* filename_encoding;
 
     int max_thumb;
     gboolean show_thumbnail;
@@ -234,25 +233,23 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
     gboolean show_wallpaper;
 #endif
     gboolean single_click;
-    gboolean single_hover;
+    //gboolean single_hover;
     //gboolean rubberband;
     gboolean root_bar;
     gboolean root_set_change = FALSE;
 #ifdef DESKTOP_INTEGRATION
     WallpaperMode wallpaper_mode;
-#endif
     GdkColor bg1;
     GdkColor bg2;
     GdkColor text;
     GdkColor shadow;
-#ifdef DESKTOP_INTEGRATION
     char* wallpaper;
 #endif
     const GList* l;
     PtkFileBrowser* file_browser;
     gboolean use_si_prefix;
     GtkNotebook* notebook;
-    int cur_tabx, p;
+    int p;
     FMMainWindow* a_window;
     char* str;
 
@@ -880,12 +877,14 @@ void on_wallpaper_toggled( GtkToggleButton* show_wallpaper, FMPrefDlg* data )
 
 gboolean fm_edit_preference( GtkWindow* parent, int page )
 {
-    const char* filename_encoding;
+    //const char* filename_encoding;
     int i;
     int ibig_icon = -1, ismall_icon = -1, itool_icon = -1;
-    GtkWidget* img_preview;
     GtkWidget* dlg;
+#ifdef DESKTOP_INTEGRATION
+    GtkWidget* img_preview;
     char* str;
+#endif
 
     if( ! data )
     {

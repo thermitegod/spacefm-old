@@ -841,8 +841,6 @@ void on_file_monitor_event ( VFSFileMonitor* fm,
 {
     PtkDirTreeNode* node = (PtkDirTreeNode*)user_data;
     PtkDirTreeNode* child;
-    GtkTreeIter it;
-    GtkTreePath* tree_path;
     char* file_path;
     g_return_if_fail( node );
     GDK_THREADS_ENTER();

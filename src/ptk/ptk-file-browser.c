@@ -614,7 +614,6 @@ void on_address_bar_activate( GtkWidget* entry, PtkFileBrowser* file_browser )
 {
     const char* text;
     gchar *dir_path, *final_path;
-    GList* l;
     char* str;
     struct stat statbuf;
 
@@ -3391,7 +3390,6 @@ void ptk_file_browser_seek_path( PtkFileBrowser* file_browser,
     it_dir.stamp = 0;
     GtkTreeSelection* tree_sel;
     VFSFileInfo* file;
-    gboolean select;
     char* name;
     if ( file_browser->view_mode == PTK_FB_ICON_VIEW ||
                                 file_browser->view_mode == PTK_FB_COMPACT_VIEW )
@@ -4072,7 +4070,7 @@ void on_folder_view_columns_changed( GtkTreeView *view,
     // user dragged a column to a different position - save positions
     const char* title;
     XSet* set = NULL;
-    int i, j, width;
+    int i, j;
     GtkTreeViewColumn* col;
 
     if ( !( GTK_IS_WIDGET( file_browser ) && GTK_IS_TREE_VIEW( view ) ) )
@@ -5281,7 +5279,7 @@ gboolean ptk_file_browser_can_paste( PtkFileBrowser* file_browser )
 void ptk_file_browser_paste( PtkFileBrowser* file_browser )
 {
     GList * sel_files;
-    VFSFileInfo* file;
+    //VFSFileInfo* file;
     gchar* dest_dir = NULL;
 
     sel_files = ptk_file_browser_get_selected_files( file_browser );

@@ -640,7 +640,7 @@ static char* get_default_action( const char* dir, const char* type, gpointer use
 
     for ( n = 0; n < G_N_ELEMENTS( names ); n++ )
     {
-        char* path = g_build_filename( dir, names[n], NULL );
+        path = g_build_filename( dir, names[n], NULL );
 //g_print( "    path = %s\n", path );
         file = g_key_file_new();
         opened = g_key_file_load_from_file( file, path, 0, NULL );

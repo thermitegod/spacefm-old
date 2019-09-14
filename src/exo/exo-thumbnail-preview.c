@@ -194,7 +194,6 @@ void
 _exo_thumbnail_preview_set_uri(ExoThumbnailPreview *thumbnail_preview,
                                const gchar *uri) {
     struct stat statb;
-    GdkPixbuf * thumbnail_framed;
     GdkPixbuf * thumbnail;
     gchar *icon_name = NULL;
     gchar *size_name = NULL;

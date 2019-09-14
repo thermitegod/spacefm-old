@@ -203,9 +203,8 @@ void ptk_delete_files( GtkWindow* parent_win,
 char* get_real_link_target( const char* link_path )
 {
     char buf[ PATH_MAX + 1 ];
-    char* canon;
     ssize_t len;
-    struct stat stat;
+    struct stat;
     char* target_path;
 
     if ( !link_path )
@@ -1256,7 +1255,7 @@ void on_opt_toggled( GtkMenuItem* item, MoveSet* mset )
             desc = C_("Title|CreateNew|", "File");
         else if ( new_folder )
             desc = C_("Title|CreateNew|", "Folder");
-        else
+        else if ( new_link )
             desc = C_("Title|CreateNew|", "Link");
     }
     else
@@ -2068,7 +2067,6 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
     int ret = 1;
     gboolean target_missing = FALSE;
     GList* templates;
-    FILE* touchfile;
     struct stat statbuf;
 
     if ( !file_dir )
@@ -3245,7 +3243,7 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
                 update_new_display( full_path );
             }
             // need move?  (do move as task in case it takes a long time)
-            else if ( as_root || strcmp( old_path, path ) )
+            else if ( as_root || strcmp( old_path, path ) || move )
             {
 _move_task:
                 // move task - this is jumped to from the below rename block on
@@ -3808,7 +3806,6 @@ static void open_files_with_each_app( gpointer key, gpointer value,
                                                     gpointer user_data )
 {
     char* app_desktop = (char*)key;  // is const unless handler
-    const char* cwd;
     GList* files = (GList*)value;
     ParentInfo* parent = (ParentInfo*)user_data;
     open_files_with_app( parent, files, app_desktop );
@@ -3818,7 +3815,7 @@ static void free_file_list_hash( gpointer key, gpointer value, gpointer user_dat
 {
     GList* files;
 
-    const char* app_desktop = ( const char* ) key;
+    //const char* app_desktop = ( const char* ) key;
     files = ( GList* ) value;
     g_list_foreach( files, ( GFunc ) g_free, NULL );
     g_list_free( files );
@@ -3843,7 +3840,6 @@ void ptk_open_files_with_app( const char* cwd,
     char* new_dir = NULL;
     char* alloc_desktop;
     GtkWidget* toplevel;
-    PtkFileBrowser* fb;
 
     ParentInfo* parent = g_slice_new0( ParentInfo );
     parent->desktop = desktop;
@@ -4064,7 +4060,6 @@ void ptk_file_misc_paste_as( DesktopWindow* desktop, PtkFileBrowser* file_browse
                                             const char* cwd, GFunc callback )
 {
     gchar* file_path;
-    char* str;
     gboolean is_cut = FALSE;
     gint missing_targets;
     VFSFileInfo* file;

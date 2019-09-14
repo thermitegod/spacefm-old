@@ -76,7 +76,7 @@ gboolean seek_path( GtkEntry* entry )
     if ( !xset_get_b( "path_seek" ) )
         return FALSE;
 
-    char* str;
+    //char* str;
     char* seek_dir;
     char* seek_name = NULL;
     char* full_path;
@@ -152,6 +152,7 @@ gboolean seek_path( GtkEntry* entry )
                                          on_changed, NULL );
     }
     g_free( actual_path );
+
 */
     if ( strcmp( seek_dir, "/" ) && g_str_has_suffix( seek_dir, "/" ) )
     {
@@ -339,14 +340,11 @@ void insert_complete( GtkEntry* entry )
     }
 
     int count = 0;
-    int len;
-    int long_len = 0;
     int i;
     const char* name;
     char* last_path = NULL;
     char* prefix_name;
     char* full_path;
-    char* str;
     char* long_prefix = NULL;
     if ( g_str_has_suffix( prefix, "/" ) )
         prefix_name = NULL;

@@ -279,7 +279,6 @@ GdkPixbuf* vfs_app_desktop_get_icon( VFSAppDesktop* app, int size, gboolean use_
 
 gboolean vfs_app_desktop_open_multiple_files( VFSAppDesktop* app )
 {
-    char* p;
     if( app->exec )
     {
         if ( strstr( app->exec, "%U" ) || strstr( app->exec, "%F" ) ||

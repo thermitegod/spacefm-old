@@ -194,7 +194,6 @@ gboolean on_socket_event( GIOChannel* ioc, GIOCondition cond, gpointer data )
     static char buf[ 1024 ];
     GString* args;
     char** file;
-    SocketEvent cmd;
 
     if ( cond & G_IO_IN )
     {
@@ -504,7 +503,6 @@ void single_instance_finalize()
 void receive_socket_command( int client, GString* args )  //sfm
 {
     char** argv;
-    char** arg;
     char cmd;
     char* reply = NULL;
 
@@ -829,7 +827,6 @@ gboolean handle_parsed_commandline_args()
     char** file;
     gboolean ret = TRUE;
     XSet* set;
-    int p;
     struct stat statbuf;
 
     app_settings.load_saved_tabs = !no_tabs;

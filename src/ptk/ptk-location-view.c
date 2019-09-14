@@ -42,11 +42,8 @@
 #include <linux/limits.h> //PATH_MAX
 
 static GtkTreeModel* model = NULL;
-static GtkTreeModel* bookmodel = NULL;
 static int n_vols = 0;
 static guint theme_changed = 0; /* GtkIconTheme::"changed" handler */
-
-static gboolean has_desktop_dir = TRUE;
 
 GdkPixbuf* global_icon_bookmark = NULL;
 GdkPixbuf* global_icon_submenu = NULL;
@@ -117,7 +114,7 @@ void update_all();
 const char* press_enter_to_close = "[ Finished ]  Press Enter to close";
 
 /*  Drag & Drop/Clipboard targets  */
-static GtkTargetEntry drag_targets[] = { {"text/uri-list", 0 , 0 } };
+//static GtkTargetEntry drag_targets[] = { {"text/uri-list", 0 , 0 } };
 
 static void on_model_destroy( gpointer data, GObject* object )
 {
@@ -138,7 +135,6 @@ void update_volume_icons()
     GtkTreeIter it;
     GdkPixbuf* icon;
     VFSVolume* vol;
-    int i;
 
     if ( !model )
         return;
@@ -334,8 +330,6 @@ VFSVolume* ptk_location_view_get_selected_vol( GtkTreeView* location_view )
 //g_printf("ptk_location_view_get_selected_vol    view = %d\n", location_view );
     GtkTreeIter it;
     GtkTreeSelection* tree_sel;
-    GtkTreePath* tree_path;
-    char* real_path = NULL;
     VFSVolume* vol;
 
     tree_sel = gtk_tree_view_get_selection( GTK_TREE_VIEW( location_view ) );
@@ -454,9 +448,6 @@ gboolean ptk_location_view_open_block( const char* block, gboolean new_tab )
 
 void ptk_location_view_init_model( GtkListStore* list )
 {
-    GtkTreeIter it;
-    gchar* name;
-    gchar* real_path;
     const GList* l;
 
     n_vols = 0;
@@ -1006,7 +997,6 @@ void ptk_location_view_mount_network( PtkFileBrowser* file_browser,
                                       gboolean new_tab,
                                       gboolean force_new_mount )
 {
-    char* str;
     char* line;
     char* mount_point = NULL;
     netmount_t *netmount = NULL;
@@ -2606,7 +2596,6 @@ static void show_devices_menu( GtkTreeView* view, VFSVolume* vol,
                                PtkFileBrowser* file_browser,
                                guint button, guint32 time )
 {
-    GtkWidget* item;
     XSet* set;
     char* str;
     GtkWidget* popup = gtk_menu_new();
@@ -2744,7 +2733,6 @@ gboolean on_button_press_event( GtkTreeView* view, GdkEventButton* evt,
     GtkTreeIter it;
     GtkTreeSelection* tree_sel = NULL;
     GtkTreePath* tree_path = NULL;
-    int pos;
     VFSVolume* vol = NULL;
     gboolean ret = FALSE;
 
@@ -3099,7 +3087,6 @@ void ptk_location_view_dev_menu( GtkWidget* parent, PtkFileBrowser* file_browser
 {   // add currently visible devices to menu with dev design mode callback
     const GList* v;
     VFSVolume* vol;
-    GtkTreeIter it;
     GtkWidget* item;
     XSet* set;
     GList* names = NULL;
@@ -3159,7 +3146,7 @@ void ptk_location_view_dev_menu( GtkWidget* parent, PtkFileBrowser* file_browser
     gboolean auto_optical = set->b == XSET_B_TRUE;
 #endif
     set = xset_set_cb( "dev_automount_removable", update_all, NULL );
-    gboolean auto_removable = set->b == XSET_B_TRUE;
+    //gboolean auto_removable = set->b == XSET_B_TRUE;
     xset_set_cb( "dev_ignore_udisks_nopolicy", update_all, NULL );
     xset_set_cb( "dev_automount_volumes", on_automountlist, vol );
     xset_set_cb( "dev_change", update_change_detection, NULL );
@@ -3292,7 +3279,7 @@ void on_drag_data_received( GtkWidget *widget, GdkDragContext *drag_context,
 void ptk_bookmark_view_import_gtk( const char* path, XSet* book_set )
 {   // import bookmarks file from spacefm < 1.0 or gtk bookmarks file
     char line[ 2048 ];
-    gsize name_len, upath_len;
+    gsize upath_len;
     XSet* set;
     XSet* newset;
     XSet* set_prev = NULL;
@@ -3487,7 +3474,6 @@ static void update_bookmark_list_item( GtkListStore* list, GtkTreeIter* it, XSet
     char* icon_file = NULL;
     int cmd_type;
     char* menu_label = NULL;
-    VFSAppDesktop* app = NULL;
     GdkPixbuf* icon = NULL;
     gboolean is_submenu = FALSE;
     gboolean is_sep = FALSE;
@@ -4492,9 +4478,6 @@ static gboolean on_bookmark_button_release_event( GtkTreeView* view,
     GtkTreeIter it;
     GtkTreeSelection* tree_sel;
     GtkTreePath* tree_path;
-    GtkMenu* popup;
-    GtkWidget* item;
-    VFSVolume* vol;
 
     // don't activate row if drag was begun
     if( evt->type != GDK_BUTTON_RELEASE || !file_browser->bookmark_button_press )

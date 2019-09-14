@@ -484,7 +484,7 @@ char* context_build( ContextData* ctxt )
 
 void enable_context( ContextData* ctxt )
 {
-    GtkTreeIter it;
+    //GtkTreeIter it;
     gboolean is_sel = gtk_tree_selection_get_selected(
                         gtk_tree_view_get_selection( GTK_TREE_VIEW( ctxt->view ) ),
                         NULL, NULL );
@@ -1006,7 +1006,6 @@ void on_edit_button_press( GtkWidget* btn, ContextData* ctxt )
 void on_open_browser( GtkComboBox* box, ContextData* ctxt )
 {
     char* folder = NULL;
-    char* script;
     int job = gtk_combo_box_get_active( GTK_COMBO_BOX( box ) );
     gtk_combo_box_set_active( GTK_COMBO_BOX( box ), -1 );
     if ( job == 0 )
@@ -1281,7 +1280,7 @@ void on_browse_button_clicked( GtkWidget* widget, ContextData* ctxt )
 
 void replace_item_props( ContextData* ctxt )
 {
-    int item_type, x;
+    int x;
     XSet* rset = ctxt->set;
     XSet* mset = xset_get_plugin_mirror( rset );
 
