@@ -2699,7 +2699,7 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
         if ( mset->browse_target )
             gtk_box_pack_start( GTK_BOX( mset->hbox_target ),
                             GTK_WIDGET( mset->browse_target ), FALSE, TRUE, 0 );
-            gtk_box_pack_start( GTK_BOX( dlg_vbox ),
+        gtk_box_pack_start( GTK_BOX( dlg_vbox ),
                             GTK_WIDGET( mset->hbox_target ), FALSE, TRUE, 5 );
     }
 

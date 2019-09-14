@@ -97,8 +97,8 @@ void ptk_menu_add_items_from_data( GtkWidget* menu,
     else
     {
       if( ! ent->stock_icon ) /* End of menu */
-        break;
-        menu_item = gtk_separator_menu_item_new();
+          break;
+      menu_item = gtk_separator_menu_item_new();
     }
 
     gtk_menu_shell_append ( GTK_MENU_SHELL(menu), menu_item );
