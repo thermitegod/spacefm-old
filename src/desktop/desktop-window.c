@@ -18,6 +18,7 @@
 #include "vfs-mime-type.h"
 #include "vfs-thumbnail-loader.h"
 #include "vfs-app-desktop.h"
+#include "vfs-dir.h"
 
 #include "working-area.h"
 
@@ -2978,7 +2979,7 @@ void on_file_listed( VFSDir* dir, gboolean is_cancelled, DesktopWindow* self )
     self->file_listed = TRUE;
     GHashTable* order_hash = custom_order_read( self );
 
-    g_mutex_lock( dir->mutex );
+    vfs_dir_lock(dir);
     for( l = dir->file_list; l; l = l->next )
     {
         fi = (VFSFileInfo*)l->data;
@@ -3033,7 +3034,7 @@ void on_file_listed( VFSDir* dir, gboolean is_cancelled, DesktopWindow* self )
                             vfs_file_info_is_image( fi ) ) ) )
             vfs_thumbnail_loader_request( dir, fi, TRUE );
     }
-    g_mutex_unlock( dir->mutex );
+    vfs_dir_unlock(dir);
 
     // sort
     GCompareDataFunc comp_func = get_sort_func( self );

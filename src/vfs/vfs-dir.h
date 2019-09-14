@@ -54,7 +54,9 @@ struct _VFSDir
 
     /*<private>*/
     VFSFileMonitor* monitor;
+
     GMutex* mutex;  /* Used to guard file_list */
+
     VFSAsyncTask* task;
     gboolean file_listed : 1;
     gboolean load_complete : 1;
@@ -83,6 +85,9 @@ struct _VFSDirClass
 };
 
 typedef void ( *VFSDirStateCallback ) ( VFSDir* dir, int state, gpointer user_data );
+
+void vfs_dir_lock(VFSDir* dir);
+void vfs_dir_unlock(VFSDir* dir);
 
 GType vfs_dir_get_type ( void );
 

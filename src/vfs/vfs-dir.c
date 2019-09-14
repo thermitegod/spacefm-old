@@ -87,7 +87,7 @@ static guint theme_change_notify = 0;
 
 static gboolean is_desktop_set = FALSE;
 
-GType vfs_dir_get_type()
+GType vfs_dir_get_type(void)
 {
     static GType type = G_TYPE_INVALID;
     if ( G_UNLIKELY ( type == G_TYPE_INVALID ) )
@@ -189,9 +189,24 @@ void vfs_dir_class_init( VFSDirClass* klass )
 }
 
 /* constructor */
-void vfs_dir_init( VFSDir* dir )
+static void vfs_dir_init(VFSDir* dir)
 {
     g_mutex_init(&dir->mutex);
+}
+
+void vfs_dir_lock(VFSDir* dir)
+{
+    g_mutex_lock(dir->mutex);
+}
+
+void vfs_dir_unlock(VFSDir* dir)
+{
+    g_mutex_unlock(dir->mutex);
+}
+
+void vfs_dir_clear(VFSDir* dir)
+{
+    g_mutex_clear(&dir->mutex);
 }
 
 /* destructor */
@@ -278,7 +293,7 @@ void vfs_dir_finalize( GObject *obj )
         dir->created_files = NULL;
     }
 
-    g_mutex_clear(&dir->mutex);
+    vfs_dir_clear(dir);
     G_OBJECT_CLASS( parent_class ) ->finalize( obj );
 }
 
@@ -344,11 +359,11 @@ void vfs_dir_emit_file_deleted( VFSDir* dir, const char* file_name, VFSFileInfo*
         /* Special Case: The directory itself was deleted... */
         file = NULL;
         /* clear the whole list */
-        g_mutex_lock( dir->mutex );
+        vfs_dir_lock(dir);
         g_list_foreach( dir->file_list, (GFunc)vfs_file_info_unref, NULL );
         g_list_free( dir->file_list );
         dir->file_list = NULL;
-        g_mutex_unlock( dir->mutex );
+        vfs_dir_unlock(dir);
 
         g_signal_emit( dir, signals[ FILE_DELETED_SIGNAL ], 0, file );
         return;
@@ -390,7 +405,7 @@ void vfs_dir_emit_file_changed( VFSDir* dir, const char* file_name,
         return;
     }
 
-    g_mutex_lock( dir->mutex );
+    vfs_dir_lock(dir);
 
     l = vfs_dir_find_file( dir, file_name, file );
     if ( G_LIKELY( l ) )
@@ -426,13 +441,13 @@ void vfs_dir_emit_file_changed( VFSDir* dir, const char* file_name,
             vfs_file_info_unref( file );
     }
 
-    g_mutex_unlock( dir->mutex );
+    vfs_dir_unlock(dir);
 }
 
 void vfs_dir_emit_thumbnail_loaded( VFSDir* dir, VFSFileInfo* file )
 {
     GList* l;
-    g_mutex_lock( dir->mutex );
+    vfs_dir_lock(dir);
     l = vfs_dir_find_file( dir, file->name, file );
     if( l )
     {
@@ -441,7 +456,7 @@ void vfs_dir_emit_thumbnail_loaded( VFSDir* dir, VFSFileInfo* file )
     }
     else
         file = NULL;
-    g_mutex_unlock( dir->mutex );
+    vfs_dir_unlock(dir);
 
     if ( G_LIKELY( file ) )
     {
@@ -531,12 +546,12 @@ gpointer vfs_dir_load_thread(  VFSAsyncTask* task, VFSDir* dir )
                 file = vfs_file_info_new();
                 if ( G_LIKELY( vfs_file_info_get( file, full_path, file_name ) ) )
                 {
-                    g_mutex_lock( dir->mutex );
+                    vfs_dir_lock(dir);
 
                     /* Special processing for desktop folder */
                     vfs_file_info_load_special_info( file, full_path );
                     dir->file_list = g_list_prepend( dir->file_list, file );
-                    g_mutex_unlock( dir->mutex );
+                    vfs_dir_unlock(dir);
                     ++dir->n_files;
                 }
                 else
@@ -627,7 +642,7 @@ void update_changed_files( gpointer key, gpointer data, gpointer user_data )
 
     if ( dir->changed_files )
     {
-        g_mutex_lock( dir->mutex );
+        vfs_dir_lock(dir);
         for ( l = dir->changed_files; l; l = l->next )
         {
             file = vfs_file_info_ref( ( VFSFileInfo* ) l->data );  ///
@@ -640,7 +655,7 @@ void update_changed_files( gpointer key, gpointer data, gpointer user_data )
         }
         g_slist_free( dir->changed_files );
         dir->changed_files = NULL;
-        g_mutex_unlock( dir->mutex );
+        vfs_dir_unlock(dir);
     }
 }
 
@@ -654,7 +669,7 @@ void update_created_files( gpointer key, gpointer data, gpointer user_data )
 
     if ( dir->created_files )
     {
-        g_mutex_lock( dir->mutex );
+        vfs_dir_lock(dir);
         for ( l = dir->created_files; l; l = l->next )
         {
             if ( !( ll = vfs_dir_find_file( dir, (char*)l->data, NULL ) ) )
@@ -690,7 +705,7 @@ void update_created_files( gpointer key, gpointer data, gpointer user_data )
         }
         g_slist_free( dir->created_files );
         dir->created_files = NULL;
-        g_mutex_unlock( dir->mutex );
+        vfs_dir_unlock(dir);
     }
 }
 
@@ -825,7 +840,7 @@ static void reload_mime_type( char* key, VFSDir* dir, gpointer user_data )
 
     if( G_UNLIKELY( ! dir || ! dir->file_list ) )
         return;
-    g_mutex_lock( dir->mutex );
+    vfs_dir_lock(dir);
     for( l = dir->file_list; l; l = l->next )
     {
         file = (VFSFileInfo*)l->data;
@@ -841,7 +856,7 @@ static void reload_mime_type( char* key, VFSDir* dir, gpointer user_data )
         file = (VFSFileInfo*)l->data;
         g_signal_emit( dir, signals[FILE_CHANGED_SIGNAL], 0, file );
     }
-    g_mutex_unlock( dir->mutex );
+    vfs_dir_unlock(dir);
 }
 
 static void on_mime_type_reload( gpointer user_data )
@@ -881,7 +896,7 @@ void vfs_dir_unload_thumbnails( VFSDir* dir, gboolean is_big )
     VFSFileInfo* file;
     char* file_path;
 
-    g_mutex_lock( dir->mutex );
+    vfs_dir_lock(dir);
     if( is_big )
     {
         for( l = dir->file_list; l; l = l->next )
@@ -922,7 +937,7 @@ void vfs_dir_unload_thumbnails( VFSDir* dir, gboolean is_big )
             }
         }
     }
-    g_mutex_unlock( dir->mutex );
+    vfs_dir_unlock(dir);
 
     /* Ensuring free space at the end of the heap is freed to the OS,
      * mainly to deal with the possibility thousands of large thumbnails

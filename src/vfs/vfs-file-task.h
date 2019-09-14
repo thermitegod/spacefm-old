@@ -186,6 +186,10 @@ struct _VFSFileTask
 * source_files sould be a newly allocated list, and it will be
 * freed after file operation has been completed
 */
+
+void vfs_file_task_lock(VFSFileTask* task);
+void vfs_file_task_unlock(VFSFileTask* task);
+
 VFSFileTask* vfs_task_new ( VFSFileTaskType task_type,
                             GList* src_files,
                             const char* dest_dir );

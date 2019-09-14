@@ -30,6 +30,21 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+void ptk_file_task_lock(PtkFileTask* ptask)
+{
+    g_mutex_lock(ptask->task->mutex);
+}
+
+void ptk_file_task_unlock(PtkFileTask* ptask)
+{
+    g_mutex_unlock(ptask->task->mutex);
+}
+
+gboolean ptk_file_task_trylock(PtkFileTask* ptask)
+{
+    return g_mutex_trylock(ptask->task->mutex);
+}
+
 static gboolean on_vfs_file_task_state_cb( VFSFileTask* task,
                                            VFSFileTaskState state,
                                            gpointer state_data,
@@ -281,9 +296,9 @@ gboolean on_progress_timer( PtkFileTask* ptask )
             ptask->progress_timer = 0;
         }
 
-        g_mutex_lock( ptask->task->mutex );
+        ptk_file_task_lock(ptask);
         query_overwrite( ptask );
-        g_mutex_unlock( ptask->task->mutex );
+        ptk_file_task_unlock(ptask);
         return FALSE;
     }
 
@@ -517,10 +532,10 @@ gboolean ptk_file_task_cancel( PtkFileTask* ptask )
         if ( ptask->task->exec_cond )
         {
             // this is used only if exec task run in non-main loop thread
-            g_mutex_lock( ptask->task->mutex );
+            ptk_file_task_lock(ptask);
             if ( ptask->task->exec_cond )
                 g_cond_broadcast( ptask->task->exec_cond );
-            g_mutex_unlock( ptask->task->mutex );
+            ptk_file_task_unlock(ptask);
         }
     }
     else
@@ -654,9 +669,9 @@ void ptk_file_task_pause( PtkFileTask* ptask, int state )
         // Resume
         if ( ptask->task->pause_cond )
         {
-            g_mutex_lock( ptask->task->mutex );
+            ptk_file_task_lock(ptask);
             g_cond_broadcast( ptask->task->pause_cond );
-            g_mutex_unlock( ptask->task->mutex );
+            ptk_file_task_unlock(ptask);
         }
         ptask->task->state_pause = VFS_FILE_TASK_RUNNING;
     }
@@ -1549,8 +1564,7 @@ void ptk_file_task_update( PtkFileTask* ptask )
 {
 //g_printf("ptk_file_task_update ptask=%#x\n", ptask);
     // calculate updated display data
-
-    if ( !g_mutex_trylock( ptask->task->mutex ) )
+    if (ptk_file_task_trylock(ptask) == FALSE)
     {
 //g_printf("UPDATE LOCKED  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
         return;
@@ -1853,7 +1867,7 @@ void ptk_file_task_update( PtkFileTask* ptask )
     if ( !ptask->timeout && !ptask->complete )
         main_task_view_update_task( ptask );
 
-    g_mutex_unlock( task->mutex );
+    vfs_file_task_unlock(task);
 //g_printf("ptk_file_task_update DONE ptask=%#x\n", ptask);
 }
 
@@ -1872,18 +1886,18 @@ gboolean on_vfs_file_task_state_cb( VFSFileTask* task,
 
         ptask->complete = TRUE;
 
-        g_mutex_lock( task->mutex );
+        vfs_file_task_lock(task);
         if ( task->type != VFS_FILE_TASK_EXEC )
             string_copy_free( &task->current_file, NULL );
         ptask->progress_count = 50;  // trigger fast display
-        g_mutex_unlock( task->mutex );
+        vfs_file_task_unlock(task);
         //gtk_signal_emit_by_name( G_OBJECT( ptask->signal_widget ), "task-notify",
         //                                                                 ptask );
         break;
     case VFS_FILE_TASK_QUERY_OVERWRITE:
         //0; GThread *self = g_thread_self ();
         //g_printf("TASK_THREAD = %#x\n", self );
-        g_mutex_lock( task->mutex );
+        vfs_file_task_lock(task);
         ptask->query_new_dest = ( char** ) state_data;
         *ptask->query_new_dest = NULL;
         ptask->query_cond = g_cond_new();
@@ -1896,11 +1910,11 @@ gboolean on_vfs_file_task_state_cb( VFSFileTask* task,
         task->last_progress = task->progress;
         task->last_speed = 0;
         g_timer_continue( task->timer );
-        g_mutex_unlock( task->mutex );
+        vfs_file_task_unlock(task);
         break;
     case VFS_FILE_TASK_ERROR:
         //g_printf("VFS_FILE_TASK_ERROR\n");
-        g_mutex_lock( task->mutex );
+        vfs_file_task_lock(task);
         task->err_count++;
         //g_printf("    ptask->item_count = %d\n", task->current_item );
 
@@ -1917,7 +1931,7 @@ gboolean on_vfs_file_task_state_cb( VFSFileTask* task,
         }
         ptask->progress_count = 50;  // trigger fast display
 
-        g_mutex_unlock( task->mutex );
+        vfs_file_task_unlock(task);
 
         if ( xset_get_b( "task_q_pause" ) )
         {
@@ -2080,12 +2094,12 @@ void query_overwrite_response( GtkDialog *dlg, gint response, PtkFileTask* ptask
 
     if ( ptask->query_cond )
     {
-        g_mutex_lock( ptask->task->mutex );
+        ptk_file_task_lock(ptask);
         ptask->query_ret = (response != GTK_RESPONSE_DELETE_EVENT)
                             && (response != GTK_RESPONSE_CANCEL);
         //g_cond_broadcast( ptask->query_cond );
         g_cond_signal( ptask->query_cond );
-        g_mutex_unlock( ptask->task->mutex );
+        ptk_file_task_unlock(ptask);
     }
     if ( ptask->restart_timeout )
     {

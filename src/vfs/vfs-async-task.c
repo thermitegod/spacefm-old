@@ -89,6 +89,15 @@ static void vfs_async_task_init(VFSAsyncTask *task)
     g_mutex_init(&task->lock);
 }
 
+void vfs_async_task_lock(VFSAsyncTask* task)
+{
+    g_mutex_lock(task->lock);
+}
+
+void vfs_async_task_unlock(VFSAsyncTask* task)
+{
+    g_mutex_unlock(task->lock);
+}
 
 VFSAsyncTask* vfs_async_task_new( VFSAsyncFunc task_func, gpointer user_data )
 {
@@ -213,16 +222,6 @@ void vfs_async_task_real_cancel( VFSAsyncTask* task, gboolean finalize )
 void vfs_async_task_cancel( VFSAsyncTask* task )
 {
     vfs_async_task_real_cancel( task, FALSE );
-}
-
-void vfs_async_task_lock( VFSAsyncTask* task )
-{
-    g_mutex_lock( task->lock );
-}
-
-void vfs_async_task_unlock( VFSAsyncTask* task )
-{
-    g_mutex_unlock( task->lock );
 }
 
 void vfs_async_task_finish( VFSAsyncTask* task, gboolean is_cancelled )

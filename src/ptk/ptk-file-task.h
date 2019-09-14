@@ -53,6 +53,8 @@ struct _PtkFileTask
     guint err_count;
     char err_mode;
 
+    GMutex* mutex;
+
 /*
     int percent;
     off_t total_size;     // Total size of the files to be processed, in bytes
@@ -92,6 +94,9 @@ struct _PtkFileTask
     char* dsp_avgest;
 
 };
+
+void ptk_file_task_lock(PtkFileTask* ptask);
+void ptk_file_task_unlock(PtkFileTask* ptask);
 
 PtkFileTask* ptk_file_task_new( VFSFileTaskType type,
                                 GList* src_files,
