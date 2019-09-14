@@ -282,7 +282,8 @@ static int get_date_offset( GtkCalendar* calendar )
     /* FIXME: I think we need a better implementation for this */
     GDate* date;
     GDate* today;
-    int y, m, d, offset;
+    guint y, m, d;
+    int offset;
     time_t timeval = time(NULL);
     struct tm* lt = localtime( &timeval );
 
