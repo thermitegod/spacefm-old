@@ -2251,7 +2251,7 @@ static void show_app_menu( GtkWidget* menu, GtkWidget* app_item, PtkFileMenu* da
     char* str;
     char* str2;
     char* path;
-    const char* icon;
+    char* icon;
     const char* type;
 
     if ( !( data && data->info ) )
