@@ -3378,9 +3378,17 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
         if ( !el->widgets->next && box )
         {
             if ( el->type == CDLG_HSEP )
+#if (GTK_MAJOR_VERSION == 3)
+                w = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+#elif (GTK_MAJOR_VERSION == 2)
                 w = gtk_hseparator_new();
-            else
+#endif
+	    else
+#if (GTK_MAJOR_VERSION == 3)
+                w = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+#elif (GTK_MAJOR_VERSION == 2)
                 w = gtk_vseparator_new();
+#endif
             gtk_box_pack_start( GTK_BOX( box ), w, expand, TRUE, pad );
             el->widgets = g_list_append( el->widgets, w );
             if ( radio ) *radio = NULL;
@@ -3399,9 +3407,17 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
             if ( i < 0 ) i = 0;
             if ( i > 400 ) i = 400;
             if ( el->type == CDLG_HBOX )
-                w =   gtk_hbox_new( FALSE, i );
+#if (GTK_MAJOR_VERSION == 3)
+                w = gtk_box_new(GTK_ORIENTATION_VERTICAL, i);
+#elif (GTK_MAJOR_VERSION == 2)
+                w = gtk_hbox_new(FALSE, i);
+#endif
             else
-                w =   gtk_vbox_new( FALSE, i );
+#if (GTK_MAJOR_VERSION == 3)
+                w = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, i);
+#elif (GTK_MAJOR_VERSION == 2)
+                w = gtk_vbox_new( FALSE, i );
+#endif
             gtk_box_pack_start( GTK_BOX( box ), w, !compact, TRUE, pad );
             el->widgets = g_list_append( el->widgets, w );
             if ( radio ) *radio = NULL;
@@ -3583,9 +3599,17 @@ static void build_dialog( GList* elements )
     g_object_set_data( G_OBJECT( dlg ), "elements", elements );
 
     // pack some boxes to create horizonal padding at edges of window
+#if (GTK_MAJOR_VERSION == 3)
+    GtkWidget* hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     GtkWidget* hbox = gtk_hbox_new( FALSE, 0 );
+#endif
     gtk_box_pack_start( GTK_BOX( gtk_dialog_get_content_area( GTK_DIALOG( dlg ) ) ), hbox, TRUE, TRUE, 0 );
+#if (GTK_MAJOR_VERSION == 3)
+    box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     box = gtk_vbox_new( FALSE, 0 );
+#endif
     gtk_box_pack_start( GTK_BOX( hbox ), box, TRUE, TRUE, 8 );  // <- hpad
     GList* boxes = g_list_append( NULL, box );
 

@@ -1007,7 +1007,11 @@ static void rebuild_toolbox( GtkWidget* widget, PtkFileBrowser* file_browser )
                         show_tooltips );
 
     // add pathbar
+#if (GTK_MAJOR_VERSION == 3)
+    GtkWidget* hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     GtkWidget* hbox = gtk_hbox_new( FALSE, 0 );
+#endif
     GtkToolItem* toolitem = gtk_tool_item_new();
     gtk_tool_item_set_expand ( toolitem, TRUE );
     gtk_toolbar_insert( GTK_TOOLBAR( file_browser->toolbar ), toolitem, -1 );
@@ -1320,13 +1324,22 @@ void ptk_file_browser_init( PtkFileBrowser* file_browser )
 
     // toolbox
     file_browser->toolbar = NULL;
+#if (GTK_MAJOR_VERSION == 3)
+    file_browser->toolbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     file_browser->toolbox = gtk_hbox_new( FALSE, 0 );
+#endif
     gtk_box_pack_start( GTK_BOX ( file_browser ), file_browser->toolbox, FALSE,
                                                                     FALSE, 0 );
 
     // lists area
+#if (GTK_MAJOR_VERSION == 3)
+    file_browser->hpane = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
+    file_browser->side_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     file_browser->hpane = gtk_hpaned_new();
     file_browser->side_vbox = gtk_vbox_new( FALSE, 0 );
+#endif
     gtk_widget_set_size_request( file_browser->side_vbox, 140, -1 );
     file_browser->folder_view_scroll = gtk_scrolled_window_new( NULL, NULL );
     gtk_paned_pack1 ( GTK_PANED( file_browser->hpane ), file_browser->side_vbox,
@@ -1335,10 +1348,19 @@ void ptk_file_browser_init( PtkFileBrowser* file_browser )
                                     file_browser->folder_view_scroll, TRUE, TRUE );
 
     // fill side
+#if (GTK_MAJOR_VERSION == 3)
+    file_browser->side_toolbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     file_browser->side_toolbox = gtk_hbox_new( FALSE, 0 );
+#endif
     file_browser->side_toolbar = NULL;
+#if (GTK_MAJOR_VERSION == 3)
+    file_browser->side_vpane_top = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+    file_browser->side_vpane_bottom = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+#elif (GTK_MAJOR_VERSION == 2)
     file_browser->side_vpane_top = gtk_vpaned_new();
     file_browser->side_vpane_bottom = gtk_vpaned_new();
+#endif
     file_browser->side_dir_scroll = gtk_scrolled_window_new( NULL, NULL );
     file_browser->side_book_scroll = gtk_scrolled_window_new( NULL, NULL );
     file_browser->side_dev_scroll = gtk_scrolled_window_new( NULL, NULL );

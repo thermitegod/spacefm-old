@@ -3414,6 +3414,18 @@ void ptk_handler_show_config( int mode, DesktopWindow* desktop,
      * to allow precise padding of labels to allow all entries to line up
      *  - so reimplementing with GtkTable. Would many GtkAlignments have
      * worked? */
+#if (GTK_MAJOR_VERSION == 3)
+    GtkWidget* hbox_main = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+    GtkWidget* vbox_handlers = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+    GtkWidget* hbox_view_buttons = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+    GtkWidget* hbox_move_buttons = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+    GtkWidget* vbox_settings = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget* tbl_settings = gtk_table_new( 3, mode == HANDLER_MODE_FILE ?
+                                                                4 : 3, FALSE);
+    GtkWidget* hbox_compress_header = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+    GtkWidget* hbox_extract_header = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+    GtkWidget* hbox_list_header = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+#elif (GTK_MAJOR_VERSION == 2)
     GtkWidget* hbox_main = gtk_hbox_new( FALSE, 4 );
     GtkWidget* vbox_handlers = gtk_vbox_new( FALSE, 4 );
     GtkWidget* hbox_view_buttons = gtk_hbox_new( FALSE, 4 );
@@ -3424,6 +3436,8 @@ void ptk_handler_show_config( int mode, DesktopWindow* desktop,
     GtkWidget* hbox_compress_header = gtk_hbox_new( FALSE, 4 );
     GtkWidget* hbox_extract_header = gtk_hbox_new( FALSE, 4 );
     GtkWidget* hbox_list_header = gtk_hbox_new( FALSE, 4 );
+#endif
+
 
     /* Packing widgets into boxes
      * Remember, start and end-ness is broken
@@ -3451,8 +3465,13 @@ void ptk_handler_show_config( int mode, DesktopWindow* desktop,
                         GTK_WIDGET( hbox_move_buttons ), FALSE, FALSE, 0 );
     gtk_box_pack_start( GTK_BOX( hbox_view_buttons ),
                         GTK_WIDGET( hnd->btn_remove ), TRUE, TRUE, 4 );
+#if (GTK_MAJOR_VERSION == 3)
+    gtk_box_pack_start( GTK_BOX( hbox_view_buttons ),
+                        GTK_WIDGET(gtk_separator_new(GTK_ORIENTATION_VERTICAL)), TRUE, TRUE, 4);
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_box_pack_start( GTK_BOX( hbox_view_buttons ),
                         GTK_WIDGET( gtk_vseparator_new() ), TRUE, TRUE, 4 );
+#endif
     gtk_box_pack_start( GTK_BOX( hbox_view_buttons ),
                         GTK_WIDGET( hnd->btn_add ), TRUE, TRUE, 4 );
     gtk_box_pack_start( GTK_BOX( hbox_view_buttons ),
@@ -3487,7 +3506,11 @@ void ptk_handler_show_config( int mode, DesktopWindow* desktop,
         gtk_table_attach( GTK_TABLE( tbl_settings ),
                         GTK_WIDGET( lbl_handler_icon ), 0, 1, 3, 4,
                         GTK_FILL, GTK_FILL, 0, 0 );
+#if (GTK_MAJOR_VERSION == 3)
+        GtkWidget* hbox_icon = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+#elif (GTK_MAJOR_VERSION == 2)
         GtkWidget* hbox_icon = gtk_hbox_new( FALSE, 4 );
+#endif
         gtk_box_pack_start( GTK_BOX( hbox_icon ),
                         GTK_WIDGET( hnd->entry_handler_icon ), TRUE, TRUE, 0 );
         gtk_box_pack_start( GTK_BOX( hbox_icon ),

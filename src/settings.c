@@ -8605,7 +8605,11 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         ptk_file_browser_add_toolbar_widget( set, btn );
 
         // pack into hbox
+#if (GTK_MAJOR_VERSION == 3)
+        GtkWidget* hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
         GtkWidget* hbox = gtk_hbox_new( FALSE, 0 );
+#endif
         gtk_box_pack_start ( GTK_BOX( hbox ), ebox, FALSE, FALSE, 0 );
         // tooltip
         if ( show_tooltips )

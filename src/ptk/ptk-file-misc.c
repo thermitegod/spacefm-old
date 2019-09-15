@@ -1079,7 +1079,11 @@ void on_browse_button_press( GtkWidget* widget, MoveSet* mset )
     // Mode
     int i;
     GtkWidget* mode[3];
+#if (GTK_MAJOR_VERSION == 3)
+    GtkWidget* hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+#elif (GTK_MAJOR_VERSION == 2)
     GtkWidget* hbox = gtk_hbox_new( FALSE, 4 );
+#endif
     mode[MODE_FILENAME] = gtk_radio_button_new_with_mnemonic( NULL,
                                                                 _("Fil_ename") );
     mode[MODE_PARENT] = gtk_radio_button_new_with_mnemonic_from_widget(
@@ -2644,7 +2648,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
     gtk_box_pack_start( GTK_BOX( dlg_vbox ),
                         GTK_WIDGET( mset->scroll_name ), TRUE, TRUE, 0 );
 
+#if (GTK_MAJOR_VERSION == 3)
+    mset->hbox_ext = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     mset->hbox_ext = gtk_hbox_new( FALSE, 0 );
+#endif
     gtk_box_pack_start( GTK_BOX( mset->hbox_ext ),
                         GTK_WIDGET( mset->label_ext ), FALSE, TRUE, 0 );
     gtk_box_pack_start( GTK_BOX( mset->hbox_ext ),
@@ -2675,7 +2683,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
     gtk_box_pack_start( GTK_BOX( dlg_vbox ),
                         GTK_WIDGET( mset->scroll_full_path ), TRUE, TRUE, 0 );
 
+#if (GTK_MAJOR_VERSION == 3)
+    mset->hbox_type = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     mset->hbox_type = gtk_hbox_new( FALSE, 0 );
+#endif
     gtk_box_pack_start( GTK_BOX( mset->hbox_type ),
                         GTK_WIDGET( mset->label_type ), FALSE, TRUE, 0 );
     gtk_box_pack_start( GTK_BOX( mset->hbox_type ),
@@ -2683,7 +2695,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
     gtk_box_pack_start( GTK_BOX( dlg_vbox ),
                         GTK_WIDGET( mset->hbox_type ), FALSE, TRUE, 5 );
 
+#if (GTK_MAJOR_VERSION == 3)
+    mset->hbox_target = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     mset->hbox_target = gtk_hbox_new( FALSE, 0 );
+#endif
     if ( mset->label_target )
     {
         gtk_box_pack_start( GTK_BOX( mset->hbox_target ),
@@ -2701,7 +2717,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
                             GTK_WIDGET( mset->hbox_target ), FALSE, TRUE, 5 );
     }
 
+#if (GTK_MAJOR_VERSION == 3)
+    mset->hbox_template = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     mset->hbox_template = gtk_hbox_new( FALSE, 0 );
+#endif
     if ( mset->label_template )
     {
         gtk_box_pack_start( GTK_BOX( mset->hbox_template ),
@@ -2716,7 +2736,11 @@ int ptk_rename_file( DesktopWindow* desktop, PtkFileBrowser* file_browser,
                             GTK_WIDGET( mset->hbox_template ), FALSE, TRUE, 5 );
     }
 
+#if (GTK_MAJOR_VERSION == 3)
+    GtkWidget* hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+#elif (GTK_MAJOR_VERSION == 2)
     GtkWidget* hbox = gtk_hbox_new( FALSE, 4 );
+#endif
     if ( create_new )
     {
         gtk_box_pack_start( GTK_BOX( hbox ),

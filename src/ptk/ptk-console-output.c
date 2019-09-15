@@ -172,7 +172,11 @@ int ptk_console_output_run( GtkWindow* parent_win,
     gtk_box_pack_start( GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(main_dlg))),
                         desc_label, FALSE, TRUE, 2 );
 
+#if (GTK_MAJOR_VERSION == 3)
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+#elif (GTK_MAJOR_VERSION == 2)
     hbox = gtk_hbox_new( FALSE, 2 );
+#endif
 
     gtk_box_pack_start( GTK_BOX(hbox), gtk_label_new( _("Command:") ),
                         FALSE, FALSE, 2 );

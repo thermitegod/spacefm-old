@@ -1102,7 +1102,11 @@ void ptk_file_task_progress_open( PtkFileTask* ptask )
                                   ptask->err_mode : 0 );
         g_signal_connect( G_OBJECT(  ptask->error_combo ), "changed",
                           G_CALLBACK( on_error_combo_changed ), ptask );
+#if (GTK_MAJOR_VERSION == 3)
+        GtkWidget* overwrite_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 20);
+#elif (GTK_MAJOR_VERSION == 2)
         GtkWidget* overwrite_box = gtk_hbox_new( FALSE, 20 );
+#endif
         gtk_box_pack_start( GTK_BOX( overwrite_box ),
                             GTK_WIDGET( ptask->overwrite_combo ), FALSE, TRUE, 0 );
         gtk_box_pack_start( GTK_BOX( overwrite_box ),
@@ -2335,7 +2339,11 @@ static void query_overwrite( PtkFileTask* ptask )
 
     GtkWidget* align = gtk_alignment_new( 1, 0, 1 ,1 );
     gtk_alignment_set_padding( GTK_ALIGNMENT( align ), 0, 14, 7, 7 );
+#if (GTK_MAJOR_VERSION == 3)
+    GtkWidget* vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     GtkWidget* vbox = gtk_vbox_new( FALSE, 0 );
+#endif
     gtk_container_add ( GTK_CONTAINER ( align ), vbox );
     gtk_box_pack_start( GTK_BOX( gtk_dialog_get_content_area( GTK_DIALOG( dlg ) ) ),
                         align, TRUE, TRUE, 0 );
@@ -2471,7 +2479,11 @@ static void query_overwrite( PtkFileTask* ptask )
     GtkWidget* auto_all_button = gtk_button_new_with_mnemonic( _(" Auto Re_name All ") );
     g_signal_connect( G_OBJECT( auto_all_button ), "clicked",
                           G_CALLBACK( on_query_button_press ), ptask );
+#if (GTK_MAJOR_VERSION == 3)
+    GtkWidget* hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
+#elif (GTK_MAJOR_VERSION == 2)
     GtkWidget* hbox = gtk_hbox_new( FALSE, 30 );
+#endif
     gtk_box_pack_start( GTK_BOX( hbox ),
                         GTK_WIDGET( rename_button ), FALSE, TRUE, 0 );
     gtk_box_pack_start( GTK_BOX( hbox ),

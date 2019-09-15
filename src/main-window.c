@@ -1903,14 +1903,22 @@ void fm_main_window_init( FMMainWindow* main_window )
     }
     update_window_icon( (GtkWindow*)main_window, gtk_icon_theme_get_default() );
 
+#if (GTK_MAJOR_VERSION == 3)
+    main_window->main_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     main_window->main_vbox = gtk_vbox_new ( FALSE, 0 );
+#endif
     gtk_container_add ( GTK_CONTAINER ( main_window ), main_window->main_vbox );
 
     // Create menu bar
     main_window->accel_group = gtk_accel_group_new ();
     main_window->menu_bar = gtk_menu_bar_new();
 
+#if (GTK_MAJOR_VERSION == 3)
+    GtkWidget* menu_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     GtkWidget* menu_hbox = gtk_hbox_new ( FALSE, 0 );
+#endif
     gtk_box_pack_start ( GTK_BOX ( menu_hbox ),
                          main_window->menu_bar, TRUE, TRUE, 0 );
 
@@ -1984,10 +1992,17 @@ void fm_main_window_init( FMMainWindow* main_window )
     rebuild_menus( main_window );
 
     /* Create client area */
+#if (GTK_MAJOR_VERSION == 3)
+    main_window->task_vpane = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+    main_window->vpane = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+    main_window->hpane_top = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
+    main_window->hpane_bottom = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
+#elif (GTK_MAJOR_VERSION == 2)
     main_window->task_vpane = gtk_vpaned_new();
     main_window->vpane = gtk_vpaned_new();
     main_window->hpane_top = gtk_hpaned_new();
     main_window->hpane_bottom = gtk_hpaned_new();
+#endif
 
     for ( i = 0; i < 4; i++ )
     {
@@ -2658,7 +2673,11 @@ GtkWidget* fm_main_window_create_tab_label( FMMainWindow* main_window,
     evt_box = GTK_EVENT_BOX( gtk_event_box_new () );
     gtk_event_box_set_visible_window ( GTK_EVENT_BOX( evt_box ), FALSE );
 
+#if (GTK_MAJOR_VERSION == 3)
+    tab_label = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#elif (GTK_MAJOR_VERSION == 2)
     tab_label = gtk_hbox_new( FALSE, 0 );
+#endif
     XSet* set = xset_get_panel( file_browser->mypanel, "icon_tab" );
     if ( set->icon )
     {
