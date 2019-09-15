@@ -4518,7 +4518,6 @@ void init_list_view( PtkFileBrowser* file_browser, GtkTreeView* list_view )
         gtk_tree_view_column_set_sort_column_id( col, cols[ j ] );
         gtk_tree_view_column_set_sort_order( col, GTK_SORT_DESCENDING );
     }
-    gtk_tree_view_set_rules_hint ( list_view, TRUE );
 }
 
 void ptk_file_browser_refresh( GtkWidget* item, PtkFileBrowser* file_browser )

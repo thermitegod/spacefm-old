@@ -3231,7 +3231,6 @@ static void update_element( CustomElement* el, GtkWidget* box, GSList** radio,
         if ( !el->widgets->next && box )
         {
             w = gtk_tree_view_new();
-            gtk_tree_view_set_rules_hint ( GTK_TREE_VIEW( w ), TRUE );
             gtk_tree_view_set_enable_search( GTK_TREE_VIEW( w ), TRUE );
             set_font( w, font );
             GtkTreeSelection* tree_sel = gtk_tree_view_get_selection(

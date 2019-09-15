@@ -5886,8 +5886,6 @@ GtkWidget* main_task_view_new( FMMainWindow* main_window )
         gtk_tree_sortable_set_sort_column_id( GTK_TREE_SORTABLE( list ),
                                 TASK_COL_STARTTIME, GTK_SORT_ASCENDING );
 
-    gtk_tree_view_set_rules_hint ( GTK_TREE_VIEW( view ), TRUE );
-
     g_signal_connect( view, "row-activated", G_CALLBACK( on_task_row_activated ), NULL );
     g_signal_connect( view, "columns-changed",
                            G_CALLBACK ( on_task_columns_changed ), NULL );
