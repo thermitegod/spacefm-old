@@ -8064,7 +8064,7 @@ const char* xset_get_builtin_toolitem_label( char tool_type )
 {
     if ( tool_type < XSET_TOOL_DEVICES || tool_type >= XSET_TOOL_INVALID )
         return NULL;
-    return _(builtin_tool_name[ tool_type ]);
+    return builtin_tool_name[tool_type];
 }
 
 XSet* xset_new_builtin_toolitem( char tool_type )
