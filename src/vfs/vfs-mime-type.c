@@ -303,16 +303,6 @@ GdkPixbuf* vfs_mime_type_get_icon( VFSMimeType* mime_type, gboolean big )
                 g_strlcat( icon_name, sep + 1, sizeof(icon_name) );
                 icon = vfs_load_icon ( icon_theme, icon_name, size );
             }
-            // hack for x-xz-compressed-tar missing icon
-            if ( !icon && strstr( mime_type->type, "compressed" ) )
-            {
-                icon = vfs_load_icon ( icon_theme, "application-x-archive",
-                                                                    size );
-                if ( !icon )
-                    icon = vfs_load_icon ( icon_theme,
-                                           "gnome-mime-application-x-archive",
-                                           size );
-            }
             /* try gnome-mime-foo */
             if ( G_UNLIKELY( ! icon ) )
             {
