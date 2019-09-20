@@ -2731,7 +2731,7 @@ void on_option_cb( GtkMenuItem* item, HandlerData* hnd )
     if ( job == HANDLER_JOB_IMPORT_FILE )
     {
         // get file path
-        XSet* save = xset_get( "plug_ifile" );
+        XSet* save = xset_get( "plug_cfile" );
         if ( save->s )  //&& g_file_test( save->s, G_FILE_TEST_IS_DIR )
             folder = save->s;
         else

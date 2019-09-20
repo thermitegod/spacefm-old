@@ -200,7 +200,6 @@ enum {
 };
 
 enum {
-    PLUGIN_JOB_INSTALL,
     PLUGIN_JOB_COPY,
     PLUGIN_JOB_REMOVE
 };

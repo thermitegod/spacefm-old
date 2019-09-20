@@ -3516,17 +3516,7 @@ void on_install_plugin_cb( VFSFileTask* task, PluginData* plugin_data )
             {
                 // handler
                 set->plugin_top = FALSE;  // prevent being added to Plugins menu
-                if ( plugin_data->job == PLUGIN_JOB_INSTALL )
-                {
-                    // This dialog should never be seen - failsafe
-                    GDK_THREADS_ENTER(); // due to dialog run causes low level thread lock
-                    xset_msg_dialog( plugin_data->main_window ?
-                                GTK_WIDGET( plugin_data->main_window ) : NULL,
-                                GTK_MESSAGE_ERROR, "Handler Plugin",
-                                NULL, 0, "This file contains a handler plugin which cannot be installed as a plugin.\n\nYou can import handlers from a handler configuration window, or use Plugins|Import.", NULL, NULL );
-                    GDK_THREADS_LEAVE();
-                }
-                else
+                if ( plugin_data->job == PLUGIN_JOB_COPY )
                     ptk_handler_import( use, plugin_data->handler_dlg, set );
             }
             else if ( plugin_data->job == PLUGIN_JOB_COPY )
@@ -3652,14 +3642,7 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
         file_path_q = bash_quote( path );
     }
 
-    if ( job == PLUGIN_JOB_INSTALL )
-    {
-        // install
-        own = g_strdup_printf( "chown -R root:root %s && chmod -R go+rX-w %s",
-                                                    plug_dir_q, plug_dir_q );
-        task->task->exec_as_user = g_strdup( "root" );
-    }
-    else
+    if ( job == PLUGIN_JOB_COPY )
     {
         // copy to clipboard or import to menu
         own = g_strdup_printf( "chmod -R go+rX-w %s", plug_dir_q );
@@ -3678,13 +3661,9 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
         else
             insert_set = NULL;   // failsafe
     }
-    if ( job == PLUGIN_JOB_INSTALL || !insert_set )
+    if ( !insert_set )
     {
-        // prevent install of exported bookmarks or handler as plugin or design clipboard
-        if ( job == PLUGIN_JOB_INSTALL )
-            book = " || [ -e main_book ] || [ -d hand_* ]";
-        else
-            book = " || [ -e main_book ]";
+        book = " || [ -e main_book ]";
     }
 
     task->task->exec_command = g_strdup_printf( "rm -rf %s ; mkdir -p %s && cd %s && tar --exclude='/*' --keep-old-files -xJf %s ; err=$?; if [ $err -ne 0 ] || [ ! -e plugin ]%s;then rm -rf %s ; echo 'Error installing plugin (invalid plugin file?)'; exit 1 ; fi ; %s %s",
@@ -3795,7 +3774,7 @@ void xset_custom_export(GtkWidget* parent, PtkFileBrowser* file_browser, XSet* s
     char* s2;
 
     // get new plugin filename
-    XSet* save = xset_get( "plug_ifile" );
+    XSet* save = xset_get( "plug_cfile" );
     if ( save->s )  //&& g_file_test( save->s, G_FILE_TEST_IS_DIR )
         deffolder = save->s;
     else
@@ -5328,7 +5307,7 @@ void xset_design_job( GtkWidget* item, XSet* set )
         if ( job == XSET_JOB_IMPORT_FILE )
         {
             // get file path
-            XSet* save = xset_get( "plug_ifile" );
+            XSet* save = xset_get( "plug_cfile" );
             if ( save->s )  //&& g_file_test( save->s, G_FILE_TEST_IS_DIR )
                 folder = save->s;
             else
@@ -9306,22 +9285,9 @@ void xset_defaults()
     set->menu_style = XSET_MENU_CHECK;
 
     // Plugins
-    set = xset_set( "plug_install", "lbl", _("_Install") );
-    set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "desc", "plug_ifile" );
-    xset_set_set( set, "icn", "gtk-add" );
-    set->line = g_strdup( "#plugins-install" );
-
-        set = xset_set( "plug_ifile", "lbl", _("_File") );
-        xset_set_set( set, "icn", "gtk-file" );
-        set->line = g_strdup( "#plugins-install" );
-
-    set = xset_get( "sep_p1" );
-    set->menu_style = XSET_MENU_SEP;
-
     set = xset_set( "plug_copy", "lbl", _("_Import") );
     set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "desc", "plug_cfile sep_p1 plug_cverb" );
+    xset_set_set( set, "desc", "plug_cfile plug_cverb" );
     xset_set_set( set, "icn", "gtk-copy" );
     set->line = g_strdup( "#plugins-import" );
 
@@ -9332,12 +9298,6 @@ void xset_defaults()
         set->menu_style = XSET_MENU_CHECK;
         set->b = XSET_B_TRUE;
         set->line = g_strdup( "#plugins-import" );
-
-    set = xset_set( "plug_browse", "lbl", _("_Browse") );
-
-    set = xset_set( "plug_inc", "lbl", _("In_cluded") );
-    set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "icn", "gtk-media-play" );
 
     // Help
     set = xset_get( "sep_h1" );

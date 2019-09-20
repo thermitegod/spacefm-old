@@ -263,9 +263,8 @@ void on_plugin_install( GtkMenuItem* item, FMMainWindow* main_window, XSet* set2
     char* path = NULL;
     const char* deffolder;
     char* plug_dir;
-    char* msg;
     int type = 0;
-    int job = PLUGIN_JOB_INSTALL;
+    int job = PLUGIN_JOB_COPY;
 
     if ( !item )
         set = set2;
@@ -274,13 +273,10 @@ void on_plugin_install( GtkMenuItem* item, FMMainWindow* main_window, XSet* set2
     if ( !set )
         return;
 
-    if ( g_str_has_suffix( set->name, "cfile" ) )
-        job = PLUGIN_JOB_COPY;
-
     if ( g_str_has_suffix( set->name, "file" ) )
     {
         // get file path
-        XSet* save = xset_get( "plug_ifile" );
+        XSet* save = xset_get( "plug_cfile" );
         if ( save->s )  //&& g_file_test( save->s, G_FILE_TEST_IS_DIR )
             deffolder = save->s;
         else
@@ -299,65 +295,8 @@ void on_plugin_install( GtkMenuItem* item, FMMainWindow* main_window, XSet* set2
         save->s = g_path_get_dirname( path );
     }
 
-    if ( job == PLUGIN_JOB_INSTALL )
+    if ( job == PLUGIN_JOB_COPY )
     {
-        // install job
-        char* filename = g_path_get_basename( path );
-        char* ext = strstr( filename, ".spacefm-plugin" );
-        if ( !ext )
-            ext = strstr( filename, ".tar.xz" );
-        if ( ext )
-            ext[0] = '\0';
-        char* plug_dir_name = plain_ascii_name( filename );
-        if ( ext )
-            ext[0] = '.';
-        g_free( filename );
-        if ( plug_dir_name[0] == '\0' )
-        {
-            msg = g_strdup_printf( _("This plugin's filename is invalid.  Please rename it using alpha-numeric ASCII characters and try again.") );
-            xset_msg_dialog( GTK_WIDGET( main_window ), GTK_MESSAGE_ERROR,
-                                        _("Invalid Plugin Filename"), NULL,
-                                        0, msg, NULL, "#plugins-install" );
-            {
-                g_free( plug_dir_name );
-                g_free( path );
-                g_free( msg );
-                return;
-            }
-        }
-
-        if ( DATADIR )
-            plug_dir = g_build_filename( DATADIR, "spacefm", "plugins",
-                                                            plug_dir_name, NULL );
-        else if ( !g_file_test( "/usr/share/spacefm/plugins", G_FILE_TEST_IS_DIR ) &&
-                    g_file_test( "/usr/local/share/spacefm/plugins", G_FILE_TEST_IS_DIR ) )
-            plug_dir = g_build_filename( "/usr/local/share/spacefm/plugins",
-                                                        plug_dir_name, NULL );
-        else
-            plug_dir = g_build_filename( "/usr/share/spacefm/plugins",
-                                                    plug_dir_name, NULL );
-
-        if ( g_file_test( plug_dir, G_FILE_TEST_EXISTS ) )
-        {
-            msg = g_strdup_printf( _("There is already a plugin installed as '%s'.  Overwrite ?\n\nTip: You can also rename this plugin file to install it under a different name."), plug_dir_name );
-            if ( xset_msg_dialog( GTK_WIDGET( main_window ), GTK_MESSAGE_WARNING,
-                                        _("Overwrite Plugin ?"), NULL,
-                                        GTK_BUTTONS_YES_NO,
-                                        msg, NULL, "#plugins-install" ) != GTK_RESPONSE_YES )
-            {
-                g_free( plug_dir_name );
-                g_free( plug_dir );
-                g_free( path );
-                g_free( msg );
-                return;
-            }
-            g_free( msg );
-        }
-        g_free( plug_dir_name );
-    }
-    else
-    {
-        // copy job
         const char* user_tmp = xset_get_user_tmp_dir();
         if ( !user_tmp )
         {
@@ -400,15 +339,9 @@ GtkWidget* create_plugins_menu( FMMainWindow* main_window )
     if ( !file_browser )
         return plug_menu;
 
-    set = xset_set_cb( "plug_ifile", on_plugin_install, main_window );
-        xset_set_ob1( set, "set", set );
-    set = xset_set_cb( "plug_iurl", on_plugin_install, main_window );
-        xset_set_ob1( set, "set", set );
     set = xset_set_cb( "plug_cfile", on_plugin_install, main_window );
         xset_set_ob1( set, "set", set );
 
-    set = xset_get( "plug_install" );
-    xset_add_menuitem( file_browser, plug_menu, accel_group, set );
     set = xset_get( "plug_copy" );
     xset_add_menuitem( file_browser, plug_menu, accel_group, set );
 
@@ -441,79 +374,6 @@ GtkWidget* create_plugins_menu( FMMainWindow* main_window )
     if ( set->disable )
         gtk_widget_hide( item );  // temporary until included available
     return plug_menu;
-}
-
-void import_all_plugins( FMMainWindow* main_window )
-{
-    GDir* dir;
-    const char* name;
-    char* plug_dir;
-    char* plug_file;
-    char* bookmarks_dir;
-
-    // get potential locations
-    char* path;
-    GList* locations = NULL;
-    if ( DATADIR )
-    {
-        locations = g_list_append( locations, g_build_filename( DATADIR,
-                                                    "spacefm", "included", NULL ) );
-        locations = g_list_append( locations, g_build_filename( DATADIR,
-                                                    "spacefm", "plugins", NULL ) );
-    }
-    const gchar* const * sdir = g_get_system_data_dirs();
-    for( ; *sdir; ++sdir )
-    {
-        path = g_build_filename( *sdir, "spacefm", "included", NULL );
-        if ( !g_list_find_custom( locations, path, (GCompareFunc)g_strcmp0 ) )
-            locations = g_list_append( locations, path );
-        else
-            g_free( path );
-        path = g_build_filename( *sdir, "spacefm", "plugins", NULL );
-        if ( !g_list_find_custom( locations, path, (GCompareFunc)g_strcmp0 ) )
-            locations = g_list_append( locations, path );
-        else
-            g_free( path );
-    }
-    if ( !g_list_find_custom( locations, "/usr/local/share/spacefm/included", (GCompareFunc)g_strcmp0 ) )
-        locations = g_list_append( locations, g_strdup( "/usr/local/share/spacefm/included" ) );
-    if ( !g_list_find_custom( locations, "/usr/share/spacefm/included", (GCompareFunc)g_strcmp0 ) )
-        locations = g_list_append( locations, g_strdup( "/usr/share/spacefm/included" ) );
-    if ( !g_list_find_custom( locations, "/usr/local/share/spacefm/plugins", (GCompareFunc)g_strcmp0 ) )
-        locations = g_list_append( locations, g_strdup( "/usr/local/share/spacefm/plugins" ) );
-    if ( !g_list_find_custom( locations, "/usr/share/spacefm/plugins", (GCompareFunc)g_strcmp0 ) )
-        locations = g_list_append( locations, g_strdup( "/usr/share/spacefm/plugins" ) );
-
-    GList* l;
-    for ( l = locations; l; l = l->next )
-    {
-        dir = g_dir_open( (char*)l->data, 0, NULL );
-        if ( dir )
-        {
-            while ( ( name = g_dir_read_name( dir ) ) )
-            {
-                bookmarks_dir = g_build_filename( (char*)l->data, name,
-                                                        "main_book", NULL );
-                plug_file = g_build_filename( (char*)l->data, name,
-                                                        "plugin", NULL );
-                if ( g_file_test( plug_file, G_FILE_TEST_EXISTS ) &&
-                     !g_file_test( bookmarks_dir, G_FILE_TEST_EXISTS ) )
-                {
-                    plug_dir = g_build_filename( (char*)l->data, name, NULL );
-                    if (!xset_import_plugin( plug_dir, NULL ) )
-                        g_printf( "Invalid Plugin Ignored: %s/\n", plug_dir );
-                    g_free( plug_dir );
-                }
-                g_free( plug_file );
-                g_free( bookmarks_dir );
-            }
-            g_dir_close( dir );
-        }
-    }
-    g_list_foreach( locations, (GFunc)g_free, NULL );
-    g_list_free( locations );
-
-    clean_plugin_mirrors();
 }
 
 void on_devices_show( GtkMenuItem* item, FMMainWindow* main_window )
@@ -2073,7 +1933,6 @@ void fm_main_window_init( FMMainWindow* main_window )
     g_signal_connect ( G_OBJECT(main_window), "realize",
                       G_CALLBACK ( on_main_window_realize ), main_window );
 
-    import_all_plugins( main_window );
     main_window->panel_change = FALSE;
     show_panels( NULL, main_window );
     main_window_root_bar_all();
