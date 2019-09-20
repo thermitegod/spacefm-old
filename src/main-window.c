@@ -305,7 +305,7 @@ void on_plugin_install( GtkMenuItem* item, FMMainWindow* main_window, XSet* set2
         char* filename = g_path_get_basename( path );
         char* ext = strstr( filename, ".spacefm-plugin" );
         if ( !ext )
-            ext = strstr( filename, ".tar.gz" );
+            ext = strstr( filename, ".tar.xz" );
         if ( ext )
             ext[0] = '\0';
         char* plug_dir_name = plain_ascii_name( filename );

@@ -3646,7 +3646,6 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
     char* file_path_q;
     char* own;
     char* rem = g_strdup( "" );
-    const char* compression = "z";
 
     FMMainWindow* main_window = (FMMainWindow*)main_win;
     // task
@@ -3658,10 +3657,6 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
 
     if ( type == 0 )
     {
-        // file
-        //if ( g_str_has_suffix( path, ".tar.xz" ) )
-            //TODO: OmegaPhil reports -J is never required for any compression
-            //compression = "J";
         file_path_q = bash_quote( path );
     }
 
@@ -3700,9 +3695,9 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
             book = " || [ -e main_book ]";
     }
 
-    task->task->exec_command = g_strdup_printf( "rm -rf %s ; mkdir -p %s && cd %s && tar --exclude='/*' --keep-old-files -x%sf %s ; err=$?; if [ $err -ne 0 ] || [ ! -e plugin ]%s;then rm -rf %s ; echo 'Error installing plugin (invalid plugin file?)'; exit 1 ; fi ; %s %s",
+    task->task->exec_command = g_strdup_printf( "rm -rf %s ; mkdir -p %s && cd %s && tar --exclude='/*' --keep-old-files -xJf %s ; err=$?; if [ $err -ne 0 ] || [ ! -e plugin ]%s;then rm -rf %s ; echo 'Error installing plugin (invalid plugin file?)'; exit 1 ; fi ; %s %s",
                                 plug_dir_q, plug_dir_q, plug_dir_q,
-                                compression, file_path_q, book,
+                                file_path_q, book,
                                 plug_dir_q, own, rem );
     g_free( plug_dir_q );
     g_free( file_path_q );
