@@ -198,31 +198,13 @@
     </columns>
     <data>
       <row>
-        <col id="0">/usr/bin/gksu</col>
-      </row>
-      <row>
-        <col id="0">/usr/bin/gksudo</col>
-      </row>
-      <row>
-        <col id="0">/usr/bin/gnomesu</col>
-      </row>
-      <row>
-        <col id="0">/usr/bin/xdg-su</col>
-      </row>
-      <row>
         <col id="0">/usr/bin/kdesu</col>
-      </row>
-      <row>
-        <col id="0">/usr/bin/kdesudo</col>
       </row>
       <row>
         <col id="0">/usr/bin/ktsuss</col>
       </row>
       <row>
         <col id="0">/usr/bin/lxqt-sudo</col>
-      </row>
-      <row>
-        <col id="0">/usr/bin/lxsu</col>
       </row>
       <row>
         <col id="0">/usr/bin/su-to-root</col>

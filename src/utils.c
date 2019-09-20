@@ -444,12 +444,8 @@ char* get_valid_gsu()  // may return NULL
         // discovery
         for ( i = 0; i < G_N_ELEMENTS( gsu_commands ); i++ )
         {
-            // don't automatically select gksudo
-            if ( strcmp( gsu_commands[i], "/usr/bin/gksudo" ) )
-            {
-                if ((use_gsu = g_find_program_in_path(gsu_commands[i])))
-                    break;
-            }
+            if ((use_gsu = g_find_program_in_path(gsu_commands[i])))
+                break;
         }
         if ( !use_gsu )
             use_gsu = g_strdup( gsu_commands[0] );

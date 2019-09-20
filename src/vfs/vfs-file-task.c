@@ -1713,33 +1713,11 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
             argv[a++] = g_strdup( task->exec_as_user );
         }
 
-        if ( !strcmp( use_su, "/usr/bin/gksu" ) || !strcmp( use_su, "/usr/bin/gksudo" ) )
-        {
-            // gksu*
-            argv[a++] = g_strdup( "-g" );
-            argv[a++] = g_strdup( "-D" );
-            argv[a++] = g_strdup( "SpaceFM Command" );
-            single_arg = TRUE;
-        }
-        else if ( strstr( use_su, "kdesu" ) )
-        {
-            // kdesu kdesudo
-            argv[a++] = g_strdup( "-d" );
-            argv[a++] = g_strdup( "-c" );
-            single_arg = TRUE;
-        }
-        else if ( !strcmp( use_su, "/bin/su" ) )
+        if ( !strcmp( use_su, "/bin/su" ) )
         {
             // /bin/su
             argv[a++] = g_strdup( "-s" );
             argv[a++] = g_strdup( BASHPATH );  //shell spec
-            argv[a++] = g_strdup( "-c" );
-            single_arg = TRUE;
-        }
-        else if ( !strcmp( use_su, "/usr/bin/gnomesu" )
-                                        || !strcmp( use_su, "/usr/bin/xdg-su" ) )
-        {
-            // gnomesu
             argv[a++] = g_strdup( "-c" );
             single_arg = TRUE;
         }
