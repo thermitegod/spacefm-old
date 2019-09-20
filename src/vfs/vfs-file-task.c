@@ -1557,36 +1557,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
             goto _exit_with_error;
 
         // build - trap rm
-        /* These terminals provide no option to start a new instance, child
-         * exit occurs immediately so can't delete tmp files.  So keep files
-         * and let trap delete on exit.
-
-         * These terminals will not work properly with Run As Task.
-         * ! WHEN CHANGING THIS LIST, also see similar checks in pref-dialog.c
-         * and ptk-location-view.c.
-
-         * Note for konsole:  if you create a link to it and execute the
-         * link, it will start a new instance (might also work for lxterminal?)
-         * http://www.linuxjournal.com/content/start-and-control-konsole-dbus
-         *
-         * gnome-terminal removed --disable-factory option as of 3.10
-         * https://github.com/IgnorantGuru/spacefm/issues/428
-        */
-        if ( !task->exec_keep_tmp && terminal &&
-                                ( strstr( terminal, "lxterminal" ) ||
-                                  strstr( terminal, "urxvtc" ) ||    // sure no option avail?
-                                  strstr( terminal, "konsole" ) ||
-                                  strstr( terminal, "gnome-terminal" ) ) )
-                                  /* when changing this list adjust also
-                                   * ptk-location-view.c:ptk_location_view_mount_network()
-                                   * pref-dialog.c Line ~777 */
-        {
-            result = g_fprintf( file, "trap \"rm -f %s; exit\" EXIT SIGINT SIGTERM SIGQUIT SIGHUP\n\n", task->exec_script );
-            if ( result < 0 )
-                goto _exit_with_error;
-            task->exec_keep_tmp = TRUE;
-        }
-        else if ( !task->exec_keep_tmp && geteuid() != 0 && task->exec_as_user
+        if ( !task->exec_keep_tmp && geteuid() != 0 && task->exec_as_user
                                         && !strcmp( task->exec_as_user, "root" ) )
         {
             // run as root command, clean up
@@ -1679,7 +1650,6 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
 
         // add option to execute command in terminal
         if ( strstr( terminal, "xfce4-terminal" )
-                                || strstr( terminal, "gnome-terminal" )
                                 || strstr( terminal, "terminator" )
                                 || g_str_has_suffix( terminal, "/terminal" ) ) // xfce
             argv[a++] = g_strdup( "-x" );

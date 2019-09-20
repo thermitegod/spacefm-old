@@ -12,11 +12,8 @@ static const char* terminal_programs[] =  //for pref-dialog.c
     "roxterm",
     "terminal",
     "xfce4-terminal",
-    "gnome-terminal",
     "aterm",
     "Eterm",
-    "konsole",
-    "lxterminal",
     "mlterm",
     "mrxvt",
     "rxvt",
@@ -39,7 +36,7 @@ static const char* su_commands[] = // order and contents must match prefdlg.ui
 
 static const char* gsu_commands[] = // order and contents must match prefdlg.ui
 {
-    "/usr/bin/kdesu",   // may be translated to "$(kde4-config --path libexec)/kdesu"
+    "/usr/bin/kdesu",
     "/usr/bin/ktsuss",
     "/usr/bin/lxqt-sudo",
     "/usr/bin/su-to-root",
