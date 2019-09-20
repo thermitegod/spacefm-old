@@ -8914,7 +8914,6 @@ exo_icon_view_search_position_func (ExoIconView *icon_view,
 {
     GtkRequisition requisition;
     GdkWindow     *view_window = gtk_widget_get_window (GTK_WIDGET (icon_view));
-    GdkRectangle   work_area_dimensions;
     gint           view_width, view_height;
     gint           view_x, view_y;
     gint           x, y;
@@ -8942,19 +8941,8 @@ exo_icon_view_search_position_func (ExoIconView *icon_view,
     gtk_widget_size_request(search_dialog, &requisition);
 #endif
 
-    if (view_x + view_width > work_area_dimensions.x + work_area_dimensions.width)
-        x = work_area_dimensions.x + work_area_dimensions.width - requisition.width;
-    else if (view_x + view_width - requisition.width < work_area_dimensions.x)
-        x = work_area_dimensions.x;
-     else
-       x = view_x + view_width - requisition.width;
-
-    if (view_y + view_height > work_area_dimensions.y + work_area_dimensions.height)
-       y = work_area_dimensions.y + work_area_dimensions.height - requisition.height;
-    else if (view_y + view_height < work_area_dimensions.y)
-       y = work_area_dimensions.y;
-    else
-        y = view_y + view_height;
+    x = view_x + view_width - requisition.width;
+    y = view_y + view_height;
 
     display = gdk_window_get_display(view_window);
     if (display) {
