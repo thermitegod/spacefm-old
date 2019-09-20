@@ -191,9 +191,7 @@ static void parse_general_settings( char* line )
     name = line;
     value = sep + 1;
     *sep = '\0';
-    if ( 0 == strcmp( name, "encoding" ) )
-        g_strlcpy( app_settings.encoding, value, sizeof(app_settings.encoding) );
-    else if ( 0 == strcmp( name, "show_thumbnail" ) )
+    if ( 0 == strcmp( name, "show_thumbnail" ) )
         app_settings.show_thumbnail = atoi( value );
     else if ( 0 == strcmp( name, "max_thumb_size" ) )
         app_settings.max_thumb_size = atoi( value ) << 10;
@@ -383,7 +381,6 @@ void load_settings( char* config_dir )
         settings_config_dir = g_build_filename( g_get_user_config_dir(), "spacefm", NULL );
 
     /* General */
-    app_settings.encoding[ 0 ] = '\0';
     app_settings.show_thumbnail = show_thumbnail_default;
     app_settings.max_thumb_size = max_thumb_size_default;
     app_settings.big_icon_size = big_icon_size_default;
@@ -515,11 +512,6 @@ void load_settings( char* config_dir )
                 ( *func ) ( line );
         }
         fclose( file );
-    }
-
-    if ( app_settings.encoding[ 0 ] )
-    {
-        setenv( "G_FILENAME_ENCODING", app_settings.encoding, 1 );
     }
 
     //MOD turn off fullscreen
@@ -729,7 +721,6 @@ char* save_settings( gpointer main_window_ptr )
     //General
     g_fprintf(file,
                     "[General]\n"
-                    "encoding=%s\n"
                     "show_thumbnail=%d\n"
                     "max_thumb_size=%d\n"
                     "big_icon_size=%d\n"
@@ -742,7 +733,6 @@ char* save_settings( gpointer main_window_ptr )
                     "use_si_prefix=%d\n"
                     "no_execute=%d\n"
                     "no_confirm=%d\n",
-                    app_settings.encoding,
                     !!app_settings.show_thumbnail,
                     app_settings.max_thumb_size >> 10,
                     app_settings.big_icon_size,
@@ -778,7 +768,6 @@ char* save_settings( gpointer main_window_ptr )
 
 /*
     fputs("[General]\n", file);
-    g_fprintf(file, "encoding=%s\n", app_settings.encoding);
     g_fprintf(file, "show_thumbnail=%d\n", !!app_settings.show_thumbnail);
     g_fprintf(file, "max_thumb_size=%d\n", app_settings.max_thumb_size >> 10);
     g_fprintf(file, "big_icon_size=%d\n", app_settings.big_icon_size);

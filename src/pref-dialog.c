@@ -41,7 +41,6 @@ struct _FMPrefDlg
 {
     GtkWidget* dlg;
     GtkWidget* notebook;
-    GtkWidget* encoding;
     GtkWidget* bm_open_method;
     GtkWidget* max_thumb_size;
     GtkWidget* show_thumbnail;
@@ -108,7 +107,6 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
 {
     int i, n;
     int ibig_icon = -1, ismall_icon = -1, itool_icon = -1;
-    //const char* filename_encoding;
 
     int max_thumb;
     gboolean show_thumbnail;
@@ -527,7 +525,6 @@ void on_show_thumbnail_toggled( GtkWidget* widget, FMPrefDlg* data )
 
 gboolean fm_edit_preference( GtkWindow* parent, int page )
 {
-    //const char* filename_encoding;
     int i;
     int ibig_icon = -1, ismall_icon = -1, itool_icon = -1;
     GtkWidget* dlg;
@@ -556,8 +553,6 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
         gtk_dialog_set_alternative_button_order( GTK_DIALOG( dlg ), GTK_RESPONSE_OK, GTK_RESPONSE_CANCEL, -1 );
 
         /* Setup 'General' tab */
-
-        data->encoding = (GtkWidget*)gtk_builder_get_object( builder, "filename_encoding" );
         data->bm_open_method = (GtkWidget*)gtk_builder_get_object( builder, "bm_open_method" );
         data->show_thumbnail = (GtkWidget*)gtk_builder_get_object( builder, "show_thumbnail" );
         data->thumb_label1 = (GtkWidget*)gtk_builder_get_object( builder, "thumb_label1" );
