@@ -4,7 +4,6 @@ AM_CPPFLAGS = \
     -I$(top_srcdir)/src/mime-type \
     -I$(top_srcdir)/src/ptk \
     -I$(top_srcdir)/src/vfs \
-    -I$(top_srcdir)/src/desktop \
     -I$(top_srcdir)/src/exo \
     -DPACKAGE_DATA_DIR=\""$(datadir)/spacefm"\" \
     -DPACKAGE_UI_DIR=\""$(datadir)/spacefm/ui"\" \
@@ -36,15 +35,6 @@ VFS_SOURCES = \
     vfs/vfs-async-task.c vfs/vfs-async-task.h \
     vfs/vfs-thumbnail-loader.c vfs/vfs-thumbnail-loader.h \
     vfs/vfs-utils.c vfs/vfs-utils.h
-
-if DESKTOP_INTEGRATION
-DESKTOP_SOURCES = \
-    desktop/desktop-window.c desktop/desktop-window.h \
-    desktop/working-area.c desktop/working-area.h \
-    desktop/desktop.c desktop/desktop.h
-else
-DESKTOP_SOURCES =
-endif
 
 PTK_SOURCES = \
     ptk/ptk-file-browser.c ptk/ptk-file-browser.h \
@@ -88,7 +78,6 @@ spacefm_SOURCES = \
     $(VFS_SOURCES) \
     $(PTK_SOURCES) \
     $(EXO_SOURCES) \
-    $(DESKTOP_SOURCES) \
     private.h \
     main.c pcmanfm.h \
     main-window.c main-window.h \

@@ -163,16 +163,6 @@ if test ! -z "$preferable_sudo"; then
 fi
 
 AC_ARG_ENABLE(
-    [desktop-integration],
-    AS_HELP_STRING([--disable-desktop-integration],
-                   [disable desktop manager integration (default: enable)]),
-    desktop_integration=$enableval, desktop_integration="no")
-if test x"$desktop_integration" = "xyes"; then
-  AC_DEFINE(DESKTOP_INTEGRATION, 1, [Whether to integrate desktop or not.])
-fi
-AM_CONDITIONAL(DESKTOP_INTEGRATION, test "$desktop_integration" = "yes")
-
-AC_ARG_ENABLE(
     [deprecated_hw],
     AS_HELP_STRING([--enable-deprecated-hw],
                    [enable deprecated hardware support (firewire,audiocd,dvd) (default: disable)]),
@@ -280,7 +270,6 @@ echo 'GTK+ Version................................. : GTK 3'
 else
 echo 'GTK+ Version................................. : GTK 2'
 fi
-echo Desktop manager integration.................. : $desktop_integration
 echo Deprecated Hardware support.................. : $deprecated_hw
 echo Git session backend.......................... : $use_git
 echo Startup notification......................... : $use_sn

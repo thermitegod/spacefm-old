@@ -14,7 +14,6 @@
 #include <glib/gi18n.h>
 #include <string.h>
 
-#include "desktop-window.h"
 #include "ptk-file-archiver.h"
 #include "ptk-file-task.h"
 #include "ptk-handler.h"
@@ -321,8 +320,7 @@ char* replace_archive_subs( const char* line, const char* n, const char* N,
     return s;
 }
 
-void ptk_file_archiver_create( DesktopWindow *desktop,
-                               PtkFileBrowser *file_browser, GList *files,
+void ptk_file_archiver_create( PtkFileBrowser *file_browser, GList *files,
                                const char *cwd )
 {
     GList *l;
@@ -439,7 +437,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
                         "configured. You must add a handler before "
                         "creating an archive."),
                         NULL, NULL);
-        ptk_handler_show_config( HANDLER_MODE_ARC, desktop, file_browser, NULL );
+        ptk_handler_show_config( HANDLER_MODE_ARC, file_browser, NULL );
         return;
     }
 
@@ -769,8 +767,7 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
              * config dialog then exit, as this dialog would need to be
              * reconstructed if changes occur */
             gtk_widget_destroy( dlg );
-            ptk_handler_show_config( HANDLER_MODE_ARC, desktop, file_browser,
-                                                                    NULL );
+            ptk_handler_show_config( HANDLER_MODE_ARC, file_browser, NULL );
             return;
         }
         else if ( res == GTK_RESPONSE_HELP )
@@ -990,8 +987,6 @@ void ptk_file_archiver_create( DesktopWindow *desktop,
      * to be output */
     if (file_browser)
         task->task->exec_browser = file_browser;
-    else
-        task->task->exec_desktop = desktop;
 
     // Using terminals for certain handlers
     if (run_in_terminal)
@@ -1021,8 +1016,7 @@ static void on_create_subfolder_toggled( GtkToggleButton *togglebutton,
     gtk_widget_set_sensitive( chk_write, enabled && geteuid() != 0 );
 }
 
-void ptk_file_archiver_extract( DesktopWindow *desktop,
-                                PtkFileBrowser *file_browser,
+void ptk_file_archiver_extract( PtkFileBrowser *file_browser,
                                 GList *files, const char *cwd,
                                 const char *dest_dir, int job,
                                 gboolean archive_presence_checked )
@@ -1094,8 +1088,6 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
     if ( file_browser )
         dlgparent = gtk_widget_get_toplevel(
                                     GTK_WIDGET( file_browser->main_window ) );
-    //else if ( desktop )
-    //    dlgparent = gtk_widget_get_toplevel( desktop );  // causes drag action???
 
     // Checking if extract to directory hasn't been specified
     if ( !dest_dir && !list_contents )
@@ -1217,8 +1209,7 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
                  * config dialog then exit, as this dialog would need to be
                  * reconstructed if changes occur */
                 gtk_widget_destroy( dlg );
-                ptk_handler_show_config( HANDLER_MODE_ARC, desktop,
-                                                        file_browser, NULL );
+                ptk_handler_show_config( HANDLER_MODE_ARC, file_browser, NULL );
                 return;
             }
             else if ( res == GTK_RESPONSE_HELP )
@@ -1569,8 +1560,6 @@ void ptk_file_archiver_extract( DesktopWindow *desktop,
      * to be output */
     if (file_browser)
         task->task->exec_browser = file_browser;
-    else
-        task->task->exec_desktop = desktop;
 
     // Configuring task
     task->task->exec_command = final_command;

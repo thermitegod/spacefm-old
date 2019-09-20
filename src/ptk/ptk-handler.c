@@ -104,7 +104,6 @@ typedef struct
     int mode;
     gboolean changed;
     PtkFileBrowser* browser;
-    DesktopWindow* desktop;
 
     GtkWidget* view_handlers;
     GtkListStore* list;
@@ -2500,12 +2499,10 @@ void on_textview_popup( GtkTextView *input, GtkMenu *menu, HandlerData* hnd )
     XSet* set = xset_get( "sep_ctxt" );
     set->menu_style = XSET_MENU_SEP;
     set->browser = NULL;
-    set->desktop = NULL;
-    xset_add_menuitem( NULL, NULL, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( NULL, GTK_WIDGET( menu ), accel_group, set );
     set = xset_set_cb( "context_dlg", on_textview_font_change, hnd );
     set->browser = NULL;
-    set->desktop = NULL;
-    xset_add_menuitem( NULL, NULL, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( NULL, GTK_WIDGET( menu ), accel_group, set );
 
     gtk_widget_show_all( GTK_WIDGET( menu ) );
 }
@@ -2897,7 +2894,7 @@ static void on_options_button_clicked( GtkWidget* btn, HandlerData* hnd )
             set = xset_get( "arc_default" );
             char* old_desc = set->desc;
             set->desc = g_strdup( "arc_def_open arc_def_ex arc_def_exto arc_def_list sep_arc1 arc_def_parent arc_def_write" );
-            xset_add_menuitem( NULL, hnd->browser, popup, accel_group, set );
+            xset_add_menuitem( hnd->browser, popup, accel_group, set );
             g_free( set->desc );
             set->desc = old_desc;
         }
@@ -2907,7 +2904,7 @@ static void on_options_button_clicked( GtkWidget* btn, HandlerData* hnd )
             xset_context_new();
             gtk_container_add ( GTK_CONTAINER ( popup ),
                                             gtk_separator_menu_item_new() );
-            xset_add_menuitem( hnd->desktop, hnd->browser, popup, accel_group,
+            xset_add_menuitem( hnd->browser, popup, accel_group,
                                         xset_get( "dev_mount_options" ) );
         }
     }
@@ -2920,7 +2917,7 @@ static void on_options_button_clicked( GtkWidget* btn, HandlerData* hnd )
                         NULL, NULL, 0, gtk_get_current_event_time() );
 }
 
-void ptk_handler_show_config( int mode, DesktopWindow* desktop,
+void ptk_handler_show_config( int mode,
                               PtkFileBrowser* file_browser,
                               XSet* def_handler_set )
 {
@@ -2930,15 +2927,12 @@ void ptk_handler_show_config( int mode, DesktopWindow* desktop,
     /* Create handlers dialog
      * Extra NULL on the NULL-terminated list to placate an irrelevant
      * compilation warning */
-    if ( desktop )
-        hnd->parent = gtk_widget_get_toplevel( GTK_WIDGET( desktop ) );
-    else if ( file_browser )
+    if ( file_browser )
         hnd->parent = gtk_widget_get_toplevel(
                                 GTK_WIDGET( file_browser->main_window ) );
     else
         hnd->parent = NULL;
     hnd->browser = file_browser;
-    hnd->desktop = desktop;
     hnd->dlg = gtk_dialog_new_with_buttons( _(dialog_titles[mode]),
                     hnd->parent ? GTK_WINDOW( hnd->parent ) : NULL,
                     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,

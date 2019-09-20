@@ -752,12 +752,10 @@ void on_view_popup( GtkTextView *entry, GtkMenu *menu, gpointer user_data )
 
     XSet* set = xset_get( "sep_v9" );
     set->browser = NULL;
-    set->desktop = NULL;
-    xset_add_menuitem( NULL, NULL, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( NULL, GTK_WIDGET( menu ), accel_group, set );
     set = xset_get( "task_pop_font" );
     set->browser = NULL;
-    set->desktop = NULL;
-    xset_add_menuitem( NULL, NULL, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( NULL, GTK_WIDGET( menu ), accel_group, set );
     gtk_widget_show_all( GTK_WIDGET( menu ) );
     g_signal_connect( menu, "key-press-event",
                       G_CALLBACK( xset_menu_keypress ), NULL );

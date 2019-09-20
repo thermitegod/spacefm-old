@@ -29,10 +29,6 @@
 
 #include <glib/gprintf.h>
 
-#ifdef DESKTOP_INTEGRATION
-#include "desktop.h"
-#endif
-
 #include "settings.h"
 #include "utils.h"
 #include "ptk-utils.h"
@@ -68,26 +64,6 @@ const int view_mode_default = PTK_FB_ICON_VIEW;
 const int sort_order_default = PTK_FB_SORT_BY_NAME;
 const int sort_type_default = GTK_SORT_ASCENDING;
 
-#ifdef DESKTOP_INTEGRATION
-const gboolean show_wallpaper_default = FALSE;
-const WallpaperMode wallpaper_mode_default=WPM_STRETCH;
-const GdkColor desktop_bg1_default={0, 4656, 4125, 12014};
-const GdkColor desktop_bg2_default={0};   // unused?
-const GdkColor desktop_text_default={0, 65535, 65535, 65535};
-const GdkColor desktop_shadow_default={0, 11822, 13364, 13878};
-const int desktop_sort_by_default = DW_SORT_CUSTOM;
-const int desktop_sort_type_default = GTK_SORT_ASCENDING;
-const gboolean show_wm_menu_default = FALSE;
-const gboolean desk_single_click_default = FALSE;
-const gboolean desk_no_single_hover_default = FALSE;
-const gboolean desk_open_mime_default = FALSE;
-const int margin_top_default = 12;
-const int margin_left_default = 6;
-const int margin_right_default = 6;
-const int margin_bottom_default = 12;
-const int margin_pad_default = 6;
-#endif
-
 /* Default values of interface settings */
 const gboolean always_show_tabs_default = TRUE;
 const gboolean hide_close_tab_buttons_default = FALSE;
@@ -116,11 +92,6 @@ gboolean xset_autosave_request = FALSE;
 
 typedef void ( *SettingsParseFunc ) ( char* line );
 
-#ifdef DESKTOP_INTEGRATION
-static void color_from_str( GdkColor* ret, const char* value );
-static void save_color( FILE* file, const char* name,
-                 GdkColor* color );
-#endif
 void xset_free_all();
 void xset_custom_delete( XSet* set, gboolean delete_next );
 void xset_default_keys();
@@ -263,20 +234,6 @@ static void parse_general_settings( char* line )
         app_settings.no_confirm = atoi( value );  //MOD
 }
 
-#ifdef DESKTOP_INTEGRATION
-static void color_from_str( GdkColor* ret, const char* value )
-{
-    sscanf( value, "%hu,%hu,%hu",
-            &ret->red, &ret->green, &ret->blue );
-}
-
-static void save_color( FILE* file, const char* name, GdkColor* color )
-{
-    g_fprintf( file, "%s=%d,%d,%d\n", name,
-             color->red, color->green, color->blue );
-}
-#endif
-
 static void parse_window_state( char* line )
 {
     char * sep = strstr( line, "=" );
@@ -303,60 +260,6 @@ static void parse_window_state( char* line )
         app_settings.maximized = atoi( value );
     }
 }
-
-#ifdef DESKTOP_INTEGRATION
-static void parse_desktop_settings( char* line )
-{
-    char * sep = strstr( line, "=" );
-    char* name;
-    char* value;
-    if ( !sep )
-        return ;
-    name = line;
-    value = sep + 1;
-    *sep = '\0';
-    //if ( 0 == strcmp( name, "show_desktop" ) )
-    //    app_settings.show_desktop = atoi( value );
-    if ( 0 == strcmp( name, "show_wallpaper" ) )
-        app_settings.show_wallpaper = atoi( value );
-    else if ( 0 == strcmp( name, "wallpaper" ) )
-        app_settings.wallpaper = g_strdup( value );
-    else if ( 0 == strcmp( name, "wallpaper_mode" ) )
-        app_settings.wallpaper_mode = atoi( value );
-    else if ( 0 == strcmp( name, "bg1" ) )
-        color_from_str( &app_settings.desktop_bg1, value );
-    else if ( 0 == strcmp( name, "bg2" ) )
-        color_from_str( &app_settings.desktop_bg2, value );
-    else if ( 0 == strcmp( name, "text" ) )
-        color_from_str( &app_settings.desktop_text, value );
-    else if ( 0 == strcmp( name, "shadow" ) )
-        color_from_str( &app_settings.desktop_shadow, value );
-    else if ( 0 == strcmp( name, "font" ) )
-        app_settings.desk_font = pango_font_description_from_string( value );
-    else if ( 0 == strcmp( name, "sort_by" ) )
-        app_settings.desktop_sort_by = atoi( value );
-    else if ( 0 == strcmp( name, "sort_type" ) )
-        app_settings.desktop_sort_type = atoi( value );
-    else if ( 0 == strcmp( name, "show_wm_menu" ) )
-        app_settings.show_wm_menu = atoi( value );
-    else if ( 0 == strcmp( name, "desk_single_click" ) )
-        app_settings.desk_single_click = atoi( value );
-    else if ( 0 == strcmp( name, "desk_no_single_hover" ) )
-        app_settings.desk_no_single_hover = atoi( value );
-    else if ( 0 == strcmp( name, "desk_open_mime" ) )
-        app_settings.desk_open_mime = atoi( value );
-    else if ( 0 == strcmp( name, "margin_top" ) )
-        app_settings.margin_top = atoi( value );
-    else if ( 0 == strcmp( name, "margin_left" ) )
-        app_settings.margin_left = atoi( value );
-    else if ( 0 == strcmp( name, "margin_right" ) )
-        app_settings.margin_right = atoi( value );
-    else if ( 0 == strcmp( name, "margin_bottom" ) )
-        app_settings.margin_bottom = atoi( value );
-    else if ( 0 == strcmp( name, "margin_pad" ) )
-        app_settings.margin_pad = atoi( value );
-}
-#endif
 
 static void parse_interface_settings( char* line )
 {
@@ -480,26 +383,6 @@ void load_settings( char* config_dir )
         settings_config_dir = g_build_filename( g_get_user_config_dir(), "spacefm", NULL );
 
     /* General */
-#ifdef DESKTOP_INTEGRATION
-    app_settings.show_wallpaper = show_wallpaper_default;
-    app_settings.wallpaper = NULL;
-    app_settings.desktop_bg1 = desktop_bg1_default;
-    app_settings.desktop_bg2 = desktop_bg2_default;
-    app_settings.desktop_text = desktop_text_default;
-    app_settings.desk_font = NULL;
-    app_settings.desktop_sort_by = desktop_sort_by_default;
-    app_settings.desktop_sort_type = desktop_sort_type_default;
-    app_settings.show_wm_menu = show_wm_menu_default;
-    app_settings.desk_single_click = desk_single_click_default;
-    app_settings.desk_no_single_hover = desk_no_single_hover_default;
-    app_settings.desk_open_mime = desk_open_mime_default;
-    app_settings.margin_top = margin_top_default;
-    app_settings.margin_left = margin_left_default;
-    app_settings.margin_right = margin_right_default;
-    app_settings.margin_bottom = margin_bottom_default;
-    app_settings.margin_pad = margin_pad_default;
-#endif
-
     app_settings.encoding[ 0 ] = '\0';
     app_settings.show_thumbnail = show_thumbnail_default;
     app_settings.max_thumb_size = max_thumb_size_default;
@@ -622,10 +505,6 @@ void load_settings( char* config_dir )
                     func = &parse_window_state;
                 else if ( 0 == strcmp( line + 1, "Interface" ) )
                     func = &parse_interface_settings;
-#ifdef DESKTOP_INTEGRATION
-                else if ( 0 == strcmp( line + 1, "Desktop" ) )
-                    func = &parse_desktop_settings;
-#endif
                 else if ( 0 == strcmp( line + 1, "MOD" ) )  //MOD
                     func = &xset_parse;
                 else
@@ -642,20 +521,6 @@ void load_settings( char* config_dir )
     {
         setenv( "G_FILENAME_ENCODING", app_settings.encoding, 1 );
     }
-
-#ifdef DESKTOP_INTEGRATION
-    //sfm margin limits
-    if ( app_settings.margin_top < 0 || app_settings.margin_top > 999 )
-        app_settings.margin_top = margin_top_default;
-    if ( app_settings.margin_left < 0 || app_settings.margin_left > 999 )
-        app_settings.margin_left = margin_left_default;
-    if ( app_settings.margin_right < 0 || app_settings.margin_right > 999 )
-        app_settings.margin_right = margin_right_default;
-    if ( app_settings.margin_bottom < 0 || app_settings.margin_bottom > 999 )
-        app_settings.margin_bottom = margin_bottom_default;
-    if ( app_settings.margin_pad < 0 || app_settings.margin_pad > 999 )
-        app_settings.margin_pad = margin_pad_default;
-#endif
 
     //MOD turn off fullscreen
     xset_set_b( "main_full", FALSE );
@@ -938,35 +803,6 @@ char* save_settings( gpointer main_window_ptr )
     g_fprintf(file, "show_close_tab_buttons=%d\n", !app_settings.hide_close_tab_buttons);
 */
 
-#ifdef DESKTOP_INTEGRATION
-    //Desktop
-    fputs("\n[Desktop]\n", file);
-    g_fprintf(file, "show_wallpaper=%d\n", !!app_settings.show_wallpaper);
-    g_fprintf(file, "wallpaper=%s\n", app_settings.wallpaper);
-    g_fprintf(file, "wallpaper_mode=%d\n", app_settings.wallpaper_mode);
-    g_fprintf(file, "sort_by=%d\n", app_settings.desktop_sort_by);
-    g_fprintf(file, "sort_type=%d\n", app_settings.desktop_sort_type);
-    g_fprintf(file, "show_wm_menu=%d\n", app_settings.show_wm_menu);
-    g_fprintf(file, "desk_single_click=%d\n", app_settings.desk_single_click);
-    g_fprintf(file, "desk_no_single_hover=%d\n", app_settings.desk_no_single_hover);
-    g_fprintf(file, "desk_open_mime=%d\n", app_settings.desk_open_mime);
-
-    save_color(file, "bg1", &app_settings.desktop_bg1);
-    save_color(file, "bg2", &app_settings.desktop_bg2);
-    save_color(file, "text", &app_settings.desktop_text);
-    save_color(file, "shadow", &app_settings.desktop_shadow);
-
-    char* fontname = pango_font_description_to_string(app_settings.desk_font);
-    g_fprintf(file, "font=%s\n", fontname);
-    g_free(fontname);
-
-    g_fprintf(file, "margin_top=%d\n", app_settings.margin_top);
-    g_fprintf(file, "margin_left=%d\n", app_settings.margin_left);
-    g_fprintf(file, "margin_right=%d\n", app_settings.margin_right);
-    g_fprintf(file, "margin_bottom=%d\n", app_settings.margin_bottom);
-    g_fprintf(file, "margin_pad=%d\n", app_settings.margin_pad);
-#endif
-
     //MOD extra settings
     fputs("\n[MOD]\n", file);
     xset_write(file);
@@ -1005,10 +841,6 @@ _save_error:
 
 void free_settings()
 {
-#ifdef DESKTOP_INTEGRATION
-    g_free( app_settings.wallpaper );
-#endif
-
     if ( xset_cmd_history )
     {
         g_list_foreach( xset_cmd_history, (GFunc)g_free, NULL );
@@ -2015,8 +1847,7 @@ XSet* xset_find_custom( const char* search )
     return NULL;
 }
 
-gboolean xset_opener( DesktopWindow* desktop, PtkFileBrowser* file_browser,
-                                                            char job )
+gboolean xset_opener( PtkFileBrowser* file_browser, char job )
 {   // find an opener for job
     XSet* set, *mset, *open_all_set, *tset, *open_all_tset;
     GList* l, *ll;
@@ -2055,10 +1886,6 @@ gboolean xset_opener( DesktopWindow* desktop, PtkFileBrowser* file_browser,
                     return FALSE;
                 if ( file_browser )
                     main_context_fill( file_browser, context );
-#ifdef DESKTOP_INTEGRATION
-                else if ( desktop )
-                    desktop_context_fill( desktop, context );
-#endif
                 else
                     return FALSE;
 
@@ -2128,7 +1955,6 @@ gboolean xset_opener( DesktopWindow* desktop, PtkFileBrowser* file_browser,
             // valid
             found = TRUE;
             set->browser = file_browser;
-            set->desktop = desktop;
             char* clean = clean_label( set->menu_label, FALSE, FALSE );
             g_printf( _("\nSelected Menu Item '%s' As Handler\n"), clean );
             g_free( clean );
@@ -2516,7 +2342,7 @@ GtkWidget* xset_get_image( const char* icon, int icon_size )
     return image;
 }
 
-void xset_add_menu( DesktopWindow* desktop, PtkFileBrowser* file_browser,
+void xset_add_menu( PtkFileBrowser* file_browser,
                     GtkWidget* menu, GtkAccelGroup *accel_group, char* elements )
 {
     char* space;
@@ -2537,7 +2363,7 @@ void xset_add_menu( DesktopWindow* desktop, PtkFileBrowser* file_browser,
         if ( space )
             space[0] = ' ';
         elements = space;
-        xset_add_menuitem( desktop, file_browser, menu, accel_group, set );
+        xset_add_menuitem( file_browser, menu, accel_group, set );
         if ( elements )
         {
             while ( elements[0] == ' ' )
@@ -2715,7 +2541,7 @@ GdkPixbuf* xset_custom_get_bookmark_icon( XSet* set, int icon_size )
     return icon_new;
 }
 
-GtkWidget* xset_add_menuitem( DesktopWindow* desktop, PtkFileBrowser* file_browser,
+GtkWidget* xset_add_menuitem( PtkFileBrowser* file_browser,
                                     GtkWidget* menu, GtkAccelGroup *accel_group,
                                     XSet* set )
 {
@@ -2802,11 +2628,11 @@ GtkWidget* xset_add_menuitem( DesktopWindow* desktop, PtkFileBrowser* file_brows
                 g_signal_connect( submenu, "key-press-event",
                                   G_CALLBACK( xset_menu_keypress ), NULL );
                 if ( set->lock )
-                    xset_add_menu( desktop, file_browser, submenu, accel_group, set->desc );
+                    xset_add_menu( file_browser, submenu, accel_group, set->desc );
                 else if ( set->child )
                 {
                     set_next = xset_get( set->child );
-                    xset_add_menuitem( desktop, file_browser, submenu, accel_group, set_next );
+                    xset_add_menuitem( file_browser, submenu, accel_group, set_next );
                     GList* l = gtk_container_get_children( GTK_CONTAINER( submenu ) );
                     if ( l )
                         g_list_free( l );
@@ -2869,7 +2695,6 @@ GtkWidget* xset_add_menuitem( DesktopWindow* desktop, PtkFileBrowser* file_brows
             }
         }
 
-        set->desktop = desktop;
         set->browser = file_browser;
         g_object_set_data( G_OBJECT( item ), "menu", menu );
         g_object_set_data( G_OBJECT( item ), "set", set );
@@ -2925,7 +2750,7 @@ _next_item:
     if ( set->next )
     {
         set_next = xset_get( set->next );
-        xset_add_menuitem( desktop, file_browser, menu, accel_group, set_next );
+        xset_add_menuitem( file_browser, menu, accel_group, set_next );
     }
     return item;
 }
@@ -4284,16 +4109,11 @@ void xset_custom_activate( GtkWidget* item, XSet* set )
         parent = GTK_WIDGET( set->browser );
         task_view = set->browser->task_view;
         cwd = ptk_file_browser_get_cwd( set->browser );
-        set->desktop = NULL;
     }
     else
     {
-        if ( !set->desktop )
-        {
-            g_warning( "xset_custom_activate !browser !desktop" );
-            return;
-        }
-        parent = GTK_WIDGET( set->desktop );
+        g_warning( "xset_custom_activate !browser !desktop" );
+        return;
         cwd = vfs_get_desktop_dir();
     }
 
@@ -4382,15 +4202,6 @@ void xset_custom_activate( GtkWidget* item, XSet* set )
                     screen = gtk_widget_get_screen(
                                                 GTK_WIDGET( set->browser ) );
                 }
-#ifdef DESKTOP_INTEGRATION
-                else if ( set->desktop )
-                {
-                    sel_files = desktop_window_get_selected_files(
-                                                            set->desktop );
-                    screen = gtk_widget_get_screen(
-                                                GTK_WIDGET( set->desktop ) );
-                }
-#endif
                 else
                 {
                     sel_files = NULL;
@@ -4451,8 +4262,7 @@ void xset_custom_activate( GtkWidget* item, XSet* set )
         while ( specs && ( specs[0] == ' ' || specs[0] == ';' ) )
             specs++;
         if ( specs && g_file_test( specs, G_FILE_TEST_EXISTS ) )
-            open_spec( set->browser, specs,
-                                set->desktop || xset_get_b( "book_newtab" ) );
+            open_spec( set->browser, specs, xset_get_b( "book_newtab" ) );
         else
         {
             // parse semi-colon separated list
@@ -4488,7 +4298,6 @@ void xset_custom_activate( GtkWidget* item, XSet* set )
     g_free( task_name );
     // don't free cwd!
     task->task->exec_browser = set->browser;
-    task->task->exec_desktop = set->desktop;
     task->task->exec_command = command;
     task->task->exec_set = set;
 
@@ -4910,8 +4719,7 @@ void xset_show_help( GtkWidget* parent, XSet* set, const char* anchor )
     if ( parent )
         dlgparent = parent;
     else if ( set )
-        dlgparent = set->browser ? GTK_WIDGET( set->browser ) :
-                                   GTK_WIDGET( set->desktop );
+        dlgparent = set->browser;
 
     if ( !set || ( set && set->lock ) )
     {
@@ -5263,7 +5071,6 @@ void xset_design_job( GtkWidget* item, XSet* set )
     char* cscript;
     char* name;
     char* prog;
-    char* command;
     int buttons;
     GtkWidget* dlgparent = NULL;
     GtkWidget* dlg;
@@ -5271,9 +5078,8 @@ void xset_design_job( GtkWidget* item, XSet* set )
     GtkWidget* parent = NULL;
     gboolean update_toolbars = FALSE;
 
-    parent = gtk_widget_get_toplevel( set->browser ?
-                                                GTK_WIDGET( set->browser ) :
-                                                GTK_WIDGET( set->desktop ) );
+    parent = gtk_widget_get_toplevel(set->browser);
+
     int job = GPOINTER_TO_INT( g_object_get_data( G_OBJECT(item), "job" ) );
     int cmd_type = xset_get_int_set( set, "x" );
 
@@ -5465,7 +5271,6 @@ void xset_design_job( GtkWidget* item, XSet* set )
         newset->z = file;
         newset->menu_label = name;
         newset->browser = set->browser;
-        newset->desktop = set->desktop;
         if ( job == XSET_JOB_COMMAND )
             xset_item_prop_dlg( xset_context, newset, 2 );
         else if ( job == XSET_JOB_APP )
@@ -5862,21 +5667,6 @@ void xset_design_job( GtkWidget* item, XSet* set )
         {
             ptk_file_browser_emit_open( set->browser, folder, PTK_OPEN_DIR );
         }
-        else if ( set->desktop )
-        {
-            prog = g_find_program_in_path( g_get_prgname() );
-            if ( !prog )
-                prog = g_strdup( g_get_prgname() );
-            if ( !prog )
-                prog = g_strdup( "spacefm" );
-
-            command = g_strdup_printf( "%s %s", prog, folder );
-            g_printf("COMMAND=%s\n", command);
-            g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
-            g_free( prog );
-            g_free( command );
-            g_free( folder );
-        }
         break;
     case XSET_JOB_BROWSE_DATA:
         if ( set->tool > XSET_TOOL_CUSTOM )
@@ -5899,21 +5689,6 @@ void xset_design_job( GtkWidget* item, XSet* set )
         {
             ptk_file_browser_emit_open( set->browser, folder, PTK_OPEN_DIR );
         }
-        else if ( set->desktop )
-        {
-            prog = g_find_program_in_path( g_get_prgname() );
-            if ( !prog )
-                prog = g_strdup( g_get_prgname() );
-            if ( !prog )
-                prog = g_strdup( "spacefm" );
-
-            command = g_strdup_printf( "%s %s", prog, folder );
-            g_printf("COMMAND=%s\n", command);
-            g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
-            g_free( prog );
-            g_free( command );
-            g_free( folder );
-        }
         break;
     case XSET_JOB_BROWSE_PLUGIN:
         if ( set->plugin && set->plug_dir )
@@ -5921,20 +5696,6 @@ void xset_design_job( GtkWidget* item, XSet* set )
             if ( set->browser )
             {
                 ptk_file_browser_emit_open( set->browser, set->plug_dir, PTK_OPEN_DIR );
-            }
-            else if ( set->desktop )  // should never happen in current version
-            {
-                prog = g_find_program_in_path( g_get_prgname() );
-                if ( !prog )
-                    prog = g_strdup( g_get_prgname() );
-                if ( !prog )
-                    prog = g_strdup( "spacefm" );
-
-                command = g_strdup_printf( "%s %s", prog, set->plug_dir );
-                g_printf("COMMAND=%s\n", command);
-                g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
-                g_free( prog );
-                g_free( command );
             }
         }
         break;
@@ -6927,12 +6688,10 @@ void xset_menu_cb( GtkWidget* item, XSet* set )
                     fm_main_window_get_current_file_browser( main_window ) );
         else
             set->browser = NULL;
-        set->desktop = NULL;
     }
 */
 
-    parent = set->browser ? GTK_WIDGET( set->browser ) :
-                            GTK_WIDGET( set->desktop );
+    parent = set->browser;
 
     if ( set->plugin )
     {
@@ -6947,7 +6706,6 @@ void xset_menu_cb( GtkWidget* item, XSet* set )
         mset = set;
         rset = xset_get( set->shared_key );
         rset->browser = set->browser;
-        rset->desktop = set->desktop;
     }
     else
     {
@@ -7272,12 +7030,10 @@ void on_multi_input_popup( GtkTextView *input, GtkMenu *menu, gpointer user_data
     XSet* set = xset_get( "sep_multi" );
     set->menu_style = XSET_MENU_SEP;
     set->browser = NULL;
-    set->desktop = NULL;
-    xset_add_menuitem( NULL, NULL, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( NULL, GTK_WIDGET( menu ), accel_group, set );
     set = xset_set_cb( "input_font", on_multi_input_font_change, input );
     set->browser = NULL;
-    set->desktop = NULL;
-    xset_add_menuitem( NULL, NULL, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( NULL, GTK_WIDGET( menu ), accel_group, set );
     gtk_widget_show_all( GTK_WIDGET( menu ) );
     g_signal_connect( G_OBJECT( menu ), "key-press-event",
                       G_CALLBACK( xset_menu_keypress ), NULL );
@@ -8098,7 +7854,6 @@ gboolean on_tool_icon_button_press( GtkWidget *widget,
         return TRUE;
     ptk_file_browser_focus_me( file_browser );
     set->browser = file_browser;
-    set->desktop = NULL;
 
     // get context
     XSetContext* context = xset_context_new();
@@ -8258,7 +8013,7 @@ gboolean on_tool_menu_button_press( GtkWidget *widget,
                 return TRUE;
             GtkWidget* menu = gtk_menu_new();
             GtkAccelGroup* accel_group = gtk_accel_group_new();
-            xset_add_menuitem( NULL, file_browser, menu, accel_group,
+            xset_add_menuitem( file_browser, menu, accel_group,
                                                                 set_child );
             gtk_widget_show_all( GTK_WIDGET( menu ) );
             gtk_menu_popup( GTK_MENU( menu ), NULL, NULL, NULL, NULL,
@@ -8325,7 +8080,6 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
     int real_icon_size = icon_w > icon_h ? icon_w : icon_h;
 
     set->browser = file_browser;
-    set->desktop = NULL;
 
     // builtin toolitems set shared_key on build
     if ( set->tool >= XSET_TOOL_INVALID )
@@ -9901,53 +9655,6 @@ void xset_defaults()
         set = xset_set( "task_q_pause", "lbl", _("_Pause On Error") );
         set->menu_style = XSET_MENU_CHECK;
         set->line = g_strdup( "#tasks-menu-qpause" );
-
-    // Desktop
-    set = xset_get( "sep_desk1" );
-    set->menu_style = XSET_MENU_SEP;
-    set = xset_get( "sep_desk2" );
-    set->menu_style = XSET_MENU_SEP;
-
-    set = xset_set( "desk_icons", "lbl", _("Arrange _Icons") );
-    set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "icn", "gtk-sort-ascending" );
-    xset_set_set( set, "desc", "desk_sort_name desk_sort_type desk_sort_date desk_sort_size desk_sort_cust sep_desk1 desk_sort_ascend desk_sort_descend" );
-
-        set = xset_set( "desk_sort_name", "lbl", _("By _Name") );
-        set->menu_style = XSET_MENU_RADIO;
-
-        set = xset_set( "desk_sort_type", "lbl", _("By _Type") );
-        set->menu_style = XSET_MENU_RADIO;
-
-        set = xset_set( "desk_sort_date", "lbl", _("By _Date") );
-        set->menu_style = XSET_MENU_RADIO;
-
-        set = xset_set( "desk_sort_size", "lbl", _("By _Size") );
-        set->menu_style = XSET_MENU_RADIO;
-
-        set = xset_set( "desk_sort_cust", "lbl", _("_Custom") );
-        set->menu_style = XSET_MENU_RADIO;
-
-        set = xset_set( "desk_sort_ascend", "lbl", _("_Ascending") );
-        set->menu_style = XSET_MENU_RADIO;
-
-        set = xset_set( "desk_sort_descend", "lbl", _("D_escending") );
-        set->menu_style = XSET_MENU_RADIO;
-
-    set = xset_set( "desk_pref", "lbl", _("Desktop _Settings") );
-    xset_set_set( set, "icn", "gtk-preferences" );
-    // set->b keeps desktop prefs compositing wm info has been shown
-
-    set = xset_set( "desk_dev", "lbl", _("De_vices") );
-    set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "icn", "gtk-harddisk" );
-
-    set = xset_set( "desk_book", "lbl", _("_Bookmarks") );
-    set->menu_style = XSET_MENU_SUBMENU;
-    xset_set_set( set, "icn", "gtk-jump-to" );
-
-    set = xset_set( "desk_open", "lbl", _("_Desktop Folder") );
-    xset_set_set( set, "icn", "gtk-open" );
 
     // Menu Item Properties
     set = xset_get( "sep_ctxt" );

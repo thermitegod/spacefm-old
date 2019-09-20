@@ -29,11 +29,9 @@ enum {
 };
 
 // Pass file_browser or desktop depending on where you're calling from
-void ptk_file_archiver_create( DesktopWindow *desktop,
-                               PtkFileBrowser *file_browser, GList *files,
+void ptk_file_archiver_create( PtkFileBrowser *file_browser, GList *files,
                                const char *cwd );
-void ptk_file_archiver_extract( DesktopWindow *desktop,
-                                PtkFileBrowser *file_browser,
+void ptk_file_archiver_extract( PtkFileBrowser *file_browser,
                                 GList *files, const char *cwd,
                                 const char *dest_dir, int job,
                                 gboolean archive_presence_checked );

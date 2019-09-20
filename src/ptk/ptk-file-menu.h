@@ -16,7 +16,6 @@
 #include <gtk/gtk.h>
 #include "ptk-file-browser.h"
 #include "vfs-file-info.h"
-#include "desktop-window.h"
 
 G_BEGIN_DECLS
 
@@ -29,7 +28,6 @@ typedef struct _PtkFileMenu PtkFileMenu;
 struct _PtkFileMenu
 {
     PtkFileBrowser* browser;
-    DesktopWindow* desktop;
     char* cwd;
     char* file_path;
     VFSFileInfo* info;
@@ -38,7 +36,7 @@ struct _PtkFileMenu
 };
 
 
-GtkWidget* ptk_file_menu_new( DesktopWindow* desktop, PtkFileBrowser* browser,
+GtkWidget* ptk_file_menu_new( PtkFileBrowser* browser,
                                 const char* file_path, VFSFileInfo* info,
                                 const char* cwd, GList* sel_files );
 
@@ -49,8 +47,7 @@ void ptk_file_menu_add_panel_view_menu( PtkFileBrowser* browser,
 void on_popup_open_in_new_tab_here( GtkMenuItem *menuitem,
                                         PtkFileMenu* data );
 
-void ptk_file_menu_action( DesktopWindow* desktop, PtkFileBrowser* browser,
-                                                            char* setname );
+void ptk_file_menu_action( PtkFileBrowser* browser, char* setname );
 
 void on_popup_sortby( GtkMenuItem *menuitem, PtkFileBrowser* file_browser, int order );
 void on_popup_list_detailed( GtkMenuItem *menuitem, PtkFileBrowser* browser );

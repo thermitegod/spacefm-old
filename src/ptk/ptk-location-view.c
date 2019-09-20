@@ -388,7 +388,7 @@ void on_row_activated( GtkTreeView* view, GtkTreePath* tree_path,
     if ( !vol )
         return;
 
-    if ( xset_opener( NULL, file_browser, 2 ) )
+    if ( xset_opener( file_browser, 2 ) )
         return;
 
     if ( !vfs_volume_is_mounted( vol ) && vol->device_type == DEVICE_TYPE_BLOCK )
@@ -2412,7 +2412,7 @@ static void on_handler_show_config( GtkMenuItem* item, GtkWidget* view, XSet* se
         return;
     PtkFileBrowser* file_browser = (PtkFileBrowser*)g_object_get_data( G_OBJECT(view),
                                                                 "file_browser" );
-    ptk_handler_show_config( mode, NULL, file_browser, NULL );
+    ptk_handler_show_config( mode, file_browser, NULL );
 }
 
 void open_external_tab( const char* path )
@@ -2664,7 +2664,7 @@ static void show_devices_menu( GtkTreeView* view, VFSVolume* vol,
         str = "";
 
     char* menu_elements = g_strdup_printf( "dev_menu_remove dev_menu_reload dev_menu_unmount dev_menu_sync sep_dm1 dev_menu_open dev_menu_tab dev_menu_mount dev_menu_remount%s", str );
-    xset_add_menu( NULL, file_browser, popup, accel_group, menu_elements );
+    xset_add_menu( file_browser, popup, accel_group, menu_elements );
     g_free( menu_elements );
 
     set = xset_set_cb( "dev_prop", on_prop, vol );
@@ -2714,7 +2714,7 @@ static void show_devices_menu( GtkTreeView* view, VFSVolume* vol,
     g_free( menu_elements );
 
     menu_elements = g_strdup_printf( "sep_dm2 dev_menu_root sep_dm3 dev_prop dev_menu_settings" );
-    xset_add_menu( NULL, file_browser, popup, accel_group, menu_elements );
+    xset_add_menu( file_browser, popup, accel_group, menu_elements );
     g_free( menu_elements );
 
     gtk_widget_show_all( GTK_WIDGET(popup) );
@@ -2853,7 +2853,7 @@ static void show_dev_design_menu( GtkWidget* menu, GtkWidget* dev_item,
 
         // device opener?  note that context may be based on devices list sel
         // won't work for desktop because no DesktopWindow currently available
-        if ( file_browser && xset_opener( NULL, file_browser, 2 ) )
+        if ( file_browser && xset_opener( file_browser, 2 ) )
             return;
 
         if ( file_browser )
@@ -3089,7 +3089,7 @@ gboolean on_dev_menu_button_press( GtkWidget* item, GdkEventButton* event,
             PtkFileBrowser* file_browser = (PtkFileBrowser*)g_object_get_data( G_OBJECT(view),
                                                             "file_browser" );
 printf("xxxxxxxxxxxxxxxxxxxx %p\n", file_browser);
-            if ( file_browser && xset_opener( NULL, file_browser, 2 ) )
+            if ( file_browser && xset_opener( file_browser, 2 ) )
             {
                 g_printf("    TRUE\n");
                 return TRUE;
@@ -4172,7 +4172,6 @@ static void activate_bookmark_item( XSet* sel_set, GtkTreeView *view,
     {
         // activate bookmark
         sel_set->browser = file_browser;
-        sel_set->desktop = NULL;
         if ( reverse )
         {
             // temporarily reverse the New Tab setting
@@ -4443,13 +4442,13 @@ static void show_bookmarks_menu( GtkTreeView* view,
     set->desc = g_strdup_printf( "book_single book_newtab panel%d_book_fol book_icon book_menu_icon panel%d_font_book",
                         file_browser->mypanel, file_browser->mypanel );
     GtkAccelGroup* accel_group = gtk_accel_group_new();
-    xset_add_menuitem( NULL, file_browser, popup, accel_group, set );
+    xset_add_menuitem( file_browser, popup, accel_group, set );
     gtk_menu_shell_prepend( GTK_MENU_SHELL( popup ),
                                         gtk_separator_menu_item_new() );
     set = xset_set_cb( "book_open", ptk_bookmark_view_on_open_reverse,
                                                     file_browser );
     set->disable = !bookmark_selected;
-    GtkWidget* item = xset_add_menuitem( NULL, file_browser, popup,
+    GtkWidget* item = xset_add_menuitem( file_browser, popup,
                                          accel_group, set );
     gtk_menu_reorder_child( GTK_MENU( popup ), item, 0 );
     gtk_widget_show_all( popup );

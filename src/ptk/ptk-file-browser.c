@@ -1254,7 +1254,7 @@ void on_status_bar_popup( GtkWidget *widget, GtkWidget *menu,
     xset_set_cb( "status_hide", on_status_middle_click_config, set );
     xset_set_ob2( set, NULL, set_radio );
 
-    xset_add_menu( NULL, file_browser, menu, accel_group, desc );
+    xset_add_menu( file_browser, menu, accel_group, desc );
     g_free( desc );
     gtk_widget_show_all( menu );
     g_signal_connect( menu, "key-press-event",
@@ -3611,7 +3611,7 @@ static void show_popup_menu( PtkFileBrowser* file_browser,
             button = 0;
             time = gtk_get_current_event_time();
         }
-        popup = ptk_file_menu_new( NULL, file_browser,
+        popup = ptk_file_menu_new( file_browser,
                 file_path, file,
                 dir_name ? dir_name : cwd,
                 sel_files );
@@ -5243,7 +5243,7 @@ void ptk_file_browser_rename_selected_files( PtkFileBrowser* file_browser,
     for ( l = files; l; l = l->next )
     {
         file = (VFSFileInfo*)l->data;
-        if ( !ptk_rename_file( NULL, file_browser, cwd, file, NULL, FALSE,
+        if ( !ptk_rename_file( file_browser, cwd, file, NULL, FALSE,
                                                         PTK_RENAME, NULL ) )
             break;
     }
@@ -5376,7 +5376,7 @@ void ptk_file_browser_open_selected_files_with_app( PtkFileBrowser* file_browser
     sel_files = ptk_file_browser_get_selected_files( file_browser );
 
     ptk_open_files_with_app( ptk_file_browser_get_cwd( file_browser ),
-                         sel_files, app_desktop, NULL, file_browser,
+                         sel_files, app_desktop, file_browser,
                          FALSE, FALSE );
 
     vfs_file_info_list_free( sel_files );
@@ -5384,7 +5384,7 @@ void ptk_file_browser_open_selected_files_with_app( PtkFileBrowser* file_browser
 
 void ptk_file_browser_open_selected_files( PtkFileBrowser* file_browser )
 {
-    if ( xset_opener( NULL, file_browser, 1 ) )
+    if ( xset_opener( file_browser, 1 ) )
         return;
     ptk_file_browser_open_selected_files_with_app( file_browser, NULL );
 }
@@ -6598,7 +6598,7 @@ void ptk_file_browser_on_action( PtkFileBrowser* browser, char* setname )
         else if ( !strcmp( xname, "target" ) )
             ptk_file_browser_paste_target( browser );
         else if ( !strcmp( xname, "as" ) )
-            ptk_file_misc_paste_as( NULL, browser,
+            ptk_file_misc_paste_as( browser,
                                 ptk_file_browser_get_cwd( browser ), NULL );
     }
     else if ( g_str_has_prefix( set->name, "select_" ) )
@@ -6614,7 +6614,7 @@ void ptk_file_browser_on_action( PtkFileBrowser* browser, char* setname )
             ptk_file_browser_select_pattern( NULL, browser, NULL );
     }
     else  // all the rest require ptkfilemenu data
-        ptk_file_menu_action( NULL, browser, set->name );
+        ptk_file_menu_action( browser, set->name );
 }
 
 

@@ -15,7 +15,6 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include "ptk-file-browser.h"
-#include "desktop-window.h"
 
 // this determines time before item is selected by hover in single-click mode
 #define SINGLE_CLICK_TIMEOUT 150
@@ -60,31 +59,9 @@ typedef struct
     int height;
     gboolean maximized;
 
-#ifdef DESKTOP_INTEGRATION
     /* Desktop */
-    //gboolean show_desktop;
-    gboolean show_wallpaper;
-    char* wallpaper;
-    WallpaperMode wallpaper_mode;
-#endif
     int desktop_sort_by;
     int desktop_sort_type;
-#ifdef DESKTOP_INTEGRATION
-    gboolean show_wm_menu;
-    gboolean desk_single_click;
-    gboolean desk_no_single_hover;
-    gboolean desk_open_mime;
-    PangoFontDescription* desk_font;
-    GdkColor desktop_bg1;
-    GdkColor desktop_bg2;
-    GdkColor desktop_text;
-    GdkColor desktop_shadow;
-    int margin_top;
-    int margin_left;
-    int margin_right;
-    int margin_bottom;
-    int margin_pad;
-#endif
 
     /* Interface */
     gboolean always_show_tabs;
@@ -257,7 +234,6 @@ typedef struct
     char* ob2;              // not saved
     gpointer ob2_data;      // not saved
     PtkFileBrowser* browser;// not saved - set automatically
-    DesktopWindow* desktop; // not saved - set automatically
     int key;
     int keymod;
     char* shared_key;       // not saved
@@ -369,9 +345,9 @@ void xset_custom_export( GtkWidget* parent, PtkFileBrowser* file_browser,
                                                                     XSet* set );
 GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
                                   guint button, guint32 time );
-void xset_add_menu( DesktopWindow* desktop, PtkFileBrowser* file_browser,
+void xset_add_menu( PtkFileBrowser* file_browser,
                     GtkWidget* menu, GtkAccelGroup *accel_group, char* elements );
-GtkWidget* xset_add_menuitem( DesktopWindow* desktop, PtkFileBrowser* file_browser,
+GtkWidget* xset_add_menuitem( PtkFileBrowser* file_browser,
                                     GtkWidget* menu, GtkAccelGroup *accel_group,
                                     XSet* set );
 GtkWidget* xset_get_image( const char* icon, int icon_size );
@@ -413,7 +389,7 @@ void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
 XSet* xset_import_plugin( const char* plug_dir, gboolean* is_bookmarks );
 void clean_plugin_mirrors();
 void xset_show_help( GtkWidget* parent, XSet* set, const char* anchor );
-gboolean xset_opener( DesktopWindow* desktop, PtkFileBrowser* file_browser,
+gboolean xset_opener( PtkFileBrowser* file_browser,
                                                             char job );
 const char* xset_get_builtin_toolitem_label( char tool_type );
 char* xset_icon_chooser_dialog( GtkWindow* parent, const char* def_icon );

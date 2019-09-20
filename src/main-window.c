@@ -49,10 +49,6 @@
 
 #include <glib/gprintf.h>
 
-#ifdef DESKTOP_INTEGRATION
-#include "desktop.h"
-#endif
-
 #ifdef HAVE_STATVFS
 /* FIXME: statvfs support should be moved to src/vfs */
 #include <sys/statvfs.h>
@@ -412,22 +408,22 @@ GtkWidget* create_plugins_menu( FMMainWindow* main_window )
         xset_set_ob1( set, "set", set );
 
     set = xset_get( "plug_install" );
-    xset_add_menuitem( NULL, file_browser, plug_menu, accel_group, set );
+    xset_add_menuitem( file_browser, plug_menu, accel_group, set );
     set = xset_get( "plug_copy" );
-    xset_add_menuitem( NULL, file_browser, plug_menu, accel_group, set );
+    xset_add_menuitem( file_browser, plug_menu, accel_group, set );
 
     item = gtk_separator_menu_item_new();
     gtk_menu_shell_append( GTK_MENU_SHELL( plug_menu ), item );
 
     set = xset_get( "plug_inc" );
-    item = xset_add_menuitem( NULL, file_browser, plug_menu, accel_group, set );
+    item = xset_add_menuitem( file_browser, plug_menu, accel_group, set );
     if ( item )
     {
         GtkWidget* inc_menu = gtk_menu_item_get_submenu( GTK_MENU_ITEM ( item ) );
 
         plugins = xset_get_plugins( TRUE );
         for ( l = plugins; l; l = l->next )
-            xset_add_menuitem( NULL, file_browser, inc_menu, accel_group,
+            xset_add_menuitem( file_browser, inc_menu, accel_group,
                                                                     (XSet*)l->data );
     }
     set->disable = !plugins;
@@ -436,7 +432,7 @@ GtkWidget* create_plugins_menu( FMMainWindow* main_window )
 
     plugins = xset_get_plugins( FALSE );
     for ( l = plugins; l; l = l->next )
-        xset_add_menuitem( NULL, file_browser, plug_menu, accel_group,
+        xset_add_menuitem( file_browser, plug_menu, accel_group,
                                                                 (XSet*)l->data );
     if ( plugins )
         g_list_free( plugins );
@@ -549,18 +545,18 @@ GtkWidget* create_devices_menu( FMMainWindow* main_window )
 
     set = xset_set_cb( "main_dev", on_devices_show, main_window );
     set->b = file_browser->side_dev ? XSET_B_TRUE : XSET_B_UNSET;
-    xset_add_menuitem( NULL, file_browser, dev_menu, accel_group, set );
+    xset_add_menuitem( file_browser, dev_menu, accel_group, set );
 
     set = xset_get( "main_dev_sep" );
-    xset_add_menuitem( NULL, file_browser, dev_menu, accel_group, set );
+    xset_add_menuitem( file_browser, dev_menu, accel_group, set );
 
     ptk_location_view_dev_menu( GTK_WIDGET( file_browser ), file_browser, dev_menu );
 
     set = xset_get( "sep_dm3" );
-    xset_add_menuitem( NULL, file_browser, dev_menu, accel_group, set );
+    xset_add_menuitem( file_browser, dev_menu, accel_group, set );
 
     set = xset_get( "dev_menu_settings" );
-    xset_add_menuitem( NULL, file_browser, dev_menu, accel_group, set );
+    xset_add_menuitem( file_browser, dev_menu, accel_group, set );
 
     // show all
     gtk_widget_show_all( dev_menu );
@@ -1179,11 +1175,6 @@ void main_window_toggle_thumbnails_all_windows()
             }
         }
     }
-
-#ifdef DESKTOP_INTEGRATION
-    fm_desktop_update_thumbnails();
-#endif
-
     /* Ensuring free space at the end of the heap is freed to the OS,
      * mainly to deal with the possibility thousands of large thumbnails
      * have been freed but the memory not actually released by SpaceFM */
@@ -1709,7 +1700,7 @@ void rebuild_menus( FMMainWindow* main_window )
     xset_set_cb( "main_save_session", on_open_url, main_window );
     xset_set_cb( "main_exit", on_quit_activate, main_window );
     menu_elements = g_strdup_printf( "main_save_session main_search sep_f1 main_terminal main_root_terminal main_new_window main_root_window sep_f2 main_save_tabs sep_f3 main_exit" );
-    xset_add_menu( NULL, file_browser, newmenu, accel_group, menu_elements );
+    xset_add_menu( file_browser, newmenu, accel_group, menu_elements );
     g_free( menu_elements );
     gtk_widget_show_all( GTK_WIDGET(newmenu) );
     g_signal_connect( newmenu, "key-press-event",
@@ -1774,7 +1765,7 @@ void rebuild_menus( FMMainWindow* main_window )
     char* menu_elements2 = g_strdup_printf( "sep_v1 main_tasks main_auto sep_v2 main_title main_icon main_full sep_v3 main_design_mode main_prefs" );
 
     main_task_prepare_menu( main_window, newmenu, accel_group );
-    xset_add_menu( NULL, file_browser, newmenu, accel_group, menu_elements );
+    xset_add_menu( file_browser, newmenu, accel_group, menu_elements );
 
     // Panel View submenu
     set = xset_get( "con_view" );
@@ -1785,7 +1776,7 @@ void rebuild_menus( FMMainWindow* main_window )
     g_free( set->menu_label );
     set->menu_label = str;
 
-    xset_add_menu( NULL, file_browser, newmenu, accel_group, menu_elements2 );
+    xset_add_menu( file_browser, newmenu, accel_group, menu_elements2 );
     g_free( menu_elements );
     g_free( menu_elements2 );
     gtk_widget_show_all( GTK_WIDGET(newmenu) );
@@ -1804,15 +1795,15 @@ void rebuild_menus( FMMainWindow* main_window )
     newmenu = gtk_menu_new();
     set = xset_set_cb( "book_show", on_bookmarks_show, main_window );
     set->b = file_browser->side_book ? XSET_B_TRUE : XSET_B_UNSET;
-    xset_add_menuitem( NULL, file_browser, newmenu, accel_group,
+    xset_add_menuitem( file_browser, newmenu, accel_group,
                                 set );
     set = xset_set_cb( "book_add", ptk_bookmark_view_add_bookmark, file_browser );
     set->disable = FALSE;
-    xset_add_menuitem( NULL, file_browser, newmenu, accel_group,
+    xset_add_menuitem( file_browser, newmenu, accel_group,
                                 set );
     gtk_menu_shell_append( GTK_MENU_SHELL(newmenu),
                                 gtk_separator_menu_item_new() );
-    xset_add_menuitem( NULL, file_browser, newmenu, accel_group,
+    xset_add_menuitem( file_browser, newmenu, accel_group,
                                 ptk_bookmark_view_get_first_bookmark( NULL ) );
     gtk_widget_show_all( GTK_WIDGET(newmenu) );
     g_signal_connect( newmenu, "key-press-event",
@@ -1839,7 +1830,7 @@ void rebuild_menus( FMMainWindow* main_window )
     }
     else
         child_set = xset_get( set->child );
-    xset_add_menuitem( NULL, file_browser, newmenu, accel_group, child_set );
+    xset_add_menuitem( file_browser, newmenu, accel_group, child_set );
     gtk_widget_show_all( GTK_WIDGET(newmenu) );
     g_signal_connect( newmenu, "key-press-event",
                       G_CALLBACK( xset_menu_keypress ), NULL );
@@ -1852,7 +1843,7 @@ void rebuild_menus( FMMainWindow* main_window )
     xset_set_cb( "main_help", on_main_help_activate, main_window );
     xset_set_cb( "main_getplug", on_getplug_activate, main_window );
     menu_elements = g_strdup_printf( "main_help sep_h1 main_getplug sep_h2 main_help_opt sep_h3 main_about" );
-    xset_add_menu( NULL, file_browser, newmenu, accel_group, menu_elements );
+    xset_add_menu( file_browser, newmenu, accel_group, menu_elements );
     g_free( menu_elements );
     gtk_widget_show_all( GTK_WIDGET(newmenu) );
     g_signal_connect( newmenu, "key-press-event",
@@ -2585,20 +2576,20 @@ gboolean notebook_clicked (GtkWidget* widget, GdkEventButton * event,
 
             XSet* set = xset_set_cb( "tab_close", on_close_notebook_page,
                                                                 file_browser );
-            xset_add_menuitem( NULL, file_browser, popup, accel_group, set );
+            xset_add_menuitem( file_browser, popup, accel_group, set );
             set = xset_set_cb( "tab_new", ptk_file_browser_new_tab, file_browser );
-            xset_add_menuitem( NULL, file_browser, popup, accel_group, set );
+            xset_add_menuitem( file_browser, popup, accel_group, set );
             set = xset_set_cb( "tab_new_here", ptk_file_browser_new_tab_here,
                                                                 file_browser );
-            xset_add_menuitem( NULL, file_browser, popup, accel_group, set );
+            xset_add_menuitem( file_browser, popup, accel_group, set );
             set = xset_get( "sep_tab" );
-            xset_add_menuitem( NULL, file_browser, popup, accel_group, set );
+            xset_add_menuitem( file_browser, popup, accel_group, set );
             set = xset_set_cb_panel( file_browser->mypanel, "icon_tab",
                                                 main_update_fonts, file_browser );
-            xset_add_menuitem( NULL, file_browser, popup, accel_group, set );
+            xset_add_menuitem( file_browser, popup, accel_group, set );
             set = xset_set_cb_panel( file_browser->mypanel, "font_tab",
                                                 main_update_fonts, file_browser );
-            xset_add_menuitem( NULL, file_browser, popup, accel_group, set );
+            xset_add_menuitem( file_browser, popup, accel_group, set );
             gtk_widget_show_all( GTK_WIDGET( popup ) );
             g_signal_connect( popup, "selection-done",
                   G_CALLBACK( gtk_widget_destroy ), NULL );
@@ -5380,7 +5371,7 @@ gboolean on_task_button_press_event( GtkWidget* view, GdkEventButton *event,
 
         xset_set_cb( "font_task", main_update_fonts, file_browser );
         char* menu_elements = g_strdup_printf( "task_stop sep_t3 task_pause task_que task_resume%s task_all sep_t4 task_show_manager task_hide_manager sep_t5 task_columns task_popups task_errors task_queue", showout );
-        xset_add_menu( NULL, file_browser, popup, accel_group, menu_elements );
+        xset_add_menu( file_browser, popup, accel_group, menu_elements );
         g_free( menu_elements );
 
         gtk_widget_show_all( GTK_WIDGET( popup ) );
@@ -7618,7 +7609,7 @@ _invalid_get:
             widget = gtk_menu_new();
             GtkAccelGroup* accel_group = gtk_accel_group_new();
 
-            xset_add_menuitem( NULL, file_browser, GTK_WIDGET( widget ), accel_group,
+            xset_add_menuitem( file_browser, GTK_WIDGET( widget ), accel_group,
                                                                     set );
             g_idle_add( (GSourceFunc)delayed_show_menu, widget );
         }

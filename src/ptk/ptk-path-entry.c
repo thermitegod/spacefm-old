@@ -523,7 +523,7 @@ void ptk_path_entry_man( GtkWidget* widget, GtkWidget* parent )
 
 void on_protocol_handlers( GtkWidget* widget, PtkFileBrowser* file_browser )
 {
-    ptk_handler_show_config( HANDLER_MODE_NET, NULL, file_browser, NULL );
+    ptk_handler_show_config( HANDLER_MODE_NET, file_browser, NULL );
 }
 
 void on_add_bookmark( GtkWidget* widget, PtkFileBrowser* file_browser )
@@ -630,7 +630,7 @@ void on_populate_popup( GtkEntry *entry, GtkMenu *menu, PtkFileBrowser* file_bro
 
     GtkAccelGroup* accel_group = gtk_accel_group_new();
     XSet* set = xset_get( "sep_entry" );
-    xset_add_menuitem( NULL, file_browser, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( file_browser, GTK_WIDGET( menu ), accel_group, set );
 
     // New Bookmark
     set = xset_set_cb( "book_add", on_add_bookmark, file_browser );
@@ -638,16 +638,16 @@ void on_populate_popup( GtkEntry *entry, GtkMenu *menu, PtkFileBrowser* file_bro
     set->disable = !( text && ( g_file_test( text, G_FILE_TEST_EXISTS ) ||
                                 strstr( text, ":/" ) ||
                                 g_str_has_prefix( text, "//" ) ) );
-    xset_add_menuitem( NULL, file_browser, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( file_browser, GTK_WIDGET( menu ), accel_group, set );
 
     set = xset_get( "path_seek" );
-    xset_add_menuitem( NULL, file_browser, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( file_browser, GTK_WIDGET( menu ), accel_group, set );
     set = xset_set_cb( "path_hand", on_protocol_handlers, file_browser );
-    xset_add_menuitem( NULL, file_browser, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( file_browser, GTK_WIDGET( menu ), accel_group, set );
     set = xset_set_cb_panel( file_browser->mypanel, "font_path", main_update_fonts, file_browser );
-    xset_add_menuitem( NULL, file_browser, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( file_browser, GTK_WIDGET( menu ), accel_group, set );
     set = xset_set_cb( "path_help", ptk_path_entry_man, file_browser );
-    xset_add_menuitem( NULL, file_browser, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( file_browser, GTK_WIDGET( menu ), accel_group, set );
     gtk_widget_show_all( GTK_WIDGET( menu ) );
     g_signal_connect( menu, "key-press-event",
                       G_CALLBACK( xset_menu_keypress ), NULL );

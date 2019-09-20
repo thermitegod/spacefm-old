@@ -643,8 +643,6 @@ USE_GIT_FALSE
 USE_GIT_TRUE
 DEPRECATED_HW_FALSE
 DEPRECATED_HW_TRUE
-DESKTOP_INTEGRATION_FALSE
-DESKTOP_INTEGRATION_TRUE
 LIBUDEV_LIBS
 LIBUDEV_CFLAGS
 G_CAST_CHECKS
@@ -828,7 +826,6 @@ with_gtk2
 enable_startup_notification
 enable_cast_checks
 with_preferable_sudo
-enable_desktop_integration
 enable_deprecated_hw
 enable_git
 enable_video_thumbnails
@@ -1492,9 +1489,6 @@ Optional Features:
                           disable use of libstartup-notification (default:
                           enable if installed)
   --enable-cast-checks    enable Glib casting checks (default: disable)
-  --disable-desktop-integration
-                          disable desktop manager integration (default:
-                          enable)
   --enable-deprecated-hw  enable deprecated hardware support
                           (firewire,audiocd,dvd) (default: disable)
   --disable-git           use git to keep history of session file (default:
@@ -15418,27 +15412,6 @@ if test ! -z "$preferable_sudo"; then
   CFLAGS="$CFLAGS -DPREFERABLE_SUDO_PROG=\\\"$preferable_sudo\\\""
 fi
 
-# Check whether --enable-desktop-integration was given.
-if test "${enable_desktop_integration+set}" = set; then :
-  enableval=$enable_desktop_integration; desktop_integration=$enableval
-else
-  desktop_integration="no"
-fi
-
-if test x"$desktop_integration" = "xyes"; then
-
-$as_echo "#define DESKTOP_INTEGRATION 1" >>confdefs.h
-
-fi
- if test "$desktop_integration" = "yes"; then
-  DESKTOP_INTEGRATION_TRUE=
-  DESKTOP_INTEGRATION_FALSE='#'
-else
-  DESKTOP_INTEGRATION_TRUE='#'
-  DESKTOP_INTEGRATION_FALSE=
-fi
-
-
 # Check whether --enable-deprecated_hw was given.
 if test "${enable_deprecated_hw+set}" = set; then :
   enableval=$enable_deprecated_hw; deprecated_hw=$enableval
@@ -15834,10 +15807,6 @@ fi
   ac_config_commands="$ac_config_commands po/stamp-it"
 
 
-if test -z "${DESKTOP_INTEGRATION_TRUE}" && test -z "${DESKTOP_INTEGRATION_FALSE}"; then
-  as_fn_error $? "conditional \"DESKTOP_INTEGRATION\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
 if test -z "${DEPRECATED_HW_TRUE}" && test -z "${DEPRECATED_HW_FALSE}"; then
   as_fn_error $? "conditional \"DEPRECATED_HW\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -17873,7 +17842,6 @@ echo 'GTK+ Version................................. : GTK 3'
 else
 echo 'GTK+ Version................................. : GTK 2'
 fi
-echo Desktop manager integration.................. : $desktop_integration
 echo Deprecated Hardware support.................. : $deprecated_hw
 echo Git session backend.......................... : $use_git
 echo Startup notification......................... : $use_sn

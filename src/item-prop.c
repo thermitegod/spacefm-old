@@ -1483,12 +1483,10 @@ void on_script_popup( GtkTextView *input, GtkMenu *menu, gpointer user_data )
     XSet* set = xset_get( "sep_ctxt" );
     set->menu_style = XSET_MENU_SEP;
     set->browser = NULL;
-    set->desktop = NULL;
-    xset_add_menuitem( NULL, NULL, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( NULL, GTK_WIDGET( menu ), accel_group, set );
     set = xset_set_cb( "context_dlg", on_script_font_change, input );
     set->browser = NULL;
-    set->desktop = NULL;
-    xset_add_menuitem( NULL, NULL, GTK_WIDGET( menu ), accel_group, set );
+    xset_add_menuitem( NULL, GTK_WIDGET( menu ), accel_group, set );
 
     gtk_widget_show_all( GTK_WIDGET( menu ) );
 }
@@ -1599,8 +1597,6 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
     ctxt->parent = NULL;
     if ( set->browser )
         ctxt->parent = gtk_widget_get_toplevel( GTK_WIDGET( set->browser ) );
-    else if ( set->desktop )
-        ctxt->parent = gtk_widget_get_toplevel( GTK_WIDGET( set->desktop ) );
 
     // Dialog
     ctxt->dlg = gtk_dialog_new_with_buttons(
@@ -2127,7 +2123,6 @@ void xset_item_prop_dlg( XSetContext* context, XSet* set, int page )
         mset = set;
         rset = xset_get( set->shared_key );
         rset->browser = set->browser;
-        rset->desktop = set->desktop;
     }
     else
     {

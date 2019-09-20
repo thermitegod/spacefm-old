@@ -33,7 +33,6 @@
 #include "settings.h"
 #include <sys/wait.h> //MOD for exec
 #include "main-window.h"
-#include "desktop-window.h"
 #include "vfs-volume.h"
 
 #include <glib/gprintf.h>
@@ -1506,11 +1505,8 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
             if ( task->exec_browser )
                 success = main_write_exports( task, value, file );
             else
-#ifdef DESKTOP_INTEGRATION
-                success = desktop_write_exports( task, value, file );
-#else
                 success = FALSE;
-#endif
+
             if ( !success )
                 goto _exit_with_error;
         }

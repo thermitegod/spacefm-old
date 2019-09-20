@@ -464,7 +464,7 @@ gboolean on_dir_tree_view_button_press( GtkWidget* view,
                          * This simulates a right-click in the file list when
                          * no files are selected (even if some are) since
                          * actions are to be taken on the dir itself. */
-                        GtkWidget* popup = ptk_file_menu_new( NULL, browser,
+                        GtkWidget* popup = ptk_file_menu_new( browser,
                                                               NULL, NULL,
                                                               dir_path, NULL );
                         if ( popup )
@@ -556,7 +556,7 @@ gboolean on_dir_tree_view_key_press( GtkWidget* view,
              * This simulates a right-click in the file list when
              * no files are selected (even if some are) since
              * actions are to be taken on the dir itself. */
-            GtkWidget* popup = ptk_file_menu_new( NULL, browser,
+            GtkWidget* popup = ptk_file_menu_new( browser,
                                                   NULL, NULL,
                                                   dir_path, NULL );
             if ( popup )

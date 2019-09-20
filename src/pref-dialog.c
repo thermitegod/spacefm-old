@@ -13,10 +13,6 @@
 #  include <config.h>
 #endif
 
-#ifdef DESKTOP_INTEGRATION
-#include "desktop.h"
-#endif
-
 #include "pcmanfm.h"
 
 #include <string.h>
@@ -66,30 +62,6 @@ struct _FMPrefDlg
     GtkWidget* always_show_tabs;
     GtkWidget* hide_close_tab_buttons;
 
-#ifdef DESKTOP_INTEGRATION
-    //GtkWidget* show_desktop;
-    GtkWidget* show_wallpaper;
-    GtkWidget* wallpaper;
-    GtkWidget* wallpaper_mode;
-    GtkWidget* img_preview;
-    GtkWidget* show_wm_menu;
-#endif
-    GtkWidget* desk_single_click;
-    GtkWidget* desk_single_hover;
-    GtkWidget* desk_open_mime;
-    GtkWidget* desk_font;
-#ifdef DESKTOP_INTEGRATION
-    GtkWidget* margin_top;
-    GtkWidget* margin_left;
-    GtkWidget* margin_right;
-    GtkWidget* margin_bottom;
-    GtkWidget* margin_pad;
-
-    GtkWidget* bg_color1;
-    GtkWidget* text_color;
-    GtkWidget* shadow_color;
-#endif
-
     //MOD
     GtkWidget* confirm_delete;
     GtkWidget* click_exec;
@@ -126,87 +98,10 @@ static const char* date_formats[] =
 };
 static const int drag_actions[] = { 0, 1, 2, 3 };
 
-#ifdef DESKTOP_INTEGRATION
-static void set_preview_image( GtkImage* img, const char* file )
-{
-    GdkPixbuf* pix = NULL;
-    pix = gdk_pixbuf_new_from_file_at_scale( file, 128, 128, TRUE, NULL );
-    if( pix )
-    {
-        gtk_image_set_from_pixbuf( img, pix );
-        g_object_unref( pix );
-    }
-}
-
-static void on_update_img_preview( GtkFileChooser *chooser, GtkImage* img )
-{
-    char* file = gtk_file_chooser_get_preview_filename( chooser );
-    if( file )
-    {
-        set_preview_image( img, file );
-        g_free( file );
-    }
-    else
-    {
-        gtk_image_clear( img );
-    }
-}
-#endif
-
 static void
 dir_unload_thumbnails( const char* path, VFSDir* dir, gpointer user_data )
 {
     vfs_dir_unload_thumbnails( dir, GPOINTER_TO_INT( user_data ) );
-}
-
-static const char* font_button_get_font( GtkWidget* button )
-{
-    if ( !g_strcmp0( gtk_button_get_label( GTK_BUTTON( button ) ),
-                                                    _("Default") ) )
-        return NULL;
-    else
-        return gtk_button_get_label( GTK_BUTTON( button ) );
-}
-
-static void font_button_set_font( GtkWidget* button,
-                                            PangoFontDescription* font_desc,
-                                            const char* font_name )
-{
-    if ( !font_desc && !font_name )
-    {
-        gtk_button_set_label( GTK_BUTTON( button ), _("Default") );
-#if (GTK_MAJOR_VERSION == 3)
-        gtk_widget_override_font( GTK_WIDGET( button ), NULL );
-#elif (GTK_MAJOR_VERSION == 2)
-        gtk_widget_modify_font( GTK_WIDGET( button ), NULL );
-#endif
-    }
-    else
-    {
-        char* font_name_str = NULL;
-        char* fontname;
-        if ( font_name )
-            fontname = (char*)font_name;
-        else
-            fontname = font_name_str =
-                                pango_font_description_to_string( font_desc );
-        gtk_button_set_label( GTK_BUTTON( button ), fontname );
-        g_free( font_name_str );
-    }
-}
-
-void on_font_button_clicked( GtkButton* button, FMPrefDlg* data )
-{
-    char* fontname = xset_font_dialog( GTK_WIDGET( data->dlg ),
-                                    _("Choose Desktop Font"),
-                                   _("Example Item 0123456789"),
-                                   font_button_get_font( data->desk_font ) );
-    if ( fontname )
-    {
-        font_button_set_font( data->desk_font, NULL, fontname[0] ?
-                                                 fontname : NULL );
-        g_free( fontname );
-    }
 }
 
 static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
@@ -221,22 +116,11 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
     int small_icon;
     int tool_icon;
     //gboolean show_desktop;
-#ifdef DESKTOP_INTEGRATION
-    gboolean show_wallpaper;
-#endif
     gboolean single_click;
     //gboolean single_hover;
     //gboolean rubberband;
     gboolean root_bar;
     gboolean root_set_change = FALSE;
-#ifdef DESKTOP_INTEGRATION
-    WallpaperMode wallpaper_mode;
-    GdkColor bg1;
-    GdkColor bg2;
-    GdkColor text;
-    GdkColor shadow;
-    char* wallpaper;
-#endif
     const GList* l;
     PtkFileBrowser* file_browser;
     gboolean use_si_prefix;
@@ -307,143 +191,6 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
             }
         }
 
-#ifdef DESKTOP_INTEGRATION
-        // Desktop settings =================================================
-
-        // checkboxes
-        int desk_single_click = !!gtk_toggle_button_get_active(
-                                GTK_TOGGLE_BUTTON( data->desk_single_click ) );
-        if ( app_settings.desk_single_click != desk_single_click )
-        {
-            app_settings.desk_single_click = desk_single_click;
-            fm_desktop_set_single_click( app_settings.desk_single_click );
-        }
-        int desk_no_single_hover = !gtk_toggle_button_get_active(
-                                GTK_TOGGLE_BUTTON( data->desk_single_hover ) );
-        if ( app_settings.desk_no_single_hover != desk_no_single_hover )
-            app_settings.desk_no_single_hover = desk_no_single_hover;
-        app_settings.show_wm_menu = gtk_toggle_button_get_active(
-                                GTK_TOGGLE_BUTTON( data->show_wm_menu ) );
-        app_settings.desk_open_mime = gtk_toggle_button_get_active(
-                                GTK_TOGGLE_BUTTON( data->desk_open_mime ) );
-
-        // wallpaper
-        show_wallpaper = gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(
-                                                    data->show_wallpaper ) );
-        wallpaper = gtk_file_chooser_get_filename( GTK_FILE_CHOOSER(
-                                                    data->wallpaper ) );
-        wallpaper_mode = gtk_combo_box_get_active(
-                                        (GtkComboBox*)data->wallpaper_mode );
-
-        // colors
-        gtk_color_button_get_color(GTK_COLOR_BUTTON(data->bg_color1), &bg1);
-        gtk_color_button_get_color(GTK_COLOR_BUTTON(data->text_color), &text);
-        gtk_color_button_get_color(GTK_COLOR_BUTTON(data->shadow_color), &shadow);
-
-        // need update ?
-        gboolean need_update_bg = FALSE;
-        // are desktop colors are changed ?
-        if ( !gdk_color_equal( &bg1, &app_settings.desktop_bg1 ) ||
-                !gdk_color_equal( &bg2, &app_settings.desktop_bg2 ) ||
-                !gdk_color_equal( &text, &app_settings.desktop_text ) ||
-                !gdk_color_equal( &shadow, &app_settings.desktop_shadow ) )
-        {
-            app_settings.desktop_bg1 = bg1;
-            app_settings.desktop_bg2 = bg2;
-            app_settings.desktop_text = text;
-            app_settings.desktop_shadow = shadow;
-
-            fm_desktop_update_colors();
-
-            if( wallpaper_mode == WPM_CENTER || !show_wallpaper )
-                need_update_bg = TRUE;
-        }
-
-        // are wallpaper settings are changed ?
-        if ( need_update_bg ||
-             wallpaper_mode != app_settings.wallpaper_mode ||
-             show_wallpaper != app_settings.show_wallpaper ||
-             ( g_strcmp0( wallpaper, app_settings.wallpaper ) ) )
-        {
-            gboolean was_transparent = app_settings.show_wallpaper == 1 &&
-                            app_settings.wallpaper_mode == WPM_TRANSPARENT;
-            gboolean is_transparent = show_wallpaper == 1 &&
-                            wallpaper_mode == WPM_TRANSPARENT;
-            app_settings.wallpaper_mode = wallpaper_mode;
-            app_settings.show_wallpaper = show_wallpaper;
-            g_free( app_settings.wallpaper );
-            app_settings.wallpaper = wallpaper;
-            fm_desktop_update_wallpaper( !was_transparent != !is_transparent );
-            if ( is_transparent && !was_transparent &&
-                                                !xset_get_b( "desk_pref" ) )
-            {
-                xset_msg_dialog( GTK_WIDGET( dlg ), 0, _("Transparency Requirements"),
-                        NULL, 0, _("General Note: For desktop transparency to "
-                        "work, you need to be running a compositing window "
-                        "manager or separate compositor like compton or xcompmgr. "
-                        "You can then use use nitrogen or xwinwrap to set wallpaper "
-                        "on the background.\n\n"
-                        "This message will not repeat."), NULL, NULL );
-                xset_set_b( "desk_pref", TRUE );
-            }
-        }
-
-        //font
-        gboolean update_icons = FALSE;
-        char* old_fontname = app_settings.desk_font ?
-                                    pango_font_description_to_string(
-                                                    app_settings.desk_font ) :
-                                    NULL;
-        const char* new_fontname = font_button_get_font( data->desk_font );
-        if ( g_strcmp0( new_fontname, old_fontname ) )
-        {
-            app_settings.desk_font = new_fontname ?
-                            pango_font_description_from_string( new_fontname ) :
-                                                                        NULL;
-            update_icons = TRUE;
-        }
-        g_free( old_fontname );
-
-        // margins
-        int margin_top = atoi( gtk_entry_get_text(
-                                        GTK_ENTRY( data->margin_top ) ) );
-        int margin_left = atoi( gtk_entry_get_text(
-                                        GTK_ENTRY( data->margin_left ) ) );
-        int margin_right = atoi( gtk_entry_get_text(
-                                        GTK_ENTRY( data->margin_right ) ) );
-        int margin_bottom = atoi( gtk_entry_get_text(
-                                        GTK_ENTRY( data->margin_bottom ) ) );
-        int margin_pad = atoi( gtk_entry_get_text(
-                                        GTK_ENTRY( data->margin_pad ) ) );
-        if ( margin_top != app_settings.margin_top ||
-             margin_left != app_settings.margin_left ||
-             margin_right != app_settings.margin_right ||
-             margin_bottom != app_settings.margin_bottom ||
-             margin_pad != app_settings.margin_pad )
-        {
-            // margins changed
-            app_settings.margin_top = margin_top;
-            app_settings.margin_left = margin_left;
-            app_settings.margin_right = margin_right;
-            app_settings.margin_bottom = margin_bottom;
-            app_settings.margin_pad = margin_pad;
-            if ( app_settings.margin_top < 0 || app_settings.margin_top > 999 )
-                app_settings.margin_top = 12;
-            if ( app_settings.margin_left < 0 || app_settings.margin_left > 999 )
-                app_settings.margin_left = 6;
-            if ( app_settings.margin_right < 0 || app_settings.margin_right > 999 )
-                app_settings.margin_right = 6;
-            if ( app_settings.margin_bottom < 0 || app_settings.margin_bottom > 999 )
-                app_settings.margin_bottom = 12;
-            if ( app_settings.margin_pad < 0 || app_settings.margin_pad > 999 )
-                app_settings.margin_pad = 6;
-            update_icons = TRUE;
-        }
-
-        if ( update_icons )
-            fm_desktop_update_icons();
-#endif
-
         // ===============================================================
 
         /* thumbnail settings are changed */
@@ -476,14 +223,6 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
             if( small_icon != app_settings.small_icon_size )
                 vfs_dir_foreach( (GHFunc)dir_unload_thumbnails, GINT_TO_POINTER( 0 ) );
 
-#ifdef DESKTOP_INTEGRATION
-            // update desktop icons
-            if ( big_icon != app_settings.big_icon_size )
-            {
-                app_settings.big_icon_size = big_icon;
-                fm_desktop_update_icons();
-            }
-#endif
             app_settings.big_icon_size = big_icon;
             app_settings.small_icon_size = small_icon;
 
@@ -790,13 +529,6 @@ void on_single_click_toggled( GtkWidget* widget, FMPrefDlg* data )
                     GTK_TOGGLE_BUTTON( data->single_click ) ) );
 }
 
-void on_desk_single_click_toggled( GtkWidget* widget, FMPrefDlg* data )
-{
-    gtk_widget_set_sensitive( data->desk_single_hover,
-                    gtk_toggle_button_get_active(
-                    GTK_TOGGLE_BUTTON( data->desk_single_click ) ) );
-}
-
 void on_show_thumbnail_toggled( GtkWidget* widget, FMPrefDlg* data )
 {
     gtk_widget_set_sensitive( data->max_thumb_size,
@@ -810,35 +542,12 @@ void on_show_thumbnail_toggled( GtkWidget* widget, FMPrefDlg* data )
                     GTK_TOGGLE_BUTTON( data->show_thumbnail ) ) );
 }
 
-#ifdef DESKTOP_INTEGRATION
-void on_wallpaper_mode_changed( GtkComboBox *combobox, FMPrefDlg* data )
-{
-    gint active = gtk_combo_box_get_active(
-                                        (GtkComboBox*)data->wallpaper_mode );
-    gtk_widget_set_sensitive( data->wallpaper, active != WPM_TRANSPARENT );
-}
-
-void on_wallpaper_toggled( GtkToggleButton* show_wallpaper, FMPrefDlg* data )
-{
-    gboolean enabled = gtk_toggle_button_get_active( show_wallpaper );
-    gint active = gtk_combo_box_get_active(
-                                        (GtkComboBox*)data->wallpaper_mode );
-    gtk_widget_set_sensitive( GTK_WIDGET( data->wallpaper ), enabled &&
-                                          active != WPM_TRANSPARENT );
-    gtk_widget_set_sensitive( GTK_WIDGET( data->wallpaper_mode ), enabled );
-}
-#endif
-
 gboolean fm_edit_preference( GtkWindow* parent, int page )
 {
     //const char* filename_encoding;
     int i;
     int ibig_icon = -1, ismall_icon = -1, itool_icon = -1;
     GtkWidget* dlg;
-#ifdef DESKTOP_INTEGRATION
-    GtkWidget* img_preview;
-    char* str;
-#endif
 
     if( ! data )
     {
@@ -998,117 +707,6 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
 
         gtk_toggle_button_set_active( (GtkToggleButton*)data->use_si_prefix, app_settings.use_si_prefix );
 
-#ifdef DESKTOP_INTEGRATION
-        // Desktop Tab ====================================================
-        data->show_wallpaper = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "show_wallpaper" );
-        data->wallpaper = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "wallpaper" );
-        img_preview = gtk_image_new();
-        gtk_widget_set_size_request( img_preview, 128, 128 );
-        gtk_file_chooser_set_preview_widget( (GtkFileChooser*)data->wallpaper,
-                                                        img_preview );
-        g_signal_connect( data->wallpaper, "update-preview",
-                                G_CALLBACK(on_update_img_preview), img_preview );
-
-        data->wallpaper_mode = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "wallpaper_mode" );
-        data->show_wm_menu = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "show_wm_menu" );
-        data->desk_single_click = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "desk_single_click" );
-        data->desk_single_hover = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "desk_single_hover" );
-        data->desk_open_mime = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "desk_open_mime" );
-        data->bg_color1 = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "bg_color1" );
-        data->text_color = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "text_color" );
-        data->shadow_color = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "shadow_color" );
-        data->desk_font = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "desk_font" );
-        data->margin_top = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "margin_top" );
-        data->margin_left = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "margin_left" );
-        data->margin_right = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "margin_right" );
-        data->margin_bottom = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "margin_bottom" );
-        data->margin_pad = (GtkWidget*)gtk_builder_get_object( builder,
-                                                        "margin_pad" );
-
-        // wallpaper
-        gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( data->show_wallpaper ),
-                                      app_settings.show_wallpaper );
-        if ( app_settings.wallpaper )
-        {
-            /* FIXME: GTK+ has a known bug here. Sometimes it doesn't update the preview...
-             * so, we do it manually */
-            set_preview_image( GTK_IMAGE( img_preview ), app_settings.wallpaper );
-            gtk_file_chooser_set_filename( GTK_FILE_CHOOSER( data->wallpaper ),
-                                           app_settings.wallpaper );
-        }
-        g_signal_connect( data->wallpaper_mode, "changed",
-                                G_CALLBACK( on_wallpaper_mode_changed ), data );
-        gtk_combo_box_set_active( (GtkComboBox*)data->wallpaper_mode,
-                                                app_settings.wallpaper_mode );
-
-        // checkboxes
-        gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( data->show_wm_menu ),
-                                      app_settings.show_wm_menu );
-        gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( data->desk_single_click ),
-                                      app_settings.desk_single_click );
-        gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( data->desk_single_hover ),
-                                      !app_settings.desk_no_single_hover );
-        gtk_widget_set_sensitive( data->desk_single_hover,
-                                        app_settings.desk_single_click );
-        g_signal_connect( data->desk_single_click, "toggled",
-                                G_CALLBACK( on_desk_single_click_toggled ), data );
-        gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( data->desk_open_mime ),
-                                      app_settings.desk_open_mime );
-
-        //font
-        font_button_set_font( data->desk_font, app_settings.desk_font, NULL );
-        g_signal_connect( data->desk_font, "clicked",
-                                G_CALLBACK(on_font_button_clicked), data );
-
-        // colors
-        data->bg_color1 = (GtkWidget*)gtk_builder_get_object( builder, "bg_color1" );
-        data->text_color = (GtkWidget*)gtk_builder_get_object( builder, "text_color" );
-        data->shadow_color = (GtkWidget*)gtk_builder_get_object( builder, "shadow_color" );
-        gtk_color_button_set_color(GTK_COLOR_BUTTON(data->bg_color1),
-                                   &app_settings.desktop_bg1);
-        gtk_color_button_set_color(GTK_COLOR_BUTTON(data->text_color),
-                                   &app_settings.desktop_text);
-        gtk_color_button_set_color(GTK_COLOR_BUTTON(data->shadow_color),
-                                   &app_settings.desktop_shadow);
-
-        // wallpaper signals
-        on_wallpaper_toggled( GTK_TOGGLE_BUTTON( data->show_wallpaper ), data );
-        g_signal_connect( data->show_wallpaper, "toggled",
-                                G_CALLBACK( on_wallpaper_toggled ), data );
-
-        // margins
-        str = g_strdup_printf( "%d", app_settings.margin_top );
-        gtk_entry_set_text( GTK_ENTRY( data->margin_top ), str );
-        g_free( str );
-        str = g_strdup_printf( "%d", app_settings.margin_right );
-        gtk_entry_set_text( GTK_ENTRY( data->margin_right ), str );
-        g_free( str );
-        str = g_strdup_printf( "%d", app_settings.margin_left );
-        gtk_entry_set_text( GTK_ENTRY( data->margin_left ), str );
-        g_free( str );
-        str = g_strdup_printf( "%d", app_settings.margin_bottom );
-        gtk_entry_set_text( GTK_ENTRY( data->margin_bottom ), str );
-        g_free( str );
-        str = g_strdup_printf( "%d", app_settings.margin_pad );
-        gtk_entry_set_text( GTK_ENTRY( data->margin_pad ), str );
-        g_free( str );
-#endif
-
         // Advanced Tab ==================================================
 
         // terminal su
@@ -1249,17 +847,8 @@ gboolean fm_edit_preference( GtkWindow* parent, int page )
         g_signal_connect( dlg, "response", G_CALLBACK(on_response), data );
         g_object_unref( builder );
     }
-
     // Set current Preferences page
     const int desktop_page_num = 2;
-#ifndef DESKTOP_INTEGRATION
-    // hide the Desktop tab if no desktop integration at build time
-    gtk_widget_hide( gtk_notebook_get_nth_page(
-                                           (GtkNotebook*)data->notebook,
-                                            desktop_page_num ) );
-    if ( page >= desktop_page_num )
-        page++;
-#endif
     // notebook page number 3 is permanently hidden Volume Management
     if ( page > desktop_page_num )
         page++;
