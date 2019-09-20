@@ -193,16 +193,6 @@ fi
 AM_CONDITIONAL(USE_GIT, test "$use_git" = "yes")
 
 AC_ARG_ENABLE(
-    [small_screen],
-    AS_HELP_STRING([--enable-small-screen],
-                   [enable dialog scaling on small screens (default: disable)]),
-    small_screen=$enableval, small_screen="no")
-if test x"$small_screen" = "xyes"; then
-  AC_DEFINE(SMALL_SCREEN, 1, [Wheather to build dialog screen scaling.])
-fi
-AM_CONDITIONAL(SMALL_SCREEN, test "$small_screen" = "yes")
-
-AC_ARG_ENABLE(
     [video-thumbnails],
     AS_HELP_STRING([--disable-video-thumbnails],
                    [disable libffmpegthumbnailer video thumbnails (default: enable)]),
@@ -292,7 +282,6 @@ echo 'GTK+ Version................................. : GTK 2'
 fi
 echo Desktop manager integration.................. : $desktop_integration
 echo Deprecated Hardware support.................. : $deprecated_hw
-echo Small Screen Scaling......................... : $small_screen
 echo Git session backend.......................... : $use_git
 echo Startup notification......................... : $use_sn
 echo Video thumbnail support...................... : $video_thumbnails

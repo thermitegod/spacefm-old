@@ -117,8 +117,7 @@ am__spacefm_SOURCES_DIST = mime-type/mime-type.c mime-type/mime-type.h \
 	ptk/ptk-path-entry.c ptk/ptk-path-entry.h \
 	ptk/ptk-text-renderer.c ptk/ptk-text-renderer.h \
 	ptk/ptk-file-icon-renderer.c ptk/ptk-file-icon-renderer.h \
-	ptk/ptk-utils.c ptk/ptk-utils.h desktop/working-area.c \
-	desktop/working-area.h ptk/ptk-dir-tree-view.c \
+	ptk/ptk-utils.c ptk/ptk-utils.h ptk/ptk-dir-tree-view.c \
 	ptk/ptk-dir-tree-view.h ptk/ptk-dir-tree.c ptk/ptk-dir-tree.h \
 	ptk/ptk-location-view.c ptk/ptk-location-view.h \
 	ptk/ptk-input-dialog.c ptk/ptk-input-dialog.h \
@@ -143,6 +142,7 @@ am__spacefm_SOURCES_DIST = mime-type/mime-type.c mime-type/mime-type.h \
 	exo/exo-cell-renderer-ellipsized-text.c \
 	exo/exo-cell-renderer-ellipsized-text.h exo/exo-common.h \
 	desktop/desktop-window.c desktop/desktop-window.h \
+	desktop/working-area.c desktop/working-area.h \
 	desktop/desktop.c desktop/desktop.h private.h main.c pcmanfm.h \
 	main-window.c main-window.h settings.c settings.h \
 	pref-dialog.c pref-dialog.h find-files.c find-files.h \
@@ -169,7 +169,6 @@ am__objects_4 = ptk/spacefm-ptk-file-browser.$(OBJEXT) \
 	ptk/spacefm-ptk-text-renderer.$(OBJEXT) \
 	ptk/spacefm-ptk-file-icon-renderer.$(OBJEXT) \
 	ptk/spacefm-ptk-utils.$(OBJEXT) \
-	desktop/spacefm-working-area.$(OBJEXT) \
 	ptk/spacefm-ptk-dir-tree-view.$(OBJEXT) \
 	ptk/spacefm-ptk-dir-tree.$(OBJEXT) \
 	ptk/spacefm-ptk-location-view.$(OBJEXT) \
@@ -197,6 +196,7 @@ am__objects_5 = exo/spacefm-exo-icon-view.$(OBJEXT) \
 	exo/spacefm-exo-binding.$(OBJEXT) \
 	exo/spacefm-exo-cell-renderer-ellipsized-text.$(OBJEXT)
 @DESKTOP_INTEGRATION_TRUE@am__objects_6 = desktop/spacefm-desktop-window.$(OBJEXT) \
+@DESKTOP_INTEGRATION_TRUE@	desktop/spacefm-working-area.$(OBJEXT) \
 @DESKTOP_INTEGRATION_TRUE@	desktop/spacefm-desktop.$(OBJEXT)
 am_spacefm_OBJECTS = $(am__objects_1) $(am__objects_3) \
 	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
@@ -543,6 +543,7 @@ VFS_SOURCES = \
 @DESKTOP_INTEGRATION_FALSE@DESKTOP_SOURCES = 
 @DESKTOP_INTEGRATION_TRUE@DESKTOP_SOURCES = \
 @DESKTOP_INTEGRATION_TRUE@    desktop/desktop-window.c desktop/desktop-window.h \
+@DESKTOP_INTEGRATION_TRUE@    desktop/working-area.c desktop/working-area.h \
 @DESKTOP_INTEGRATION_TRUE@    desktop/desktop.c desktop/desktop.h
 
 PTK_SOURCES = \
@@ -552,7 +553,6 @@ PTK_SOURCES = \
     ptk/ptk-text-renderer.c ptk/ptk-text-renderer.h \
     ptk/ptk-file-icon-renderer.c ptk/ptk-file-icon-renderer.h \
     ptk/ptk-utils.c ptk/ptk-utils.h \
-    desktop/working-area.c desktop/working-area.h \
     ptk/ptk-dir-tree-view.c ptk/ptk-dir-tree-view.h \
     ptk/ptk-dir-tree.c ptk/ptk-dir-tree.h \
     ptk/ptk-location-view.c ptk/ptk-location-view.h \
@@ -756,14 +756,6 @@ ptk/spacefm-ptk-file-icon-renderer.$(OBJEXT): ptk/$(am__dirstamp) \
 	ptk/$(DEPDIR)/$(am__dirstamp)
 ptk/spacefm-ptk-utils.$(OBJEXT): ptk/$(am__dirstamp) \
 	ptk/$(DEPDIR)/$(am__dirstamp)
-desktop/$(am__dirstamp):
-	@$(MKDIR_P) desktop
-	@: > desktop/$(am__dirstamp)
-desktop/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) desktop/$(DEPDIR)
-	@: > desktop/$(DEPDIR)/$(am__dirstamp)
-desktop/spacefm-working-area.$(OBJEXT): desktop/$(am__dirstamp) \
-	desktop/$(DEPDIR)/$(am__dirstamp)
 ptk/spacefm-ptk-dir-tree-view.$(OBJEXT): ptk/$(am__dirstamp) \
 	ptk/$(DEPDIR)/$(am__dirstamp)
 ptk/spacefm-ptk-dir-tree.$(OBJEXT): ptk/$(am__dirstamp) \
@@ -822,7 +814,15 @@ exo/spacefm-exo-binding.$(OBJEXT): exo/$(am__dirstamp) \
 	exo/$(DEPDIR)/$(am__dirstamp)
 exo/spacefm-exo-cell-renderer-ellipsized-text.$(OBJEXT):  \
 	exo/$(am__dirstamp) exo/$(DEPDIR)/$(am__dirstamp)
+desktop/$(am__dirstamp):
+	@$(MKDIR_P) desktop
+	@: > desktop/$(am__dirstamp)
+desktop/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) desktop/$(DEPDIR)
+	@: > desktop/$(DEPDIR)/$(am__dirstamp)
 desktop/spacefm-desktop-window.$(OBJEXT): desktop/$(am__dirstamp) \
+	desktop/$(DEPDIR)/$(am__dirstamp)
+desktop/spacefm-working-area.$(OBJEXT): desktop/$(am__dirstamp) \
 	desktop/$(DEPDIR)/$(am__dirstamp)
 desktop/spacefm-desktop.$(OBJEXT): desktop/$(am__dirstamp) \
 	desktop/$(DEPDIR)/$(am__dirstamp)
@@ -1246,20 +1246,6 @@ ptk/spacefm-ptk-utils.obj: ptk/ptk-utils.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o ptk/spacefm-ptk-utils.obj `if test -f 'ptk/ptk-utils.c'; then $(CYGPATH_W) 'ptk/ptk-utils.c'; else $(CYGPATH_W) '$(srcdir)/ptk/ptk-utils.c'; fi`
 
-desktop/spacefm-working-area.o: desktop/working-area.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT desktop/spacefm-working-area.o -MD -MP -MF desktop/$(DEPDIR)/spacefm-working-area.Tpo -c -o desktop/spacefm-working-area.o `test -f 'desktop/working-area.c' || echo '$(srcdir)/'`desktop/working-area.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) desktop/$(DEPDIR)/spacefm-working-area.Tpo desktop/$(DEPDIR)/spacefm-working-area.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='desktop/working-area.c' object='desktop/spacefm-working-area.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o desktop/spacefm-working-area.o `test -f 'desktop/working-area.c' || echo '$(srcdir)/'`desktop/working-area.c
-
-desktop/spacefm-working-area.obj: desktop/working-area.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT desktop/spacefm-working-area.obj -MD -MP -MF desktop/$(DEPDIR)/spacefm-working-area.Tpo -c -o desktop/spacefm-working-area.obj `if test -f 'desktop/working-area.c'; then $(CYGPATH_W) 'desktop/working-area.c'; else $(CYGPATH_W) '$(srcdir)/desktop/working-area.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) desktop/$(DEPDIR)/spacefm-working-area.Tpo desktop/$(DEPDIR)/spacefm-working-area.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='desktop/working-area.c' object='desktop/spacefm-working-area.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o desktop/spacefm-working-area.obj `if test -f 'desktop/working-area.c'; then $(CYGPATH_W) 'desktop/working-area.c'; else $(CYGPATH_W) '$(srcdir)/desktop/working-area.c'; fi`
-
 ptk/spacefm-ptk-dir-tree-view.o: ptk/ptk-dir-tree-view.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT ptk/spacefm-ptk-dir-tree-view.o -MD -MP -MF ptk/$(DEPDIR)/spacefm-ptk-dir-tree-view.Tpo -c -o ptk/spacefm-ptk-dir-tree-view.o `test -f 'ptk/ptk-dir-tree-view.c' || echo '$(srcdir)/'`ptk/ptk-dir-tree-view.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ptk/$(DEPDIR)/spacefm-ptk-dir-tree-view.Tpo ptk/$(DEPDIR)/spacefm-ptk-dir-tree-view.Po
@@ -1637,6 +1623,20 @@ desktop/spacefm-desktop-window.obj: desktop/desktop-window.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='desktop/desktop-window.c' object='desktop/spacefm-desktop-window.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o desktop/spacefm-desktop-window.obj `if test -f 'desktop/desktop-window.c'; then $(CYGPATH_W) 'desktop/desktop-window.c'; else $(CYGPATH_W) '$(srcdir)/desktop/desktop-window.c'; fi`
+
+desktop/spacefm-working-area.o: desktop/working-area.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT desktop/spacefm-working-area.o -MD -MP -MF desktop/$(DEPDIR)/spacefm-working-area.Tpo -c -o desktop/spacefm-working-area.o `test -f 'desktop/working-area.c' || echo '$(srcdir)/'`desktop/working-area.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) desktop/$(DEPDIR)/spacefm-working-area.Tpo desktop/$(DEPDIR)/spacefm-working-area.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='desktop/working-area.c' object='desktop/spacefm-working-area.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o desktop/spacefm-working-area.o `test -f 'desktop/working-area.c' || echo '$(srcdir)/'`desktop/working-area.c
+
+desktop/spacefm-working-area.obj: desktop/working-area.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT desktop/spacefm-working-area.obj -MD -MP -MF desktop/$(DEPDIR)/spacefm-working-area.Tpo -c -o desktop/spacefm-working-area.obj `if test -f 'desktop/working-area.c'; then $(CYGPATH_W) 'desktop/working-area.c'; else $(CYGPATH_W) '$(srcdir)/desktop/working-area.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) desktop/$(DEPDIR)/spacefm-working-area.Tpo desktop/$(DEPDIR)/spacefm-working-area.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='desktop/working-area.c' object='desktop/spacefm-working-area.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o desktop/spacefm-working-area.obj `if test -f 'desktop/working-area.c'; then $(CYGPATH_W) 'desktop/working-area.c'; else $(CYGPATH_W) '$(srcdir)/desktop/working-area.c'; fi`
 
 desktop/spacefm-desktop.o: desktop/desktop.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT desktop/spacefm-desktop.o -MD -MP -MF desktop/$(DEPDIR)/spacefm-desktop.Tpo -c -o desktop/spacefm-desktop.o `test -f 'desktop/desktop.c' || echo '$(srcdir)/'`desktop/desktop.c

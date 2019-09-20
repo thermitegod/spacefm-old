@@ -40,6 +40,7 @@ VFS_SOURCES = \
 if DESKTOP_INTEGRATION
 DESKTOP_SOURCES = \
     desktop/desktop-window.c desktop/desktop-window.h \
+    desktop/working-area.c desktop/working-area.h \
     desktop/desktop.c desktop/desktop.h
 else
 DESKTOP_SOURCES =
@@ -52,7 +53,6 @@ PTK_SOURCES = \
     ptk/ptk-text-renderer.c ptk/ptk-text-renderer.h \
     ptk/ptk-file-icon-renderer.c ptk/ptk-file-icon-renderer.h \
     ptk/ptk-utils.c ptk/ptk-utils.h \
-    desktop/working-area.c desktop/working-area.h \
     ptk/ptk-dir-tree-view.c ptk/ptk-dir-tree-view.h \
     ptk/ptk-dir-tree.c ptk/ptk-dir-tree.h \
     ptk/ptk-location-view.c ptk/ptk-location-view.h \

@@ -207,9 +207,6 @@ GtkWidget* app_chooser_dialog_new( GtkWindow* parent, VFSMimeType* mime_type,
     xset_set_window_icon( GTK_WINDOW( dlg ) );
 
     gtk_dialog_set_alternative_button_order( GTK_DIALOG(dlg), GTK_RESPONSE_OK, GTK_RESPONSE_CANCEL, -1 );
-#ifdef SMALL_SCREEN
-    ptk_dialog_fit_small_screen( GTK_DIALOG(dlg) );
-#endif
 
     int width = xset_get_int( "app_dlg", "x" );
     int height = xset_get_int( "app_dlg", "y" );
