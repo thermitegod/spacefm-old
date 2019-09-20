@@ -698,21 +698,21 @@ char* save_settings( gpointer main_window_ptr )
     }
 
     /* save settings */
-    if ( ! g_file_test( settings_config_dir, G_FILE_TEST_EXISTS ) )
+    if (G_UNLIKELY(!g_file_test(settings_config_dir, G_FILE_TEST_EXISTS)))
     {
         result = g_mkdir_with_parents( settings_config_dir, 0700 );
-        if (result < 0)
+        if (G_UNLIKELY(result < 0))
             goto _save_error;
     }
 
     path = g_build_filename(settings_config_dir, "session.tmp", NULL);
 
     file = fopen( path, "w" );
-    if (!file)
+    if (G_UNLIKELY(!file))
         goto _save_error;
 
     result = fputs("#SpaceFM Session File\n\n", file);
-    if (result < 0)
+    if (G_UNLIKELY(result < 0))
         goto _save_error;
 
 
@@ -797,20 +797,18 @@ char* save_settings( gpointer main_window_ptr )
     xset_write(file);
 
     result = fclose(file);
-    if (result)
+    if (G_UNLIKELY(result))
         goto _save_error;
 
     // move
     char* session = g_build_filename( settings_config_dir, "session", NULL );
     unlink( session );
 
-    if ( g_file_test( session, G_FILE_TEST_EXISTS ) )
+    if (G_UNLIKELY(g_file_test(session, G_FILE_TEST_EXISTS)))
         goto _save_error;
     result = rename( path, session );
     g_free( path );
-    if ( result == -1 )
-        goto _save_error;
-    if ( !g_file_test( session, G_FILE_TEST_EXISTS ) )
+    if (G_UNLIKELY(result == -1 || !g_file_test(session, G_FILE_TEST_EXISTS)))
         goto _save_error;
     g_free( session );
 
@@ -893,7 +891,7 @@ static gboolean idle_save_settings( gpointer ptr )
 {
     //g_printf("AUTOSAVE *** idle_save_settings\n" );
     char* err_msg = save_settings( NULL );
-    if ( err_msg )
+    if (G_UNLIKELY(err_msg))
     {
         g_printf( _("SpaceFM Error: Unable to autosave session file ( %s )\n"),
                                                                     err_msg );

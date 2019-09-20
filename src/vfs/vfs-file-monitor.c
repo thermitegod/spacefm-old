@@ -51,7 +51,7 @@ static gboolean on_inotify_event( GIOChannel *channel,
 static gboolean connect_to_inotify()
 {
     inotify_fd = inotify_init ();
-    if ( inotify_fd < 0 )
+    if (G_UNLIKELY(inotify_fd < 0))
     {
         inotify_io_channel = NULL;
         g_warning( "failed to initialize inotify." );
@@ -247,7 +247,7 @@ static void reconnect_inotify( gpointer key,
     {
         monitor->wd = inotify_add_watch ( inotify_fd, path,
                                           IN_MODIFY | IN_CREATE | IN_DELETE | IN_MOVE );
-        if ( monitor->wd < 0 )
+        if (G_UNLIKELY(monitor->wd < 0))
         {
             /*
                   * FIXME: add monitor to an ancestor which does actually exist,
@@ -336,9 +336,8 @@ static gboolean on_inotify_event( GIOChannel * channel,
                                     it has been removed by disconnect_from_inotify(). */
     }
 
-    while ( ( len = read ( inotify_fd, buf, BUF_LEN ) ) < 0
-            && errno == EINTR );
-    if ( len < 0 )
+    while ( ( len = read ( inotify_fd, buf, BUF_LEN ) ) < 0 && errno == EINTR );
+    if (G_UNLIKELY(len < 0))
     {
         g_warning ( "Error reading inotify event: %s",
                     g_strerror ( errno ) );
@@ -346,7 +345,7 @@ static gboolean on_inotify_event( GIOChannel * channel,
         return FALSE;
     }
 
-    if ( len == 0 )
+    if (G_UNLIKELY(len == 0))
     {
         /*
         * FIXME: handle this better?
