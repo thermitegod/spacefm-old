@@ -2813,18 +2813,10 @@ char* xset_custom_get_help( GtkWidget* parent, XSet* set )
         }
     }
 
-    const char* names[] = { "README", "readme", "README.TXT", "README.txt", "readme.txt", "README.MKD", "README.mkd", "readme.mkd" };
-    int i;
-    for ( i = 0; i < G_N_ELEMENTS( names ); ++i )
-    {
-        path = g_build_filename( dir, names[i], NULL );
-        if ( g_file_test( path, G_FILE_TEST_EXISTS ) )
-            break;
-        g_free( path );
-        path = NULL;
-    }
+    const char* readme = "README";
+    path = g_build_filename( dir, readme, NULL );
 
-    if ( !path )
+    if (!g_file_test(path, G_FILE_TEST_EXISTS))
     {
         if ( set->plugin )
         {
@@ -2846,12 +2838,12 @@ char* xset_custom_get_help( GtkWidget* parent, XSet* set )
         }
 
         // create
-        path = g_build_filename( dir, names[0], NULL );
+        path = g_build_filename( dir, readme, NULL );
         FILE* file = fopen( path, "w" );
         if ( file )
         {
             // write default readme
-            fputs( "README\n------\n\nFill this text file with detailed information about this command.  For\ncontext-sensitive help within SpaceFM, this file must be named README,\nREADME.txt, or README.mkd.\n\nIf you plan to distribute this command as a plugin, the following information\nis recommended:\n\n\nCommand Name:\n\nRelease Version and Date:\n\nPlugin Homepage or Download Link:\n\nAuthor's Contact Information or Feedback Instructions:\n\nDependencies or Requirements:\n\nDescription:\n\nInstructions For Use:\n\nCopyright and License Information:\n\n", file );
+            fputs( "README\n------\n\nFill this text file with detailed information about this command. For\ncontext-sensitive help within SpaceFM, this file must be named README\n\nIf you plan to distribute this command as a plugin, the following information\nis recommended:\n\n\nCommand Name:\n\nRelease Version and Date:\n\nPlugin Homepage or Download Link:\n\nAuthor's Contact Information or Feedback Instructions:\n\nDependencies or Requirements:\n\nDescription:\n\nInstructions For Use:\n\nCopyright and License Information:\n\n", file );
             fclose( file );
         }
         chmod( path, S_IRUSR | S_IWUSR );
