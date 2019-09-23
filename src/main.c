@@ -670,18 +670,6 @@ void init_folder()
     folder_initialized = TRUE;
 }
 
-gboolean delayed_popup( GtkWidget* popup )
-{
-    GDK_THREADS_ENTER();
-
-    gtk_menu_popup( GTK_MENU( popup ), NULL, NULL,
-                    NULL, NULL, 0, gtk_get_current_event_time() );
-
-    GDK_THREADS_LEAVE();
-
-    return FALSE;
-}
-
 static void init_daemon()
 {
     init_folder();
