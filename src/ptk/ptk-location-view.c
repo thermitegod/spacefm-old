@@ -1142,7 +1142,6 @@ void ptk_location_view_mount_network( PtkFileBrowser* file_browser,
     // autoopen
     if ( !ssh_udevil )  // !sync
     {
-        const char* terminal;
         AutoOpen* ao;
         ao = g_slice_new0( AutoOpen );
         ao->device_file = g_strdup( netmount->url );
