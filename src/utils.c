@@ -17,6 +17,30 @@
 #include "utils.h"
 
 
+void print_command(const char* cmd)
+{
+    g_printf("COMMAND=%s\n", cmd);
+}
+
+void print_task_command(const char* ptask, const char* cmd)
+{
+    g_printf("\nTASK_COMMAND(%p)=%s\n", ptask, cmd );
+}
+
+void print_task_command_spawn(const char* argv[], int pid)
+{
+    g_printf("SPAWN=");
+    int i = 0;
+    while (argv[i])
+    {
+        g_printf("%s%s", i == 0 ? "" : "  ", argv[i]);
+        i++;
+    }
+
+    g_printf("\n");
+    g_printf("    pid = %d\n", pid );
+}
+
 char* randhex8()
 {
     char hex[9];
@@ -165,7 +189,7 @@ void open_in_prog( const char* path )
         prog = g_strdup( "spacefm" );
     char* qpath = bash_quote( path );
     char* command = g_strdup_printf("%s %s", prog, qpath);
-    g_printf("COMMAND=%s\n", command);
+    print_command(command);
     g_spawn_command_line_async(command, NULL);
     g_free( qpath );
     g_free(command);

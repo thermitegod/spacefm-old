@@ -7,6 +7,10 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+void print_command(const char* cmd);
+void print_task_command(const char* ptask, const char* cmd);
+void print_task_command_spawn(const char* argv[], int pid);
+
 void check_for_errno();
 
 char* randhex8();

@@ -420,7 +420,7 @@ void load_settings( char* config_dir )
                 && g_file_test( xdg_path, G_FILE_TEST_IS_DIR ) )
     {
         char* command = g_strdup_printf( "cp -r %s '%s'", xdg_path, settings_config_dir );
-        g_printf( "COMMAND=%s\n", command );
+        print_command(command);
         g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
         g_free( command );
         chmod( settings_config_dir, S_IRWXU );
@@ -436,7 +436,7 @@ void load_settings( char* config_dir )
     if (!G_LIKELY(g_file_test(path, G_FILE_TEST_EXISTS)))
     {
         char* command = g_strdup_printf("%s -c \"cd %s && git init && git config commit.gpgsign false\"", BASHPATH, settings_config_dir);
-        g_printf("COMMAND=%s\n", command);
+        print_command(command);
         g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
         g_free(command);
     }
@@ -448,7 +448,7 @@ void load_settings( char* config_dir )
     {
 #ifdef USE_GIT
         char* command = g_strdup_printf("%s -c \"cd %s && git add session && git commit -m 'Session File' 1>/dev/null\"", BASHPATH, settings_config_dir);
-        g_printf("COMMAND=%s\n", command);
+        print_command(command);
         g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
         g_free(command);
 #else
@@ -457,7 +457,7 @@ void load_settings( char* config_dir )
         char* old = g_build_filename(settings_config_dir, "session-old", NULL);
         if (g_file_test(old, G_FILE_TEST_EXISTS))
             unlink(old);
-        g_printf("COMMAND=%s\n", command);
+        print_command(command);
         g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
         g_free(command);
         g_free(old);
@@ -467,7 +467,7 @@ void load_settings( char* config_dir )
     {
 #ifdef USE_GIT
         char* command = g_strdup_printf("%s -c \"cd %s && git checkout session\"", BASHPATH, settings_config_dir);
-        g_printf("COMMAND=%s\n", command);
+        print_command(command);
         g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
         g_free(command);
         path = g_build_filename(settings_config_dir, "session", NULL);
@@ -2927,7 +2927,7 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
     if ( command )
     {
 //g_printf("    path_dest=%s\n", path_dest );
-        g_printf( "COMMAND=%s\n", command );
+        print_command(command);
         ret = g_spawn_command_line_sync( command, &stdout, &stderr, &exit_status, NULL );
         g_free( command );
         g_printf( "%s%s", stdout, stderr );
@@ -2946,7 +2946,7 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
             g_free( stdout );
         stderr = stdout = NULL;
         command = g_strdup_printf( "chmod -R go-rwx %s", path_dest );
-        g_printf( "COMMAND=%s\n", command );
+        print_command(command);
         g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
         g_free( command );
         g_free( path_dest );
@@ -2963,7 +2963,7 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
         command = g_strdup_printf( "cp -a %s %s", path_src, path_dest );
         g_free( path_src );
         stderr = stdout = NULL;
-        g_printf( "COMMAND=%s\n", command );
+        print_command(command);
         ret = g_spawn_command_line_sync( command, &stdout, &stderr, &exit_status, NULL );
         g_free( command );
         g_printf( "%s%s", stdout, stderr );
@@ -2982,7 +2982,7 @@ void xset_custom_copy_files( XSet* src, XSet* dest )
         stderr = stdout = NULL;
         command = g_strdup_printf( "chmod -R go-rwx %s", path_dest );
         g_free( path_dest );
-        g_printf( "COMMAND=%s\n", command );
+        print_command(command);
         g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
         g_free( command );
     }
@@ -3095,7 +3095,7 @@ _redo:
                 g_dir_close( dir );
                 command = g_strdup_printf( "rm -rf %s/%s", path, name );
                 stderr = stdout = NULL;
-                g_printf( "COMMAND=%s\n", command );
+                print_command(command);
                 g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
                 g_free( command );
                 if ( stderr )
@@ -3736,7 +3736,7 @@ gboolean xset_custom_export_files( XSet* set, char* plug_dir )
     }
     g_free( path_src );
     g_free( path_dest );
-    g_printf( "COMMAND=%s\n", command );
+    print_command(command);
     gboolean ret = g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
     g_free( command );
     if ( stderr )
@@ -3912,7 +3912,7 @@ _rmtmp_error:
     if ( !set->plugin )
     {
         char* command = g_strdup_printf("rm -rf %s", bash_quote(plug_dir));
-        g_printf("COMMAND=%s\n", command);
+        print_command(command);
         g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
         g_free(command);
     }
@@ -4308,7 +4308,7 @@ void xset_custom_delete( XSet* set, gboolean delete_next )
     g_free(path2);
     if (command)
     {
-        g_printf( "COMMAND=%s\n", command );
+        print_command(command);
         g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
         g_free( command );
     }

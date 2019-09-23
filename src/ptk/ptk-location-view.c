@@ -799,7 +799,7 @@ void ptk_location_view_clean_mount_points()
     {
         char* command = g_strdup_printf("%s -c \"sleep 1 ; %s clean\"", BASHPATH, udevil);
         g_free( udevil );
-        g_printf("COMMAND=%s\n", command);
+        print_command(command);
         g_spawn_command_line_async(command, NULL);
         g_free(command);
     }
@@ -2136,7 +2136,7 @@ static void on_prop( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
     {
         // /bin/ls -l /dev/disk/by-uuid | grep ../sdc2 | sed 's/.* \([a-fA-F0-9\-]*\) -> .*/\1/'
         cmd = g_strdup_printf( "%s -c \"/bin/ls -l /dev/disk/by-uuid | grep '\\.\\./%s$' | sed 's/.* \\([a-fA-F0-9-]*\\) -> .*/\\1/'\"", BASHPATH, base );
-        g_printf("COMMAND=%s\n", cmd);
+        print_command(cmd);
         g_spawn_command_line_sync( cmd, &uuid, NULL, NULL, NULL );
         g_free( cmd );
         if ( uuid && strlen( uuid ) < 9 )
@@ -2153,7 +2153,7 @@ static void on_prop( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
         if ( uuid )
         {
             cmd = g_strdup_printf( "%s -c \"cat %s | grep -e '%s' -e '%s'\"", BASHPATH, fstab_path, uuid, vol->device_file );
-            g_printf("COMMAND=%s\n", cmd);
+            print_command(cmd);
             //cmd = g_strdup_printf( "bash -c \"cat /etc/fstab | grep -e ^[#\\ ]*UUID=$(/bin/ls -l /dev/disk/by-uuid | grep \\.\\./%s | sed 's/.* \\([a-fA-F0-9\-]*\\) -> \.*/\\1/')\\ */ -e '^[# ]*%s '\"", base, vol->device_file );
             g_spawn_command_line_sync( cmd, &fstab, NULL, NULL, NULL );
             g_free( cmd );
@@ -2162,7 +2162,7 @@ static void on_prop( GtkMenuItem* item, VFSVolume* vol, GtkWidget* view2 )
         if ( !fstab )
         {
             cmd = g_strdup_printf( "%s -c \"cat %s | grep '%s'\"", BASHPATH, fstab_path, vol->device_file );
-            g_printf("COMMAND=%s\n", cmd);
+            print_command(cmd);
             //cmd = g_strdup_printf( "bash -c \"cat /etc/fstab | grep '^[# ]*%s '\"", vol->device_file );
             g_spawn_command_line_sync( cmd, &fstab, NULL, NULL, NULL );
             g_free( cmd );
@@ -2412,7 +2412,7 @@ void open_external_tab( const char* path )
         prog = g_strdup( "spacefm" );
     char* quote_path = bash_quote( path );
     char* command = g_strdup_printf( "%s -t %s", prog, quote_path );
-    g_printf("COMMAND=%s\n", command);
+    print_command(command);
     g_spawn_command_line_async( command, NULL );
     g_free( prog );
     g_free( quote_path );

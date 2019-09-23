@@ -1090,7 +1090,7 @@ char* vfs_file_task_get_cpids( GPid pid )
         return NULL;
 
     char* command = g_strdup_printf( "/bin/ps h --ppid %d -o pid", pid );
-    g_printf("COMMAND=%s\n", command);
+    print_command(command);
     gboolean ret = g_spawn_command_line_sync( command, &stdout, NULL, NULL, NULL );
     g_free(command );
     if ( ret && stdout && stdout[0] != '\0' && strchr( stdout, '\n' ) )
@@ -1163,7 +1163,6 @@ static void cb_exec_child_cleanup( GPid pid, gint status, char* tmp_file )
         g_free( tmp_file );
     }
     g_printf("async child finished  pid=%d\n", pid );
-//g_printf("cb_exec_child_cleanup DONE\n", pid, status);
 }
 
 static void cb_exec_child_watch( GPid pid, gint status, VFSFileTask* task )
@@ -1305,9 +1304,9 @@ char* get_sha256sum( char* path )
 
     char* stdout;
     char* sum;
-    char* cmd = g_strdup_printf( "%s %s", sha256sum, path );
-    g_printf("COMMAND=%s\n", cmd);
-    if ( g_spawn_command_line_sync( cmd, &stdout, NULL, NULL, NULL ) )
+    char* command = g_strdup_printf( "%s %s", sha256sum, path );
+    print_command(command);
+    if ( g_spawn_command_line_sync( command, &stdout, NULL, NULL, NULL ) )
     {
         sum = g_strndup( stdout, 64 );
         g_free( stdout );
@@ -1317,7 +1316,7 @@ char* get_sha256sum( char* path )
             sum = NULL;
         }
     }
-    g_free( cmd );
+    g_free(command);
     return sum;
 }
 
@@ -1567,7 +1566,8 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         }
 
         // build - command
-        g_printf("\nTASK_COMMAND(%p)=%s\n", task->exec_ptask, task->exec_command );
+	print_task_command(task->exec_ptask, task->exec_command);
+
         result = g_fprintf( file, "%s\nfm_err=$?\n", task->exec_command );
         if ( result < 0 )
             goto _exit_with_error;
@@ -1781,15 +1781,6 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
     if ( gsu )
         g_free( gsu );
 
-    g_printf( "SPAWN=" );
-    i = 0;
-    while ( argv[i] )
-    {
-        g_printf( "%s%s", i == 0 ? "" : "  ", argv[i] );
-        i++;
-    }
-    g_printf( "\n" );
-
     char* first_arg = g_strdup( argv[0] );
     if ( task->exec_sync )
     {
@@ -1804,9 +1795,12 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
                                     NULL, &pid, NULL, NULL, NULL, NULL );
     }
 
-    if( !result )
+    print_task_command_spawn(argv, pid);
+
+    if(!result)
     {
-        g_printf("    result=%d ( %s )\n", errno, g_strerror( errno ));
+        if(errno)
+            g_printf("    result=%d ( %s )\n", errno, g_strerror(errno));
         if ( !task->exec_keep_tmp && task->exec_sync )
         {
             if ( task->exec_script )
@@ -1819,8 +1813,6 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         call_state_callback( task, VFS_FILE_TASK_FINISH );
         return;
     }
-    else
-        g_printf( "    pid = %d\n", pid );
     g_free( first_arg );
 
     if ( !task->exec_sync )

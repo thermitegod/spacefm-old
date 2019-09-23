@@ -1317,7 +1317,7 @@ void ptk_handler_import( int mode, GtkWidget* handler_dlg, XSet* set )
     char* msg;
     gboolean ret;
     gint exit_status;
-    g_printf( "COMMAND=%s\n", command );
+    print_command(command);
     ret = g_spawn_command_line_sync( command, &stdout, &stderr, &exit_status,
                                                                     NULL );
     g_free( command );
@@ -1339,7 +1339,7 @@ void ptk_handler_import( int mode, GtkWidget* handler_dlg, XSet* set )
         g_free( stdout );
     stderr = stdout = NULL;
     command = g_strdup_printf( "chmod -R go-rwx %s", path_dest );
-    g_printf( "COMMAND=%s\n", command );
+    print_command(command);
     g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
     g_free( command );
     g_free( path_dest );

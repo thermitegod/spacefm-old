@@ -935,7 +935,7 @@ static void check_locale()
 void tmp_clean()
 {
     char* command = g_strdup_printf("rm -rf %s", xset_get_user_tmp_dir());
-    g_printf("COMMAND=%s\n", command);
+    print_command(command);
     g_spawn_command_line_async(command, NULL);
     g_free(command);
 }

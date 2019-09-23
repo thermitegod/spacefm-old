@@ -24,6 +24,8 @@
 #include <unistd.h> /* for read */
 #include "vfs-volume.h"
 
+#include "utils.h"
+
 #include <glib/gprintf.h>
 
 
@@ -938,15 +940,15 @@ VFSDir* mime_dir = NULL;
 gboolean on_mime_change_timer( gpointer user_data )
 {
     //g_printf("MIME-UPDATE on_timer\n" );
-    char* cmd = g_strdup_printf("update-mime-database %s/mime", g_get_user_data_dir());
-    g_printf("COMMAND=%s\n", cmd);
-    g_spawn_command_line_async( cmd, NULL );
-    g_free( cmd );
+    char* command = g_strdup_printf("update-mime-database %s/mime", g_get_user_data_dir());
+    print_command(command);
+    g_spawn_command_line_async(command, NULL);
+    g_free(command);
 
-    cmd = g_strdup_printf("update-desktop-database %s/applications", g_get_user_data_dir());
-    g_printf("COMMAND=%s\n", cmd);
-    g_spawn_command_line_async( cmd, NULL );
-    g_free( cmd );
+    command = g_strdup_printf("update-desktop-database %s/applications", g_get_user_data_dir());
+    print_command(command);
+    g_spawn_command_line_async(command, NULL);
+    g_free(command);
 
     g_source_remove( mime_change_timer );
     mime_change_timer = 0;
