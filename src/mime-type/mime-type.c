@@ -302,12 +302,12 @@ static char* parse_xml_icon( const char* buf, size_t len, gboolean is_local )
     return g_strdup( icon_tag );
 }
 
-static char* parse_xml_desc( const char* buf, size_t len, const char* locale )
+static char* parse_xml_desc( const char* buf, size_t len)
 {
-    const char *buf_end = buf + len;
+    //const char *buf_end = buf + len;
     const char *comment = NULL, *comment_end, *eng_comment;
     size_t eng_comment_len = 0, comment_len = 0;
-    char target[64];
+    //char target[64];
     static const char end_comment_tag[]="</comment>";
 
     eng_comment = g_strstr_len( buf, len, "<comment>" );    /* default English comment */
@@ -320,35 +320,34 @@ static char* parse_xml_desc( const char* buf, size_t len, const char* locale )
         return NULL;
     eng_comment_len = comment_end - eng_comment;
 
-    if( G_LIKELY( locale ) )
+/*
+    int target_len = g_snprintf( target, 64, "<comment xml:lang=\"C\">");
+    buf = comment_end + 10;
+    len = (buf_end - buf);
+    if( G_LIKELY( ( comment = g_strstr_len( buf, len, target ) ) ) )
     {
-        int target_len = g_snprintf( target, 64, "<comment xml:lang=\"%s\">", locale);
-        buf = comment_end + 10;
-        len = (buf_end - buf);
-        if( G_LIKELY( ( comment = g_strstr_len( buf, len, target ) ) ) )
-        {
-            len -= target_len;
-            comment += target_len;
-            comment_end = g_strstr_len( comment, len, end_comment_tag );    /* find </comment> */
-            if( G_LIKELY( comment_end ) )
-                comment_len = (comment_end - comment);
-            else
-                comment = NULL;
-        }
+        len -= target_len;
+        comment += target_len;
+        comment_end = g_strstr_len( comment, len, end_comment_tag ); //find </comment>
+        if( G_LIKELY( comment_end ) )
+            comment_len = (comment_end - comment);
+        else
+            comment = NULL;
     }
+*/
+
     if( G_LIKELY( comment ) )
         return g_strndup( comment, comment_len );
     return g_strndup( eng_comment, eng_comment_len );
 }
 
 static char* _mime_type_get_desc_icon( const char* file_path,
-                                       const char* locale,
                                        gboolean is_local,
                                        char** icon_name )
 {
     int fd;
     struct stat statbuf;   // skip stat
-    char *buffer, *_locale, *desc;
+    char *buffer, *desc;
     //char file_path[ 256 ];  //sfm to improve speed, file_path is passed
 
     //g_snprintf( file_path, 256, "%s/mime/%s.xml", data_dir, type );
@@ -375,18 +374,7 @@ static char* _mime_type_get_desc_icon( const char* file_path,
     if ( G_UNLIKELY( buffer == (void*)-1 ) )
         return NULL;
 
-    _locale = NULL;
-    if ( !locale )
-    {
-        const char* const * langs = g_get_language_names();
-        char* dot = strchr( langs[0], '.' );
-        if( dot )
-            locale = _locale = g_strndup( langs[0], (size_t)(dot - langs[0]) );
-        else
-            locale = langs[0];
-    }
-    desc = parse_xml_desc( buffer, statbuf.st_size, locale );
-    g_free( _locale );
+    desc = parse_xml_desc(buffer, statbuf.st_size);
 
     // only look for <icon /> tag in .local
     if ( is_local && icon_name && *icon_name == NULL )
@@ -401,15 +389,13 @@ static char* _mime_type_get_desc_icon( const char* file_path,
 }
 
 /* Get human-readable description and icon name of the mime-type
- * If locale is NULL, current locale will be used.
  * The returned string should be freed when no longer used.
  * The icon_name will only be set if points to NULL, and must be freed.
  *
  * Note: Spec is not followed for icon.  If icon tag is found in .local
  * xml file, it is used.  Otherwise vfs_mime_type_get_icon guesses the icon.
  * The Freedesktop spec /usr/share/mime/generic-icons is NOT parsed. */
-char* mime_type_get_desc_icon( const char* type, const char* locale,
-                                                 char** icon_name )
+char* mime_type_get_desc_icon( const char* type, char** icon_name )
 {
     char* desc;
     const gchar* const * dir;
@@ -428,7 +414,7 @@ char* mime_type_get_desc_icon( const char* type, const char* locale,
     acc = access( file_path, F_OK );
     if ( acc != -1 )
     {
-        desc = _mime_type_get_desc_icon( file_path, locale, TRUE, icon_name );
+        desc = _mime_type_get_desc_icon( file_path, TRUE, icon_name );
         if ( desc )
             return desc;
     }
@@ -442,8 +428,7 @@ char* mime_type_get_desc_icon( const char* type, const char* locale,
         acc = access( file_path, F_OK );
         if ( acc != -1 )
         {
-            desc = _mime_type_get_desc_icon( file_path, locale, FALSE,
-                                                                icon_name );
+            desc = _mime_type_get_desc_icon( file_path, FALSE, icon_name );
             if ( G_LIKELY(desc) )
                 return desc;
         }

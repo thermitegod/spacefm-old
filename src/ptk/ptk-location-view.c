@@ -3308,7 +3308,7 @@ void ptk_bookmark_view_import_gtk( const char* path, XSet* book_set )
     XSet* newset;
     XSet* set_prev = NULL;
     XSet* set_first = NULL;
-    char *sep, *name, *upath, *tpath;
+    char *sep, *name, *upath;
     char* upath_name = NULL;
 
     //int count = 0;
@@ -3332,13 +3332,8 @@ void ptk_bookmark_view_import_gtk( const char* path, XSet* book_set )
                 name = NULL;
             else
                 continue;
-            tpath = g_filename_from_uri( line, NULL, NULL );
-            if ( tpath )
-            {
-                upath = g_filename_to_utf8( tpath, -1, NULL, &upath_len, NULL );
-                g_free( tpath );
-            }
-            else if ( g_str_has_prefix( line, "file://~/" ) )
+            upath = g_filename_from_uri( line, NULL, NULL );
+            if ( g_str_has_prefix( line, "file://~/" ) )
             {
                 upath = g_strdup( line + 7 );
                 if ( !name )

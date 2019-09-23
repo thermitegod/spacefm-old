@@ -11,6 +11,7 @@
 */
 
 #include "vfs-app-desktop.h"
+
 #include <glib/gi18n.h>
 
 #include <string.h>
@@ -72,11 +73,13 @@ VFSAppDesktop* vfs_app_desktop_new( const char* file_name )
 
     if( load )
     {
+/*
         app->disp_name = g_key_file_get_locale_string ( file,
                                                         desktop_entry_name,
                                                         "Name", NULL, NULL);
         app->comment = g_key_file_get_locale_string ( file, desktop_entry_name,
                                                       "Comment", NULL, NULL);
+*/
         app->exec = g_key_file_get_string ( file, desktop_entry_name,
                                             "Exec", NULL);
         app->icon_name = g_key_file_get_string ( file, desktop_entry_name,
@@ -135,27 +138,6 @@ gboolean vfs_app_desktop_rename( char* desktop_file_path, char* new_name )   //s
         g_key_file_free( kfile );
         return FALSE;
     }
-
-    // get user's locale
-    const char* locale = NULL;
-    const char* const * langs = g_get_language_names();
-    char* dot = strchr( langs[0], '.' );
-    if( dot )
-        locale = g_strndup( langs[0], (size_t)(dot - langs[0]) );
-    else
-        locale = langs[0];
-    if ( !locale || locale[0] == '\0' )
-        locale = "en";
-    char* l = g_strdup( locale );
-    char* ll = strchr( l, '_' );
-    if ( ll )
-        ll[0] = '\0';
-
-    // update keyfile
-    g_key_file_set_locale_string( kfile, desktop_entry_name, "Name", l, new_name );
-    if ( strcmp( l, locale ) )
-        g_key_file_set_locale_string( kfile, desktop_entry_name, "Name", locale, new_name );
-    g_free( l );
 
     // get keyfile as string
     char* data = g_key_file_to_data( kfile, NULL, NULL );

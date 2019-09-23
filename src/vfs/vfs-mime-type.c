@@ -256,7 +256,7 @@ GdkPixbuf* vfs_mime_type_get_icon( VFSMimeType* mime_type, gboolean big )
     // get description and icon from freedesktop XML - these are fetched
     // together for performance.
     char* xml_icon = NULL;
-    char* xml_desc = mime_type_get_desc_icon( mime_type->type, NULL, &xml_icon );
+    char* xml_desc = mime_type_get_desc_icon( mime_type->type, &xml_icon );
     if ( xml_icon )
     {
         if ( xml_icon[0] )
@@ -409,8 +409,7 @@ const char* vfs_mime_type_get_description( VFSMimeType* mime_type )
 {
     if ( G_UNLIKELY( ! mime_type->description ) )
     {
-        mime_type->description = mime_type_get_desc_icon( mime_type->type,
-                                                        NULL, NULL );
+        mime_type->description = mime_type_get_desc_icon(mime_type->type, NULL);
         if ( G_UNLIKELY( !mime_type->description || !*mime_type->description ) )
         {
             g_warning( "mime-type %s has no description (comment)",

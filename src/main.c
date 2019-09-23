@@ -934,6 +934,16 @@ gboolean handle_parsed_commandline_args()
     return ret;
 }
 
+static void check_locale()
+{
+    char *name = setlocale(LC_ALL, NULL);
+    if (G_UNLIKELY(!name && !(strcmp(name, "C") == 0 || strcmp(name, "C.UTF-8") == 0)))
+    {
+        g_fprintf(stderr, "Non-C locale detected. This is not supported.\n");
+        exit(1);
+    }
+}
+
 void tmp_clean()
 {
     char* command = g_strdup_printf("rm -rf %s", xset_get_user_tmp_dir());
@@ -944,14 +954,10 @@ void tmp_clean()
 
 int main ( int argc, char *argv[] )
 {
+    check_locale();
+
     gboolean run = FALSE;
     GError* err = NULL;
-
-#ifdef ENABLE_NLS
-    bindtextdomain ( GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR );
-    bind_textdomain_codeset ( GETTEXT_PACKAGE, "UTF-8" );
-    textdomain ( GETTEXT_PACKAGE );
-#endif
 
     // load spacefm.conf
     load_conf();
@@ -988,12 +994,6 @@ int main ( int argc, char *argv[] )
         // socket_command?
         if ( !strcmp( argv[1], "-s" ) || !strcmp( argv[1], "--socket-cmd" ) )
         {
-#ifdef ENABLE_NLS
-            // initialize gettext since gtk_init is not run here
-            setlocale( LC_ALL, "" );
-            bindtextdomain( GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR );
-            textdomain( GETTEXT_PACKAGE );
-#endif
             char* reply = NULL;
             int ret = send_socket_command( argc, argv, &reply );
             if ( reply && reply[0] )
@@ -1047,9 +1047,6 @@ int main ( int argc, char *argv[] )
 #endif
 #ifdef HAVE_FFMPEG
         g_printf( "FFMPEG " );
-#endif
-#ifdef ENABLE_NLS
-        g_printf( "NLS " );
 #endif
 #ifdef DEPRECATED_HW
         g_printf( "DEPRECATED_HW " );

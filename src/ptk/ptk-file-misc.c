@@ -3389,13 +3389,12 @@ gboolean  ptk_create_new_file( GtkWindow* parent_win,
                           VFSFileInfo** file )
 {
     gchar * full_path;
-    gchar* ufile_name;
     gchar* file_name;
     GtkLabel* prompt;
     int result;
     GtkWidget* dlg;
     gboolean ret = FALSE;
-	gboolean looponce = FALSE;  //MOD
+    gboolean looponce = FALSE;  //MOD
 
     if ( create_folder )
     {
@@ -3414,16 +3413,9 @@ gboolean  ptk_create_new_file( GtkWindow* parent_win,
 
     while ( gtk_dialog_run( GTK_DIALOG( dlg ) ) == GTK_RESPONSE_OK )
     {
-		looponce = TRUE;  //MOD
-        ufile_name = ptk_input_dialog_get_text( dlg );
-        if ( g_get_filename_charsets( NULL ) )
-            file_name = ufile_name;
-        else
-        {
-            file_name = g_filename_from_utf8( ufile_name, -1,
-                                              NULL, NULL, NULL );
-            g_free( ufile_name );
-        }
+        looponce = TRUE;  //MOD
+        file_name = ptk_input_dialog_get_text( dlg );
+
         full_path = g_build_filename( cwd, file_name, NULL );
         g_free( file_name );
         if ( g_file_test( full_path, G_FILE_TEST_EXISTS ) )

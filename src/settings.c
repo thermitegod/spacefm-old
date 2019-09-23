@@ -7337,7 +7337,7 @@ gboolean xset_text_dialog( GtkWidget* parent, const char* title, GtkWidget* imag
                 trim_ans = g_strdup( ans );
                 trim_ans = g_strstrip( trim_ans );
                 if ( ans && trim_ans[0] != '\0' )
-                    *answer = g_filename_from_utf8( trim_ans, -1, NULL, NULL, NULL );
+                    *answer = trim_ans;
                 else
                     *answer = NULL;
                 if ( ans )

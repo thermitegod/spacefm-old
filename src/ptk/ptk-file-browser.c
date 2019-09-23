@@ -621,11 +621,7 @@ void on_address_bar_activate( GtkWidget* entry, PtkFileBrowser* file_browser )
 
     gtk_editable_select_region( (GtkEditable*)entry, 0, 0 );    // clear selection
 
-    // Convert to on-disk encoding
-    dir_path = g_filename_from_utf8( text, -1, NULL, NULL, NULL );
-    final_path = vfs_file_resolve_path( ptk_file_browser_get_cwd( file_browser ),
-                                                                dir_path );
-    g_free( dir_path );
+    final_path = vfs_file_resolve_path(ptk_file_browser_get_cwd(file_browser), text);
 
     if ( text[0] == '\0' )
     {

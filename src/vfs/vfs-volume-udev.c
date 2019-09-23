@@ -2285,7 +2285,6 @@ void vfs_volume_set_info( VFSVolume* volume )
         g_free( valuec );
     }
 
-    //volume->disp_name = g_filename_to_utf8( parameter, -1, NULL, NULL, NULL );
     while ( strstr( parameter, "  " ) )
     {
         value = parameter;

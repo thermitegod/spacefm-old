@@ -2006,7 +2006,6 @@ static void on_multi_input_changed( GtkWidget* input_buf, GtkWidget* query_input
 
 void query_overwrite_response( GtkDialog *dlg, gint response, PtkFileTask* ptask )
 {
-    char* file_name;
     char* dir_name;
     char* str;
 
@@ -2053,12 +2052,10 @@ void query_overwrite_response( GtkDialog *dlg, gint response, PtkFileTask* ptask
                                                                 "query_input" );
             str = multi_input_get_text( query_input );
         }
-        file_name = g_filename_from_utf8( str, -1, NULL, NULL, NULL );
-        if ( str && file_name && ptask->task->current_dest )
+        if ( str && ptask->task->current_dest )
         {
             dir_name = g_path_get_dirname( ptask->task->current_dest );
-            *ptask->query_new_dest = g_build_filename( dir_name, file_name, NULL );
-            g_free( file_name );
+            *ptask->query_new_dest = g_build_filename( dir_name, str, NULL );
             g_free( dir_name );
         }
         g_free( str );
