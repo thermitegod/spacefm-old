@@ -992,7 +992,7 @@ int main ( int argc, char *argv[] )
     }
 
     /* initialize GTK+ and parse the command line arguments */
-    if( G_UNLIKELY( ! gtk_init_with_args( &argc, &argv, "", opt_entries, GETTEXT_PACKAGE, &err ) ) )
+    if( G_UNLIKELY( ! gtk_init_with_args( &argc, &argv, "", opt_entries, NULL, &err ) ) )
     {
         g_printf( "spacefm: %s\n", err->message );
         g_error_free( err );

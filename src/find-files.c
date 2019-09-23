@@ -1001,7 +1001,6 @@ static gboolean on_view_button_press( GtkTreeView* view, GdkEventButton* evt, Fi
             GtkWidget* popup;
             GtkUIManager* menu_mgr;
             GtkActionGroup* action_group = gtk_action_group_new ("PopupActions");
-            gtk_action_group_set_translation_domain( action_group, GETTEXT_PACKAGE );
             menu_mgr = gtk_ui_manager_new ();
 
             gtk_action_group_add_actions( action_group, menu_actions, G_N_ELEMENTS(menu_actions), data );
