@@ -379,7 +379,7 @@ GtkTextView* multi_input_new( GtkScrolledWindow* scrolled, const char* text,
 void multi_input_select_region( GtkWidget* input, int start, int end );
 char* multi_input_get_text( GtkWidget* input );
 XSet* xset_custom_new();
-gboolean write_root_settings( FILE* file, const char* path );
+gboolean write_root_settings(GString* buf, const char* path);
 GList* xset_get_plugins( gboolean included );
 void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
                           const char* path, const char* plug_dir, int type,

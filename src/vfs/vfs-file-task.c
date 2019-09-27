@@ -35,6 +35,7 @@
 #include "main-window.h"
 #include "vfs-volume.h"
 
+#include <gmodule.h>
 #include <glib/gprintf.h>
 
 #include "utils.h"
@@ -1345,13 +1346,11 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
     char* hex8;
     char* hexname;
     int result;
-    FILE* file;
     char* terminal = NULL;
     char** terminalv = NULL;
     const char* value;
     char* sum_script = NULL;
     GtkWidget* parent = NULL;
-    gboolean success;
     int i;
     char buf[ PATH_MAX + 1 ];
 
@@ -1488,25 +1487,18 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         }
         while ( g_file_test( task->exec_script, G_FILE_TEST_EXISTS ) );
 
-        // open file
-        file = fopen( task->exec_script, "w" );
-        if ( !file )
-            goto _exit_with_error;
+        // open buffer
+	GString* buf = g_string_sized_new(524288); //500K
 
         // build - header
-        result = g_fprintf( file, "#!%s\n%s\n#tmp exec script\n", BASHPATH, SHELL_SETTINGS );
-        if ( result < 0 )
-            goto _exit_with_error;
+        g_string_append_printf(buf, "#!%s\n%s\n#tmp exec script\n", BASHPATH, SHELL_SETTINGS);
 
         // build - exports
         if ( task->exec_export && ( task->exec_browser || task->exec_desktop ) )
         {
             if ( task->exec_browser )
-                success = main_write_exports( task, value, file );
+                main_write_exports(task, value, buf);
             else
-                success = FALSE;
-
-            if ( !success )
                 goto _exit_with_error;
         }
         else
@@ -1519,9 +1511,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         }
 
         // build - run
-        result = g_fprintf( file, "#run\nif [ \"$1\" == \"run\" ];then\n\n" );
-        if ( result < 0 )
-            goto _exit_with_error;
+        g_string_append_printf(buf, "#run\nif [ \"$1\" == \"run\" ];then\n\n");
 
         // build - write root settings
         if ( task->exec_write_root && geteuid() != 0 )
@@ -1531,7 +1521,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
             {
                 char* root_set_path= g_strdup_printf(
                                 "%s/spacefm/%s-as-root", SYSCONFDIR, this_user );
-                write_root_settings( file, root_set_path );
+                write_root_settings(buf, root_set_path);
                 g_free( root_set_path );
                 //g_free( this_user );  DON'T
             }
@@ -1539,62 +1529,49 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
             {
                 char* root_set_path= g_strdup_printf(
                                 "%s/spacefm/%d-as-root", SYSCONFDIR, geteuid() );
-                write_root_settings( file, root_set_path );
+                write_root_settings(buf, root_set_path);
                 g_free( root_set_path );
             }
         }
 
         // build - export vars
         if ( task->exec_export )
-            result = g_fprintf( file, "export fm_import=\"source %s\"\n", task->exec_script );
+            g_string_append_printf(buf, "export fm_import=\"source %s\"\n", task->exec_script);
         else
-            result = g_fprintf( file, "export fm_import=\"\"\n" );
-        if ( result < 0 )
-            goto _exit_with_error;
-        result = g_fprintf( file, "export fm_source=\"%s\"\n\n", task->exec_script );
-        if ( result < 0 )
-            goto _exit_with_error;
+            g_string_append_printf(buf, "export fm_import=\"\"\n");
+
+        g_string_append_printf(buf, "export fm_source=\"%s\"\n\n", task->exec_script);
 
         // build - trap rm
         if ( !task->exec_keep_tmp && geteuid() != 0 && task->exec_as_user
                                         && !strcmp( task->exec_as_user, "root" ) )
         {
             // run as root command, clean up
-            result = g_fprintf( file, "trap \"rm -f %s; exit\" EXIT SIGINT SIGTERM SIGQUIT SIGHUP\n\n", task->exec_script );
-            if ( result < 0 )
-                goto _exit_with_error;
+            g_string_append_printf(buf, "trap \"rm -f %s; exit\" EXIT SIGINT SIGTERM SIGQUIT SIGHUP\n\n", task->exec_script);
         }
 
         // build - command
 	print_task_command(task->exec_ptask, task->exec_command);
 
-        result = g_fprintf( file, "%s\nfm_err=$?\n", task->exec_command );
-        if ( result < 0 )
-            goto _exit_with_error;
+        g_string_append_printf(buf, "%s\nfm_err=$?\n", task->exec_command);
 
         // build - press enter to close
         if ( terminal && task->exec_keep_terminal )
         {
-            if ( geteuid() == 0 ||
-                    ( task->exec_as_user && !strcmp( task->exec_as_user, "root" ) ) )
-                result = g_fprintf( file, "\necho;read -p '[ Finished ]  Press Enter to close: '\n" );
+            if (geteuid() == 0 || (task->exec_as_user && !strcmp(task->exec_as_user, "root")))
+                g_string_append_printf(buf, "\necho;read -p '[ Finished ]  Press Enter to close: '\n");
             else
             {
-                result = g_fprintf( file, "\necho;read -p '[ Finished ]  Press Enter to close or s + Enter for a shell: ' s\nif [ \"$s\" = 's' ];then\n    if [ \"$(whoami)\" = \"root\" ];then\n        echo '\n[ %s ]'\n    fi\n    echo\n    %s\nfi\n\n", "You are ROOT", BASHPATH );
+                g_string_append_printf(buf, "\necho;read -p '[ Finished ]  Press Enter to close or s + Enter for a shell: ' s\nif [ \"$s\" = 's' ];then\n    if [ \"$(whoami)\" = \"root\" ];then\n        echo '\n[ %s ]'\n    fi\n    echo\n    %s\nfi\n\n", "You are ROOT", BASHPATH);
             }
-            if ( result < 0 )
-                goto _exit_with_error;
         }
 
-        result = g_fprintf( file, "\nexit $fm_err\nfi\n" );
-        if ( result < 0 )
-            goto _exit_with_error;
+        g_string_append_printf(buf, "\nexit $fm_err\nfi\n");
 
-        // close file
-        result = fclose( file );
-        file = NULL;
-        if ( result )
+
+        if (!g_file_set_contents(task->exec_script, buf->str, buf->len, NULL))
             goto _exit_with_error;
+        g_string_free(buf, TRUE);
 
         // set permissions
         if ( task->exec_as_user && strcmp( task->exec_as_user, "root" ) )
@@ -1862,9 +1839,9 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
 // out and err can/should be closed too?
 
 _exit_with_error:
-    vfs_file_task_exec_error( task, errno, _("Error writing temporary file") );
-    if ( file )
-        fclose( file );
+    vfs_file_task_exec_error(task, errno,"Error writing temporary file");
+    g_string_free(buf, TRUE);
+
     if ( !task->exec_keep_tmp )
     {
         if ( task->exec_script )

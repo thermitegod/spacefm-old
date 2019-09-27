@@ -1875,7 +1875,7 @@ gboolean xset_opener( PtkFileBrowser* file_browser, char job )
     return found;
 }
 
-void write_root_saver( FILE* file, const char* path, const char* name,
+void write_root_saver(GString* buf, const char* path, const char* name,
                                             const char* var, const char* value )
 {
     if ( !value )
@@ -1883,20 +1883,19 @@ void write_root_saver( FILE* file, const char* path, const char* name,
 
     char* save = g_strdup_printf( "%s-%s=%s", name, var, value );
     char* qsave = bash_quote( save );
-    g_fprintf( file, "echo %s >> \"%s\"\n", qsave, path );
+    g_string_append_printf(buf, "echo %s >> \"%s\"\n", qsave, path);
     g_free( save );
     g_free( qsave );
 }
 
-gboolean write_root_settings( FILE* file, const char* path )
+gboolean write_root_settings(GString* buf, const char* path)
 {
     GList* l;
     XSet* set;
 
-    if ( !file )
-        return FALSE;
-
-    g_fprintf( file, "\n#save root settings\nmkdir -p %s/spacefm\necho -e '#SpaceFM As-Root Session File\\n\\' > '%s'\n", SYSCONFDIR, path );
+    g_string_append_printf(buf, "\n#save root settings\nmkdir -p %s/spacefm\n"
+                    "echo -e '#SpaceFM As-Root Session File\\n\\' > '%s'\n",
+                    SYSCONFDIR, path);
 
     for ( l = xsets ; l; l = l->next )
     {
@@ -1913,17 +1912,17 @@ gboolean write_root_settings( FILE* file, const char* path )
                     || !strncmp( set->name, "dev_fmt_", 8 )
                     || !strncmp( set->name, "label_cmd_", 8 ) )
             {
-                write_root_saver( file, path, set->name, "s", set->s );
-                write_root_saver( file, path, set->name, "x", set->x );
-                write_root_saver( file, path, set->name, "y", set->y );
+                write_root_saver(buf, path, set->name, "s", set->s);
+                write_root_saver(buf, path, set->name, "x", set->x);
+                write_root_saver(buf, path, set->name, "y", set->y);
                 if ( set->b != XSET_B_UNSET )
-                    g_fprintf( file, "echo '%s-b=%d' >> \"%s\"\n",
+                    g_string_append_printf(buf, "echo '%s-b=%d' >> \"%s\"\n",
                                                         set->name, set->b, path );
             }
         }
     }
 
-    g_fprintf( file, "chmod -R go-w+rX %s/spacefm\n\n", SYSCONFDIR );
+    g_string_append_printf(buf, "chmod -R go-w+rX %s/spacefm\n\n", SYSCONFDIR);
     return TRUE;
 }
 
