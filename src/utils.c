@@ -370,37 +370,22 @@ char* get_valid_su()  // may return NULL
 {
     int i;
     char* use_su = NULL;
-    char* custom_su = NULL;
 
     use_su = g_strdup( xset_get_s( "su_command" ) );
 
-    if ( settings_terminal_su )
-        // get su from /etc/spacefm/spacefm.conf
-        custom_su = g_find_program_in_path( settings_terminal_su );
-
-    if ( custom_su && ( !use_su || use_su[0] == '\0' ) )
-    {
-        // no su set in Prefs, use custom
-        xset_set( "su_command", "s", custom_su );
-        g_free( use_su );
-        use_su = g_strdup( custom_su );
-    }
     if ( use_su )
     {
-        if ( !custom_su || g_strcmp0( custom_su, use_su ) )
+        // is Prefs use_su in list of valid su commands?
+        for ( i = 0; i < G_N_ELEMENTS( su_commands ); i++ )
         {
-            // is Prefs use_su in list of valid su commands?
-            for ( i = 0; i < G_N_ELEMENTS( su_commands ); i++ )
-            {
-                if ( !strcmp( su_commands[i], use_su ) )
-                    break;
-            }
-            if ( i == G_N_ELEMENTS( su_commands ) )
-            {
-                // not in list - invalid
-                g_free( use_su );
-                use_su = NULL;
-            }
+            if ( !strcmp( su_commands[i], use_su ) )
+                break;
+        }
+        if ( i == G_N_ELEMENTS( su_commands ) )
+        {
+            // not in list - invalid
+            g_free( use_su );
+            use_su = NULL;
         }
     }
     if ( !use_su )
@@ -417,7 +402,6 @@ char* get_valid_su()  // may return NULL
     }
     char* su_path = g_find_program_in_path( use_su );
     g_free( use_su );
-    g_free( custom_su );
     return su_path;
 }
 
@@ -425,42 +409,23 @@ char* get_valid_gsu()  // may return NULL
 {
     int i;
     char* use_gsu = NULL;
-    char* custom_gsu = NULL;
 
     // get gsu set in Prefs
     use_gsu = g_strdup( xset_get_s( "gsu_command" ) );
 
-    if ( settings_graphical_su )
-        // get gsu from /etc/spacefm/spacefm.conf
-        custom_gsu = g_find_program_in_path( settings_graphical_su );
-#ifdef PREFERABLE_SUDO_PROG
-    if ( !custom_gsu )
-        // get build-time gsu
-        custom_gsu = g_find_program_in_path( PREFERABLE_SUDO_PROG );
-#endif
-    if ( custom_gsu && ( !use_gsu || use_gsu[0] == '\0' ) )
-    {
-        // no gsu set in Prefs, use custom
-        xset_set( "gsu_command", "s", custom_gsu );
-        g_free( use_gsu );
-        use_gsu = g_strdup( custom_gsu );
-    }
     if ( use_gsu )
     {
-        if ( !custom_gsu || g_strcmp0( custom_gsu, use_gsu ) )
+        // is Prefs use_gsu in list of valid gsu commands?
+        for ( i = 0; i < G_N_ELEMENTS( gsu_commands ); i++ )
         {
-            // is Prefs use_gsu in list of valid gsu commands?
-            for ( i = 0; i < G_N_ELEMENTS( gsu_commands ); i++ )
-            {
-                if ( !strcmp( gsu_commands[i], use_gsu ) )
-                    break;
-            }
-            if ( i == G_N_ELEMENTS( gsu_commands ) )
-            {
-                // not in list - invalid
-                g_free( use_gsu );
-                use_gsu = NULL;
-            }
+            if ( !strcmp( gsu_commands[i], use_gsu ) )
+                break;
+        }
+        if ( i == G_N_ELEMENTS( gsu_commands ) )
+        {
+            // not in list - invalid
+            g_free( use_gsu );
+            use_gsu = NULL;
         }
     }
     if ( !use_gsu )
@@ -479,7 +444,6 @@ char* get_valid_gsu()  // may return NULL
     char* gsu_path = g_find_program_in_path( use_gsu );
 
     g_free( use_gsu );
-    g_free( custom_gsu );
     return gsu_path;
 }
 

@@ -149,15 +149,6 @@ PKG_CHECK_MODULES(LIBUDEV, [libudev >= 143])
 AC_SUBST(LIBUDEV_CFLAGS)
 AC_SUBST(LIBUDEV_LIBS)
 
-AC_ARG_WITH(
-    [preferable-sudo],
-    AS_HELP_STRING([--with-preferable-sudo=PROG],
-                   [Specify custom graphical su program to run root commands (or see /etc/spacefm/spacefm.conf)]),
-                   [ preferable_sudo="$withval" ])
-if test ! -z "$preferable_sudo"; then
-  CFLAGS="$CFLAGS -DPREFERABLE_SUDO_PROG=\\\"$preferable_sudo\\\""
-fi
-
 AC_ARG_ENABLE(
     [deprecated_hw],
     AS_HELP_STRING([--enable-deprecated-hw],

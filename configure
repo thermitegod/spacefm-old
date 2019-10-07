@@ -825,7 +825,6 @@ with_gtk3
 with_gtk2
 enable_startup_notification
 enable_cast_checks
-with_preferable_sudo
 enable_deprecated_hw
 enable_git
 enable_video_thumbnails
@@ -1516,9 +1515,6 @@ Optional Packages:
                           with GTK2 unless GTK2 not installed)
   --with-gtk2             Build with GTK2 interface only (default: with GTK2
                           unless GTK2 not installed)
-  --with-preferable-sudo=PROG
-                          Specify custom graphical su program to run root
-                          commands (or see /etc/spacefm/spacefm.conf)
 
 Some influential environment variables:
   CC          C compiler command
@@ -15397,16 +15393,6 @@ $as_echo "yes" >&6; }
 fi
 
 
-
-
-# Check whether --with-preferable-sudo was given.
-if test "${with_preferable_sudo+set}" = set; then :
-  withval=$with_preferable_sudo;  preferable_sudo="$withval"
-fi
-
-if test ! -z "$preferable_sudo"; then
-  CFLAGS="$CFLAGS -DPREFERABLE_SUDO_PROG=\\\"$preferable_sudo\\\""
-fi
 
 # Check whether --enable-deprecated_hw was given.
 if test "${enable_deprecated_hw+set}" = set; then :
