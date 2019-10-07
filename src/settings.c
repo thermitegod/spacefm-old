@@ -4962,7 +4962,6 @@ void xset_design_job( GtkWidget* item, XSet* set )
             break;
         }
         g_free( msg );
-        ptk_bookmark_view_import_gtk( file, set );
         g_free( file );
         break;
     case XSET_JOB_CUT:

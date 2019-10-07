@@ -55,7 +55,6 @@ void ptk_bookmark_view_update_icons( GtkIconTheme* icon_theme,
 void ptk_bookmark_view_xset_changed( GtkTreeView* view,
                     PtkFileBrowser* file_browser, const char* changed_name );
 XSet* ptk_bookmark_view_get_first_bookmark( XSet* book_set );
-void ptk_bookmark_view_import_gtk( const char* path, XSet* book_set );
 void ptk_bookmark_view_on_open_reverse( GtkMenuItem* item,
                                         PtkFileBrowser* file_browser );
 
