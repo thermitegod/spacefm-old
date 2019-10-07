@@ -19,9 +19,6 @@ MIMETYE_SOURCES = \
     mime-type/mime-action.c mime-type/mime-action.h \
     mime-type/mime-cache.c mime-type/mime-cache.h
 
-VOLUME_SOURCES= \
-    vfs/vfs-volume-udev.c
-
 VFS_SOURCES = \
     vfs/vfs-file-monitor.c vfs/vfs-file-monitor.h \
     vfs/vfs-mime-type.c vfs/vfs-mime-type.h \
@@ -29,8 +26,7 @@ VFS_SOURCES = \
     vfs/vfs-dir.c vfs/vfs-dir.h \
     vfs/vfs-app-desktop.c vfs/vfs-app-desktop.h \
     vfs/vfs-file-task.c vfs/vfs-file-task.h \
-    vfs/vfs-volume.h \
-    $(VOLUME_SOURCES) \
+    vfs/vfs-volume.c vfs/vfs-volume.h \
     vfs/vfs-execute.c vfs/vfs-execute.h \
     vfs/vfs-async-task.c vfs/vfs-async-task.h \
     vfs/vfs-thumbnail-loader.c vfs/vfs-thumbnail-loader.h \

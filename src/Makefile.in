@@ -105,18 +105,18 @@ am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_1 = mime-type/spacefm-mime-type.$(OBJEXT) \
 	mime-type/spacefm-mime-action.$(OBJEXT) \
 	mime-type/spacefm-mime-cache.$(OBJEXT)
-am__objects_2 = vfs/spacefm-vfs-volume-udev.$(OBJEXT)
-am__objects_3 = vfs/spacefm-vfs-file-monitor.$(OBJEXT) \
+am__objects_2 = vfs/spacefm-vfs-file-monitor.$(OBJEXT) \
 	vfs/spacefm-vfs-mime-type.$(OBJEXT) \
 	vfs/spacefm-vfs-file-info.$(OBJEXT) \
 	vfs/spacefm-vfs-dir.$(OBJEXT) \
 	vfs/spacefm-vfs-app-desktop.$(OBJEXT) \
-	vfs/spacefm-vfs-file-task.$(OBJEXT) $(am__objects_2) \
+	vfs/spacefm-vfs-file-task.$(OBJEXT) \
+	vfs/spacefm-vfs-volume.$(OBJEXT) \
 	vfs/spacefm-vfs-execute.$(OBJEXT) \
 	vfs/spacefm-vfs-async-task.$(OBJEXT) \
 	vfs/spacefm-vfs-thumbnail-loader.$(OBJEXT) \
 	vfs/spacefm-vfs-utils.$(OBJEXT)
-am__objects_4 = ptk/spacefm-ptk-file-browser.$(OBJEXT) \
+am__objects_3 = ptk/spacefm-ptk-file-browser.$(OBJEXT) \
 	ptk/spacefm-ptk-file-list.$(OBJEXT) \
 	ptk/spacefm-ptk-path-entry.$(OBJEXT) \
 	ptk/spacefm-ptk-text-renderer.$(OBJEXT) \
@@ -134,7 +134,7 @@ am__objects_4 = ptk/spacefm-ptk-file-browser.$(OBJEXT) \
 	ptk/spacefm-ptk-file-misc.$(OBJEXT) \
 	ptk/spacefm-ptk-file-properties.$(OBJEXT) \
 	ptk/spacefm-ptk-app-chooser.$(OBJEXT)
-am__objects_5 = exo/spacefm-exo-icon-view.$(OBJEXT) \
+am__objects_4 = exo/spacefm-exo-icon-view.$(OBJEXT) \
 	exo/spacefm-exo-tree-view.$(OBJEXT) \
 	exo/spacefm-exo-private.$(OBJEXT) \
 	exo/spacefm-exo-string.$(OBJEXT) \
@@ -148,8 +148,8 @@ am__objects_5 = exo/spacefm-exo-icon-view.$(OBJEXT) \
 	exo/spacefm-exo-utils.$(OBJEXT) \
 	exo/spacefm-exo-binding.$(OBJEXT) \
 	exo/spacefm-exo-cell-renderer-ellipsized-text.$(OBJEXT)
-am_spacefm_OBJECTS = $(am__objects_1) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) spacefm-main.$(OBJEXT) \
+am_spacefm_OBJECTS = $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4) spacefm-main.$(OBJEXT) \
 	spacefm-main-window.$(OBJEXT) spacefm-settings.$(OBJEXT) \
 	spacefm-pref-dialog.$(OBJEXT) spacefm-find-files.$(OBJEXT) \
 	spacefm-go-dialog.$(OBJEXT) spacefm-cust-dialog.$(OBJEXT) \
@@ -258,7 +258,7 @@ am__depfiles_remade = ./$(DEPDIR)/spacefm-cust-dialog.Po \
 	vfs/$(DEPDIR)/spacefm-vfs-mime-type.Po \
 	vfs/$(DEPDIR)/spacefm-vfs-thumbnail-loader.Po \
 	vfs/$(DEPDIR)/spacefm-vfs-utils.Po \
-	vfs/$(DEPDIR)/spacefm-vfs-volume-udev.Po
+	vfs/$(DEPDIR)/spacefm-vfs-volume.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -468,9 +468,6 @@ MIMETYE_SOURCES = \
     mime-type/mime-action.c mime-type/mime-action.h \
     mime-type/mime-cache.c mime-type/mime-cache.h
 
-VOLUME_SOURCES = \
-    vfs/vfs-volume-udev.c
-
 VFS_SOURCES = \
     vfs/vfs-file-monitor.c vfs/vfs-file-monitor.h \
     vfs/vfs-mime-type.c vfs/vfs-mime-type.h \
@@ -478,8 +475,7 @@ VFS_SOURCES = \
     vfs/vfs-dir.c vfs/vfs-dir.h \
     vfs/vfs-app-desktop.c vfs/vfs-app-desktop.h \
     vfs/vfs-file-task.c vfs/vfs-file-task.h \
-    vfs/vfs-volume.h \
-    $(VOLUME_SOURCES) \
+    vfs/vfs-volume.c vfs/vfs-volume.h \
     vfs/vfs-execute.c vfs/vfs-execute.h \
     vfs/vfs-async-task.c vfs/vfs-async-task.h \
     vfs/vfs-thumbnail-loader.c vfs/vfs-thumbnail-loader.h \
@@ -666,7 +662,7 @@ vfs/spacefm-vfs-app-desktop.$(OBJEXT): vfs/$(am__dirstamp) \
 	vfs/$(DEPDIR)/$(am__dirstamp)
 vfs/spacefm-vfs-file-task.$(OBJEXT): vfs/$(am__dirstamp) \
 	vfs/$(DEPDIR)/$(am__dirstamp)
-vfs/spacefm-vfs-volume-udev.$(OBJEXT): vfs/$(am__dirstamp) \
+vfs/spacefm-vfs-volume.$(OBJEXT): vfs/$(am__dirstamp) \
 	vfs/$(DEPDIR)/$(am__dirstamp)
 vfs/spacefm-vfs-execute.$(OBJEXT): vfs/$(am__dirstamp) \
 	vfs/$(DEPDIR)/$(am__dirstamp)
@@ -856,7 +852,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@vfs/$(DEPDIR)/spacefm-vfs-mime-type.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@vfs/$(DEPDIR)/spacefm-vfs-thumbnail-loader.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@vfs/$(DEPDIR)/spacefm-vfs-utils.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@vfs/$(DEPDIR)/spacefm-vfs-volume-udev.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@vfs/$(DEPDIR)/spacefm-vfs-volume.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -1014,19 +1010,19 @@ vfs/spacefm-vfs-file-task.obj: vfs/vfs-file-task.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o vfs/spacefm-vfs-file-task.obj `if test -f 'vfs/vfs-file-task.c'; then $(CYGPATH_W) 'vfs/vfs-file-task.c'; else $(CYGPATH_W) '$(srcdir)/vfs/vfs-file-task.c'; fi`
 
-vfs/spacefm-vfs-volume-udev.o: vfs/vfs-volume-udev.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT vfs/spacefm-vfs-volume-udev.o -MD -MP -MF vfs/$(DEPDIR)/spacefm-vfs-volume-udev.Tpo -c -o vfs/spacefm-vfs-volume-udev.o `test -f 'vfs/vfs-volume-udev.c' || echo '$(srcdir)/'`vfs/vfs-volume-udev.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) vfs/$(DEPDIR)/spacefm-vfs-volume-udev.Tpo vfs/$(DEPDIR)/spacefm-vfs-volume-udev.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vfs/vfs-volume-udev.c' object='vfs/spacefm-vfs-volume-udev.o' libtool=no @AMDEPBACKSLASH@
+vfs/spacefm-vfs-volume.o: vfs/vfs-volume.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT vfs/spacefm-vfs-volume.o -MD -MP -MF vfs/$(DEPDIR)/spacefm-vfs-volume.Tpo -c -o vfs/spacefm-vfs-volume.o `test -f 'vfs/vfs-volume.c' || echo '$(srcdir)/'`vfs/vfs-volume.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) vfs/$(DEPDIR)/spacefm-vfs-volume.Tpo vfs/$(DEPDIR)/spacefm-vfs-volume.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vfs/vfs-volume.c' object='vfs/spacefm-vfs-volume.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o vfs/spacefm-vfs-volume-udev.o `test -f 'vfs/vfs-volume-udev.c' || echo '$(srcdir)/'`vfs/vfs-volume-udev.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o vfs/spacefm-vfs-volume.o `test -f 'vfs/vfs-volume.c' || echo '$(srcdir)/'`vfs/vfs-volume.c
 
-vfs/spacefm-vfs-volume-udev.obj: vfs/vfs-volume-udev.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT vfs/spacefm-vfs-volume-udev.obj -MD -MP -MF vfs/$(DEPDIR)/spacefm-vfs-volume-udev.Tpo -c -o vfs/spacefm-vfs-volume-udev.obj `if test -f 'vfs/vfs-volume-udev.c'; then $(CYGPATH_W) 'vfs/vfs-volume-udev.c'; else $(CYGPATH_W) '$(srcdir)/vfs/vfs-volume-udev.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) vfs/$(DEPDIR)/spacefm-vfs-volume-udev.Tpo vfs/$(DEPDIR)/spacefm-vfs-volume-udev.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vfs/vfs-volume-udev.c' object='vfs/spacefm-vfs-volume-udev.obj' libtool=no @AMDEPBACKSLASH@
+vfs/spacefm-vfs-volume.obj: vfs/vfs-volume.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT vfs/spacefm-vfs-volume.obj -MD -MP -MF vfs/$(DEPDIR)/spacefm-vfs-volume.Tpo -c -o vfs/spacefm-vfs-volume.obj `if test -f 'vfs/vfs-volume.c'; then $(CYGPATH_W) 'vfs/vfs-volume.c'; else $(CYGPATH_W) '$(srcdir)/vfs/vfs-volume.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) vfs/$(DEPDIR)/spacefm-vfs-volume.Tpo vfs/$(DEPDIR)/spacefm-vfs-volume.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vfs/vfs-volume.c' object='vfs/spacefm-vfs-volume.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o vfs/spacefm-vfs-volume-udev.obj `if test -f 'vfs/vfs-volume-udev.c'; then $(CYGPATH_W) 'vfs/vfs-volume-udev.c'; else $(CYGPATH_W) '$(srcdir)/vfs/vfs-volume-udev.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -c -o vfs/spacefm-vfs-volume.obj `if test -f 'vfs/vfs-volume.c'; then $(CYGPATH_W) 'vfs/vfs-volume.c'; else $(CYGPATH_W) '$(srcdir)/vfs/vfs-volume.c'; fi`
 
 vfs/spacefm-vfs-execute.o: vfs/vfs-execute.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(spacefm_CFLAGS) $(CFLAGS) -MT vfs/spacefm-vfs-execute.o -MD -MP -MF vfs/$(DEPDIR)/spacefm-vfs-execute.Tpo -c -o vfs/spacefm-vfs-execute.o `test -f 'vfs/vfs-execute.c' || echo '$(srcdir)/'`vfs/vfs-execute.c
@@ -1853,7 +1849,7 @@ distclean: distclean-am
 	-rm -f vfs/$(DEPDIR)/spacefm-vfs-mime-type.Po
 	-rm -f vfs/$(DEPDIR)/spacefm-vfs-thumbnail-loader.Po
 	-rm -f vfs/$(DEPDIR)/spacefm-vfs-utils.Po
-	-rm -f vfs/$(DEPDIR)/spacefm-vfs-volume-udev.Po
+	-rm -f vfs/$(DEPDIR)/spacefm-vfs-volume.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1953,7 +1949,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f vfs/$(DEPDIR)/spacefm-vfs-mime-type.Po
 	-rm -f vfs/$(DEPDIR)/spacefm-vfs-thumbnail-loader.Po
 	-rm -f vfs/$(DEPDIR)/spacefm-vfs-utils.Po
-	-rm -f vfs/$(DEPDIR)/spacefm-vfs-volume-udev.Po
+	-rm -f vfs/$(DEPDIR)/spacefm-vfs-volume.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
