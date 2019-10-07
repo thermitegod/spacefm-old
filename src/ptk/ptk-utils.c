@@ -38,7 +38,6 @@ void ptk_menu_add_items_from_data( GtkWidget* menu,
   PtkMenuItemEntry* ent;
   GtkWidget* menu_item = NULL;
   GtkWidget* sub_menu;
-  GtkWidget* image;
   GSList* radio_group = NULL;
   const char* signal;
 
@@ -57,13 +56,6 @@ void ptk_menu_add_items_from_data( GtkWidget* menu,
           menu_item = gtk_menu_item_new_with_mnemonic(_(ent->label));
 #elif (GTK_MAJOR_VERSION == 2)
           menu_item = gtk_image_menu_item_new_with_mnemonic(_(ent->label));
-#endif
-
-#if (GTK_MAJOR_VERSION == 3)
-//TODO
-#elif (GTK_MAJOR_VERSION == 2)
-          image = gtk_image_new_from_stock( ent->stock_icon, GTK_ICON_SIZE_MENU );
-          gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM(menu_item), image );
 #endif
         }
         else if( G_UNLIKELY( PTK_IS_CHECK_MENU_ITEM(ent) ) )  {

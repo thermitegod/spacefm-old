@@ -873,12 +873,6 @@ GtkWidget* ptk_file_menu_new( PtkFileBrowser* browser,
                     app_img = xset_get_image( set->icon, GTK_ICON_SIZE_MENU );
                 if ( !app_img )
                     app_img = xset_get_image( "gtk-execute", GTK_ICON_SIZE_MENU );
-#if (GTK_MAJOR_VERSION == 3)
-//TODO
-#elif (GTK_MAJOR_VERSION == 2)
-                gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM(
-                                                app_menu_item ), app_img );
-#endif
             }
             g_slist_free( handlers_slist );
             // add a separator
@@ -952,14 +946,6 @@ GtkWidget* ptk_file_menu_new( PtkFileBrowser* browser,
                 if ( app_icon )
                 {
                     app_img = gtk_image_new_from_pixbuf( app_icon );
-#if (GTK_MAJOR_VERSION == 3)
-//TODO
-#elif (GTK_MAJOR_VERSION == 2)
-                    if ( app_img )
-                        gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM(
-                                                app_menu_item ), app_img );
-                    g_object_unref( app_icon );
-#endif
                 }
             }
             g_strfreev( apps );
@@ -1012,15 +998,6 @@ GtkWidget* ptk_file_menu_new( PtkFileBrowser* browser,
             GdkPixbuf* app_icon_scaled = gdk_pixbuf_scale_simple( app_icon,
                          icon_w, icon_h, GDK_INTERP_BILINEAR );
             app_img = gtk_image_new_from_pixbuf( app_icon_scaled );
-#if (GTK_MAJOR_VERSION == 3)
-//TODO
-#elif (GTK_MAJOR_VERSION == 2)
-            if ( app_img )
-            {
-                gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM( item ),
-                                                                    app_img );
-            }
-#endif
             g_object_unref( app_icon );
             g_object_unref( app_icon_scaled );
         }
@@ -1993,15 +1970,6 @@ GtkWidget* app_menu_additem( GtkWidget* menu, char* label, gchar* stock_icon,
 #elif (GTK_MAJOR_VERSION == 2)
             item = gtk_image_menu_item_new_with_mnemonic( label );
 #endif
-            GtkWidget* image = gtk_image_new_from_stock( stock_icon,
-                                                            GTK_ICON_SIZE_MENU );
-#if (GTK_MAJOR_VERSION == 3)
-//TODO
-#elif (GTK_MAJOR_VERSION == 2)
-            if ( image )
-                gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( item ),
-                                                            image );
-#endif
         }
     }
     else
@@ -2158,12 +2126,6 @@ static void show_app_menu( GtkWidget* menu, GtkWidget* app_item, PtkFileMenu* da
 #endif
     submenu = gtk_menu_new();
     gtk_menu_item_set_submenu( GTK_MENU_ITEM( newitem ), submenu );
-#if (GTK_MAJOR_VERSION == 3)
-//TODO
-#elif (GTK_MAJOR_VERSION == 2)
-    gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM( newitem ),
-          gtk_image_new_from_stock( GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_MENU ) );
-#endif
     gtk_container_add ( GTK_CONTAINER ( app_menu ), newitem );
     g_object_set_data( G_OBJECT( newitem ), "job", GINT_TO_POINTER( APP_JOB_USR ) );
     g_object_set_data( G_OBJECT( newitem ), "data", data );

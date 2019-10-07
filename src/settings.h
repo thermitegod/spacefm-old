@@ -333,7 +333,6 @@ void xset_custom_delete( XSet* set, gboolean delete_next );
 void xset_custom_activate( GtkWidget* item, XSet* set );
 XSet* xset_custom_remove( XSet* set );
 char* xset_custom_get_app_name_icon( XSet* set, GdkPixbuf** icon, int icon_size );
-GdkPixbuf* xset_custom_get_bookmark_icon( XSet* set, int icon_size );
 void xset_custom_export( GtkWidget* parent, PtkFileBrowser* file_browser,
                                                                     XSet* set );
 GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,

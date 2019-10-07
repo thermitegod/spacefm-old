@@ -2813,13 +2813,6 @@ static GtkWidget* add_popup_menuitem( GtkWidget* popup,
     GtkWidget* item = gtk_image_menu_item_new_with_mnemonic( label );
 #endif
 
-#if (GTK_MAJOR_VERSION == 3)
-//TODO
-#elif (GTK_MAJOR_VERSION == 2)
-    if ( image )
-        gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM( item ),
-                        xset_get_image( image, GTK_ICON_SIZE_MENU ) );
-#endif
     gtk_container_add ( GTK_CONTAINER ( popup ), item );
     g_signal_connect( G_OBJECT( item ), "activate",
                   G_CALLBACK( on_option_cb ), ( gpointer ) hnd );
