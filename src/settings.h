@@ -73,7 +73,6 @@ AppSettings;
 
 extern AppSettings app_settings;
 
-void load_conf();
 void load_settings( char* config_dir );
 char* save_settings( gpointer main_window_ptr );
 void free_settings();
@@ -379,7 +378,6 @@ GtkTextView* multi_input_new( GtkScrolledWindow* scrolled, const char* text,
 void multi_input_select_region( GtkWidget* input, int start, int end );
 char* multi_input_get_text( GtkWidget* input );
 XSet* xset_custom_new();
-gboolean write_root_settings(GString* buf, const char* path);
 GList* xset_get_plugins( gboolean included );
 void install_plugin_file( gpointer main_win, GtkWidget* handler_dlg,
                           const char* path, const char* plug_dir, int type,

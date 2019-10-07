@@ -15,10 +15,6 @@ AM_PROG_CC_STDC
 AC_PROG_INTLTOOL
 AC_HEADER_STDC
 
-
-# sysconfdir defaults to /usr/local/etc if this is not done:
-test "$sysconfdir" = '${prefix}/etc' && sysconfdir=/etc
-
 # libtool option to control which symbols are exported
 # right now, symbols starting with _ are not exported
 LIBTOOL_EXPORT_OPTIONS='-export-symbols-regex "^[[^_]].*"'
@@ -229,7 +225,6 @@ ALL_LINGUAS=""
 
 AC_OUTPUT([
 Makefile
-etc/Makefile
 src/Makefile
 po/Makefile.in
 data/Makefile

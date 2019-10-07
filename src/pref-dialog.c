@@ -118,7 +118,6 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
     //gboolean single_hover;
     //gboolean rubberband;
     gboolean root_bar;
-    gboolean root_set_change = FALSE;
     const GList* l;
     PtkFileBrowser* file_browser;
     gboolean use_si_prefix;
@@ -408,34 +407,24 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
         if ( !old_root_editor )
         {
             if ( root_editor[0] != '\0' )
-            {
                 xset_set( "root_editor", "s", root_editor );
-                root_set_change = TRUE;
-            }
         }
         else if ( strcmp( root_editor, old_root_editor ) )
-        {
             xset_set( "root_editor", "s", root_editor );
-            root_set_change = TRUE;
-        }
+
         if ( !!gtk_toggle_button_get_active(
                                     (GtkToggleButton*)data->root_editor_terminal )
                                     != !!xset_get_b( "root_editor" ) )
-        {
             xset_set_b( "root_editor", gtk_toggle_button_get_active(
                                     (GtkToggleButton*)data->root_editor_terminal ) );
-            root_set_change = TRUE;
-        }
 
         //MOD terminal
         char* old_terminal = xset_get_s( "main_terminal" );
         char* terminal = gtk_combo_box_text_get_active_text( GTK_COMBO_BOX_TEXT( data->terminal ) );
         g_strstrip( terminal );
         if ( g_strcmp0( terminal, old_terminal ) )
-        {
             xset_set( "main_terminal", "s", terminal[0] == '\0' ? NULL : terminal );
-            root_set_change = TRUE;
-        }
+
         // report missing terminal
         if ((str = strchr(terminal, ' ')))
             str[0] = '\0';
@@ -461,30 +450,8 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
         }
 
         if ( xset_get_b( "main_terminal" ) )
-        {
-            root_set_change = TRUE;
             xset_set_b( "main_terminal", FALSE );
-        }
 
-        // root settings saved?
-        if ( geteuid() != 0 )
-        {
-            if ( root_set_change )
-            {
-                // task
-                char* msg = g_strdup_printf( _("You will now be asked for your root password to save the root settings for this user to a file in %s/spacefm/  Supplying the password in the next window is recommended.  Because SpaceFM runs some commands as root via su, these settings are best protected by root."), SYSCONFDIR );
-                xset_msg_dialog( GTK_WIDGET( dlg ), 0, _("Save Root Settings"), NULL, 0, msg, NULL, NULL );
-                g_free( msg );
-                PtkFileTask* task = ptk_file_exec_new( _("Save Root Settings"), NULL, NULL,
-                                                                    NULL );
-                task->task->exec_command = g_strdup_printf( "echo" );
-                task->task->exec_as_user = g_strdup_printf( "root" );
-                task->task->exec_sync = FALSE;
-                task->task->exec_export = FALSE;
-                task->task->exec_write_root = TRUE;
-                ptk_file_task_run( task );
-            }
-        }
     }
     gtk_widget_destroy( GTK_WIDGET( dlg ) );
     g_free( data );

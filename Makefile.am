@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = etc src data po
+SUBDIRS = src data po
 
 mimedir = $(datadir)/mime/packages
 mime_DATA = src/mime-type/spacefm-mime.xml

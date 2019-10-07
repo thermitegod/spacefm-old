@@ -1513,27 +1513,6 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         // build - run
         g_string_append_printf(buf, "#run\nif [ \"$1\" == \"run\" ];then\n\n");
 
-        // build - write root settings
-        if ( task->exec_write_root && geteuid() != 0 )
-        {
-            const char* this_user = g_get_user_name();
-            if ( this_user && this_user[0] != '\0' )
-            {
-                char* root_set_path= g_strdup_printf(
-                                "%s/spacefm/%s-as-root", SYSCONFDIR, this_user );
-                write_root_settings(buf, root_set_path);
-                g_free( root_set_path );
-                //g_free( this_user );  DON'T
-            }
-            else
-            {
-                char* root_set_path= g_strdup_printf(
-                                "%s/spacefm/%d-as-root", SYSCONFDIR, geteuid() );
-                write_root_settings(buf, root_set_path);
-                g_free( root_set_path );
-            }
-        }
-
         // build - export vars
         if ( task->exec_export )
             g_string_append_printf(buf, "export fm_import=\"source %s\"\n", task->exec_script);

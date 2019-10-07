@@ -72,7 +72,6 @@ const gboolean hide_close_tab_buttons_default = FALSE;
 // MOD settings
 void xset_write(GString* buf);
 void xset_parse( char* line );
-void read_root_settings();
 void xset_defaults();
 const gboolean use_si_prefix_default = FALSE;
 GList* xsets = NULL;
@@ -276,80 +275,6 @@ static void parse_interface_settings( char* line )
         app_settings.hide_close_tab_buttons = !atoi( value );
 }
 
-static void parse_conf( const char* etc_path, char* line )
-{
-    char * sep = strstr( line, "=" );
-    char* name;
-    char* value;
-    if ( !sep )
-        return ;
-    name = line;
-    value = sep + 1;
-    *sep = '\0';
-    char* sname = g_strstrip( name );
-    char* svalue = g_strdup( g_strstrip( value ) );
-
-    if ( !( sname && sname[0] && svalue && svalue[0] ) )
-    {}
-    else if ( strpbrk( svalue, " $%\\()&#|:;?<>{}[]*\"'" ) )
-        g_warning( _("%s: %s contains invalid characters - ignored"), etc_path,
-                                                sname );
-    else if ( !strcmp( sname, "tmp_dir" ) )
-    {
-        if ( svalue[0] != '/' || !g_file_test( svalue, G_FILE_TEST_IS_DIR ) )
-            g_warning( _("%s: tmp_dir '%s' does not exist - reverting to %s"),
-                                                etc_path, svalue,
-                                                DEFAULT_TMP_DIR );
-        else
-        {
-            settings_tmp_dir = svalue;
-            svalue = NULL;
-        }
-    }
-    else if ( !strcmp( sname, "terminal_su" ) ||
-                                            !strcmp( sname, "graphical_su" ) )
-    {
-        if ( svalue[0] != '/' || !g_file_test( svalue, G_FILE_TEST_EXISTS ) )
-            g_warning( "%s: %s '%s' %s", etc_path, sname, svalue,
-                                                _("file not found") );
-        else if ( !strcmp( sname, "terminal_su" ) )
-        {
-            settings_terminal_su = svalue;
-            svalue = NULL;
-        }
-        else
-        {
-            settings_graphical_su = svalue;
-            svalue = NULL;
-        }
-    }
-    g_free( svalue );
-}
-
-void load_conf()
-{
-    // load spacefm.conf
-    char line[ 2048 ];
-
-    settings_terminal_su = NULL;
-    settings_graphical_su = NULL;
-
-    char* etc_path = g_build_filename( SYSCONFDIR, "spacefm", "spacefm.conf",
-                                                            NULL );
-    FILE* file = fopen( etc_path, "r" );
-    if ( file )
-    {
-        while ( fgets( line, sizeof( line ), file ) )
-            parse_conf( etc_path, line );
-        fclose( file );
-    }
-    g_free( etc_path );
-
-    // set tmp dir
-    if ( !settings_tmp_dir )
-        settings_tmp_dir = g_strdup( DEFAULT_TMP_DIR );
-}
-
 void swap_menu_label( const char* set_name, const char* old_name,
                                                         const char* new_name )
 {   // changes default menu label for older config files
@@ -415,18 +340,20 @@ void load_settings( char* config_dir )
             g_mkdir_with_parents( settings_shared_tmp_dir, S_IRWXU | S_IRWXG | S_IRWXO | S_ISVTX );
     }
 
-    // copy /etc/xdg/spacefm
-    char* xdg_path = g_build_filename( SYSCONFDIR, "xdg", "spacefm", NULL );
-    if ( !g_file_test( settings_config_dir, G_FILE_TEST_EXISTS )
-                && g_file_test( xdg_path, G_FILE_TEST_IS_DIR ) )
+    if (!g_file_test(settings_config_dir, G_FILE_TEST_EXISTS))
     {
-        char* command = g_strdup_printf( "cp -r %s '%s'", xdg_path, settings_config_dir );
-        print_command(command);
-        g_spawn_command_line_sync( command, NULL, NULL, NULL, NULL );
-        g_free( command );
-        chmod( settings_config_dir, S_IRWXU );
+        // copy /etc/xdg/spacefm
+        char* xdg_path = g_build_filename(SYSCONFDIR, "xdg", "spacefm", NULL);
+        if (g_file_test(xdg_path, G_FILE_TEST_IS_DIR))
+        {
+            char* command = g_strdup_printf("cp -r %s '%s'", xdg_path, settings_config_dir);
+            print_command(command);
+            g_spawn_command_line_sync(command, NULL, NULL, NULL, NULL);
+            g_free(command);
+            chmod(settings_config_dir, S_IRWXU);
+        }
+        g_free(xdg_path);
     }
-    g_free( xdg_path );
 
     if ( !g_file_test( settings_config_dir, G_FILE_TEST_EXISTS ) )
         g_mkdir_with_parents( settings_config_dir, 0700 );
@@ -581,9 +508,6 @@ void load_settings( char* config_dir )
     ptk_handler_add_defaults( HANDLER_MODE_FS, FALSE, FALSE );
     ptk_handler_add_defaults( HANDLER_MODE_NET, FALSE, FALSE );
     ptk_handler_add_defaults( HANDLER_MODE_FILE, FALSE, FALSE );
-
-    // get root-protected settings
-    read_root_settings();
 
     // set default keys
     xset_default_keys();
@@ -1873,123 +1797,6 @@ gboolean xset_opener( PtkFileBrowser* file_browser, char job )
         }
     }
     return found;
-}
-
-void write_root_saver(GString* buf, const char* path, const char* name,
-                                            const char* var, const char* value )
-{
-    if ( !value )
-        return;
-
-    char* save = g_strdup_printf( "%s-%s=%s", name, var, value );
-    char* qsave = bash_quote( save );
-    g_string_append_printf(buf, "echo %s >> \"%s\"\n", qsave, path);
-    g_free( save );
-    g_free( qsave );
-}
-
-gboolean write_root_settings(GString* buf, const char* path)
-{
-    GList* l;
-    XSet* set;
-
-    g_string_append_printf(buf, "\n#save root settings\nmkdir -p %s/spacefm\n"
-                    "echo -e '#SpaceFM As-Root Session File\\n\\' > '%s'\n",
-                    SYSCONFDIR, path);
-
-    for ( l = xsets ; l; l = l->next )
-    {
-        set = l->data;
-        if ( set )
-        {
-            if ( !strcmp( set->name, "root_editor" )
-                    || !strcmp( set->name, "dev_back_part" )
-                    || !strcmp( set->name, "dev_rest_file" )
-                    || !strcmp( set->name, "dev_root_check" )
-                    || !strcmp( set->name, "dev_root_mount" )
-                    || !strcmp( set->name, "dev_root_unmount" )
-                    || !strcmp( set->name, "main_terminal" )
-                    || !strncmp( set->name, "dev_fmt_", 8 )
-                    || !strncmp( set->name, "label_cmd_", 8 ) )
-            {
-                write_root_saver(buf, path, set->name, "s", set->s);
-                write_root_saver(buf, path, set->name, "x", set->x);
-                write_root_saver(buf, path, set->name, "y", set->y);
-                if ( set->b != XSET_B_UNSET )
-                    g_string_append_printf(buf, "echo '%s-b=%d' >> \"%s\"\n",
-                                                        set->name, set->b, path );
-            }
-        }
-    }
-
-    g_string_append_printf(buf, "chmod -R go-w+rX %s/spacefm\n\n", SYSCONFDIR);
-    return TRUE;
-}
-
-void read_root_settings()
-{
-    GList* l;
-    XSet* set;
-    FILE* file;
-    char line[ 2048 ];
-
-    if ( geteuid() == 0 )
-        return;
-
-    char* root_set_path= g_strdup_printf(
-                    "%s/spacefm/%s-as-root", SYSCONFDIR, g_get_user_name() );
-    //g_printf("%s\n", root_set_path);
-    if ( !g_file_test( root_set_path, G_FILE_TEST_EXISTS ) )
-    {
-        g_free( root_set_path );
-        root_set_path= g_strdup_printf(
-                                    "%s/spacefm/%d-as-root", SYSCONFDIR, geteuid() );
-    }
-
-    file = fopen( root_set_path, "r" );
-
-    if ( !file )
-    {
-        if ( g_file_test( root_set_path, G_FILE_TEST_EXISTS ) )
-            g_warning( _("Error reading root settings from %s/spacefm/  Commands run as root may present a security risk"), SYSCONFDIR );
-        else
-            g_warning( _("No root settings found in %s/spacefm/  Setting a root editor in Preferences should remove this warning on startup.   Otherwise commands run as root may present a security risk."), SYSCONFDIR );
-        g_free( root_set_path );
-        return;
-    }
-    g_free( root_set_path );
-
-    // clear settings
-    for ( l = xsets ; l; l = l->next )
-    {
-        set = l->data;
-        if ( set )
-        {
-            if ( !strcmp( set->name, "root_editor" )
-                    || !strcmp( set->name, "dev_back_part" )
-                    || !strcmp( set->name, "dev_rest_file" )
-                    || !strcmp( set->name, "dev_root_check" )
-                    || !strcmp( set->name, "dev_root_mount" )
-                    || !strcmp( set->name, "dev_root_unmount" )
-                    || !strncmp( set->name, "dev_fmt_", 8 )
-                    || !strncmp( set->name, "label_cmd_", 8 ) )
-            {
-                if ( set->s ) { g_free( set->s ); set->s = NULL; }
-                if ( set->x ) { g_free( set->x ); set->x = NULL; }
-                if ( set->y ) { g_free( set->y ); set->y = NULL; }
-                set->b = XSET_B_UNSET;
-            }
-        }
-    }
-
-    while ( fgets( line, sizeof( line ), file ) )
-    {
-        strtok( line, "\r\n" );
-        if ( !line[ 0 ] )
-            continue;
-        xset_parse( line );
-    }
-    fclose( file );
 }
 
 XSetContext* xset_context_new()

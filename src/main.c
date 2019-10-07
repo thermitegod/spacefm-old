@@ -947,9 +947,6 @@ int main ( int argc, char *argv[] )
     gboolean run = FALSE;
     GError* err = NULL;
 
-    // load spacefm.conf
-    load_conf();
-
     // separate instance options
     if ( argc > 1 )
     {

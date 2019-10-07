@@ -14165,10 +14165,6 @@ $as_echo "#define STDC_HEADERS 1" >>confdefs.h
 fi
 
 
-
-# sysconfdir defaults to /usr/local/etc if this is not done:
-test "$sysconfdir" = '${prefix}/etc' && sysconfdir=/etc
-
 # libtool option to control which symbols are exported
 # right now, symbols starting with _ are not exported
 LIBTOOL_EXPORT_OPTIONS='-export-symbols-regex "^[^_].*"'
@@ -15621,7 +15617,7 @@ _ACEOF
 #ALL_LINGUAS="af ar da ca cs de es et eu fa fi fr gl he hr hu id it ja ko lt ml ms nb nl nn pl ps pt pt_BR ru sk sl sv tr uk ur ur_PK vi zh_CN zh_TW"
 ALL_LINGUAS=""
 
-ac_config_files="$ac_config_files Makefile etc/Makefile src/Makefile po/Makefile.in data/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile po/Makefile.in data/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -16677,7 +16673,6 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "etc/Makefile") CONFIG_FILES="$CONFIG_FILES etc/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
     "data/Makefile") CONFIG_FILES="$CONFIG_FILES data/Makefile" ;;
