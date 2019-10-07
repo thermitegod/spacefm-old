@@ -1550,12 +1550,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
         g_string_free(buf, TRUE);
 
         // set permissions
-        if ( task->exec_as_user && strcmp( task->exec_as_user, "root" ) )
-            // run as a non-root user
-            chmod( task->exec_script, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH );
-        else
-            // run as self or as root
-            chmod( task->exec_script, S_IRWXU );
+        chmod(task->exec_script, 0700);
 
         // use checksum
         if ( geteuid() != 0 && ( task->exec_as_user || task->exec_checksum ) )

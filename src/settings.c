@@ -700,8 +700,7 @@ const char* xset_get_user_tmp_dir()
         settings_user_tmp_dir = g_build_filename( settings_tmp_dir, name, NULL );
         g_free( name );
         count++;
-    } while ( count < 1000 && ( ( ret = mkdir( settings_user_tmp_dir,
-                    S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH ) ) != 0 ) );
+    } while (count < 1000 && ((ret = mkdir(settings_user_tmp_dir, 0755)) != 0));
     if ( ret != 0 )
     {
         g_free( settings_user_tmp_dir );
@@ -2388,7 +2387,7 @@ char* xset_custom_get_script( XSet* set, gboolean create )
         }
         g_free( script_head );
 
-        chmod( path, S_IRUSR | S_IWUSR | S_IXUSR );
+        chmod(path, 0700);
     }
     return path;
 }
@@ -2445,7 +2444,7 @@ char* xset_custom_get_help( GtkWidget* parent, XSet* set )
             fputs( "README\n------\n\nFill this text file with detailed information about this command. For\ncontext-sensitive help within SpaceFM, this file must be named README\n\nIf you plan to distribute this command as a plugin, the following information\nis recommended:\n\n\nCommand Name:\n\nRelease Version and Date:\n\nPlugin Homepage or Download Link:\n\nAuthor's Contact Information or Feedback Instructions:\n\nDependencies or Requirements:\n\nDescription:\n\nInstructions For Use:\n\nCopyright and License Information:\n\n", file );
             fclose( file );
         }
-        chmod( path, S_IRUSR | S_IWUSR );
+        chmod(path, 0600);
     }
 
     g_free( dir );
