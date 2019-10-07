@@ -301,6 +301,16 @@ void load_settings( char* config_dir )
 
     xset_cmd_history = NULL;
     app_settings.load_saved_tabs = TRUE;
+
+    char* envtmp = g_strdup(g_getenv("SPACEFM_TMP_DIR"));
+    if (envtmp)
+    {
+        //g_printf("envtmp: %s\n", envtmp);
+        settings_tmp_dir = envtmp;
+        if (!g_file_test(settings_tmp_dir, G_FILE_TEST_EXISTS))
+            g_mkdir_with_parents(settings_tmp_dir, 0777);
+    }
+
     if ( config_dir )
         settings_config_dir = config_dir;
     else
