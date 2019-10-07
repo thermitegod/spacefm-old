@@ -19,7 +19,7 @@
 
 #include <sys/types.h>
 
-#include "vfs-dir.h"
+#include "../vfs/vfs-dir.h"
 
 G_BEGIN_DECLS
 

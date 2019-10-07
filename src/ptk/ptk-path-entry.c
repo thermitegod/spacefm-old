@@ -10,7 +10,7 @@
 
 #include "ptk-path-entry.h"
 #include <gdk/gdkkeysyms.h>
-#include "vfs-file-info.h"  /* for vfs_file_resolve_path */
+#include "../vfs/vfs-file-info.h"  /* for vfs_file_resolve_path */
 #include <string.h>
 #include "settings.h"
 #include "main-window.h"

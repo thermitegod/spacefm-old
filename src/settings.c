@@ -32,16 +32,19 @@
 
 #include "settings.h"
 #include "utils.h"
-#include "ptk-utils.h"
 #include "main-window.h"
-#include "vfs-app-desktop.h"
 #include "item-prop.h"
-#include "ptk-app-chooser.h"
-#include "ptk-handler.h"
-#include "ptk-file-menu.h"
-#include "vfs-utils.h" /* for vfs_load_icon */
-#include "ptk-location-view.h"
-#include "exo-icon-chooser-dialog.h" /* for exo_icon_chooser_dialog_new */
+
+#include "vfs/vfs-app-desktop.h"
+#include "vfs/vfs-utils.h" /* for vfs_load_icon */
+
+#include "ptk/ptk-utils.h"
+#include "ptk/ptk-app-chooser.h"
+#include "ptk/ptk-handler.h"
+#include "ptk/ptk-file-menu.h"
+#include "ptk/ptk-location-view.h"
+
+#include "exo/exo-icon-chooser-dialog.h" /* for exo_icon_chooser_dialog_new */
 
 #include "extern.h"
 #include "utils.h"

@@ -14,7 +14,7 @@
 #define _VFS_MIME_TYPE_H_
 
 #include <gdk/gdk.h>
-#include "mime-type.h"
+#include "../mime-type/mime-type.h"
 
 G_BEGIN_DECLS
 

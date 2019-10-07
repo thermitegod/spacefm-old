@@ -34,19 +34,19 @@
 
 #include "main-window.h"
 
-#include "vfs-file-info.h"
-#include "vfs-mime-type.h"
-#include "vfs-app-desktop.h"
+#include "vfs/vfs-file-info.h"
+#include "vfs/vfs-mime-type.h"
+#include "vfs/vfs-app-desktop.h"
 
-#include "vfs-file-monitor.h"
-#include "vfs-volume.h"
-#include "vfs-thumbnail-loader.h"
+#include "vfs/vfs-file-monitor.h"
+#include "vfs/vfs-volume.h"
+#include "vfs/vfs-thumbnail-loader.h"
 
-#include "ptk-utils.h"
-#include "ptk-app-chooser.h"
-#include "ptk-file-properties.h"
-#include "ptk-file-menu.h"
-#include "ptk-location-view.h"
+#include "ptk/ptk-utils.h"
+#include "ptk/ptk-app-chooser.h"
+#include "ptk/ptk-file-properties.h"
+#include "ptk/ptk-file-menu.h"
+#include "ptk/ptk-location-view.h"
 
 #include "find-files.h"
 #include "pref-dialog.h"

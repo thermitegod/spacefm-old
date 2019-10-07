@@ -15,9 +15,9 @@
 #include <string.h>
 
 #include "settings.h"
-#include "vfs-utils.h"  /* for vfs_load_icon */
-#include "vfs-file-info.h"
-#include "vfs-file-monitor.h"
+#include "../vfs/vfs-utils.h"  /* for vfs_load_icon */
+#include "../vfs/vfs-file-info.h"
+#include "../vfs/vfs-file-monitor.h"
 
 struct _PtkDirTreeNode
 {

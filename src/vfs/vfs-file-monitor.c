@@ -22,6 +22,7 @@
 
 #include "vfs-file-monitor.h"
 #include "vfs-file-info.h"
+
 #include <sys/types.h>  /* for stat */
 #include <sys/stat.h>
 #include <errno.h>

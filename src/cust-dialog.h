@@ -2,7 +2,8 @@
 #define _CUST_DLG_H_
 
 #include <glib.h>
-#include "vfs-file-monitor.h"
+
+#include "vfs/vfs-file-monitor.h"
 
 G_BEGIN_DECLS
 

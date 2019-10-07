@@ -11,7 +11,7 @@
 */
 
 #include "vfs-mime-type.h"
-#include "mime-action.h"
+#include "../mime-type/mime-action.h"
 #include "vfs-file-monitor.h"
 
 #include <sys/types.h>

@@ -30,22 +30,23 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <stdlib.h>
-#include "ptk-location-view.h"
-#include "exo-tree-view.h"
+#include "ptk/ptk-location-view.h"
+#include "exo/exo-tree-view.h"
 
-#include "ptk-file-browser.h"
+#include "ptk/ptk-file-browser.h"
 
 #include "main-window.h"
-#include "ptk-utils.h"
+#include "ptk/ptk-utils.h"
 
 #include "pref-dialog.h"
-#include "ptk-file-properties.h"
-#include "ptk-path-entry.h"
-#include "ptk-file-menu.h"
+#include "ptk/ptk-file-properties.h"
+#include "ptk/ptk-path-entry.h"
+#include "ptk/ptk-file-menu.h"
 
 #include "settings.h"
 #include "item-prop.h"
 #include "find-files.h"
+#include "go-dialog.h"
 
 #include <gmodule.h>
 #include <glib/gprintf.h>
@@ -55,14 +56,13 @@
 #include <sys/statvfs.h>
 #endif
 
-#include "vfs-app-desktop.h"
-#include "vfs-execute.h"
-#include "vfs-utils.h"  /* for vfs_sudo() */
-#include "go-dialog.h"
-#include "vfs-file-task.h"
-#include "ptk-location-view.h"
-#include "ptk-clipboard.h"
-#include "ptk-handler.h"
+#include "vfs/vfs-app-desktop.h"
+#include "vfs/vfs-execute.h"
+#include "vfs/vfs-utils.h"  /* for vfs_sudo() */
+#include "vfs/vfs-file-task.h"
+#include "ptk/ptk-location-view.h"
+#include "ptk/ptk-clipboard.h"
+#include "ptk/ptk-handler.h"
 
 #include "gtk2-compat.h"
 

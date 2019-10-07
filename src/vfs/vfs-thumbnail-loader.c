@@ -22,6 +22,7 @@
 
 #include "vfs-mime-type.h"
 #include "vfs-thumbnail-loader.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>

@@ -17,6 +17,7 @@
 #include <glib.h>
 
 #include "settings.h"
+
 #include "ptk-file-browser.h"
 
 G_BEGIN_DECLS

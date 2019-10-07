@@ -30,7 +30,7 @@
 #include "exo-private.h"
 #include "exo-common.h"
 
-#include "vfs-thumbnail-loader.h"
+#include "../vfs/vfs-thumbnail-loader.h"
 
 /**
  * SECTION: exo-cell-renderer-icon

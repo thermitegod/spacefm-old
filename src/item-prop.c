@@ -4,7 +4,6 @@
 
 //#include <string.h>
 #include <gtk/gtk.h>
-#include "exo-tree-view.h"
 #include "gtk2-compat.h"
 
 #include <stdlib.h>
@@ -16,10 +15,12 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "item-prop.h"
-#include "ptk-app-chooser.h"
 #include "main-window.h"
-
 #include "utils.h"
+
+#include "ptk/ptk-app-chooser.h"
+
+#include "exo/exo-tree-view.h"
 
 const char* enter_command_use = N_("Enter program or bash command line(s):\n\nUse:\n\t%F\tselected files  or  %f first selected file\n\t%N\tselected filenames  or  %n first selected filename\n\t%d\tcurrent directory\n\t%v\tselected device (eg /dev/sda1)\n\t%m\tdevice mount point (eg /media/dvd);  %l device label\n\t%b\tselected bookmark\n\t%t\tselected task directory;  %p task pid\n\t%a\tmenu item value\n\t$fm_panel, $fm_tab, etc");
 

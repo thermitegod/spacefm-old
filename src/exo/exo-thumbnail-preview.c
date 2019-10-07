@@ -45,7 +45,7 @@
 #include "exo-utils.h"
 #include "exo-string.h"
 
-#include "vfs-thumbnail-loader.h"
+#include "../vfs/vfs-thumbnail-loader.h"
 
 // From exo-thumbnail.h
 /**

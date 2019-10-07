@@ -2,8 +2,9 @@
 #define _MAIN_WINDOW_H_
 
 #include <gtk/gtk.h>
-#include "ptk-file-browser.h"
-#include "ptk-file-task.h"  //MOD
+
+#include "ptk/ptk-file-browser.h"
+#include "ptk/ptk-file-task.h"
 
 G_BEGIN_DECLS
 

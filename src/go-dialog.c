@@ -10,9 +10,10 @@
 
 #include "go-dialog.h"
 #include "main-window.h"
-#include "ptk-file-browser.h"
-#include "ptk-path-entry.h"
-#include "ptk-utils.h"
+
+#include "ptk/ptk-file-browser.h"
+#include "ptk/ptk-path-entry.h"
+#include "ptk/ptk-utils.h"
 
 static const char * dir_path;
 

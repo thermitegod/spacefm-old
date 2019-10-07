@@ -17,15 +17,13 @@
 #include "ptk-file-archiver.h"
 #include "ptk-file-task.h"
 #include "ptk-handler.h"
-#include "vfs-file-info.h"
-#include "vfs-mime-type.h"
+#include "../vfs/vfs-file-info.h"
+#include "../vfs/vfs-mime-type.h"
 #include "settings.h"
 
 #include "utils.h"
 
 #include <glib/gprintf.h>
-
-//#include "gtk2-compat.h"
 
 // Archive handlers treeview model enum
 enum {

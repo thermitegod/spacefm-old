@@ -21,10 +21,10 @@
 
 #include "ptk-dir-tree.h"
 #include "ptk-file-menu.h"
-#include "ptk-file-task.h"  //MOD
+#include "ptk-file-task.h"
 
-#include "vfs-file-info.h"
-#include "vfs-file-monitor.h"
+#include "../vfs/vfs-file-info.h"
+#include "../vfs/vfs-file-monitor.h"
 
 #include "gtk2-compat.h"
 

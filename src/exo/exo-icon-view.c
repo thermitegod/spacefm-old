@@ -48,7 +48,7 @@
 #include "exo-private.h"
 #include "exo-common.h"
 
-#include "ptk-utils.h"
+#include "../ptk/ptk-utils.h"
 
 #include "gtk2-compat.h"
 

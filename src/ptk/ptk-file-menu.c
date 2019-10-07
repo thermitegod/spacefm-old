@@ -22,19 +22,21 @@
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 
-#include "vfs-app-desktop.h"
+#include "../vfs/vfs-app-desktop.h"
+
 #include "ptk-utils.h"
 #include "ptk-file-misc.h"
 #include "ptk-file-archiver.h"
 #include "ptk-handler.h"
 #include "ptk-clipboard.h"
 #include "ptk-app-chooser.h"
-#include "settings.h"  //MOD
-#include "item-prop.h"  //MOD
-#include "main-window.h"
 #include "ptk-location-view.h"
-#include "ptk-file-list.h"  //sfm for sort extra
-#include "pref-dialog.h"
+#include "ptk-file-list.h"
+
+#include "../pref-dialog.h"
+#include "settings.h"
+#include "../item-prop.h"
+#include "main-window.h"
 
 #include "utils.h"
 

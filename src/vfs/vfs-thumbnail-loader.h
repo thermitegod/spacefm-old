@@ -24,6 +24,7 @@
 
 #include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+
 #include "vfs-dir.h"
 #include "vfs-file-info.h"
 #include "vfs-async-task.h"

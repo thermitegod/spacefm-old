@@ -26,10 +26,11 @@
 
 #include "pref-dialog.h"
 #include "settings.h"
-#include "ptk-utils.h"
 #include "main-window.h"
-#include "ptk-file-browser.h"
-#include "ptk-location-view.h"
+
+#include "ptk/ptk-utils.h"
+#include "ptk/ptk-file-browser.h"
+#include "ptk/ptk-location-view.h"
 
 #include "extern.h"
 

@@ -14,7 +14,7 @@
 #define _APP_CHOOSER_DLG_H_
 
 #include <gtk/gtk.h>
-#include "vfs-mime-type.h"
+#include "../vfs/vfs-mime-type.h"
 
 G_BEGIN_DECLS
 

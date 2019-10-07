@@ -20,7 +20,7 @@
 
 #include "vfs-utils.h"  /* for vfs_load_icon */
 
-#include "ptk-file-task.h"  //sfm breaks vfs independence for exec_in_terminal
+#include "../ptk/ptk-file-task.h"  //sfm breaks vfs independence for exec_in_terminal
 
 const char desktop_entry_name[] = "Desktop Entry";
 

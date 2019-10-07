@@ -42,11 +42,12 @@
 #endif
 
 #include <vfs-file-info.h>
-#include "ptk-file-task.h"
-#include "main-window.h"
-#include "ptk-handler.h"
-#include "ptk-location-view.h"
 
+#include "../ptk/ptk-file-task.h"
+#include "../ptk/ptk-handler.h"
+#include "../ptk/ptk-location-view.h"
+
+#include "main-window.h"
 #include "utils.h"
 
 #include <glib/gprintf.h>

@@ -22,22 +22,25 @@
 #include <stdlib.h> /* for realpath */
 
 #include <glib/gi18n.h>
+
 #include "ptk-utils.h"
 #include "ptk-file-task.h"
-#include "vfs-file-task.h"
 #include "ptk-file-properties.h"
 #include "ptk-input-dialog.h"
 #include "ptk-file-browser.h"
-#include "vfs-app-desktop.h"
-#include "vfs-execute.h"
 #include "ptk-app-chooser.h"
 #include "ptk-clipboard.h"
 #include "ptk-file-archiver.h"
 #include "ptk-location-view.h"
+#include "ptk-handler.h"
+
+#include "../vfs/vfs-file-task.h"
+#include "../vfs/vfs-app-desktop.h"
+#include "../vfs/vfs-execute.h"
+
 #include <gdk/gdkkeysyms.h>
 
 #include "settings.h"
-#include "ptk-handler.h"
 #include "gtk2-compat.h"
 
 #include <glib/gprintf.h>

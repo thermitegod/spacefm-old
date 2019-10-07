@@ -20,10 +20,10 @@
 
 #include "private.h"
 
-#include "vfs-mime-type.h"
-#include "vfs-app-desktop.h"
+#include "../vfs/vfs-mime-type.h"
+#include "../vfs/vfs-app-desktop.h"
 
-#include "vfs-async-task.h"
+#include "../vfs/vfs-async-task.h"
 
 #include "settings.h"
 #include "ptk-handler.h"

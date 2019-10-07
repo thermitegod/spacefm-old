@@ -37,18 +37,18 @@
 
 #include "pcmanfm.h"
 
-#include "vfs-dir.h"
-#include "vfs-file-info.h"
+#include "vfs/vfs-dir.h"
+#include "vfs/vfs-file-info.h"
 
-#include "vfs-async-task.h"
-#include "exo-tree-view.h"
-#include "vfs-volume.h"
+#include "vfs/vfs-async-task.h"
+#include "exo/exo-tree-view.h"
+#include "vfs/vfs-volume.h"
 
 #include "main-window.h"
 #include "settings.h"
 
-#include "ptk-file-misc.h"
-#include "ptk-utils.h"
+#include "ptk/ptk-file-misc.h"
+#include "ptk/ptk-utils.h"
 
 enum
 {

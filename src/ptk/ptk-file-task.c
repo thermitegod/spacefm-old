@@ -17,13 +17,13 @@
 
 #include "ptk-file-task.h"
 #include "ptk-utils.h"
-#include "vfs-file-info.h"  //MOD
-#include "main-window.h"
+
+#include "../vfs/vfs-file-info.h"
 
 #include <glib/gprintf.h>
 
+#include "main-window.h"
 #include "utils.h"
-
 #include "gtk2-compat.h"
 
 // waitpid

@@ -15,7 +15,7 @@
 #define _PTK_FILE_ICON_RENDERER_H_
 
 #include <gtk/gtk.h>
-#include "vfs-file-info.h"
+#include "../vfs/vfs-file-info.h"
 
 G_BEGIN_DECLS
 

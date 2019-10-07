@@ -27,12 +27,15 @@
 #include "ptk-file-browser.h"
 #include "ptk-handler.h"
 #include "ptk-file-task.h"
+
 #include "settings.h"
 #include "main-window.h"
-#include "vfs-volume.h"
-#include "vfs-dir.h"
-#include "vfs-utils.h" /* for vfs_load_icon */
-#include "vfs-app-desktop.h"
+
+#include "../vfs/vfs-volume.h"
+#include "../vfs/vfs-dir.h"
+#include "../vfs/vfs-utils.h" /* for vfs_load_icon */
+#include "../vfs/vfs-app-desktop.h"
+
 #include "gtk2-compat.h"
 
 #include <glib/gprintf.h>

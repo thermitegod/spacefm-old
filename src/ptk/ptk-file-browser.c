@@ -27,12 +27,12 @@
 
 #include "ptk-file-browser.h"
 
-#include "exo-icon-view.h"
-#include "exo-tree-view.h"
+#include "../exo/exo-icon-view.h"
+#include "../exo/exo-tree-view.h"
 
-#include "mime-type/mime-type.h"
+#include "../mime-type/mime-type.h"
 
-#include "settings.h"    //MOD
+#include "settings.h"
 #include "ptk-app-chooser.h"
 
 #include "ptk-file-icon-renderer.h"
@@ -45,11 +45,11 @@
 #include "ptk-dir-tree-view.h"
 #include "ptk-dir-tree.h"
 
-#include "vfs-dir.h"
-#include "vfs-utils.h"  //MOD
-#include "vfs-file-info.h"
-#include "vfs-file-monitor.h"
-#include "vfs-app-desktop.h"
+#include "../vfs/vfs-dir.h"
+#include "../vfs/vfs-utils.h"
+#include "../vfs/vfs-file-info.h"
+#include "../vfs/vfs-file-monitor.h"
+#include "../vfs/vfs-app-desktop.h"
 #include "ptk-file-list.h"
 #include "ptk-text-renderer.h"
 
@@ -57,8 +57,8 @@
 #include "ptk-clipboard.h"
 
 #include "ptk-file-menu.h"
-#include "ptk-path-entry.h"  //MOD
-#include "find-files.h"  //MOD
+#include "ptk-path-entry.h"
+#include "find-files.h"
 #include "main-window.h"
 
 #include "utils.h"
