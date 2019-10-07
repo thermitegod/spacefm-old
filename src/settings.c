@@ -381,8 +381,8 @@ void load_settings( char* config_dir )
         g_free(command);
 #else
         // copy session to session-old
-        char* command = g_strdup_printf("cp -a  %s %s", path, old);
         char* old = g_build_filename(settings_config_dir, "session-old", NULL);
+        char* command = g_strdup_printf("cp -a  %s %s", path, old);
         if (g_file_test(old, G_FILE_TEST_EXISTS))
             unlink(old);
         print_command(command);
