@@ -75,7 +75,7 @@ AppSettings;
 extern AppSettings app_settings;
 
 void load_settings( char* config_dir );
-char* save_settings( gpointer main_window_ptr );
+void save_settings(gpointer main_window_ptr);
 void free_settings();
 const char* xset_get_config_dir();
 const char* xset_get_tmp_dir();

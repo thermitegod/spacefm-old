@@ -404,16 +404,7 @@ static void on_response( GtkDialog* dlg, int response, FMPrefDlg* user_data )
         g_free( terminal );
 
         /* save to config file */
-
-        char* err_msg = save_settings( NULL );
-        if ( err_msg )
-        {
-            char* msg = g_strdup_printf( "Error: Unable to save session file.\n\n%s",
-                                                                            err_msg );
-            ptk_show_error( GTK_WINDOW( dlg ), "Error", msg );
-            g_free( msg );
-            g_free( err_msg );
-        }
+        save_settings(NULL);
 
         if ( xset_get_b( "main_terminal" ) )
             xset_set_b( "main_terminal", FALSE );

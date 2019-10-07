@@ -542,10 +542,9 @@ void load_settings( char* config_dir )
     ptk_bookmark_view_get_first_bookmark( NULL );
 }
 
-char* save_settings( gpointer main_window_ptr )
+void save_settings(gpointer main_window_ptr)
 {
-    int result, p, pages, g;
-    char* err_msg = NULL;
+    int p, pages, g;
     XSet* set;
     PtkFileBrowser* file_browser;
     char* tabs;
@@ -622,11 +621,7 @@ char* save_settings( gpointer main_window_ptr )
 
     /* save settings */
     if (G_UNLIKELY(!g_file_test(settings_config_dir, G_FILE_TEST_EXISTS)))
-    {
-        result = g_mkdir_with_parents( settings_config_dir, 0700 );
-        if (G_UNLIKELY(result < 0))
-            goto _save_error;
-    }
+        g_mkdir_with_parents(settings_config_dir, 0700);
 
     GString* buf = g_string_sized_new(4096);
 
@@ -659,22 +654,9 @@ char* save_settings( gpointer main_window_ptr )
     // move
     char* path = g_build_filename(settings_config_dir, "session", NULL);
     if (!g_file_set_contents(path, buf->str, buf->len, NULL))
-        goto _save_error;
+        g_fprintf(stderr, "spacefm: saving session file failed\n");
     g_free(path);
     g_string_free(buf, TRUE);
-
-    return NULL;
-
-_save_error:
-    if ( errno )
-    {
-        err_msg = (char*)g_strerror( errno );
-        if ( err_msg )
-            err_msg = g_strdup( err_msg );
-    }
-    if ( !err_msg )
-        err_msg = g_strdup_printf( _("Error saving file") );
-    return err_msg;
 }
 
 void free_settings()
@@ -732,13 +714,7 @@ const char* xset_get_user_tmp_dir()
 static gboolean idle_save_settings( gpointer ptr )
 {
     //g_printf("AUTOSAVE *** idle_save_settings\n" );
-    char* err_msg = save_settings( NULL );
-    if (G_UNLIKELY(err_msg))
-    {
-        g_printf( _("SpaceFM Error: Unable to autosave session file ( %s )\n"),
-                                                                    err_msg );
-        g_free( err_msg );
-    }
+    save_settings(NULL);
     return FALSE;
 }
 

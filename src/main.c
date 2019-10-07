@@ -1110,14 +1110,6 @@ int main ( int argc, char *argv[] )
 
     single_instance_finalize();
 
-/*
-    if( run && xset_get_b( "main_save_exit" ) )
-    {
-        char* err_msg = save_settings();
-        if ( err_msg )
-            g_printf( "spacefm: Error: Unable to save session\n       %s\n", err_msg );
-    }
-*/
     vfs_volume_finalize();
     vfs_mime_type_clean();
     vfs_file_monitor_clean();
