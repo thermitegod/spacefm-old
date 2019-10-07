@@ -78,7 +78,6 @@ char* save_settings( gpointer main_window_ptr );
 void free_settings();
 const char* xset_get_config_dir();
 const char* xset_get_tmp_dir();
-const char* xset_get_shared_tmp_dir();
 const char* xset_get_user_tmp_dir();
 
 

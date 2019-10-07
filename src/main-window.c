@@ -4537,11 +4537,7 @@ void main_write_exports( VFSFileTask* vtask, const char* value, GString* buf)
     }
 
     // tmp
-    if ( geteuid() != 0 && vtask->exec_as_user
-                                    && !strcmp( vtask->exec_as_user, "root" ) )
-        g_string_append_printf(buf, "fm_tmp_dir=\"%s\"\n", xset_get_shared_tmp_dir());
-    else
-        g_string_append_printf(buf, "fm_tmp_dir=\"%s\"\n", xset_get_user_tmp_dir());
+    g_string_append_printf(buf, "fm_tmp_dir=\"%s\"\n", xset_get_user_tmp_dir());
 
     // tasks
     const char* job_titles[] =

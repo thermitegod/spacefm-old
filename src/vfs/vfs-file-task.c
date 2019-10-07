@@ -1413,10 +1413,7 @@ static void vfs_file_task_exec( char* src_file, VFSFileTask* task )
     }
 
     // make tmpdir
-    if ( geteuid() != 0 && task->exec_as_user && !strcmp( task->exec_as_user, "root" ) )
-        tmp = xset_get_shared_tmp_dir();
-    else
-        tmp = xset_get_user_tmp_dir();
+    tmp = xset_get_user_tmp_dir();
 
     if ( !tmp || ( tmp && !g_file_test( tmp, G_FILE_TEST_IS_DIR ) ) )
     {

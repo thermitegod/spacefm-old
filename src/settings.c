@@ -80,8 +80,7 @@ XSet* set_clipboard = NULL;
 gboolean clipboard_is_cut;
 XSet* set_last;
 char* settings_config_dir = NULL;
-char* settings_tmp_dir = NULL;
-char* settings_shared_tmp_dir = NULL;
+char* settings_tmp_dir = DEFAULT_TMP_DIR;
 char* settings_user_tmp_dir = NULL;
 XSetContext* xset_context = NULL;
 XSet* book_icon_set_cached = NULL;
@@ -337,18 +336,6 @@ void load_settings( char* config_dir )
 
     // MOD extra settings
     xset_defaults();
-
-    // set tmp dirs
-    if ( !settings_tmp_dir )
-        settings_tmp_dir = g_strdup( DEFAULT_TMP_DIR );
-
-    // shared tmp
-    settings_shared_tmp_dir = g_build_filename( settings_tmp_dir, "spacefm.tmp", NULL );
-    if ( geteuid() == 0 )
-    {
-        if ( !g_file_test( settings_shared_tmp_dir, G_FILE_TEST_EXISTS ) )
-            g_mkdir_with_parents( settings_shared_tmp_dir, S_IRWXU | S_IRWXG | S_IRWXO | S_ISVTX );
-    }
 
     if (!g_file_test(settings_config_dir, G_FILE_TEST_EXISTS))
     {
@@ -707,15 +694,6 @@ const char* xset_get_config_dir()
 const char* xset_get_tmp_dir()
 {
     return settings_tmp_dir;
-}
-
-const char* xset_get_shared_tmp_dir()
-{
-    if ( !g_file_test( settings_shared_tmp_dir, G_FILE_TEST_EXISTS ) )
-    {
-        g_mkdir_with_parents( settings_shared_tmp_dir, S_IRWXU | S_IRWXG | S_IRWXO | S_ISVTX );
-    }
-    return settings_shared_tmp_dir;
 }
 
 const char* xset_get_user_tmp_dir()
