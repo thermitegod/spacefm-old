@@ -784,7 +784,7 @@ void on_address_bar_activate( GtkWidget* entry, PtkFileBrowser* file_browser )
 
 void ptk_file_browser_add_toolbar_widget( gpointer set_ptr, GtkWidget* widget )
 {   // store the toolbar widget created by set for later change of status
-    char x;
+    unsigned char x;
     XSet* set = (XSet*)set_ptr;
 
     if ( !( set && !set->lock && set->browser && set->tool &&
@@ -827,7 +827,7 @@ void ptk_file_browser_add_toolbar_widget( gpointer set_ptr, GtkWidget* widget )
 void ptk_file_browser_update_toolbar_widgets( PtkFileBrowser* file_browser,
                                               gpointer set_ptr, char tool_type )
 {
-    char x;
+    unsigned char x;
     GSList* l;
     GtkWidget* widget;
     XSet* set = (XSet*)set_ptr;

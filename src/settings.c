@@ -7332,7 +7332,7 @@ void xset_builtin_tool_activate( char tool_type, XSet* set,
     }
 }
 
-const char* xset_get_builtin_toolitem_label( char tool_type )
+const char* xset_get_builtin_toolitem_label(unsigned char tool_type)
 {
     if ( tool_type < XSET_TOOL_DEVICES || tool_type >= XSET_TOOL_INVALID )
         return NULL;

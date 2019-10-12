@@ -238,7 +238,7 @@ typedef struct
     char* title;            // not saved or read if locked
     char* next;
     char* context;
-    char tool;              // 0=not 1=true 2=false
+    unsigned char tool;     // 0=not 1=true 2=false
     gboolean lock;          // not saved, default true
 
     // Custom Command ( !lock )
@@ -382,7 +382,7 @@ void clean_plugin_mirrors();
 void xset_show_help( GtkWidget* parent, XSet* set, const char* anchor );
 gboolean xset_opener( PtkFileBrowser* file_browser,
                                                             char job );
-const char* xset_get_builtin_toolitem_label( char tool_type );
+const char* xset_get_builtin_toolitem_label(unsigned char tool_type);
 char* xset_icon_chooser_dialog( GtkWindow* parent, const char* def_icon );
 
 #endif
