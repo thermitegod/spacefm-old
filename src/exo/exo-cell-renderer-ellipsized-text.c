@@ -248,8 +248,8 @@ exo_cell_renderer_ellipsized_text_get_size (GtkCellRenderer *renderer,
     gint                                  focus_padding;
     gint                                  text_height;
     gint                                  text_width;
-    gfloat                                renderer_xalign;
-    gfloat                                renderer_yalign;
+    gfloat                                xalign = 0.0;
+    gfloat                                yalign = 0.0;
 
     /* Determine the dimensions of the text from the GtkCellRendererText - see
      * in exo_cell_renderer_ellipsized_text_render for commentary on the GTK2
@@ -290,16 +290,15 @@ exo_cell_renderer_ellipsized_text_get_size (GtkCellRenderer *renderer,
     /* Update the x/y offsets */
     if (G_LIKELY(cell_area != NULL)){
         if (G_LIKELY(x_offset != NULL)) {
-            *x_offset = ((gtk_widget_get_direction(widget) == GTK_TEXT_DIR_RTL) ? (1.0 - renderer_xalign) : renderer_xalign)
+            *x_offset = ((gtk_widget_get_direction(widget) == GTK_TEXT_DIR_RTL) ? (1.0 - xalign) : xalign)
                         * (cell_area->width - text_width);
-        gfloat xalign, yalign;
         gtk_cell_renderer_get_alignment (renderer, &xalign, &yalign);
             *x_offset = MAX (*x_offset, 0);
         }
 
         if (G_LIKELY (y_offset != NULL))
         {
-            *y_offset = renderer_yalign * (cell_area->height - text_height);
+            *y_offset = yalign * (cell_area->height - text_height);
             *y_offset = MAX(*y_offset, 0);
         }
     }

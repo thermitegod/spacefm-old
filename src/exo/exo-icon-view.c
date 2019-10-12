@@ -8544,9 +8544,9 @@ exo_icon_view_search_ensure_directory (ExoIconView *icon_view)
     /* check if we already have a search window */
     if (G_LIKELY (icon_view->priv->search_window != NULL))
     {
-        if (gtk_window_has_group(GTK_WINDOW(toplevel)) != NULL)
+        if (gtk_window_has_group(GTK_WINDOW(toplevel)))
             gtk_window_group_add_window (gtk_window_get_group (GTK_WINDOW (toplevel)), GTK_WINDOW (icon_view->priv->search_window));
-        else if (gtk_window_has_group (GTK_WINDOW (icon_view->priv->search_window) != NULL))
+        else if (gtk_window_has_group (GTK_WINDOW (icon_view->priv->search_window)))
             gtk_window_group_remove_window (gtk_window_get_group (GTK_WINDOW (icon_view->priv->search_window)), GTK_WINDOW (icon_view->priv->search_window));
         return;
     }

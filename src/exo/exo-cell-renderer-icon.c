@@ -350,7 +350,8 @@ exo_cell_renderer_icon_get_size (GtkCellRenderer    *renderer,
                   EXO_CELL_RENDERER_ICON (renderer));
 
     gfloat xalign, yalign;
-    gint xpad, ypad;
+    gint xpad = 0;
+    gint ypad = 0;
     gtk_cell_renderer_get_alignment(renderer, &xalign, &yalign);
 
 
