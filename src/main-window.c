@@ -2550,11 +2550,8 @@ GtkWidget* fm_main_window_create_tab_label( FMMainWindow* main_window,
     if ( ptk_file_browser_get_cwd( file_browser ) )
     {
         char* name = g_path_get_basename( ptk_file_browser_get_cwd( file_browser ) );
-        if ( name )
-        {
-            tab_text = gtk_label_new( name );
-            g_free( name );
-        }
+        tab_text = gtk_label_new( name );
+        g_free( name );
     }
     else
         tab_text = gtk_label_new( "" );
