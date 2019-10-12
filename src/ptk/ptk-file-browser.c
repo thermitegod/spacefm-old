@@ -2990,7 +2990,7 @@ void ptk_file_browser_select_pattern( GtkWidget* item,
                                       PtkFileBrowser* file_browser,
                                       const char* search_key )
 {
-    GtkTreeModel* model;
+    GtkTreeModel* model = NULL;
     GtkTreePath* path;
     GtkTreeIter it;
     GtkTreeSelection* tree_sel;
@@ -3163,7 +3163,7 @@ void ptk_file_browser_select_file_list( PtkFileBrowser* file_browser,
     // If do_select, select all filenames, unselect others
     // if !do_select, unselect filenames, leave others unchanged
     // If !*filename select or unselect all
-    GtkTreeModel* model;
+    GtkTreeModel* model = NULL;
     GtkTreePath* path;
     GtkTreeIter it;
     GtkTreeSelection* tree_sel;
@@ -3349,7 +3349,7 @@ void ptk_file_browser_seek_path( PtkFileBrowser* file_browser,
         return;
 
     // get model, treesel, and stop signals
-    GtkTreeModel* model;
+    GtkTreeModel* model = NULL;
     GtkTreePath* path;
     GtkTreeIter it;
     GtkTreeIter it_file;
@@ -4945,7 +4945,7 @@ void on_folder_view_drag_begin ( GtkWidget *widget,
 static GtkTreePath*
 folder_view_get_tree_path_at_pos( PtkFileBrowser* file_browser, int x, int y )
 {
-    GtkTreePath *tree_path;
+    GtkTreePath *tree_path = NULL;
 
     if ( file_browser->view_mode == PTK_FB_ICON_VIEW ||
                             file_browser->view_mode == PTK_FB_COMPACT_VIEW )
@@ -6377,7 +6377,7 @@ void ptk_file_browser_on_permission( GtkMenuItem* item,
 void ptk_file_browser_on_action( PtkFileBrowser* browser, char* setname )
 {
     char* xname;
-    int i;
+    int i = 0;
     XSet* set = xset_get( setname );
     XSet* set2;
     FMMainWindow* main_window = (FMMainWindow*)browser->main_window;

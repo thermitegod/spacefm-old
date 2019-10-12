@@ -504,7 +504,7 @@ ptk_file_icon_renderer_render ( GtkCellRenderer *cell,
         else if ( ( flags & ( GTK_CELL_RENDERER_SELECTED /*|GTK_CELL_RENDERER_PRELIT*/ ) ) != 0 )
         {
             GtkStateType state;
-            GdkColor* color;
+            GdkColor* color = NULL;
 
             if ( ( flags & GTK_CELL_RENDERER_SELECTED ) != 0 )
             {
