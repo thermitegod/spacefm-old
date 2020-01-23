@@ -88,6 +88,21 @@ char* settings_user_tmp_dir = NULL;
 XSetContext* xset_context = NULL;
 XSet* book_icon_set_cached = NULL;
 
+XSet* evt_win_focus = NULL;
+XSet* evt_win_move = NULL;
+XSet* evt_win_click = NULL;
+XSet* evt_win_key = NULL;
+XSet* evt_win_close = NULL;
+XSet* evt_pnl_show = NULL;
+XSet* evt_pnl_focus = NULL;
+XSet* evt_pnl_sel = NULL;
+XSet* evt_tab_new = NULL;
+XSet* evt_tab_chdir = NULL;
+XSet* evt_tab_focus = NULL;
+XSet* evt_tab_close = NULL;
+XSet* evt_device = NULL;
+GList* xset_cmd_history = NULL;
+
 // delayed session saving
 guint xset_autosave_timer = 0;
 gboolean xset_autosave_request = FALSE;

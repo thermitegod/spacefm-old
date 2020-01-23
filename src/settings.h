@@ -85,7 +85,7 @@ const char* xset_get_user_tmp_dir();
 ///////////////////////////////////////////////////////////////////////////////
 //MOD extra settings below
 
-GList* xsets;
+extern GList* xsets;
 
 enum {
     XSET_B_UNSET,
@@ -273,22 +273,22 @@ typedef struct
 } XMenuItem;
 
 // cache these for speed in event handlers
-XSet* evt_win_focus;
-XSet* evt_win_move;
-XSet* evt_win_click;
-XSet* evt_win_key;
-XSet* evt_win_close;
-XSet* evt_pnl_show;
-XSet* evt_pnl_focus;
-XSet* evt_pnl_sel;
-XSet* evt_tab_new;
-XSet* evt_tab_chdir;
-XSet* evt_tab_focus;
-XSet* evt_tab_close;
-XSet* evt_device;
+extern XSet* evt_win_focus;
+extern XSet* evt_win_move;
+extern XSet* evt_win_click;
+extern XSet* evt_win_key;
+extern XSet* evt_win_close;
+extern XSet* evt_pnl_show;
+extern XSet* evt_pnl_focus;
+extern XSet* evt_pnl_sel;
+extern XSet* evt_tab_new;
+extern XSet* evt_tab_chdir;
+extern XSet* evt_tab_focus;
+extern XSet* evt_tab_close;
+extern XSet* evt_device;
 
 // instance-wide command history
-GList* xset_cmd_history;
+extern GList* xset_cmd_history;
 
 typedef struct
 {
