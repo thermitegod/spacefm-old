@@ -7189,7 +7189,7 @@ char* xset_color_dialog( GtkWidget* parent, char* title, char* defcolor )
 #elif (GTK_MAJOR_VERSION == 2)
     GtkWidget* dlg = gtk_color_selection_dialog_new( title );
 #endif
-    GtkWidget* color_sel;
+    GtkWidget* color_sel = NULL;
     GtkWidget* help_button;
 
     g_object_get ( G_OBJECT ( dlg ), "help-button", &help_button, NULL);
