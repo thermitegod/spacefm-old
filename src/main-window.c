@@ -2827,7 +2827,11 @@ on_about_activate ( GtkMenuItem *menuitem,
         GtkBuilder* builder;
 
         pcmanfm_ref();
-        builder = _gtk_builder_new_from_file( PACKAGE_UI_DIR "/about-dlg.ui", NULL );
+#if (GTK_MAJOR_VERSION == 3)
+        builder = _gtk_builder_new_from_file(PACKAGE_UI_DIR "/about-dlg3.ui", NULL);
+#elif (GTK_MAJOR_VERSION == 2)
+        builder = _gtk_builder_new_from_file(PACKAGE_UI_DIR "/about-dlg2.ui", NULL);
+#endif
         about_dlg = GTK_WIDGET( gtk_builder_get_object( builder, "dlg" ) );
         g_object_unref( builder );
         gtk_about_dialog_set_version ( GTK_ABOUT_DIALOG ( about_dlg ), VERSION );

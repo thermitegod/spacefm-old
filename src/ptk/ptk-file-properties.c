@@ -327,8 +327,11 @@ GtkWidget* file_properties_dlg_new( GtkWindow* parent,
                                     const char* dir_path,
                                     GList* sel_files, int page )
 {
-    GtkBuilder* builder = _gtk_builder_new_from_file( PACKAGE_UI_DIR "/file_properties.ui", NULL );
-
+#if (GTK_MAJOR_VERSION == 3)
+    GtkBuilder* builder = _gtk_builder_new_from_file(PACKAGE_UI_DIR "/file_properties3.ui", NULL);
+#elif (GTK_MAJOR_VERSION == 2)
+    GtkBuilder* builder = _gtk_builder_new_from_file(PACKAGE_UI_DIR "/file_properties2.ui", NULL);
+#endif
     GtkWidget * dlg = (GtkWidget*)gtk_builder_get_object( builder, "dlg" );
     GtkNotebook* notebook = (GtkNotebook*)gtk_builder_get_object( builder, "notebook" );
     xset_set_window_icon( GTK_WINDOW( dlg ) );

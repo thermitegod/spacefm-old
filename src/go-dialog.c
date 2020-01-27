@@ -19,7 +19,7 @@ static const char * dir_path;
 
 static gboolean show_go_dialog( GtkWindow* parent, char * initial_path )
 {
-    GtkBuilder* builder = _gtk_builder_new_from_file( PACKAGE_UI_DIR "/godlg.ui", NULL );
+    GtkBuilder* builder = _gtk_builder_new_from_file(PACKAGE_UI_DIR "/godlg.ui", NULL);
     GtkDialog* dlg = GTK_DIALOG(gtk_builder_get_object( builder, "godlg" ));
 
     GtkEntry* path_entry = ( GtkEntry* ) ptk_path_entry_new ( NULL );
