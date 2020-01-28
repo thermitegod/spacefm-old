@@ -351,9 +351,10 @@ static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
 {
     GChecksum *cs;
 
-    char file_name[ 40 ];
+    char md5_len = 32;
+    static char file_name[ 40 ];
     char* thumbnail_file;
-    char mtime_str[ 32 ];
+    char mtime_str[md5_len];
     const char* thumb_mtime;
     int w, h;
     struct stat statbuf;
@@ -394,9 +395,9 @@ static GdkPixbuf* _vfs_thumbnail_load( const char* file_path, const char* uri,
 
     cs = g_checksum_new(G_CHECKSUM_MD5);
     g_checksum_update(cs, uri, strlen(uri));
-    memcpy( file_name, g_checksum_get_string(cs), 32 );
+    memcpy(file_name, g_checksum_get_string(cs), md5_len);
     g_checksum_free(cs);
-    g_strlcpy( ( file_name + 32 ), ".png", sizeof(file_name + 32) );
+    g_strlcpy((file_name + md5_len), ".png", sizeof(file_name + md5_len));
 
     thumbnail_file = g_build_filename( g_get_user_cache_dir(),
                                        "thumbnails/normal",
