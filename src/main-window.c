@@ -6413,11 +6413,15 @@ _invalid_set:
         }
         else if ( !strcmp( argv[i], "screen_size" ) )
         {
-            width = gdk_screen_get_width(
-                            gtk_widget_get_screen( (GtkWidget*)main_window ) );
-            height = gdk_screen_get_height(
-                            gtk_widget_get_screen( (GtkWidget*)main_window ) );
-            *reply = g_strdup_printf( "%dx%d\n", width, height );
+#if (GTK_MAJOR_VERSION == 3)
+            GdkRectangle workarea = {0};
+            gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()), &workarea);
+            *reply = g_strdup_printf("%dx%d\n", workarea.width, workarea.height);
+#elif (GTK_MAJOR_VERSION == 2)
+            width = gdk_screen_get_width(gtk_widget_get_screen((GtkWidget*)main_window));
+            height = gdk_screen_get_height(gtk_widget_get_screen((GtkWidget*)main_window));
+            *reply = g_strdup_printf("%dx%d\n", width, height);
+#endif
         }
         else if ( !strcmp( argv[i], "window_vslider_top" ) ||
                   !strcmp( argv[i], "window_vslider_bottom" ) ||

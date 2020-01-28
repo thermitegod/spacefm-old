@@ -2679,9 +2679,17 @@ exo_icon_view_key_press_event (GtkWidget   *widget,
 
     /* move the search window offscreen */
     screen = gtk_widget_get_screen (GTK_WIDGET (icon_view));
+#if (GTK_MAJOR_VERSION == 3)
+    GdkRectangle workarea = {0};
+    gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()), &workarea);
+    gtk_window_move (GTK_WINDOW (icon_view->priv->search_window),
+                     workarea.width + 1,
+                     workarea.height + 1);
+#elif (GTK_MAJOR_VERSION == 2)
     gtk_window_move (GTK_WINDOW (icon_view->priv->search_window),
                      gdk_screen_get_width (screen) + 1,
                      gdk_screen_get_height (screen) + 1);
+#endif
     gtk_widget_show (icon_view->priv->search_window);
 
     /* allocate a new event to forward */
