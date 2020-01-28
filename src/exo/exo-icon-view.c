@@ -1785,7 +1785,9 @@ static void
 exo_icon_view_style_set (GtkWidget *widget,
                          GtkStyle  *previous_style)
 {
+#if (GTK_MAJOR_VERSION == 2)
     ExoIconView *icon_view = EXO_ICON_VIEW (widget);
+#endif
 
     /* let GtkWidget do its work */
     (*GTK_WIDGET_CLASS (exo_icon_view_parent_class)->style_set) (widget, previous_style);
@@ -2880,9 +2882,11 @@ exo_icon_view_start_rubberbanding (ExoIconView  *icon_view,
                                    gint          x,
                                    gint          y)
 {
+#if (GTK_MAJOR_VERSION == 2)
     const GdkColor *background_color;
     GdkColor       *color;
     guchar          alpha;
+#endif
     gpointer        drag_data;
     GList          *items;
 

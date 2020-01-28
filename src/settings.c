@@ -7585,7 +7585,9 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
     GtkWidget* image = NULL;
     GtkWidget* item = NULL;
     GtkWidget* btn;
+#if (GTK_MAJOR_VERSION == 2)
     GtkRequisition req;
+#endif
     XSet* set_next;
     char* new_menu_label = NULL;
     GdkPixbuf* pixbuf = NULL;
