@@ -883,9 +883,7 @@ GtkWidget* ptk_file_menu_new( PtkFileBrowser* browser,
         }
 
         // add apps
-        gtk_icon_size_lookup_for_settings( gtk_settings_get_default(),
-                                           GTK_ICON_SIZE_MENU,
-                                           &icon_w, &icon_h );
+        gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &icon_w, &icon_h);
         if ( is_text )
         {
             char **tmp, **txt_apps;

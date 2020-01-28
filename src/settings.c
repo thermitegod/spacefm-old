@@ -2268,10 +2268,7 @@ GtkWidget* xset_add_menuitem( PtkFileBrowser* file_browser,
         {
             // get menu icon size
             int icon_w, icon_h;
-            gtk_icon_size_lookup_for_settings(
-                                    gtk_settings_get_default(),
-                                    GTK_ICON_SIZE_MENU,
-                                    &icon_w, &icon_h );
+            gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &icon_w, &icon_h);
             int icon_size = icon_w > icon_h ? icon_w : icon_h;
 
             GdkPixbuf* app_icon = NULL;
@@ -7606,10 +7603,7 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
 
     // get real icon size from gtk icon size
     int icon_w, icon_h;
-    gtk_icon_size_lookup_for_settings(
-                            gtk_settings_get_default(),
-                            icon_size,
-                            &icon_w, &icon_h );
+    gtk_icon_size_lookup(icon_size, &icon_w, &icon_h );
     int real_icon_size = icon_w > icon_h ? icon_w : icon_h;
 
     set->browser = file_browser;
