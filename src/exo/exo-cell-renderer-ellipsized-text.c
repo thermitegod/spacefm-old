@@ -382,11 +382,6 @@ exo_cell_renderer_ellipsized_text_render (GtkCellRenderer     *renderer,
     gint                                  x0, x1;
     gint                                  y0, y1;
 
-    // This parameter isn't passed in the GTK3 call, so creating a replacement
-#if (GTK_MAJOR_VERSION == 3)
-    GdkRectangle                     *expose_area = NULL;
-#endif
-
     /* Determine the text cell areas */
     if (G_UNLIKELY (!priv->follow_state))
     {
