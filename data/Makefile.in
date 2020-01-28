@@ -292,6 +292,7 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
@@ -370,9 +371,12 @@ html_DATA = spacefm-manual-en.html
 ui_in_files = \
 	ui/prefdlg2.glade \
 	ui/prefdlg3.glade \
-	ui/appchooserdlg.glade \
-	ui/file_properties.glade \
-	ui/about-dlg.glade \
+	ui/appchooserdlg2.glade \
+	ui/appchooserdlg3.glade \
+	ui/file_properties2.glade \
+	ui/file_properties3.glade \
+	ui/about-dlg2.glade \
+	ui/about-dlg3.glade \
 	ui/find-files2.glade \
 	ui/find-files3.glade \
 	ui/godlg.glade
