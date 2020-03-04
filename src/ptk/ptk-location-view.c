@@ -748,8 +748,7 @@ char* ptk_location_view_get_mount_point_dir( const char* name )
         }
     }
     if ( !parent )
-        return g_build_filename( g_get_user_cache_dir(), "spacefm", name,
-                                                                    NULL );
+        return g_build_filename(g_get_user_cache_dir(), "spacefm-mount", name, NULL);
     char* path = g_build_filename( parent, name, NULL );
     g_free( parent );
     return path;
@@ -770,7 +769,7 @@ void ptk_location_view_clean_mount_points()
     for ( i = 0; i < 2; i++ )
     {
         if ( i == 0 )
-            path = g_build_filename( g_get_user_cache_dir(), "spacefm", NULL );
+            path = g_build_filename(g_get_user_cache_dir(), "spacefm-mount", NULL);
         else // i == 1
         {
             del_path = ptk_location_view_get_mount_point_dir( NULL );
