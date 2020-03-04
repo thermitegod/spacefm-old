@@ -51,8 +51,6 @@
 
 #define CONFIG_VERSION "38"   // 1.0.6
 
-#define DEFAULT_TMP_DIR "/tmp"
-
 AppSettings app_settings = {0};
 const gboolean show_hidden_files_default = FALSE;
 const gboolean show_thumbnail_default = FALSE;
@@ -83,7 +81,7 @@ XSet* set_clipboard = NULL;
 gboolean clipboard_is_cut;
 XSet* set_last;
 char* settings_config_dir = NULL;
-char* settings_tmp_dir = DEFAULT_TMP_DIR;
+const char* settings_tmp_dir = NULL;
 char* settings_user_tmp_dir = NULL;
 XSetContext* xset_context = NULL;
 XSet* book_icon_set_cached = NULL;
@@ -319,14 +317,7 @@ void load_settings( char* config_dir )
     xset_cmd_history = NULL;
     app_settings.load_saved_tabs = TRUE;
 
-    char* envtmp = g_strdup(g_getenv("SPACEFM_TMP_DIR"));
-    if (envtmp)
-    {
-        //g_printf("envtmp: %s\n", envtmp);
-        settings_tmp_dir = envtmp;
-        if (!g_file_test(settings_tmp_dir, G_FILE_TEST_EXISTS))
-            g_mkdir_with_parents(settings_tmp_dir, 0777);
-    }
+    settings_tmp_dir = g_get_user_cache_dir();
 
     if ( config_dir )
         settings_config_dir = config_dir;
@@ -698,30 +689,12 @@ const char* xset_get_tmp_dir()
 
 const char* xset_get_user_tmp_dir()
 {
-    if ( settings_user_tmp_dir &&
-                    g_file_test( settings_user_tmp_dir, G_FILE_TEST_EXISTS ) )
+    if (settings_user_tmp_dir && g_file_test(settings_user_tmp_dir, G_FILE_TEST_EXISTS))
         return settings_user_tmp_dir;
 
-    char* rand;
-    char* name;
-    int count = 0;
-    int ret;
-    do
-    {
-        g_free( settings_user_tmp_dir );
-        rand = randhex8();
-        name =  g_strdup_printf( "spacefm-%s-%s.tmp", g_get_user_name(), rand );
-        g_free( rand );
-        settings_user_tmp_dir = g_build_filename( settings_tmp_dir, name, NULL );
-        g_free( name );
-        count++;
-    } while (count < 1000 && ((ret = mkdir(settings_user_tmp_dir, 0755)) != 0));
-    if ( ret != 0 )
-    {
-        g_free( settings_user_tmp_dir );
-        settings_user_tmp_dir = NULL;
-        g_warning( "Unable to create temporary directory in %s", settings_tmp_dir );
-    }
+    settings_user_tmp_dir = g_build_filename(settings_tmp_dir, "spacefm", NULL);
+    g_mkdir_with_parents(settings_user_tmp_dir, 0700);
+
     return settings_user_tmp_dir;
 }
 
