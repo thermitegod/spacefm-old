@@ -35,7 +35,6 @@ GtkWidget* ptk_input_dialog_new( const char* title,
                                        GTK_STOCK_OK,
                                        GTK_RESPONSE_OK,
                                        NULL );
-    gtk_dialog_set_alternative_button_order( GTK_DIALOG(dlg), GTK_RESPONSE_OK, GTK_RESPONSE_CANCEL, -1 );
 
     box = gtk_dialog_get_content_area ( GTK_DIALOG(dlg) );
     label = gtk_label_new( prompt );

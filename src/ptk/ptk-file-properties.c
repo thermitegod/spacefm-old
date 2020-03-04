@@ -367,8 +367,6 @@ GtkWidget* file_properties_dlg_new( GtkWindow* parent,
     gboolean is_dirs = FALSE;
     char *owner_group, *tmp;
 
-    gtk_dialog_set_alternative_button_order( GTK_DIALOG(dlg), GTK_RESPONSE_OK, GTK_RESPONSE_CANCEL, -1 );
-
     int width = xset_get_int( "app_dlg", "s" );
     int height = xset_get_int( "app_dlg", "z" );
     if ( width && height )

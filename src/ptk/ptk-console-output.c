@@ -158,7 +158,6 @@ int ptk_console_output_run( GtkWindow* parent_win,
     main_dlg = gtk_dialog_new_with_buttons( title, NULL, 0,
                                             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                             GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL );
-    gtk_dialog_set_alternative_button_order( GTK_DIALOG(main_dlg), GTK_RESPONSE_CLOSE, GTK_RESPONSE_CANCEL, -1 );
 
     g_object_weak_ref( G_OBJECT(main_dlg), on_destroy, data );
 
