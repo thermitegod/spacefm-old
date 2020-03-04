@@ -32,10 +32,6 @@ typedef struct _ExoCellRendererEllipsizedText        ExoCellRendererEllipsizedTe
 
 #define EXO_TYPE_CELL_RENDERER_ELLIPSIZED_TEXT            (exo_cell_renderer_ellipsized_text_get_type ())
 #define EXO_CELL_RENDERER_ELLIPSIZED_TEXT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EXO_TYPE_CELL_RENDERER_ELLIPSIZED_TEXT, ExoCellRendererEllipsizedText))
-#define EXO_CELL_RENDERER_ELLIPSIZED_TEXT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((obj), EXO_TYPE_CELL_RENDERER_ELLIPSIZED_TEXT, ExoCellRendererEllipsizedTextClass))
-#define EXO_IS_CELL_RENDERER_ELLIPSIZED_TEXT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EXO_TYPE_CELL_RENDERER_ELLIPSIZED_TEXT))
-#define EXO_IS_CELL_RENDERER_ELLIPSIZED_TEXT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), EXO_TYPE_CELL_RENDERER_ELLIPSIZED_TEXT))
-#define EXO_CELL_RENDERER_ELLIPSIZED_TEXT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), EXO_TYPE_CELL_RENDERER_ELLIPSIZED_TEXT, ExoCellRendererEllipsizedTextClass))
 
 struct _ExoCellRendererEllipsizedTextClass
 {

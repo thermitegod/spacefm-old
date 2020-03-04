@@ -28,48 +28,12 @@
 
 G_BEGIN_DECLS;
 
-/* support macros for debugging */
-#ifndef NDEBUG
-#define _exo_assert(expr)                  g_assert (expr)
 #define _exo_assert_not_reached()          g_assert_not_reached ()
 #define _exo_return_if_fail(expr)          g_return_if_fail (expr)
 #define _exo_return_val_if_fail(expr, val) g_return_val_if_fail (expr, (val))
-#else
-#define _exo_assert(expr)                  G_STMT_START{ (void)0; }G_STMT_END
-#define _exo_assert_not_reached()          G_STMT_START{ (void)0; }G_STMT_END
-#define _exo_return_if_fail(expr)          G_STMT_START{ (void)0; }G_STMT_END
-#define _exo_return_val_if_fail(expr, val) G_STMT_START{ (void)0; }G_STMT_END
-#endif
 
 /* support macros for the slice allocator */
-#define _exo_slice_alloc(block_size)             (g_slice_alloc ((block_size)))
-#define _exo_slice_alloc0(block_size)            (g_slice_alloc0 ((block_size)))
-#define _exo_slice_free1(block_size, mem_block)  G_STMT_START{ g_slice_free1 ((block_size), (mem_block)); }G_STMT_END
-#define _exo_slice_new(type)                     (g_slice_new (type))
-#define _exo_slice_new0(type)                    (g_slice_new0 (type))
 #define _exo_slice_free(type, ptr)               G_STMT_START{ g_slice_free (type, (ptr)); }G_STMT_END
-
-/* avoid trivial g_value_get_*() function calls */
-#ifdef NDEBUG
-#define g_value_get_boolean(v)  (((const GValue *) (v))->data[0].v_int)
-#define g_value_get_char(v)     (((const GValue *) (v))->data[0].v_int)
-#define g_value_get_uchar(v)    (((const GValue *) (v))->data[0].v_uint)
-#define g_value_get_int(v)      (((const GValue *) (v))->data[0].v_int)
-#define g_value_get_uint(v)     (((const GValue *) (v))->data[0].v_uint)
-#define g_value_get_long(v)     (((const GValue *) (v))->data[0].v_long)
-#define g_value_get_ulong(v)    (((const GValue *) (v))->data[0].v_ulong)
-#define g_value_get_int64(v)    (((const GValue *) (v))->data[0].v_int64)
-#define g_value_get_uint64(v)   (((const GValue *) (v))->data[0].v_uint64)
-#define g_value_get_enum(v)     (((const GValue *) (v))->data[0].v_long)
-#define g_value_get_flags(v)    (((const GValue *) (v))->data[0].v_ulong)
-#define g_value_get_float(v)    (((const GValue *) (v))->data[0].v_float)
-#define g_value_get_double(v)   (((const GValue *) (v))->data[0].v_double)
-#define g_value_get_string(v)   (((const GValue *) (v))->data[0].v_pointer)
-#define g_value_get_param(v)    (((const GValue *) (v))->data[0].v_pointer)
-#define g_value_get_boxed(v)    (((const GValue *) (v))->data[0].v_pointer)
-#define g_value_get_pointer(v)  (((const GValue *) (v))->data[0].v_pointer)
-#define g_value_get_object(v)   (((const GValue *) (v))->data[0].v_pointer)
-#endif
 
 void  _exo_i18n_init                    (void) G_GNUC_INTERNAL;
 

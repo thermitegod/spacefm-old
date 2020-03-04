@@ -10,10 +10,7 @@ G_BEGIN_DECLS
 
 #define PTK_TYPE_FILE_BROWSER             (ptk_file_browser_get_type())
 #define PTK_FILE_BROWSER(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj),  PTK_TYPE_FILE_BROWSER, PtkFileBrowser))
-#define PTK_FILE_BROWSER_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass),  PTK_TYPE_FILE_BROWSER, PtkFileBrowserClass))
 #define PTK_IS_FILE_BROWSER(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PTK_TYPE_FILE_BROWSER))
-#define PTK_IS_FILE_BROWSER_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass),  PTK_TYPE_FILE_BROWSER))
-#define PTK_FILE_BROWSER_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj),  PTK_TYPE_FILE_BROWSER, PtkFileBrowserClass))
 
 typedef enum{
     PTK_FB_ICON_VIEW,

@@ -32,13 +32,8 @@
 
 G_BEGIN_DECLS
 
-
 #define PTK_TYPE_TEXT_RENDERER      (ptk_text_renderer_get_type ())
 #define PTK_TEXT_RENDERER(obj)      (G_TYPE_CHECK_INSTANCE_CAST ((obj), PTK_TYPE_TEXT_RENDERER, PtkTextRenderer))
-#define PTK_TEXT_RENDERER_CLASS(klass)  (G_TYPE_CHECK_CLASS_CAST ((klass), PTK_TYPE_TEXT_RENDERER, PtkTextRendererClass))
-#define PTK_IS_TEXT_RENDERER(obj)       (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PTK_TYPE_TEXT_RENDERER))
-#define PTK_IS_TEXT_RENDERER_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), PTK_TYPE_TEXT_RENDERER))
-#define PTK_TEXT_RENDERER_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), PTK_TYPE_TEXT_RENDERER, PtkTextRendererClass))
 
 typedef struct _PtkTextRenderer PtkTextRenderer;
 typedef struct _PtkTextRendererClass PtkTextRendererClass;

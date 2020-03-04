@@ -30,10 +30,7 @@ typedef struct _ExoCellRendererIcon        ExoCellRendererIcon;
 
 #define EXO_TYPE_CELL_RENDERER_ICON             (exo_cell_renderer_icon_get_type ())
 #define EXO_CELL_RENDERER_ICON(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), EXO_TYPE_CELL_RENDERER_ICON, ExoCellRendererIcon))
-#define EXO_CELL_RENDERER_ICON_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), EXO_TYPE_CELL_RENDERER_ICON, ExoCellRendererIconClass))
 #define EXO_IS_CELL_RENDERER_ICON(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EXO_TYPE_CELL_RENDERER_ICON))
-#define EXO_IS_CELL_RENDERER_ICON_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), EXO_TYPE_CELL_RENDERER_ICON))
-#define EXO_CELL_RENDERER_ICON_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), EXO_TYPE_CELL_RENDERER_ICON, ExoCellRendererIconClass))
 
 struct _ExoCellRendererIconClass
 {

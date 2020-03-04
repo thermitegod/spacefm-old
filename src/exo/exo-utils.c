@@ -22,7 +22,6 @@
 #endif
 
 /* implement exo-utils's inline functions */
-#define G_IMPLEMENT_INLINES 1
 #define __EXO_UTILS_C__
 #include "exo-utils.h"
 

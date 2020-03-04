@@ -21,10 +21,7 @@ G_BEGIN_DECLS
 
 #define PTK_TYPE_FILE_ICON_RENDERER             (ptk_file_icon_renderer_get_type())
 #define PTK_FILE_ICON_RENDERER(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj),  PTK_TYPE_FILE_ICON_RENDERER, PtkFileIconRenderer))
-#define PTK_FILE_ICON_RENDERER_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass),  PTK_TYPE_FILE_ICON_RENDERER, PtkFileIconRendererClass))
 #define PTK_IS_FILE_ICON_RENDERER(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PTK_TYPE_FILE_ICON_RENDERER))
-#define PTK_IS_FILE_ICON_RENDERER_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass),  PTK_TYPE_FILE_ICON_RENDERER))
-#define PTK_FILE_ICON_RENDERER_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj),  PTK_TYPE_FILE_ICON_RENDERER, PtkFileIconRendererClass))
 
 typedef struct _PtkFileIconRenderer PtkFileIconRenderer;
 typedef struct _PtkFileIconRendererClass PtkFileIconRendererClass;

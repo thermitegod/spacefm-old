@@ -30,10 +30,7 @@ typedef struct _ExoIconChooserDialog        ExoIconChooserDialog;
 
 #define EXO_TYPE_ICON_CHOOSER_DIALOG            (exo_icon_chooser_dialog_get_type ())
 #define EXO_ICON_CHOOSER_DIALOG(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EXO_TYPE_ICON_CHOOSER_DIALOG, ExoIconChooserDialog))
-#define EXO_ICON_CHOOSER_DIALOG_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), EXO_TYPE_ICON_CHOOSER_DIALOG, ExoIconChooserDialogClass))
 #define EXO_IS_ICON_CHOOSER_DIALOG(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EXO_TYPE_ICON_CHOOSER_DIALOG))
-#define EXO_IS_ICON_CHOOSER_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), EXO_TYPE_ICON_CHOOSER_DIALOG))
-#define EXO_ICON_CHOOSER_DIALOG_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), EXO_TYPE_ICON_CHOOSER_DIALOG, ExoIconChooserDialogClass))
 
 struct _ExoIconChooserDialogClass
 {

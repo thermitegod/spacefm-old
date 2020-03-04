@@ -10,10 +10,6 @@ G_BEGIN_DECLS
 
 #define FM_TYPE_MAIN_WINDOW             (fm_main_window_get_type())
 #define FM_MAIN_WINDOW(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj),  FM_TYPE_MAIN_WINDOW, FMMainWindow))
-#define FM_MAIN_WINDOW_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass),  FM_TYPE_MAIN_WINDOW, FMMainWindowClass))
-#define FM_IS_MAIN_WINDOW(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FM_TYPE_MAIN_WINDOW))
-#define FM_IS_MAIN_WINDOW_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass),  FM_TYPE_MAIN_WINDOW))
-#define FM_MAIN_WINDOW_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj),  FM_TYPE_MAIN_WINDOW, FMMainWindowClass))
 
 enum {   // how a panel shares vertical and horizontal space with other panels
     PANEL_NEITHER,

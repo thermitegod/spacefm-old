@@ -96,8 +96,6 @@ enum {
 
 static gpointer parent_class;
 
-#define PTK_TEXT_RENDERER_PATH "ptk-cell-renderer-text-path"
-
 GType
 ptk_text_renderer_get_type ( void )
 {

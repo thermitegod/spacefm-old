@@ -29,10 +29,7 @@ typedef struct _ExoIconChooserModel      ExoIconChooserModel;
 
 #define EXO_TYPE_ICON_CHOOSER_MODEL             (exo_icon_chooser_model_get_type ())
 #define EXO_ICON_CHOOSER_MODEL(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), EXO_TYPE_ICON_CHOOSER_MODEL, ExoIconChooserModel))
-#define EXO_ICON_CHOOSER_MODEL_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), EXO_TYPE_ICON_CHOOSER_MODEL, ExoIconChooserModelClass))
 #define EXO_IS_ICON_CHOOSER_MODEL(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EXO_TYPE_ICON_CHOOSER_MODEL))
-#define EXO_IS_ICON_CHOOSER_MODEL_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), EXO_TYPE_ICON_CHOOSER_MODEL))
-#define EXO_ICON_CHOOSER_MODEL_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), EXO_TYPE_ICON_CHOOSER_MODEL, ExoIconChooserModelClass))
 
 /**
  * ExoIconChooserContexts:

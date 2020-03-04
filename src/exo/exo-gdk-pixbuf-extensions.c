@@ -56,8 +56,6 @@
 #include "exo-gdk-pixbuf-extensions.h"
 #include "exo-private.h"
 
-#define g_open(path, mode, flags) (open ((path), (mode), (flags)))
-
 /* _O_BINARY is required on some platforms */
 #ifndef _O_BINARY
 #define _O_BINARY 0

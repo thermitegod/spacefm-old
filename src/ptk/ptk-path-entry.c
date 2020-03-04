@@ -31,11 +31,6 @@ enum
     N_COLS
 };
 
-/*
-static GQuark use_hand_cursor = (GQuark)"hand_cursor";
-#define is_hand_cursor_used( entry )    (g_object_get_qdata(entry, use_hand_cursor))
-*/
-
 static char*
 get_cwd( GtkEntry* entry )
 {

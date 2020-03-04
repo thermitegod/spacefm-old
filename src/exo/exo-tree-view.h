@@ -34,10 +34,7 @@ typedef struct _ExoTreeView        ExoTreeView;
 
 #define EXO_TYPE_TREE_VIEW            (exo_tree_view_get_type ())
 #define EXO_TREE_VIEW(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EXO_TYPE_TREE_VIEW, ExoTreeView))
-#define EXO_TREE_VIEW_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), EXO_TYPE_TREE_VIEW, ExoTreeViewClass))
 #define EXO_IS_TREE_VIEW(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EXO_TYPE_TREE_VIEW))
-#define EXO_IS_TREE_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), EXO_TYPE_TREE_VIEW))
-#define EXO_TREE_VIEW_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), EXO_TYPE_TREE_VIEW, ExoTreeViewClass))
 
 struct _ExoTreeViewClass
 {
