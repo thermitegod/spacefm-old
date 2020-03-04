@@ -195,7 +195,6 @@ enum {
     XSET_JOB_HELP_BROWSE,
     XSET_JOB_HELP_STYLE,
     XSET_JOB_HELP_BOOK,
-    XSET_JOB_TOOLTIPS
 };
 
 enum {
@@ -363,9 +362,8 @@ char* xset_font_dialog( GtkWidget* parent, const char* title,
                                     const char* preview, const char* deffont );
 void xset_edit( GtkWidget* parent, const char* path, gboolean force_root, gboolean no_root );
 void xset_open_url( GtkWidget* parent, const char* url );
-void xset_fill_toolbar( GtkWidget* parent, PtkFileBrowser* file_browser,
-                        GtkWidget* toolbar, XSet* set_parent,
-                        gboolean show_tooltips );
+void xset_fill_toolbar(GtkWidget* parent, PtkFileBrowser* file_browser,
+		GtkWidget* toolbar, XSet* set_parent);
 int xset_msg_dialog( GtkWidget* parent, int action, const char* title, GtkWidget* image,
                     int buttons, const char* msg1, const char* msg2, const char* help );
 GtkTextView* multi_input_new( GtkScrolledWindow* scrolled, const char* text,

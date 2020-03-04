@@ -964,8 +964,6 @@ static void rebuild_toolbox( GtkWidget* widget, PtkFileBrowser* file_browser )
     int p = file_browser->mypanel;
     char mode = main_window ? main_window->panel_context[p-1] : 0;
 
-    gboolean show_tooltips = !xset_get_b_panel( 1, "tool_l" );
-
     // destroy
     if ( file_browser->toolbar )
     {
@@ -998,9 +996,8 @@ static void rebuild_toolbox( GtkWidget* widget, PtkFileBrowser* file_browser )
                                                 app_settings.tool_icon_size );
 
     // fill left toolbar
-    xset_fill_toolbar( GTK_WIDGET( file_browser ), file_browser,
-                        file_browser->toolbar, xset_get_panel( p, "tool_l" ),
-                        show_tooltips );
+    xset_fill_toolbar(GTK_WIDGET(file_browser), file_browser,
+		    file_browser->toolbar, xset_get_panel(p, "tool_l"));
 
     // add pathbar
 #if (GTK_MAJOR_VERSION == 3)
@@ -1016,9 +1013,8 @@ static void rebuild_toolbox( GtkWidget* widget, PtkFileBrowser* file_browser )
                                                 TRUE, TRUE, 5 );
 
     // fill right toolbar
-    xset_fill_toolbar( GTK_WIDGET( file_browser ), file_browser,
-                        file_browser->toolbar, xset_get_panel( p, "tool_r" ),
-                        show_tooltips );
+    xset_fill_toolbar(GTK_WIDGET(file_browser), file_browser,
+		    file_browser->toolbar, xset_get_panel(p, "tool_r"));
 
     // show
     if ( xset_get_b_panel_mode( p, "show_toolbox", mode ) )
@@ -1031,8 +1027,6 @@ static void rebuild_side_toolbox( GtkWidget* widget,
     FMMainWindow* main_window = (FMMainWindow*)file_browser->main_window;
     int p = file_browser->mypanel;
     char mode = main_window ? main_window->panel_context[p-1] : 0;
-
-    gboolean show_tooltips = !xset_get_b_panel( 1, "tool_l" );
 
     // destroy
     if ( file_browser->side_toolbar )
@@ -1050,9 +1044,8 @@ static void rebuild_side_toolbox( GtkWidget* widget,
         gtk_toolbar_set_icon_size( GTK_TOOLBAR( file_browser->side_toolbar ),
                                                 app_settings.tool_icon_size );
     // fill side toolbar
-    xset_fill_toolbar( GTK_WIDGET( file_browser ), file_browser,
-                    file_browser->side_toolbar, xset_get_panel( p, "tool_s" ),
-                    show_tooltips );
+    xset_fill_toolbar(GTK_WIDGET(file_browser), file_browser,
+		    file_browser->side_toolbar, xset_get_panel(p, "tool_s"));
 
     // show
     if ( xset_get_b_panel_mode( p, "show_sidebar", mode ) )

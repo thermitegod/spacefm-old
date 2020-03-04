@@ -5278,10 +5278,6 @@ void xset_design_job( GtkWidget* item, XSet* set )
         else
             mset->scroll_lock = XSET_B_TRUE;
         break;
-    case XSET_JOB_TOOLTIPS:
-        set_next = xset_get_panel( 1, "tool_l" );
-        set_next->b = set_next->b == XSET_B_TRUE ? XSET_B_UNSET : XSET_B_TRUE;
-        break;
     default:
         break;
     }
@@ -5533,9 +5529,6 @@ gboolean xset_design_menu_keypress( GtkWidget* widget, GdkEventKey* event,
                 break;
             case XSET_JOB_SCROLL:
                 help = "#designmode-command-scroll";
-                break;
-            case XSET_JOB_TOOLTIPS:
-                help = "#designmode-designmenu-tooltips";
                 break;
             default:
                 break;
@@ -5835,17 +5828,6 @@ GtkWidget* xset_design_show_menu( GtkWidget* menu, XSet* set, XSet* book_insert,
     if ( show_keys )
         gtk_widget_add_accelerator( newitem, "activate", accel_group,
                             GDK_KEY_F1, 0, GTK_ACCEL_VISIBLE);
-
-    // Tooltips (toolbar)
-    if ( set->tool )
-    {
-        newitem = xset_design_additem( design_menu, _("T_ooltips"),
-                                        "@check",
-                                        XSET_JOB_TOOLTIPS,
-                                        set );
-        if ( !xset_get_b_panel( 1, "tool_l" ) )
-            set_check_menu_item_block( newitem );
-    }
 
     // Key
     newitem = xset_design_additem( design_menu, _("_Key Shortcut"),
@@ -7548,9 +7530,8 @@ static void set_gtk3_widget_padding( GtkWidget* widget, int left_right,
 }
 #endif
 
-GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
-                        GtkWidget* toolbar, int icon_size, XSet* set,
-                        gboolean show_tooltips )
+GtkWidget* xset_add_toolitem(GtkWidget* parent, PtkFileBrowser* file_browser,
+		GtkWidget* toolbar, int icon_size, XSet* set)
 {
     GtkWidget* image = NULL;
     GtkWidget* item = NULL;
@@ -7698,13 +7679,6 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         g_object_set_data( G_OBJECT( ebox ), "browser", file_browser );
         ptk_file_browser_add_toolbar_widget( set, btn );
 
-        // tooltip
-        if ( show_tooltips )
-        {
-            str = clean_label( new_menu_label, FALSE, FALSE );
-            gtk_widget_set_tooltip_text( ebox, str );
-            g_free( str );
-        }
         g_free( new_menu_label );
     }
     else if ( menu_style == XSET_MENU_CHECK )
@@ -7752,14 +7726,6 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
                             G_CALLBACK( on_tool_icon_button_press ), set );
         g_object_set_data( G_OBJECT( ebox ), "browser", file_browser );
         ptk_file_browser_add_toolbar_widget( set, btn );
-
-        // tooltip
-        if ( show_tooltips )
-        {
-            str = clean_label( menu_label, FALSE, FALSE );
-            gtk_widget_set_tooltip_text( ebox, str );
-            g_free( str );
-        }
     }
     else if ( menu_style == XSET_MENU_SUBMENU )
     {
@@ -7852,14 +7818,8 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         GtkWidget* hbox = gtk_hbox_new( FALSE, 0 );
 #endif
         gtk_box_pack_start ( GTK_BOX( hbox ), ebox, FALSE, FALSE, 0 );
-        // tooltip
-        if ( show_tooltips )
-        {
-            str = clean_label( menu_label, FALSE, FALSE );
-            gtk_widget_set_tooltip_text( ebox, str );
-            g_free( str );
-        }
-        g_free( new_menu_label );
+
+	g_free( new_menu_label );
 
         // reset menu_label for below
         menu_label = set->menu_label;
@@ -7914,14 +7874,6 @@ GtkWidget* xset_add_toolitem( GtkWidget* parent, PtkFileBrowser* file_browser,
         item = GTK_WIDGET( gtk_tool_item_new() );
         gtk_container_add( GTK_CONTAINER( item ), hbox );
         gtk_widget_show_all( item );
-
-        // tooltip
-        if ( show_tooltips )
-        {
-            str = clean_label( menu_label, FALSE, FALSE );
-            gtk_widget_set_tooltip_text( ebox, str );
-            g_free( str );
-        }
     }
     else if ( menu_style == XSET_MENU_SEP )
     {
@@ -7951,16 +7903,14 @@ _next_toolitem:
     if ((set_next = xset_is(set->next)))
     {
 //g_printf("    NEXT %s\n", set_next->name );
-        xset_add_toolitem( parent, file_browser, toolbar, icon_size, set_next,
-                                                            show_tooltips );
+        xset_add_toolitem(parent, file_browser, toolbar, icon_size, set_next);
     }
 
     return item;
 }
 
-void xset_fill_toolbar( GtkWidget* parent, PtkFileBrowser* file_browser,
-                        GtkWidget* toolbar, XSet* set_parent,
-                        gboolean show_tooltips )
+void xset_fill_toolbar(GtkWidget* parent, PtkFileBrowser* file_browser,
+		GtkWidget* toolbar, XSet* set_parent)
 {
     const char default_tools[] =
     {
@@ -8012,8 +7962,7 @@ void xset_fill_toolbar( GtkWidget* parent, PtkFileBrowser* file_browser,
         }
     }
 
-    xset_add_toolitem( parent, file_browser, toolbar, icon_size, set_child,
-                                                        show_tooltips );
+    xset_add_toolitem(parent, file_browser, toolbar, icon_size, set_child);
 
     // These don't seem to do anything
     gtk_container_set_border_width( GTK_CONTAINER( toolbar ), 0 );

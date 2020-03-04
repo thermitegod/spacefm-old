@@ -56,9 +56,6 @@ static void init_list_view( GtkTreeView* view )
                                          COL_APP_NAME, NULL );
 
     gtk_tree_view_append_column ( view, col );
-
-    // add tooltip
-    gtk_tree_view_set_tooltip_column( view, COL_FULL_PATH );
 }
 
 static gint sort_by_name( GtkTreeModel *model,
@@ -111,21 +108,13 @@ static void add_list_item( GtkListStore* list, VFSAppDesktop* desktop )
         while ( gtk_tree_model_iter_next( GTK_TREE_MODEL( list ), &it ) );
     }
 
-    // tooltip
-    char* tooltip = g_markup_printf_escaped( "%s\nName=%s\nExec=%s%s",
-                                     desktop->full_path,
-                                     vfs_app_desktop_get_disp_name( desktop ),
-                                     desktop->exec,
-                                     desktop->terminal ? "\nTerminal=true" : "" );
-
     icon = vfs_app_desktop_get_icon( desktop, 20, TRUE );
     gtk_list_store_append( list, &it );
     gtk_list_store_set( list, &it, COL_APP_ICON, icon,
                         COL_APP_NAME, vfs_app_desktop_get_disp_name( desktop ),
                         COL_DESKTOP_FILE, vfs_app_desktop_get_name( desktop ),
-                        COL_FULL_PATH, tooltip,
+                        COL_FULL_PATH,
                         -1 );
-    g_free( tooltip );
     if ( icon )
         g_object_unref( icon );
 }
