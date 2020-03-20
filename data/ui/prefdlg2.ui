@@ -183,9 +183,6 @@
         <col id="0">/usr/bin/lxqt-sudo</col>
       </row>
       <row>
-        <col id="0">/usr/bin/su-to-root</col>
-      </row>
-      <row>
         <col id="0">/bin/su</col>
       </row>
       <row>
@@ -210,9 +207,6 @@
       </row>
       <row>
         <col id="0">/usr/bin/doas</col>
-      </row>
-      <row>
-        <col id="0">/usr/bin/su-to-root</col>
       </row>
     </data>
   </object>
