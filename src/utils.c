@@ -234,29 +234,6 @@ char* replace_string(const char* orig, const char* str, const char* replace, gbo
     g_free(old_result);
     g_free(rep);
     return result;
-
-    /*
-        // replace first occur of str in orig with rep
-        char* buffer;
-        char* buffer2;
-        char *p;
-        char* rep_good;
-
-        if ( !( p = strstr( orig, str ) ) )
-            return g_strdup( orig );  // str not in orig
-        if ( !rep )
-            rep_good = g_strdup_printf( "" );
-        else
-            rep_good = g_strdup( rep );
-        buffer = g_strndup( orig, p - orig );
-        if ( quote )
-            buffer2 = g_strdup_printf( "%s'%s'%s", buffer, rep_good, p + strlen( str ) );
-        else
-            buffer2 = g_strdup_printf( "%s%s%s", buffer, rep_good, p + strlen( str ) );
-        g_free( buffer );
-        g_free( rep_good );
-        return buffer2;
-    */
 }
 
 char* bash_quote(const char* str)

@@ -494,20 +494,6 @@ gboolean ptk_file_task_cancel(PtkFileTask* ptask)
                 ptask2->task->exec_browser = ptask->task->exec_browser;
                 ptk_file_task_run(ptask2);
             }
-
-            /*
-            // remove zombie - now done automatically in update
-            if ( ptask->task->exec_pid // may be reset in other thread on watch close
-                            && waitpid( ptask->task->exec_pid, NULL, WNOHANG ) )
-            {
-                // process is no longer running (defunct zombie)
-                // glib should detect this but sometimes process goes defunct
-                // with no watch callback, so remove it from task list
-                g_warning( "Removing zombie pid=%d on cancel", ptask->task->exec_pid );
-                ptask->task->exec_pid = 0;
-                ptask->complete = TRUE;
-            }
-            */
         }
         else
         {

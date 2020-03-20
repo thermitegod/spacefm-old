@@ -1030,38 +1030,6 @@ void ptk_location_view_mount_network(PtkFileBrowser* file_browser, const char* u
                         NULL,
                         NULL);
         goto _net_free;
-
-        /*
-        // use udevil as default mount command
-        str = g_find_program_in_path( "udevil" );
-        if ( !str )
-        {
-            xset_msg_dialog( GTK_WIDGET( file_browser ), GTK_MESSAGE_ERROR,
-                            _("Handler Not Found"), NULL, 0,
-                            _("No network handler is configured for this URL.  Add a handler in Settings|Protocol
-        Handlers."), NULL, NULL ); goto _net_free;
-        }
-        g_free( str );
-
-        run_in_terminal = ( !g_strcmp0( netmount->fstype, "smb" ) ||
-                            !g_strcmp0( netmount->fstype, "cifs" ) ||
-                            !g_strcmp0( netmount->fstype, "ftp" ) ||
-                            !g_strcmp0( netmount->fstype, "ssh" ) ||
-                            !g_strcmp0( netmount->fstype, "http" ) ||
-                            !g_strcmp0( netmount->fstype, "https" ) );
-        ssh_udevil = !g_strcmp0( netmount->fstype, "ssh" );
-        // add bash variables
-        char* urlq = bash_quote( netmount->url );
-        char* protoq = bash_quote( netmount->fstype );
-        char* hostq = bash_quote( netmount->host );
-        char* userq = bash_quote( netmount->user );
-        char* passq = bash_quote( netmount->pass );
-        char* pathq = bash_quote( netmount->path );
-        char* keepterm;
-        cmd = g_strdup_printf( "fm_url=%s; fm_url_proto=%s; fm_url_host=%s; fm_url_user=%s; fm_url_pass=%s;
-        fm_url_path=%s\nudevil mount \"$fm_url\"", urlq, protoq, hostq, userq, passq, pathq ); g_free( urlq ); g_free(
-        protoq ); g_free( hostq ); g_free( userq ); g_free( passq ); g_free( pathq );
-        */
     }
 
     // task
