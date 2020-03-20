@@ -5,17 +5,17 @@
 
 G_BEGIN_DECLS
 
-typedef enum {
+typedef enum
+{
     PREF_GENERAL,
     PREF_INTERFACE,
     PREF_DESKTOP,
     PREF_VOLMAN,
     PREF_ADVANCED
-}PrefDlgPage;
+} PrefDlgPage;
 
-gboolean fm_edit_preference( GtkWindow* parent, int page );
+gboolean fm_edit_preference(GtkWindow* parent, int page);
 
 G_END_DECLS
 
 #endif
-

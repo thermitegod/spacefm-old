@@ -34,8 +34,6 @@
 
 #include "exo-string.h"
 
-
-
 /**
  * exo_str_elide_underscores:
  * @text : A zero terminated string.
@@ -46,17 +44,16 @@
  * Returns: A copy of @text without underscores. The returned string
  *          must be freed when no longer required.
  **/
-gchar*
-exo_str_elide_underscores (const gchar *text)
+gchar* exo_str_elide_underscores(const gchar* text)
 {
-    const gchar *s;
-    gboolean     last_underscore = FALSE;
-    gchar       *result;
-    gchar       *t;
+    const gchar* s;
+    gboolean last_underscore = FALSE;
+    gchar* result;
+    gchar* t;
 
-    g_return_val_if_fail (text != NULL, NULL);
+    g_return_val_if_fail(text != NULL, NULL);
 
-    result = g_malloc (strlen (text) + 1);
+    result = g_malloc(strlen(text) + 1);
 
     for (s = text, t = result; *s != '\0'; ++s)
         if (!last_underscore && *s == '_')
@@ -74,8 +71,6 @@ exo_str_elide_underscores (const gchar *text)
     return result;
 }
 
-
-
 /**
  * exo_str_is_equal:
  * @a : A pointer to first string or %NULL.
@@ -88,9 +83,7 @@ exo_str_elide_underscores (const gchar *text)
  *
  * Returns: %TRUE if @a equals @b, else %FALSE.
  **/
-gboolean
-exo_str_is_equal (const gchar *a,
-                  const gchar *b)
+gboolean exo_str_is_equal(const gchar* a, const gchar* b)
 {
     if (a == NULL || b == NULL)
         return (a == b);
@@ -101,8 +94,6 @@ exo_str_is_equal (const gchar *a,
 
     return FALSE;
 }
-
-
 
 /**
  * exo_strndupv:
@@ -117,10 +108,9 @@ exo_str_is_equal (const gchar *a,
  *               freed using g_strfreev() when no
  *               longer needed.
  **/
-gchar**
-exo_strndupv(gchar **strv,
-             guint num) {
-    gchar **result;
+gchar** exo_strndupv(gchar** strv, guint num)
+{
+    gchar** result;
     guint i;
 
     /* return null when there is nothing to copy */
@@ -128,14 +118,14 @@ exo_strndupv(gchar **strv,
         return NULL;
 
     /* duplicate the first @num string */
-    result = g_new(gchar * , num + 1);
+    result = g_new(gchar*, num + 1);
     for (i = 0; i < num && strv[i] != NULL; i++)
         result[i] = g_strdup(strv[i]);
     result[i] = NULL;
 
     /* resize the string if we allocated too much space */
     if (G_UNLIKELY(num > i))
-        result = g_renew(gchar * , result, i + 1);
+        result = g_renew(gchar*, result, i + 1);
 
     return result;
 }

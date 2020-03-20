@@ -29,59 +29,56 @@
 G_BEGIN_DECLS;
 
 typedef struct _ExoTreeViewPrivate ExoTreeViewPrivate;
-typedef struct _ExoTreeViewClass   ExoTreeViewClass;
-typedef struct _ExoTreeView        ExoTreeView;
+typedef struct _ExoTreeViewClass ExoTreeViewClass;
+typedef struct _ExoTreeView ExoTreeView;
 
-#define EXO_TYPE_TREE_VIEW            (exo_tree_view_get_type ())
-#define EXO_TREE_VIEW(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EXO_TYPE_TREE_VIEW, ExoTreeView))
-#define EXO_IS_TREE_VIEW(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EXO_TYPE_TREE_VIEW))
+#define EXO_TYPE_TREE_VIEW    (exo_tree_view_get_type())
+#define EXO_TREE_VIEW(obj)    (G_TYPE_CHECK_INSTANCE_CAST((obj), EXO_TYPE_TREE_VIEW, ExoTreeView))
+#define EXO_IS_TREE_VIEW(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), EXO_TYPE_TREE_VIEW))
 
 struct _ExoTreeViewClass
 {
-  /*< private >*/
-  GtkTreeViewClass __parent__;
+    /*< private >*/
+    GtkTreeViewClass __parent__;
 
-  /*< private >*/
-/*
-  void (*reserved1) (void);
-  void (*reserved2) (void);
-  void (*reserved3) (void);
-  void (*reserved4) (void);
-  void (*reserved5) (void);
-  void (*reserved6) (void);
-  void (*reserved7) (void);
-  void (*reserved8) (void);
-*/
+    /*< private >*/
+    /*
+      void (*reserved1) (void);
+      void (*reserved2) (void);
+      void (*reserved3) (void);
+      void (*reserved4) (void);
+      void (*reserved5) (void);
+      void (*reserved6) (void);
+      void (*reserved7) (void);
+      void (*reserved8) (void);
+    */
 };
 
 struct _ExoTreeView
 {
-  /*< private >*/
-  GtkTreeView __parent__;
+    /*< private >*/
+    GtkTreeView __parent__;
 
-  /*< private >*/
-  ExoTreeViewPrivate *priv;
+    /*< private >*/
+    ExoTreeViewPrivate* priv;
 };
 
-GType      exo_tree_view_get_type                 (void) G_GNUC_CONST;
+GType exo_tree_view_get_type(void) G_GNUC_CONST;
 
-GtkWidget *exo_tree_view_new                      (void) G_GNUC_MALLOC;
+GtkWidget* exo_tree_view_new(void) G_GNUC_MALLOC;
 
-gboolean   exo_tree_view_get_single_click         (const ExoTreeView *tree_view);
-void       exo_tree_view_set_single_click         (ExoTreeView       *tree_view,
-                                                   gboolean           single_click);
+gboolean exo_tree_view_get_single_click(const ExoTreeView* tree_view);
+void exo_tree_view_set_single_click(ExoTreeView* tree_view, gboolean single_click);
 
-guint      exo_tree_view_get_single_click_timeout (const ExoTreeView *tree_view);
-void       exo_tree_view_set_single_click_timeout (ExoTreeView       *tree_view,
-                                                   guint              single_click_timeout);
+guint exo_tree_view_get_single_click_timeout(const ExoTreeView* tree_view);
+void exo_tree_view_set_single_click_timeout(ExoTreeView* tree_view, guint single_click_timeout);
 
 /* 2008.07.16 added by Hong Jen Yee for PCManFM.
  * If activable column is set, only the specified column can be activated.
  * Other columns are viewed as blank area and won't receive mouse clicks.
  */
-GtkTreeViewColumn* exo_tree_view_get_activable_column( ExoTreeView *tree_view );
-void               exo_tree_view_set_activable_column( ExoTreeView *tree_view,
-                                                       GtkTreeViewColumn* column );
+GtkTreeViewColumn* exo_tree_view_get_activable_column(ExoTreeView* tree_view);
+void exo_tree_view_set_activable_column(ExoTreeView* tree_view, GtkTreeViewColumn* column);
 
 G_END_DECLS;
 

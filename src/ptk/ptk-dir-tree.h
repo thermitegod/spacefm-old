@@ -1,14 +1,14 @@
 /*
-*  C Interface: ptk-dir-tree
-*
-* Description:
-*
-*
-* Author: Hong Jen Yee (PCMan) <pcman.tw (AT) gmail.com>, (C) 2006
-*
-* Copyright: See COPYING file that comes with this distribution
-*
-*/
+ *  C Interface: ptk-dir-tree
+ *
+ * Description:
+ *
+ *
+ * Author: Hong Jen Yee (PCMan) <pcman.tw (AT) gmail.com>, (C) 2006
+ *
+ * Copyright: See COPYING file that comes with this distribution
+ *
+ */
 
 #ifndef _PTK_DIR_TREE_H_
 #define _PTK_DIR_TREE_H_
@@ -21,12 +21,13 @@
 
 G_BEGIN_DECLS
 
-#define PTK_TYPE_DIR_TREE             (ptk_dir_tree_get_type())
-#define PTK_DIR_TREE(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj),  PTK_TYPE_DIR_TREE, PtkDirTree))
-#define PTK_IS_DIR_TREE(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PTK_TYPE_DIR_TREE))
+#define PTK_TYPE_DIR_TREE    (ptk_dir_tree_get_type())
+#define PTK_DIR_TREE(obj)    (G_TYPE_CHECK_INSTANCE_CAST((obj), PTK_TYPE_DIR_TREE, PtkDirTree))
+#define PTK_IS_DIR_TREE(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), PTK_TYPE_DIR_TREE))
 
 /* Columns of folder view */
-enum{
+enum
+{
     COL_DIR_TREE_ICON,
     COL_DIR_TREE_DISP_NAME,
     COL_DIR_TREE_INFO,
@@ -55,19 +56,15 @@ struct _PtkDirTreeClass
     /* Default signal handlers */
 };
 
-GType ptk_dir_tree_get_type (void);
+GType ptk_dir_tree_get_type(void);
 
-PtkDirTree *ptk_dir_tree_new ();
+PtkDirTree* ptk_dir_tree_new();
 
-void ptk_dir_tree_expand_row ( PtkDirTree* tree,
-                               GtkTreeIter* iter,
-                               GtkTreePath *path );
+void ptk_dir_tree_expand_row(PtkDirTree* tree, GtkTreeIter* iter, GtkTreePath* path);
 
-void ptk_dir_tree_collapse_row ( PtkDirTree* tree,
-                                 GtkTreeIter* iter,
-                                 GtkTreePath *path );
+void ptk_dir_tree_collapse_row(PtkDirTree* tree, GtkTreeIter* iter, GtkTreePath* path);
 
-char* ptk_dir_tree_get_dir_path( PtkDirTree* tree, GtkTreeIter* iter );
+char* ptk_dir_tree_get_dir_path(PtkDirTree* tree, GtkTreeIter* iter);
 
 G_END_DECLS
 

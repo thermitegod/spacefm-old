@@ -5,14 +5,16 @@
 
 G_BEGIN_DECLS
 
-enum {
+enum
+{
     CONTEXT_SHOW,
     CONTEXT_ENABLE,
     CONTEXT_HIDE,
     CONTEXT_DISABLE
 };
 
-enum {
+enum
+{
     CONTEXT_MIME,
     CONTEXT_NAME,
     CONTEXT_DIR,
@@ -54,10 +56,9 @@ enum {
     CONTEXT_END
 };
 
-void xset_item_prop_dlg( XSetContext* context, XSet* set, int page );
-int xset_context_test( XSetContext* context, char* rules, gboolean def_disable );
+void xset_item_prop_dlg(XSetContext* context, XSet* set, int page);
+int xset_context_test(XSetContext* context, char* rules, gboolean def_disable);
 
 G_END_DECLS
 
 #endif
-

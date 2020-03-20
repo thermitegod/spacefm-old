@@ -18,7 +18,7 @@
  * MA 02110-1301 USA
  */
 
-//sfm-gtk3
+// sfm-gtk3
 #include <gtk/gtk.h>
 
 #ifdef HAVE_CONFIG_H
@@ -59,7 +59,7 @@
 typedef enum /*< skip >*/
 {
     EXO_THUMBNAIL_SIZE_NORMAL = 128,
-    EXO_THUMBNAIL_SIZE_LARGE  = 256,
+    EXO_THUMBNAIL_SIZE_LARGE = 256,
 } ExoThumbnailSize;
 
 struct _ExoThumbnailPreviewClass
@@ -69,30 +69,25 @@ struct _ExoThumbnailPreviewClass
 
 struct _ExoThumbnailPreview
 {
-    GtkFrame   __parent__;
-    GtkWidget *image;
-    GtkWidget *name_label;
-    GtkWidget *size_label;
+    GtkFrame __parent__;
+    GtkWidget* image;
+    GtkWidget* name_label;
+    GtkWidget* size_label;
 };
 
+G_DEFINE_TYPE(ExoThumbnailPreview, exo_thumbnail_preview, GTK_TYPE_FRAME)
 
-G_DEFINE_TYPE (ExoThumbnailPreview, exo_thumbnail_preview, GTK_TYPE_FRAME)
-
-
-
-static void
-exo_thumbnail_preview_class_init (ExoThumbnailPreviewClass *klass)
+static void exo_thumbnail_preview_class_init(ExoThumbnailPreviewClass* klass)
 {
 }
 
-
-static void
-exo_thumbnail_preview_init(ExoThumbnailPreview *thumbnail_preview) {
-    GtkWidget *button;
-    GtkWidget *label;
-    GtkWidget *ebox;
-    GtkWidget *vbox;
-    GtkWidget *box;
+static void exo_thumbnail_preview_init(ExoThumbnailPreview* thumbnail_preview)
+{
+    GtkWidget* button;
+    GtkWidget* label;
+    GtkWidget* ebox;
+    GtkWidget* vbox;
+    GtkWidget* box;
 
     gtk_frame_set_shadow_type(GTK_FRAME(thumbnail_preview), GTK_SHADOW_IN);
     gtk_widget_set_sensitive(GTK_WIDGET(thumbnail_preview), FALSE);
@@ -106,13 +101,13 @@ exo_thumbnail_preview_init(ExoThumbnailPreview *thumbnail_preview) {
      * black depending on the theme, rather than the default white, which is
      * associated with GTK_STATE_NORMAL
      * Note that this event box is what defines the colour, not thumbnail_preview */
-    gtk_widget_modify_bg (ebox, GTK_STATE_NORMAL, &gtk_widget_get_style (ebox)->base[GTK_STATE_INSENSITIVE]);
+    gtk_widget_modify_bg(ebox, GTK_STATE_NORMAL, &gtk_widget_get_style(ebox)->base[GTK_STATE_INSENSITIVE]);
 #endif
     gtk_container_add(GTK_CONTAINER(thumbnail_preview), ebox);
     gtk_widget_show(ebox);
 
 #if (GTK_MAJOR_VERSION == 3)
-    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 #elif (GTK_MAJOR_VERSION == 2)
     vbox = gtk_vbox_new(FALSE, 0);
 #endif
@@ -132,7 +127,7 @@ exo_thumbnail_preview_init(ExoThumbnailPreview *thumbnail_preview) {
     gtk_container_add(GTK_CONTAINER(button), label);
     gtk_widget_show(label);
 #if (GTK_MAJOR_VERSION == 3)
-    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 2);
+    box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 #elif (GTK_MAJOR_VERSION == 2)
     box = gtk_vbox_new(FALSE, 2);
 #endif
@@ -141,7 +136,8 @@ exo_thumbnail_preview_init(ExoThumbnailPreview *thumbnail_preview) {
     gtk_widget_show(box);
 
     thumbnail_preview->image = gtk_image_new_from_icon_name("image-missing", GTK_ICON_SIZE_DIALOG);
-    gtk_widget_set_size_request(thumbnail_preview->image, EXO_THUMBNAIL_SIZE_NORMAL + 2 * 12,
+    gtk_widget_set_size_request(thumbnail_preview->image,
+                                EXO_THUMBNAIL_SIZE_NORMAL + 2 * 12,
                                 EXO_THUMBNAIL_SIZE_NORMAL + 2 * 12);
     gtk_image_set_pixel_size(GTK_IMAGE(thumbnail_preview->image), EXO_THUMBNAIL_SIZE_NORMAL / 2);
     gtk_box_pack_start(GTK_BOX(box), thumbnail_preview->image, FALSE, FALSE, 0);
@@ -165,13 +161,10 @@ exo_thumbnail_preview_init(ExoThumbnailPreview *thumbnail_preview) {
  *
  * Returns: the newly allocated #ExoThumbnailPreview.
  **/
-GtkWidget*
-_exo_thumbnail_preview_new (void)
+GtkWidget* _exo_thumbnail_preview_new(void)
 {
-    return g_object_new (EXO_TYPE_THUMBNAIL_PREVIEW, NULL);
+    return g_object_new(EXO_TYPE_THUMBNAIL_PREVIEW, NULL);
 }
-
-
 
 /**
  * _exo_thumbnail_preview_set_uri:
@@ -180,112 +173,136 @@ _exo_thumbnail_preview_new (void)
  *
  * Updates the @thumbnail_preview to display a preview of the specified @uri.
  **/
-void
-_exo_thumbnail_preview_set_uri(ExoThumbnailPreview *thumbnail_preview,
-                               const gchar *uri) {
+void _exo_thumbnail_preview_set_uri(ExoThumbnailPreview* thumbnail_preview, const gchar* uri)
+{
     struct stat statb;
-    GdkPixbuf * thumbnail;
-    gchar *icon_name = NULL;
-    gchar *size_name = NULL;
-    gchar *displayname;
-    gchar *filename;
-    gchar *slash;
+    GdkPixbuf* thumbnail;
+    gchar* icon_name = NULL;
+    gchar* size_name = NULL;
+    gchar* displayname;
+    gchar* filename;
+    gchar* slash;
 
-    _exo_return_if_fail (EXO_IS_THUMBNAIL_PREVIEW(thumbnail_preview));
+    _exo_return_if_fail(EXO_IS_THUMBNAIL_PREVIEW(thumbnail_preview));
 
     /* Check if we have an URI to preview */
-    if (G_UNLIKELY(uri == NULL)) {
+    if (G_UNLIKELY(uri == NULL))
+    {
         /* The preview widget is insensitive if we don't have an URI */
         gtk_widget_set_sensitive(GTK_WIDGET(thumbnail_preview), FALSE);
-	gtk_image_set_from_icon_name(GTK_IMAGE(thumbnail_preview->image), "image-missing", GTK_ICON_SIZE_DIALOG);
+        gtk_image_set_from_icon_name(GTK_IMAGE(thumbnail_preview->image), "image-missing", GTK_ICON_SIZE_DIALOG);
         gtk_label_set_text(GTK_LABEL(thumbnail_preview->name_label), _("No file selected"));
-    } else {
+    }
+    else
+    {
         /* Make the preview widget appear sensitive */
         gtk_widget_set_sensitive(GTK_WIDGET(thumbnail_preview), TRUE);
 
         /* Check if we have a local file here */
         filename = g_filename_from_uri(uri, NULL, NULL);
-        if (G_LIKELY(filename != NULL)) {
+        if (G_LIKELY(filename != NULL))
+        {
             /* Try to stat the file */
-            if (stat(filename, &statb) == 0) {
+            if (stat(filename, &statb) == 0)
+            {
                 /* icon and size label depends on the mode */
-                if (S_ISBLK(statb.st_mode)) {
+                if (S_ISBLK(statb.st_mode))
+                {
                     icon_name = g_strdup("drive-harddisk");
                     size_name = g_strdup(_("Block Device"));
-                } else if (S_ISCHR(statb.st_mode)) {
+                }
+                else if (S_ISCHR(statb.st_mode))
+                {
                     icon_name = g_strdup("drive-harddisk");
                     size_name = g_strdup(_("Character Device"));
-                } else if (S_ISDIR(statb.st_mode)) {
+                }
+                else if (S_ISDIR(statb.st_mode))
+                {
                     icon_name = g_strdup("folder");
                     size_name = g_strdup(_("Folder"));
-                } else if (S_ISFIFO(statb.st_mode)) {
+                }
+                else if (S_ISFIFO(statb.st_mode))
+                {
                     icon_name = g_strdup("drive-harddisk");
                     size_name = g_strdup(_("FIFO"));
-                } else if (S_ISSOCK(statb.st_mode)) {
+                }
+                else if (S_ISSOCK(statb.st_mode))
+                {
                     icon_name = g_strdup("drive-harddisk");
                     size_name = g_strdup(_("Socket"));
-                } else if (S_ISREG(statb.st_mode)) {
-                    if (G_UNLIKELY((gulong) statb.st_size > 1024ul * 1024ul * 1024ul))
+                }
+                else if (S_ISREG(statb.st_mode))
+                {
+                    if (G_UNLIKELY((gulong)statb.st_size > 1024ul * 1024ul * 1024ul))
                         size_name = g_strdup_printf("%0.1f GB", statb.st_size / (1024.0 * 1024.0 * 1024.0));
-                    else if ((gulong) statb.st_size > 1024ul * 1024ul)
+                    else if ((gulong)statb.st_size > 1024ul * 1024ul)
                         size_name = g_strdup_printf("%0.1f MB", statb.st_size / (1024.0 * 1024.0));
-                    else if ((gulong) statb.st_size > 1024ul)
+                    else if ((gulong)statb.st_size > 1024ul)
                         size_name = g_strdup_printf("%0.1f kB", statb.st_size / 1024.0);
                     else
-                        size_name = g_strdup_printf("%lu B", (gulong) statb.st_size);
+                        size_name = g_strdup_printf("%lu B", (gulong)statb.st_size);
                 }
             }
 
             /* Determine the basename from the filename */
             displayname = g_filename_display_basename(filename);
-        } else {
+        }
+        else
+        {
             /* Determine the basename from the URI */
             slash = strrchr(uri, '/');
-            if (G_LIKELY(!exo_str_is_empty (slash)))
+            if (G_LIKELY(!exo_str_is_empty(slash)))
                 displayname = g_filename_display_name(slash + 1);
             else
                 displayname = g_filename_display_name(uri);
         }
 
         /* Check if we have an icon-name */
-        if (G_UNLIKELY(icon_name != NULL)) {
+        if (G_UNLIKELY(icon_name != NULL))
+        {
             /* Setup the named icon then */
             gtk_image_set_from_icon_name(GTK_IMAGE(thumbnail_preview->image), icon_name, GTK_ICON_SIZE_DIALOG);
             g_free(icon_name);
-        } else {
+        }
+        else
+        {
             /* Try to load a thumbnail for the URI */
-            //thumbnail = _exo_thumbnail_get_for_uri (uri, EXO_THUMBNAIL_SIZE_NORMAL, NULL);
+            // thumbnail = _exo_thumbnail_get_for_uri (uri, EXO_THUMBNAIL_SIZE_NORMAL, NULL);
             thumbnail = vfs_thumbnail_load_for_uri(uri, EXO_THUMBNAIL_SIZE_NORMAL, 0);
-            if (thumbnail == NULL && G_LIKELY(filename != NULL)) {
+            if (thumbnail == NULL && G_LIKELY(filename != NULL))
+            {
                 /* But we can try to generate a thumbnail */
-                //thumbnail = _exo_thumbnail_get_for_file (filename, EXO_THUMBNAIL_SIZE_NORMAL, NULL);
+                // thumbnail = _exo_thumbnail_get_for_file (filename, EXO_THUMBNAIL_SIZE_NORMAL, NULL);
                 thumbnail = vfs_thumbnail_load_for_file(filename, EXO_THUMBNAIL_SIZE_NORMAL, 0);
             }
 
             /* check if we have a thumbnail */
-            if (G_LIKELY(thumbnail != NULL)) {
+            if (G_LIKELY(thumbnail != NULL))
+            {
                 /* setup the thumbnail for the image (using a frame if possible) */
                 gtk_image_set_from_pixbuf(GTK_IMAGE(thumbnail_preview->image), thumbnail);
                 g_object_unref(G_OBJECT(thumbnail));
-            } else {
+            }
+            else
+            {
                 /* no thumbnail, cannot display anything useful then */
-                gtk_image_set_from_icon_name(GTK_IMAGE(thumbnail_preview->image), "image-missing",
+                gtk_image_set_from_icon_name(GTK_IMAGE(thumbnail_preview->image),
+                                             "image-missing",
                                              GTK_ICON_SIZE_DIALOG);
             }
         }
 
         /* Setup the name label */
-        gtk_label_set_text (GTK_LABEL (thumbnail_preview->name_label), displayname);
+        gtk_label_set_text(GTK_LABEL(thumbnail_preview->name_label), displayname);
 
         /* Cleanup */
-        g_free (displayname);
-        g_free (filename);
+        g_free(displayname);
+        g_free(filename);
     }
 
     /* Setup the new size label */
-    gtk_label_set_text (GTK_LABEL (thumbnail_preview->size_label), (size_name != NULL) ? size_name : "");
-    g_free (size_name);
+    gtk_label_set_text(GTK_LABEL(thumbnail_preview->size_label), (size_name != NULL) ? size_name : "");
+    g_free(size_name);
 }
-
 
 #define __EXO_THUMBNAIL_PREVIEW_C__

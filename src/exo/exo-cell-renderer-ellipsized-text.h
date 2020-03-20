@@ -27,16 +27,17 @@
 G_BEGIN_DECLS
 
 typedef struct _ExoCellRendererEllipsizedTextPrivate ExoCellRendererEllipsizedTextPrivate;
-typedef struct _ExoCellRendererEllipsizedTextClass   ExoCellRendererEllipsizedTextClass;
-typedef struct _ExoCellRendererEllipsizedText        ExoCellRendererEllipsizedText;
+typedef struct _ExoCellRendererEllipsizedTextClass ExoCellRendererEllipsizedTextClass;
+typedef struct _ExoCellRendererEllipsizedText ExoCellRendererEllipsizedText;
 
-#define EXO_TYPE_CELL_RENDERER_ELLIPSIZED_TEXT            (exo_cell_renderer_ellipsized_text_get_type ())
-#define EXO_CELL_RENDERER_ELLIPSIZED_TEXT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EXO_TYPE_CELL_RENDERER_ELLIPSIZED_TEXT, ExoCellRendererEllipsizedText))
+#define EXO_TYPE_CELL_RENDERER_ELLIPSIZED_TEXT (exo_cell_renderer_ellipsized_text_get_type())
+#define EXO_CELL_RENDERER_ELLIPSIZED_TEXT(obj) \
+    (G_TYPE_CHECK_INSTANCE_CAST((obj), EXO_TYPE_CELL_RENDERER_ELLIPSIZED_TEXT, ExoCellRendererEllipsizedText))
 
 struct _ExoCellRendererEllipsizedTextClass
 {
-  /*< private >*/
-  GtkCellRendererTextClass __parent__;
+    /*< private >*/
+    GtkCellRendererTextClass __parent__;
 };
 
 /**
@@ -47,14 +48,14 @@ struct _ExoCellRendererEllipsizedTextClass
  **/
 struct _ExoCellRendererEllipsizedText
 {
-  /*< private >*/
-  GtkCellRendererText                   __parent__;
-  ExoCellRendererEllipsizedTextPrivate *priv;
+    /*< private >*/
+    GtkCellRendererText __parent__;
+    ExoCellRendererEllipsizedTextPrivate* priv;
 };
 
-GType            exo_cell_renderer_ellipsized_text_get_type (void) G_GNUC_CONST;
+GType exo_cell_renderer_ellipsized_text_get_type(void) G_GNUC_CONST;
 
-GtkCellRenderer *exo_cell_renderer_ellipsized_text_new      (void) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
+GtkCellRenderer* exo_cell_renderer_ellipsized_text_new(void) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

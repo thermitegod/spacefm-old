@@ -24,10 +24,10 @@
 
 G_BEGIN_DECLS
 
-void                    exo_noop        (void);
-gpointer                exo_noop_null   (void) G_GNUC_PURE;
-gboolean                exo_noop_true   (void) G_GNUC_PURE;
-gboolean                exo_noop_false  (void) G_GNUC_PURE;
+void exo_noop(void);
+gpointer exo_noop_null(void) G_GNUC_PURE;
+gboolean exo_noop_true(void) G_GNUC_PURE;
+gboolean exo_noop_false(void) G_GNUC_PURE;
 
 G_END_DECLS
 

@@ -28,28 +28,27 @@
 
 G_BEGIN_DECLS;
 
-#define _exo_assert_not_reached()          g_assert_not_reached ()
-#define _exo_return_if_fail(expr)          g_return_if_fail (expr)
-#define _exo_return_val_if_fail(expr, val) g_return_val_if_fail (expr, (val))
+#define _exo_assert_not_reached()          g_assert_not_reached()
+#define _exo_return_if_fail(expr)          g_return_if_fail(expr)
+#define _exo_return_val_if_fail(expr, val) g_return_val_if_fail(expr, (val))
 
 /* support macros for the slice allocator */
-#define _exo_slice_free(type, ptr)               G_STMT_START{ g_slice_free (type, (ptr)); }G_STMT_END
+#define _exo_slice_free(type, ptr) \
+    G_STMT_START                   \
+    {                              \
+        g_slice_free(type, (ptr)); \
+    }                              \
+    G_STMT_END
 
-void  _exo_i18n_init                    (void) G_GNUC_INTERNAL;
+void _exo_i18n_init(void) G_GNUC_INTERNAL;
 
-void  _exo_gtk_widget_send_focus_change (GtkWidget         *widget,
-                                         gboolean           in) G_GNUC_INTERNAL;
+void _exo_gtk_widget_send_focus_change(GtkWidget* widget, gboolean in) G_GNUC_INTERNAL;
 
-GType _exo_g_type_register_simple       (GType              type_parent,
-                                         const gchar       *type_name_static,
-                                         guint              class_size,
-                                         gpointer           class_init,
-                                         guint              instance_size,
-                                         gpointer           instance_init) G_GNUC_INTERNAL;
+GType _exo_g_type_register_simple(GType type_parent, const gchar* type_name_static, guint class_size,
+                                  gpointer class_init, guint instance_size, gpointer instance_init) G_GNUC_INTERNAL;
 
-void  _exo_g_type_add_interface_simple  (GType              instance_type,
-                                         GType              interface_type,
-                                         GInterfaceInitFunc interface_init_func) G_GNUC_INTERNAL;
+void _exo_g_type_add_interface_simple(GType instance_type, GType interface_type,
+                                      GInterfaceInitFunc interface_init_func) G_GNUC_INTERNAL;
 
 G_END_DECLS;
 

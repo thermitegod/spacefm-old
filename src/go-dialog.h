@@ -6,9 +6,8 @@
 
 G_BEGIN_DECLS
 
-gboolean fm_go( FMMainWindow* parent );
+gboolean fm_go(FMMainWindow* parent);
 
 G_END_DECLS
 
 #endif
-

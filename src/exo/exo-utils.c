@@ -38,8 +38,6 @@
  * url="http://library.gnome.org/devel/glib/stable/">GLib</ulink> library.
  **/
 
-
-
 /**
  * exo_noop:
  *
@@ -51,12 +49,9 @@
  *
  * Since: 0.3.1
  **/
-void
-exo_noop (void)
+void exo_noop(void)
 {
 }
-
-
 
 /**
  * exo_noop_one:
@@ -71,13 +66,10 @@ exo_noop (void)
  *
  * Since: 0.3.1
  **/
-gint
-exo_noop_one (void)
+gint exo_noop_one(void)
 {
     return 1;
 }
-
-
 
 /**
  * exo_noop_zero:
@@ -92,13 +84,10 @@ exo_noop_one (void)
  *
  * Since: 0.3.1
  **/
-gint
-exo_noop_zero (void)
+gint exo_noop_zero(void)
 {
     return 0;
 }
-
-
 
 /**
  * exo_noop_null:
@@ -113,13 +102,10 @@ exo_noop_zero (void)
  *
  * Since: 0.3.1
  **/
-gpointer
-exo_noop_null (void)
+gpointer exo_noop_null(void)
 {
     return NULL;
 }
-
-
 
 /**
  * exo_noop_true:
@@ -134,13 +120,10 @@ exo_noop_null (void)
  *
  * Since: 0.3.1
  **/
-gboolean
-exo_noop_true (void)
+gboolean exo_noop_true(void)
 {
     return TRUE;
 }
-
-
 
 /**
  * exo_noop_false:
@@ -155,11 +138,9 @@ exo_noop_true (void)
  *
  * Since: 0.3.1
  **/
-gboolean
-exo_noop_false (void)
+gboolean exo_noop_false(void)
 {
     return FALSE;
 }
-
 
 #define __EXO_UTILS_C__

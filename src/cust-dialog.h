@@ -7,6 +7,7 @@
 
 G_BEGIN_DECLS
 
+// clang-format off
 static const char* cdlg_option[] =  // order must match ElementType order
 {
     "title",        "TEXT|@FILE",
@@ -80,12 +81,14 @@ static const char* cdlg_option[] =  // order must match ElementType order
     "command",      "FILE|PIPE [COMMAND...]",
                     N_("Read commands from FILE or PIPE.  COMMAND for init.")
 };
+// clang-format on
 // TEXT starts with ~ for pango
 // COMMAND internal -- external -- internal ...
 // scroll vbox?
 // menu?
 
-typedef enum {
+typedef enum
+{
     CDLG_TITLE,
     CDLG_WINDOW_ICON,
     CDLG_LABEL,
@@ -138,6 +141,7 @@ typedef struct
     int option2;
 } CustomElement;
 
+// clang-format off
 static const char* cdlg_cmd[] =
 {
     "noop",         "( any arguments )",
@@ -165,14 +169,16 @@ static const char* cdlg_cmd[] =
     "source",       "FILE",
                     N_("Save files and write source output to FILE")
 };
+// clang-format on
 // special NAME = title windowtitle windowicon windowsize
 
-enum {
+enum
+{
     CMD_NOOP,
     CMD_CLOSE,
     CMD_PRESS,
     CMD_SET,
-    CMD_SELECT,  //allow chooser ?
+    CMD_SELECT, // allow chooser ?
     CMD_UNSELECT,
     CMD_FOCUS,
     CMD_HIDE,
@@ -182,13 +188,8 @@ enum {
     CMD_SOURCE
 };
 
-
-int custom_dialog_init( int argc, char *argv[] );
-
-
+int custom_dialog_init(int argc, char* argv[]);
 
 G_END_DECLS
 
-
 #endif
-

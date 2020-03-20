@@ -25,25 +25,26 @@
 G_BEGIN_DECLS
 
 typedef struct _ExoCellRendererIconPrivate ExoCellRendererIconPrivate;
-typedef struct _ExoCellRendererIconClass   ExoCellRendererIconClass;
-typedef struct _ExoCellRendererIcon        ExoCellRendererIcon;
+typedef struct _ExoCellRendererIconClass ExoCellRendererIconClass;
+typedef struct _ExoCellRendererIcon ExoCellRendererIcon;
 
-#define EXO_TYPE_CELL_RENDERER_ICON             (exo_cell_renderer_icon_get_type ())
-#define EXO_CELL_RENDERER_ICON(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), EXO_TYPE_CELL_RENDERER_ICON, ExoCellRendererIcon))
-#define EXO_IS_CELL_RENDERER_ICON(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EXO_TYPE_CELL_RENDERER_ICON))
+#define EXO_TYPE_CELL_RENDERER_ICON (exo_cell_renderer_icon_get_type())
+#define EXO_CELL_RENDERER_ICON(obj) \
+    (G_TYPE_CHECK_INSTANCE_CAST((obj), EXO_TYPE_CELL_RENDERER_ICON, ExoCellRendererIcon))
+#define EXO_IS_CELL_RENDERER_ICON(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), EXO_TYPE_CELL_RENDERER_ICON))
 
 struct _ExoCellRendererIconClass
 {
-  /*< private >*/
-  GtkCellRendererClass __parent__;
+    /*< private >*/
+    GtkCellRendererClass __parent__;
 
-  /* reserved for future expansion */
-  void (*reserved1) (void);
-  void (*reserved2) (void);
-  void (*reserved3) (void);
-  void (*reserved4) (void);
-  void (*reserved5) (void);
-  void (*reserved6) (void);
+    /* reserved for future expansion */
+    void (*reserved1)(void);
+    void (*reserved2)(void);
+    void (*reserved3)(void);
+    void (*reserved4)(void);
+    void (*reserved5)(void);
+    void (*reserved6)(void);
 };
 
 /**
@@ -54,13 +55,13 @@ struct _ExoCellRendererIconClass
  **/
 struct _ExoCellRendererIcon
 {
-  /*< private >*/
-  GtkCellRenderer __parent__;
+    /*< private >*/
+    GtkCellRenderer __parent__;
 };
 
-GType            exo_cell_renderer_icon_get_type (void) G_GNUC_CONST;
+GType exo_cell_renderer_icon_get_type(void) G_GNUC_CONST;
 
-GtkCellRenderer *exo_cell_renderer_icon_new      (void) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
+GtkCellRenderer* exo_cell_renderer_icon_new(void) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 
