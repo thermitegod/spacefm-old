@@ -65,7 +65,6 @@ struct _FMPrefDlg
     GtkWidget* confirm_delete;
     GtkWidget* click_exec;
     GtkWidget* su_command;
-    GtkWidget* gsu_command;
     GtkWidget* date_format;
     GtkWidget* date_display;
     GtkWidget* editor;
@@ -337,11 +336,6 @@ static void on_response(GtkDialog* dlg, int response, FMPrefDlg* user_data)
         if (idx > -1)
             xset_set("su_command", "s", su_commands[idx]);
 
-        // graphical su command
-        idx = gtk_combo_box_get_active(GTK_COMBO_BOX(data->gsu_command));
-        if (idx > -1)
-            xset_set("gsu_command", "s", gsu_commands[idx]);
-
         // MOD editors
         xset_set("editor", "s", gtk_entry_get_text(GTK_ENTRY(data->editor)));
         xset_set_b("editor", gtk_toggle_button_get_active((GtkToggleButton*)data->editor_terminal));
@@ -582,27 +576,6 @@ gboolean fm_edit_preference(GtkWindow* parent, int page)
                 idx = i;
         }
         gtk_combo_box_set_active(GTK_COMBO_BOX(data->su_command), idx);
-
-        // graphical su
-        char* use_gsu;
-        data->gsu_command = (GtkWidget*)gtk_builder_get_object(builder, "gsu_command");
-        use_gsu = xset_get_s("gsu_command");
-
-        if (!use_gsu)
-            idx = 0;
-        else
-        {
-            for (i = 0; i < G_N_ELEMENTS(gsu_commands); i++)
-            {
-                if (!strcmp(gsu_commands[i], use_gsu))
-                    break;
-            }
-            if (i == G_N_ELEMENTS(gsu_commands))
-                idx = 0;
-            else
-                idx = i;
-        }
-        gtk_combo_box_set_active(GTK_COMBO_BOX(data->gsu_command), idx);
 
         // date format
         data->date_format = (GtkWidget*)gtk_builder_get_object(builder, "date_format");

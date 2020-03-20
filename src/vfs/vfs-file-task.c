@@ -1291,7 +1291,6 @@ static void vfs_file_task_exec(char* src_file, VFSFileTask* task)
     // this function is now thread safe but is not currently run in
     // another thread because gio adds watches to main loop thread anyway
     char* su = NULL;
-    char* gsu = NULL;
     char* str;
     const char* tmp;
     char* hex8;
@@ -1348,16 +1347,6 @@ static void vfs_file_task_exec(char* src_file, VFSFileTask* task)
                 xset_msg_dialog(parent, GTK_MESSAGE_ERROR, _("Terminal SU Not Available"), NULL, 0, str, NULL, NULL);
                 goto _exit_with_error_lean;
             }
-            gsu = get_valid_gsu();
-            if (!gsu)
-            {
-                str = _("Please configure a valid Graphical SU command in View|Preferences|Advanced");
-                g_warning(str, NULL);
-                // do not use xset_msg_dialog if non-main thread
-                // vfs_file_task_exec_error( task, 0, str );
-                xset_msg_dialog(parent, GTK_MESSAGE_ERROR, _("Graphical SU Not Available"), NULL, 0, str, NULL, NULL);
-                goto _exit_with_error_lean;
-            }
         }
     }
 
@@ -1374,17 +1363,11 @@ static void vfs_file_task_exec(char* src_file, VFSFileTask* task)
         goto _exit_with_error_lean;
     }
 
-    // get terminal if needed
+    // get terminal
     if (!task->exec_terminal && task->exec_as_user)
     {
-        if (!strcmp(gsu, "/bin/su") || !strcmp(gsu, "/usr/bin/sudo") || !strcmp(gsu, "/usr/bin/doas"))
-        {
-            // using a non-GUI gsu so run in terminal
-            if (su)
-                g_free(su);
-            su = strdup(gsu);
-            task->exec_terminal = TRUE;
-        }
+        // using cli tool so run in terminal
+        task->exec_terminal = TRUE;
     }
     if (task->exec_terminal)
     {
@@ -1563,8 +1546,6 @@ static void vfs_file_task_exec(char* src_file, VFSFileTask* task)
 
         use_su = su;
     }
-    else
-        use_su = gsu;
 
     if (task->exec_as_user)
     {
@@ -1663,8 +1644,6 @@ static void vfs_file_task_exec(char* src_file, VFSFileTask* task)
     argv[a++] = NULL;
     if (su)
         g_free(su);
-    if (gsu)
-        g_free(gsu);
 
     char* first_arg = g_strdup(argv[0]);
     if (task->exec_sync)
@@ -1781,7 +1760,6 @@ _exit_with_error_lean:
     g_strfreev(terminalv);
     g_free(terminal);
     g_free(su);
-    g_free(gsu);
     call_state_callback(task, VFS_FILE_TASK_FINISH);
     // g_printf("vfs_file_task_exec DONE ERROR\n");
 }

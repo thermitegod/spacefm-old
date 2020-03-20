@@ -31,12 +31,4 @@ static const char* su_commands[] = // order and contents must match prefdlg.ui
      "/usr/bin/doas"};
 // clang-format on
 
-static const char* gsu_commands[] = // order and contents must match prefdlg.ui
-    {"/usr/bin/kdesu",
-     "/usr/bin/ktsuss",
-     "/usr/bin/lxqt-sudo",
-     "/bin/su",
-     "/usr/bin/sudo",
-     "/usr/bin/doas"};
-
 #endif

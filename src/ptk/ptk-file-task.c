@@ -448,52 +448,6 @@ gboolean ptk_file_task_cancel(PtkFileTask* ptask)
             g_timeout_add(2500, (GSourceFunc)ptk_file_task_kill, GINT_TO_POINTER(ptask->task->exec_pid));
             if (cpids)
                 g_timeout_add(2500, (GSourceFunc)ptk_file_task_kill_cpids, cpids);
-
-            // other user run - need to kill as other
-            char* gsu;
-            if (ptask->task->exec_as_user && geteuid() != 0 && (gsu = get_valid_gsu()))
-            {
-                char* cmd;
-
-                // remove files
-                char* rm_cmd;
-                if (ptask->task->exec_script)
-                    rm_cmd = g_strdup_printf(" ; rm -f %s", ptask->task->exec_script);
-                else
-                    rm_cmd = g_strdup("");
-
-                // kill command
-                if (cpids)
-                {
-                    // convert linefeeds to spaces
-                    char* scpids = g_strdup(cpids);
-                    char* lf;
-                    while ((lf = strchr(scpids, '\n')))
-                        lf[0] = ' ';
-
-                    cmd = g_strdup_printf("/bin/kill %d %s ; sleep 3 ; /bin/kill -s KILL %d %s %s",
-                                          ptask->task->exec_pid,
-                                          scpids,
-                                          ptask->task->exec_pid,
-                                          scpids,
-                                          rm_cmd);
-                    g_free(scpids);
-                }
-                else
-                    cmd = g_strdup_printf("/bin/kill %d ; sleep 3 ; /bin/kill -s KILL %d %s",
-                                          ptask->task->exec_pid,
-                                          ptask->task->exec_pid,
-                                          rm_cmd);
-                g_free(rm_cmd);
-
-                PtkFileTask* ptask2 =
-                    ptk_file_exec_new(_("Kill As Other"), NULL, GTK_WIDGET(ptask->parent_window), ptask->task_view);
-                ptask2->task->exec_command = cmd;
-                ptask2->task->exec_as_user = g_strdup(ptask->task->exec_as_user);
-                ptask2->task->exec_sync = FALSE;
-                ptask2->task->exec_browser = ptask->task->exec_browser;
-                ptk_file_task_run(ptask2);
-            }
         }
         else
         {
@@ -590,40 +544,10 @@ void ptk_file_task_pause(PtkFileTask* ptask, int state)
             // send signal
             char* cpids = vfs_file_task_get_cpids(ptask->task->exec_pid);
 
-            char* gsu;
-            if (ptask->task->exec_as_user && geteuid() != 0 && (gsu = get_valid_gsu()))
-            {
-                // other user run - need to signal as other
-                char* cmd;
-                if (cpids)
-                {
-                    // convert linefeeds to spaces
-                    char* scpids = g_strdup(cpids);
-                    char* lf;
-                    while ((lf = strchr(scpids, '\n')))
-                        lf[0] = ' ';
-                    cmd = g_strdup_printf("/bin/kill -s %d %d %s", sig, ptask->task->exec_pid, scpids);
-                    g_free(scpids);
-                }
-                else
-                    cmd = g_strdup_printf("/bin/kill -s %d %d", sig, ptask->task->exec_pid);
+            kill(ptask->task->exec_pid, sig);
+            if (cpids)
+                vfs_file_task_kill_cpids(cpids, sig);
 
-                PtkFileTask* ptask2 = ptk_file_exec_new(sig == SIGSTOP ? _("Stop As Other") : _("Cont As Other"),
-                                                        NULL,
-                                                        GTK_WIDGET(ptask->parent_window),
-                                                        ptask->task_view);
-                ptask2->task->exec_command = cmd;
-                ptask2->task->exec_as_user = g_strdup(ptask->task->exec_as_user);
-                ptask2->task->exec_sync = FALSE;
-                ptask2->task->exec_browser = ptask->task->exec_browser;
-                ptk_file_task_run(ptask2);
-            }
-            else
-            {
-                kill(ptask->task->exec_pid, sig);
-                if (cpids)
-                    vfs_file_task_kill_cpids(cpids, sig);
-            }
         }
     }
     else if (state == VFS_FILE_TASK_PAUSE)

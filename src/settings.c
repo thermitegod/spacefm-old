@@ -464,11 +464,8 @@ void load_settings(char* config_dir)
         xset_set("date_format", "s", "%Y-%m-%d %H:%M");
     }
 
-    // MOD su and gsu command discovery (sets default)
+    // MOD su command discovery (sets default)
     char* set_su = get_valid_su();
-    if (set_su)
-        g_free(set_su);
-    set_su = get_valid_gsu();
     if (set_su)
         g_free(set_su);
 

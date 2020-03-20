@@ -29,6 +29,5 @@ void string_copy_free(char** s, const char* src);
 char* unescape(const char* t);
 
 char* get_valid_su();
-char* get_valid_gsu();
 
 #endif
