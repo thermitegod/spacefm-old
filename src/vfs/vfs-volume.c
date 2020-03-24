@@ -2860,29 +2860,15 @@ char* vfs_volume_handler_cmd(int mode, int action, VFSVolume* vol, const char* o
     {
         if (!handlers[i][0] || !(set = xset_is(handlers[i])) || set->b != XSET_B_TRUE /* disabled */)
             continue;
-        if (mode == HANDLER_MODE_FS)
+
+        // test blacklist
+        if (ptk_handler_values_in_list(set->x, values, NULL))
+            break;
+        // test whitelist
+        if (ptk_handler_values_in_list(set->s, values, &msg))
         {
-            // test blacklist
-            if (ptk_handler_values_in_list(set->x, values, NULL))
-                break;
-            // test whitelist
-            if (ptk_handler_values_in_list(set->s, values, &msg))
-            {
-                found = TRUE;
-                break;
-            }
-        }
-        else // if ( mode == HANDLER_MODE_NET )
-        {
-            // test blacklist
-            if (ptk_handler_values_in_list(set->x, values, NULL))
-                break;
-            // test whitelist
-            if (ptk_handler_values_in_list(set->s, values, &msg))
-            {
-                found = TRUE;
-                break;
-            }
+            found = TRUE;
+            break;
         }
     }
     g_slist_foreach(values, (GFunc)g_free, NULL);
