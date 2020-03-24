@@ -217,11 +217,8 @@ static void _ptk_file_list_file_changed(VFSDir* dir, VFSFileInfo* file, PtkFileL
     /* check if reloading of thumbnail is needed.
      * See also desktop-window.c:on_file_changed() */
     if (list->max_thumbnail != 0 &&
-        (
-#ifdef HAVE_FFMPEG
-            (vfs_file_info_is_video(file) && time(NULL) - *vfs_file_info_get_mtime(file) > 5) ||
-#endif
-            (file->size /*vfs_file_info_get_size( file )*/ < list->max_thumbnail && vfs_file_info_is_image(file))))
+        ((vfs_file_info_is_video(file) && time(NULL) - *vfs_file_info_get_mtime(file) > 5) ||
+         (file->size /*vfs_file_info_get_size( file )*/ < list->max_thumbnail && vfs_file_info_is_image(file))))
     {
         if (!vfs_file_info_is_thumbnail_loaded(file, list->big_thumbnail))
             vfs_thumbnail_loader_request(list->dir, file, list->big_thumbnail);
@@ -234,11 +231,8 @@ static void _ptk_file_list_file_created(VFSDir* dir, VFSFileInfo* file, PtkFileL
 
     /* check if reloading of thumbnail is needed. */
     if (list->max_thumbnail != 0 &&
-        (
-#ifdef HAVE_FFMPEG
-            vfs_file_info_is_video(file) ||
-#endif
-            (file->size /*vfs_file_info_get_size( file )*/ < list->max_thumbnail && vfs_file_info_is_image(file))))
+        (vfs_file_info_is_video(file) ||
+         (file->size /*vfs_file_info_get_size( file )*/ < list->max_thumbnail && vfs_file_info_is_image(file))))
     {
         if (!vfs_file_info_is_thumbnail_loaded(file, list->big_thumbnail))
             vfs_thumbnail_loader_request(list->dir, file, list->big_thumbnail);
@@ -388,10 +382,7 @@ void ptk_file_list_get_value(GtkTreeModel* tree_model, GtkTreeIter* iter, gint c
         icon = NULL;
         /* special file can use special icons saved as thumbnails*/
         if (info->flags == VFS_FILE_INFO_NONE && (list->max_thumbnail > info->size /*vfs_file_info_get_size( info )*/
-#ifdef HAVE_FFMPEG
-                                                  || (list->max_thumbnail != 0 && vfs_file_info_is_video(info))
-#endif
-                                                      ))
+                                                  || (list->max_thumbnail != 0 && vfs_file_info_is_video(info))))
             icon = vfs_file_info_get_big_thumbnail(info);
 
         if (!icon)
@@ -406,10 +397,7 @@ void ptk_file_list_get_value(GtkTreeModel* tree_model, GtkTreeIter* iter, gint c
         icon = NULL;
         /* special file can use special icons saved as thumbnails*/
         if (list->max_thumbnail > info->size /*vfs_file_info_get_size( info )*/
-#ifdef HAVE_FFMPEG
-            || (list->max_thumbnail != 0 && vfs_file_info_is_video(info))
-#endif
-        )
+            || (list->max_thumbnail != 0 && vfs_file_info_is_video(info)))
             icon = vfs_file_info_get_small_thumbnail(info);
         if (!icon)
             icon = vfs_file_info_get_small_icon(info);
@@ -879,11 +867,7 @@ void ptk_file_list_show_thumbnails(PtkFileList* list, gboolean is_big, int max_f
             for (l = list->files; l; l = l->next)
             {
                 file = (VFSFileInfo*)l->data;
-                if ((vfs_file_info_is_image(file)
-#ifdef HAVE_FFMPEG
-                     || vfs_file_info_is_video(file)
-#endif
-                         ) &&
+                if ((vfs_file_info_is_image(file) || vfs_file_info_is_video(file)) &&
                     vfs_file_info_is_thumbnail_loaded(file, is_big))
                 {
                     /* update the model */
@@ -903,11 +887,8 @@ void ptk_file_list_show_thumbnails(PtkFileList* list, gboolean is_big, int max_f
     {
         file = (VFSFileInfo*)l->data;
         if (list->max_thumbnail != 0 &&
-            (
-#ifdef HAVE_FFMPEG
-                vfs_file_info_is_video(file) ||
-#endif
-                (file->size /*vfs_file_info_get_size( file )*/ < list->max_thumbnail && vfs_file_info_is_image(file))))
+            (vfs_file_info_is_video(file) ||
+             (file->size /*vfs_file_info_get_size( file )*/ < list->max_thumbnail && vfs_file_info_is_image(file))))
         {
             if (vfs_file_info_is_thumbnail_loaded(file, is_big))
                 ptk_file_list_file_changed(list->dir, file, list);

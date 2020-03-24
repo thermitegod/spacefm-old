@@ -652,10 +652,8 @@ gboolean vfs_file_info_is_image(VFSFileInfo* fi)
 gboolean vfs_file_info_is_video(VFSFileInfo* fi)
 {
     /* FIXME: We had better use functions of xdg_mime to check this */
-#ifdef HAVE_FFMPEG
     if (!strncmp("video/", vfs_mime_type_get_type(fi->mime_type), 6))
         return TRUE;
-#endif
     return FALSE;
 }
 
