@@ -15,6 +15,8 @@
 #include "ptk/ptk-path-entry.h"
 #include "ptk/ptk-utils.h"
 
+#include "utils.h"
+
 static const char* dir_path;
 
 static gboolean show_go_dialog(GtkWindow* parent, char* initial_path)

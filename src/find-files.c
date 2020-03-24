@@ -50,6 +50,8 @@
 #include "ptk/ptk-file-misc.h"
 #include "ptk/ptk-utils.h"
 
+#include "utils.h"
+
 enum
 {
     COL_ICON,

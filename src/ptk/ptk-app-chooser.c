@@ -28,6 +28,8 @@
 #include "settings.h"
 #include "ptk-handler.h"
 
+#include "../utils.h"
+
 enum
 {
     COL_APP_ICON = 0,

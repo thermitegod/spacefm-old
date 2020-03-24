@@ -40,7 +40,7 @@
 #include <sys/statvfs.h>
 #endif
 
-#include <vfs-file-info.h>
+#include "vfs-file-info.h"
 
 #include "../ptk/ptk-file-task.h"
 #include "../ptk/ptk-handler.h"

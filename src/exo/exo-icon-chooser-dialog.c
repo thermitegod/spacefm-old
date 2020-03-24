@@ -50,6 +50,8 @@
 #include "exo-string.h"
 #include "exo-private.h"
 
+#include "../utils.h"
+
 /**
  * SECTION: exo-icon-chooser-dialog
  * @title: ExoIconChooserDialog
@@ -326,7 +328,9 @@ static void exo_icon_chooser_dialog_init(ExoIconChooserDialog* icon_chooser_dial
     gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(priv->file_chooser), TRUE);
     exo_gtk_file_chooser_add_thumbnail_preview(GTK_FILE_CHOOSER(priv->file_chooser));
     priv->file_preview = gtk_file_chooser_get_preview_widget(GTK_FILE_CHOOSER(priv->file_chooser));
-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(priv->file_chooser), DATADIR G_DIR_SEPARATOR_S "pixmaps");
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(priv->file_chooser),
+                                        g_build_filename(DATADIR, "pixmaps", NULL));
+
     g_signal_connect_swapped(priv->file_chooser,
                              "file-activated",
                              G_CALLBACK(gtk_window_activate_default),

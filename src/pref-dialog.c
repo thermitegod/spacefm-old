@@ -36,6 +36,8 @@
 
 #include "gtk2-compat.h"
 
+#include "utils.h"
+
 typedef struct _FMPrefDlg FMPrefDlg;
 struct _FMPrefDlg
 {
