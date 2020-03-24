@@ -1008,14 +1008,12 @@ int main(int argc, char* argv[])
         g_printf("UDEV ");
         g_printf("INOTIFY ");
         g_printf("FFMPEG ");
+        g_printf("STATVFS ");
 #ifdef USE_GIT
         g_printf("GIT ");
 #endif
 #ifdef HAVE_SN
         g_printf("SNOTIFY ");
-#endif
-#ifdef HAVE_STATVFS
-        g_printf("STATVFS ");
 #endif
 #ifdef DEPRECATED_HW
         g_printf("DEPRECATED_HW ");

@@ -51,10 +51,8 @@
 #include <gmodule.h>
 #include <glib/gprintf.h>
 
-#ifdef HAVE_STATVFS
 /* FIXME: statvfs support should be moved to src/vfs */
 #include <sys/statvfs.h>
-#endif
 
 #include "vfs/vfs-app-desktop.h"
 #include "vfs/vfs-execute.h"
@@ -3067,9 +3065,8 @@ void fm_main_window_update_status_bar(FMMainWindow* main_window, PtkFileBrowser*
     char* msg;
     char size_str[64];
     char free_space[100];
-#ifdef HAVE_STATVFS
+    // FIXME: statvfs support should be moved to src/vfs
     struct statvfs fs_stat = {0};
-#endif
 
     if (!(GTK_IS_WIDGET(file_browser) && GTK_IS_STATUSBAR(file_browser->status_bar)))
         return;
@@ -3082,9 +3079,8 @@ void fm_main_window_update_status_bar(FMMainWindow* main_window, PtkFileBrowser*
     }
 
     free_space[0] = '\0';
-#ifdef HAVE_STATVFS
-    // FIXME: statvfs support should be moved to src/vfs
 
+    // FIXME: statvfs support should be moved to src/vfs
     if (statvfs(ptk_file_browser_get_cwd(file_browser), &fs_stat) == 0)
     {
         char total_size_str[64];
@@ -3094,7 +3090,6 @@ void fm_main_window_update_status_bar(FMMainWindow* main_window, PtkFileBrowser*
         vfs_file_size_to_string_format(total_size_str, fs_stat.f_frsize * fs_stat.f_blocks, NULL);
         g_snprintf(free_space, G_N_ELEMENTS(free_space), _(" %s free / %s   "), size_str, total_size_str); // MOD
     }
-#endif
 
     // Show Reading... while still loading
     if (file_browser->busy)
