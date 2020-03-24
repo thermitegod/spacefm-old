@@ -1009,9 +1009,6 @@ int main(int argc, char* argv[])
         g_printf("INOTIFY ");
         g_printf("FFMPEG ");
         g_printf("STATVFS ");
-#ifdef USE_GIT
-        g_printf("GIT ");
-#endif
 #ifdef HAVE_SN
         g_printf("SNOTIFY ");
 #endif
