@@ -65,7 +65,7 @@ void ptk_show_error(GtkWindow* parent, const char* title, const char* message);
  */
 int ptk_dialog_run_modaless(GtkDialog* dlg);
 
-GtkBuilder* _gtk_builder_new_from_file(const char* file, GError** err);
+GtkBuilder* _gtk_builder_new_from_file(const char* path, const char* file, GError** err);
 
 void transpose_nonlatin_keypress(GdkEventKey* event);
 

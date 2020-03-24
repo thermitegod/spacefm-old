@@ -162,10 +162,11 @@ int ptk_dialog_run_modaless(GtkDialog* dlg)
     return data.response;
 }
 
-GtkBuilder* _gtk_builder_new_from_file(const char* file, GError** err)
+GtkBuilder* _gtk_builder_new_from_file(const char* path, const char* file, GError** err)
 {
+    gchar* filename = g_build_filename(path, file, NULL);
     GtkBuilder* builder = gtk_builder_new();
-    if (G_UNLIKELY(!gtk_builder_add_from_file(builder, file, err)))
+    if (G_UNLIKELY(!gtk_builder_add_from_file(builder, filename, err)))
     {
         g_object_unref(builder);
         return NULL;
