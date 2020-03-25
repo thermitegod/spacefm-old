@@ -1,0 +1,6 @@
+option('nls', type : 'boolean', value : true,
+	description : 'use native language support')
+option('docdir', type : 'string',
+	description : 'directory for docs. If empty default to $datadir/doc/eix')
+option('htmldir', type : 'string',
+	description : 'directory for html files. If empty default to $docdir/html')

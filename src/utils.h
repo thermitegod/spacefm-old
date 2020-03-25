@@ -7,6 +7,21 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+//-u is too strict
+//#define SHELL_SETTINGS = "set -o pipefail\nshopt -s failglob"
+//#define BASHPATH = "/bin/bash"
+//#define VERSION = "0.0.0"
+
+extern char* SHELL_SETTINGS;
+extern char* BASHPATH;
+extern char* VERSION;
+
+extern char* HTMLDIR;
+extern char* DATADIR;
+
+extern char* SYSCONFDIR;
+extern char* PACKAGE_UI_DIR;
+
 void print_command(const char* cmd);
 void print_task_command(const char* ptask, const char* cmd);
 void print_task_command_spawn(const char* argv[], int pid);

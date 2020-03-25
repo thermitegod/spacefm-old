@@ -16,6 +16,18 @@
 #include "extern.h"
 #include "utils.h"
 
+
+char* SHELL_SETTINGS = "set -o pipefail\nshopt -s failglob";
+char* BASHPATH = "/bin/bash";
+char* VERSION = "0.0.0";
+
+char* HTMLDIR = "/usr/share";
+char* DATADIR = "/usr/share";
+
+char* SYSCONFDIR = "/etc";
+char* PACKAGE_UI_DIR = "/usr/share/spacefm/ui";
+
+
 void print_command(const char* cmd)
 {
     g_printf("COMMAND=%s\n", cmd);
