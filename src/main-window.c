@@ -2891,7 +2891,6 @@ void set_window_title(FMMainWindow* main_window, PtkFileBrowser* file_browser)
         // get panel/tab info
         int ipanel_count = 0, itab_count = 0, itab_num = 0;
         main_window_get_counts(file_browser, &ipanel_count, &itab_count, &itab_num);
-        panel_count = g_strdup_printf("%d", ipanel_count);
         tab_count = g_strdup_printf("%d", itab_count);
         tab_num = g_strdup_printf("%d", itab_num);
         panel_count = g_strdup_printf("%d", ipanel_count);
