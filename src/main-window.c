@@ -663,11 +663,13 @@ void main_update_fonts(GtkWidget* widget, PtkFileBrowser* file_browser)
                     pango_font_description_free(font_desc);
                 }
                 else
+                {
 #if (GTK_MAJOR_VERSION == 3)
                     gtk_widget_override_font(GTK_WIDGET(a_browser->side_dev), NULL);
 #elif (GTK_MAJOR_VERSION == 2)
                     gtk_widget_modify_font(GTK_WIDGET(a_browser->side_dev), NULL);
 #endif
+                }
             }
             // bookmarks
             if (a_browser->side_book)
@@ -684,11 +686,13 @@ void main_update_fonts(GtkWidget* widget, PtkFileBrowser* file_browser)
                     pango_font_description_free(font_desc);
                 }
                 else
+                {
 #if (GTK_MAJOR_VERSION == 3)
                     gtk_widget_override_font(GTK_WIDGET(a_browser->side_book), NULL);
 #elif (GTK_MAJOR_VERSION == 2)
                     gtk_widget_modify_font(GTK_WIDGET(a_browser->side_book), NULL);
 #endif
+                }
             }
             // pathbar
             if (a_browser->path_bar)
@@ -705,11 +709,13 @@ void main_update_fonts(GtkWidget* widget, PtkFileBrowser* file_browser)
                     pango_font_description_free(font_desc);
                 }
                 else
+                {
 #if (GTK_MAJOR_VERSION == 3)
                     gtk_widget_override_font(GTK_WIDGET(a_browser->path_bar), NULL);
 #elif (GTK_MAJOR_VERSION == 2)
                     gtk_widget_modify_font(GTK_WIDGET(a_browser->path_bar), NULL);
 #endif
+                }
             }
 
             // status bar font and icon

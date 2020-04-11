@@ -360,165 +360,166 @@ static char** compose_command(FindFile* data)
                               size_units[gtk_combo_box_get_active((GtkComboBox*)data->size_lower_unit)]);
         g_array_append_val(argv, tmp);
 
-/*        arg = g_strdup( tmp + 1 );
-        g_array_append_val( argv, arg );
+        /*        arg = g_strdup( tmp + 1 );
+                g_array_append_val( argv, arg );
 
-        arg = g_strdup("-o"); // -or
-        g_array_append_val( argv, arg );
+                arg = g_strdup("-o"); // -or
+                g_array_append_val( argv, arg );
+
+                arg = g_strdup("-size");
+                g_array_append_val( argv, arg );
+
+                g_array_append_val( argv, tmp );
+
+                arg = g_strdup(")");
+                g_array_append_val( argv, arg );
+        */
+    }
+
+    /* if upper limit of file size is set */
+    if (gtk_toggle_button_get_active((GtkToggleButton*)data->use_size_upper))
+    {
+        //        arg = g_strdup("(");
+        //        g_array_append_val( argv, arg );
 
         arg = g_strdup("-size");
-        g_array_append_val( argv, arg );
+        g_array_append_val(argv, arg);
 
-        g_array_append_val( argv, tmp );
+        tmp = g_strdup_printf("-%u%c",
+                              gtk_spin_button_get_value_as_int((GtkSpinButton*)data->size_upper),
+                              size_units[gtk_combo_box_get_active((GtkComboBox*)data->size_upper_unit)]);
 
-        arg = g_strdup(")");
-        g_array_append_val( argv, arg );
-*/    }
+        arg = g_strdup(tmp + 1);
+        g_array_append_val(argv, arg);
+        /*
+                arg = g_strdup("-o"); // -or
+                g_array_append_val( argv, arg );
 
-/* if upper limit of file size is set */
-if (gtk_toggle_button_get_active((GtkToggleButton*)data->use_size_upper))
-{
-    //        arg = g_strdup("(");
-    //        g_array_append_val( argv, arg );
+                arg = g_strdup("-size");
+                g_array_append_val( argv, arg );
 
-    arg = g_strdup("-size");
-    g_array_append_val(argv, arg);
+                g_array_append_val( argv, tmp );
 
-    tmp = g_strdup_printf("-%u%c",
-                          gtk_spin_button_get_value_as_int((GtkSpinButton*)data->size_upper),
-                          size_units[gtk_combo_box_get_active((GtkComboBox*)data->size_upper_unit)]);
+                arg = g_strdup(")");
+                g_array_append_val( argv, arg );
+        */
+    }
 
-    arg = g_strdup(tmp + 1);
-    g_array_append_val(argv, arg);
-    /*
-            arg = g_strdup("-o"); // -or
-            g_array_append_val( argv, arg );
+    /* If -name is used */
+    tmp = (char*)gtk_entry_get_text((GtkEntry*)data->fn_pattern_entry);
+    if (tmp && strcmp(tmp, "*"))
+    {
+        if (gtk_toggle_button_get_active((GtkToggleButton*)data->fn_case_sensitive))
+            arg = g_strdup("-name");
+        else
+            arg = g_strdup("-iname");
+        g_array_append_val(argv, arg);
 
-            arg = g_strdup("-size");
-            g_array_append_val( argv, arg );
+        arg = g_strdup(tmp);
+        g_array_append_val(argv, arg);
+    }
 
-            g_array_append_val( argv, tmp );
+    /* match by mtime */
+    idx = gtk_combo_box_get_active((GtkComboBox*)data->date_limit);
+    if (idx > 0)
+    {
+        if (idx == 5) /* range */
+        {
+            arg = g_strdup("(");
+            g_array_append_val(argv, arg);
+
+            arg = g_strdup("-mtime");
+            g_array_append_val(argv, arg);
+
+            /* date1 */
+            arg = g_strdup_printf("-%d", get_date_offset((GtkCalendar*)data->date1));
+            g_array_append_val(argv, arg);
+
+            arg = g_strdup("-mtime");
+            g_array_append_val(argv, arg);
+
+            /* date2 */
+            arg = g_strdup_printf("+%d", get_date_offset((GtkCalendar*)data->date2));
+            g_array_append_val(argv, arg);
 
             arg = g_strdup(")");
-            g_array_append_val( argv, arg );
-    */
-}
-
-/* If -name is used */
-tmp = (char*)gtk_entry_get_text((GtkEntry*)data->fn_pattern_entry);
-if (tmp && strcmp(tmp, "*"))
-{
-    if (gtk_toggle_button_get_active((GtkToggleButton*)data->fn_case_sensitive))
-        arg = g_strdup("-name");
-    else
-        arg = g_strdup("-iname");
-    g_array_append_val(argv, arg);
-
-    arg = g_strdup(tmp);
-    g_array_append_val(argv, arg);
-}
-
-/* match by mtime */
-idx = gtk_combo_box_get_active((GtkComboBox*)data->date_limit);
-if (idx > 0)
-{
-    if (idx == 5) /* range */
-    {
-        arg = g_strdup("(");
-        g_array_append_val(argv, arg);
-
-        arg = g_strdup("-mtime");
-        g_array_append_val(argv, arg);
-
-        /* date1 */
-        arg = g_strdup_printf("-%d", get_date_offset((GtkCalendar*)data->date1));
-        g_array_append_val(argv, arg);
-
-        arg = g_strdup("-mtime");
-        g_array_append_val(argv, arg);
-
-        /* date2 */
-        arg = g_strdup_printf("+%d", get_date_offset((GtkCalendar*)data->date2));
-        g_array_append_val(argv, arg);
-
-        arg = g_strdup(")");
-        g_array_append_val(argv, arg);
-    }
-    else
-    {
-        arg = g_strdup("-mtime");
-        g_array_append_val(argv, arg);
-
-        switch (idx)
-        {
-        case 1: /* within one day */
-            arg = g_strdup("-1");
-            break;
-        case 2: /* within one week */
-            arg = g_strdup("-7");
-            break;
-        case 3: /* within one month */
-            arg = g_strdup("-30");
-            break;
-        case 4: /* within one year */
-            arg = g_strdup("-365");
-            break;
-        default:
-            break;
+            g_array_append_val(argv, arg);
         }
-        g_array_append_val(argv, arg);
+        else
+        {
+            arg = g_strdup("-mtime");
+            g_array_append_val(argv, arg);
+
+            switch (idx)
+            {
+            case 1: /* within one day */
+                arg = g_strdup("-1");
+                break;
+            case 2: /* within one week */
+                arg = g_strdup("-7");
+                break;
+            case 3: /* within one month */
+                arg = g_strdup("-30");
+                break;
+            case 4: /* within one year */
+                arg = g_strdup("-365");
+                break;
+            default:
+                break;
+            }
+            g_array_append_val(argv, arg);
+        }
     }
-}
 
-/* grep text inside files */
-tmp = (char*)gtk_entry_get_text((GtkEntry*)data->fc_pattern);
-if (tmp && *tmp)
-{
-    print = TRUE;
-
-    /* ensure we only call 'grep' on regular files */
-    arg = g_strdup("-type");
-    g_array_append_val(argv, arg);
-    arg = g_strdup("f");
-    g_array_append_val(argv, arg);
-
-    arg = g_strdup("-exec");
-    g_array_append_val(argv, arg);
-
-    arg = g_strdup("grep");
-    g_array_append_val(argv, arg);
-
-    if (!gtk_toggle_button_get_active((GtkToggleButton*)data->fc_case_sensitive))
+    /* grep text inside files */
+    tmp = (char*)gtk_entry_get_text((GtkEntry*)data->fc_pattern);
+    if (tmp && *tmp)
     {
-        arg = g_strdup("-i");
+        print = TRUE;
+
+        /* ensure we only call 'grep' on regular files */
+        arg = g_strdup("-type");
+        g_array_append_val(argv, arg);
+        arg = g_strdup("f");
+        g_array_append_val(argv, arg);
+
+        arg = g_strdup("-exec");
+        g_array_append_val(argv, arg);
+
+        arg = g_strdup("grep");
+        g_array_append_val(argv, arg);
+
+        if (!gtk_toggle_button_get_active((GtkToggleButton*)data->fc_case_sensitive))
+        {
+            arg = g_strdup("-i");
+            g_array_append_val(argv, arg);
+        }
+
+        arg = g_strdup("--files-with-matches");
+        g_array_append_val(argv, arg);
+
+        if (gtk_toggle_button_get_active((GtkToggleButton*)data->fc_use_regexp))
+            arg = g_strdup("--regexp");
+        else
+            arg = g_strdup("--fixed-strings");
+        g_array_append_val(argv, arg);
+
+        arg = g_strdup(tmp);
+        g_array_append_val(argv, arg);
+
+        arg = g_strdup("{}");
+        g_array_append_val(argv, arg);
+
+        arg = g_strdup(";");
         g_array_append_val(argv, arg);
     }
 
-    arg = g_strdup("--files-with-matches");
-    g_array_append_val(argv, arg);
-
-    if (gtk_toggle_button_get_active((GtkToggleButton*)data->fc_use_regexp))
-        arg = g_strdup("--regexp");
-    else
-        arg = g_strdup("--fixed-strings");
-    g_array_append_val(argv, arg);
-
-    arg = g_strdup(tmp);
-    g_array_append_val(argv, arg);
-
-    arg = g_strdup("{}");
-    g_array_append_val(argv, arg);
-
-    arg = g_strdup(";");
-    g_array_append_val(argv, arg);
-}
-
-if (!print)
-{
-    arg = g_strdup("-print");
-    g_array_append_val(argv, arg);
-}
-return (char**)g_array_free(argv, FALSE);
+    if (!print)
+    {
+        arg = g_strdup("-print");
+        g_array_append_val(argv, arg);
+    }
+    return (char**)g_array_free(argv, FALSE);
 }
 
 static void finish_search(FindFile* data)

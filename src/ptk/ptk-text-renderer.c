@@ -855,11 +855,13 @@ static void ptk_text_renderer_render(GtkCellRenderer* cell, GdkDrawable* window,
         if (gtk_widget_has_focus(widget))
             state = GTK_STATE_SELECTED;
         else
+        {
 #if (GTK_MAJOR_VERSION == 3)
             state = GTK_STATE_SELECTED;
 #elif (GTK_MAJOR_VERSION == 2)
             state = GTK_STATE_ACTIVE;
 #endif
+        }
     }
     else if ((flags & GTK_CELL_RENDERER_PRELIT) == GTK_CELL_RENDERER_PRELIT &&
              gtk_widget_get_state(widget) == GTK_STATE_PRELIGHT)

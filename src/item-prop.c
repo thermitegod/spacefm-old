@@ -1406,11 +1406,13 @@ void on_script_font_change(GtkMenuItem* item, GtkTextView* input)
         pango_font_description_free(font_desc);
     }
     else
+    {
 #if (GTK_MAJOR_VERSION == 3)
         gtk_widget_override_font(GTK_WIDGET(input), NULL);
 #elif (GTK_MAJOR_VERSION == 2)
         gtk_widget_modify_font(GTK_WIDGET(input), NULL);
 #endif
+    }
 }
 
 void on_script_popup(GtkTextView* input, GtkMenu* menu, gpointer user_data)
