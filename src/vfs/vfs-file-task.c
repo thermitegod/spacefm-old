@@ -1353,7 +1353,7 @@ static void vfs_file_task_exec(char* src_file, VFSFileTask* task)
     // make tmpdir
     tmp = xset_get_user_tmp_dir();
 
-    if (!tmp || (tmp && !g_file_test(tmp, G_FILE_TEST_IS_DIR)))
+    if (!tmp || !g_file_test(tmp, G_FILE_TEST_IS_DIR))
     {
         str = _("Cannot create temporary directory");
         g_warning(str, NULL);

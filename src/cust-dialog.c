@@ -1394,7 +1394,7 @@ static void internal_command(CustomElement* el, int icmd, GList* args, char* xva
             gtk_widget_set_sensitive(el_name->widgets->next->data, TRUE);
         break;
     case CMD_SOURCE:
-        if (!cname || (cname && cname[0] == '\0'))
+        if (!cname || cname[0] == '\0')
             out = stderr;
         else
             out = fopen(cname, "w");

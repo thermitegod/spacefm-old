@@ -2621,7 +2621,7 @@ void on_option_cb(GtkMenuItem* item, HandlerData* hnd)
     }
     char* hex8;
     folder = NULL;
-    while (!folder || (folder && g_file_test(folder, G_FILE_TEST_EXISTS)))
+    while (!folder || g_file_test(folder, G_FILE_TEST_EXISTS))
     {
         hex8 = randhex8();
         if (folder)

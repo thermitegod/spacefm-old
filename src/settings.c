@@ -2358,7 +2358,7 @@ char* xset_custom_get_help(GtkWidget* parent, XSet* set)
     char* dir;
     char* path;
 
-    if (!set || (set && strncmp(set->name, "cstm_", 5)))
+    if (!set || strncmp(set->name, "cstm_", 5))
         return NULL;
 
     if (set->plugin)
@@ -2636,7 +2636,7 @@ void clean_plugin_mirrors()
             if (((XSet*)l->data)->desc && !strcmp(((XSet*)l->data)->desc, "@plugin@mirror@"))
             {
                 set = (XSet*)l->data;
-                if (!set->shared_key || (set->shared_key && !xset_is(set->shared_key)))
+                if (!set->shared_key || !xset_is(set->shared_key))
                 {
                     xset_free(set);
                     redo = TRUE;
@@ -4256,7 +4256,7 @@ void xset_show_help(GtkWidget* parent, XSet* set, const char* anchor)
     else if (set)
         dlgparent = set->browser;
 
-    if (!set || (set && set->lock))
+    if (!set || set->lock)
     {
         manual = xset_get_manual_url();
         if (!manual)
@@ -4979,7 +4979,7 @@ void xset_design_job(GtkWidget* item, XSet* set)
         }
         char* hex8;
         folder = NULL;
-        while (!folder || (folder && g_file_test(folder, G_FILE_TEST_EXISTS)))
+        while (!folder || g_file_test(folder, G_FILE_TEST_EXISTS))
         {
             hex8 = randhex8();
             if (folder)
@@ -5458,7 +5458,7 @@ gboolean xset_job_is_valid(XSet* set, int job)
     case XSET_JOB_PROP_CMD:
         return TRUE;
     case XSET_JOB_HELP:
-        return (!set->lock || (set->lock && set->line));
+        return (!set->lock || set->line);
     default:
         break;
     }
@@ -5891,7 +5891,7 @@ GtkWidget* xset_design_show_menu(GtkWidget* menu, XSet* set, XSet* book_insert, 
                                   GTK_STOCK_HELP,
                                   is_bookmark ? XSET_JOB_HELP_BOOK : XSET_JOB_HELP,
                                   set);
-    gtk_widget_set_sensitive(newitem, !set->lock || (set->lock && set->line));
+    gtk_widget_set_sensitive(newitem, !set->lock || set->line);
     if (show_keys)
         gtk_widget_add_accelerator(newitem, "activate", accel_group, GDK_KEY_F1, 0, GTK_ACCEL_VISIBLE);
 
