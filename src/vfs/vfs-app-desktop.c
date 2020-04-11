@@ -30,14 +30,12 @@ const char desktop_entry_name[] = "Desktop Entry";
  */
 VFSAppDesktop* vfs_app_desktop_new(const char* file_name)
 {
-    GKeyFile* file;
     gboolean load;
-    char* relative_path;
 
     VFSAppDesktop* app = g_slice_new0(VFSAppDesktop);
     app->n_ref = 1;
 
-    file = g_key_file_new();
+    GKeyFile* file = g_key_file_new();
 
     if (!file_name)
     {
@@ -54,7 +52,7 @@ VFSAppDesktop* vfs_app_desktop_new(const char* file_name)
     else
     {
         app->file_name = g_strdup(file_name);
-        relative_path = g_build_filename("applications", app->file_name, NULL);
+        char* relative_path = g_build_filename("applications", app->file_name, NULL);
         load = g_key_file_load_from_data_dirs(file, relative_path, &app->full_path, G_KEY_FILE_NONE, NULL);
         g_free(relative_path);
 
@@ -181,12 +179,11 @@ const char* vfs_app_desktop_get_icon_name(VFSAppDesktop* app)
 static GdkPixbuf* load_icon_file(const char* file_name, int size)
 {
     GdkPixbuf* icon = NULL;
-    char* file_path;
     const char** dirs = (const gchar**)g_get_system_data_dirs();
     const char** dir;
     for (dir = dirs; *dir; ++dir)
     {
-        file_path = g_build_filename(*dir, "pixmaps", file_name, NULL);
+        char* file_path = g_build_filename(*dir, "pixmaps", file_name, NULL);
         icon = gdk_pixbuf_new_from_file_at_scale(file_path, size, size, TRUE, NULL);
         g_free(file_path);
         if (icon)
@@ -198,7 +195,6 @@ static GdkPixbuf* load_icon_file(const char* file_name, int size)
 GdkPixbuf* vfs_app_desktop_get_icon(VFSAppDesktop* app, int size, gboolean use_fallback)
 {
     GtkIconTheme* theme;
-    char *icon_name = NULL, *suffix;
     GdkPixbuf* icon = NULL;
 
     if (app->icon_name)
@@ -211,7 +207,7 @@ GdkPixbuf* vfs_app_desktop_get_icon(VFSAppDesktop* app, int size, gboolean use_f
         {
             theme = gtk_icon_theme_get_default();
             // sfm 1.0.6 changed strchr to strrchr [Teklad]
-            suffix = strrchr(app->icon_name, '.');
+            char* suffix = strrchr(app->icon_name, '.');
             if (suffix) /* has file extension, it's a basename of icon file */
             {
                 /* try to find it in pixmaps dirs */
@@ -220,7 +216,7 @@ GdkPixbuf* vfs_app_desktop_get_icon(VFSAppDesktop* app, int size, gboolean use_f
                 {
                     /* Let's remove the suffix, and see if this name can match an icon
                          in current icon theme */
-                    icon_name = g_strndup(app->icon_name, (suffix - app->icon_name));
+                    char* icon_name = g_strndup(app->icon_name, (suffix - app->icon_name));
                     icon = vfs_load_icon(theme, icon_name, size);
                     g_free(icon_name);
                     icon_name = NULL;
@@ -410,11 +406,8 @@ gboolean vfs_app_desktop_open_files(GdkScreen* screen, const char* working_dir, 
                                     GError** err)
 {
     char* exec = NULL;
-    char* cmd;
-    GList* l;
     char** argv = NULL;
     int argc = 0;
-    const char* sn_desc;
 
     if (vfs_app_desktop_get_exec(app))
     {
@@ -433,10 +426,11 @@ gboolean vfs_app_desktop_open_files(GdkScreen* screen, const char* working_dir, 
         if (!screen)
             screen = gdk_screen_get_default();
 
-        sn_desc = vfs_app_desktop_get_disp_name(app);
+        const char* sn_desc = vfs_app_desktop_get_disp_name(app);
         if (!sn_desc)
             sn_desc = exec;
 
+        char* cmd;
         if (vfs_app_desktop_open_multiple_files(app))
         {
             cmd = translate_app_exec_to_command_line(app, file_paths);
@@ -467,7 +461,7 @@ gboolean vfs_app_desktop_open_files(GdkScreen* screen, const char* working_dir, 
         {
             // app does not accept multiple files, so run multiple times
             GList* single;
-            l = file_paths;
+            GList* l = file_paths;
             do
             {
                 if (l)

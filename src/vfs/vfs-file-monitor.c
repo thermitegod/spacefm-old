@@ -104,8 +104,6 @@ gboolean vfs_file_monitor_init()
 
 VFSFileMonitor* vfs_file_monitor_add(char* path, gboolean is_dir, VFSFileMonitorCallback cb, gpointer user_data)
 {
-    VFSFileMonitor* monitor;
-    VFSFileMonitorCallbackEntry cb_ent;
     struct stat; // skip stat
     char resolved_path[PATH_MAX];
     char* real_path;
@@ -129,7 +127,7 @@ VFSFileMonitor* vfs_file_monitor_add(char* path, gboolean is_dir, VFSFileMonitor
     else
         real_path = resolved_path;
 
-    monitor = (VFSFileMonitor*)g_hash_table_lookup(monitor_hash, real_path);
+    VFSFileMonitor* monitor = (VFSFileMonitor*)g_hash_table_lookup(monitor_hash, real_path);
     if (!monitor)
     {
         monitor = g_slice_new0(VFSFileMonitor);
@@ -185,6 +183,7 @@ VFSFileMonitor* vfs_file_monitor_add(char* path, gboolean is_dir, VFSFileMonitor
         /* g_debug( "monitor installed: %s, %p", path, monitor ); */
         if (cb)
         { /* Install a callback */
+            VFSFileMonitorCallbackEntry cb_ent;
             cb_ent.callback = cb;
             cb_ent.user_data = user_data;
             monitor->callbacks = g_array_append_val(monitor->callbacks, cb_ent);
@@ -196,13 +195,11 @@ VFSFileMonitor* vfs_file_monitor_add(char* path, gboolean is_dir, VFSFileMonitor
 
 void vfs_file_monitor_remove(VFSFileMonitor* fm, VFSFileMonitorCallback cb, gpointer user_data)
 {
-    int i;
-    VFSFileMonitorCallbackEntry* callbacks;
-
     // g_printf( "vfs_file_monitor_remove\n" );
     if (cb && fm && fm->callbacks)
     {
-        callbacks = (VFSFileMonitorCallbackEntry*)fm->callbacks->data;
+        VFSFileMonitorCallbackEntry* callbacks = (VFSFileMonitorCallbackEntry*)fm->callbacks->data;
+        int i;
         for (i = 0; i < fm->callbacks->len; ++i)
         {
             if (callbacks[i].callback == cb && callbacks[i].user_data == user_data)
@@ -229,10 +226,10 @@ void vfs_file_monitor_remove(VFSFileMonitor* fm, VFSFileMonitorCallback cb, gpoi
 static void reconnect_inotify(gpointer key, gpointer value, gpointer user_data)
 {
     struct stat file_stat; // skip stat
-    VFSFileMonitor* monitor = (VFSFileMonitor*)value;
     const char* path = (const char*)key;
     if (lstat(path, &file_stat) != -1)
     {
+        VFSFileMonitor* monitor = (VFSFileMonitor*)value;
         monitor->wd = inotify_add_watch(inotify_fd, path, IN_MODIFY | IN_CREATE | IN_DELETE | IN_MOVE);
         if (G_UNLIKELY(monitor->wd < 0))
         {
@@ -273,16 +270,14 @@ static VFSFileMonitorEvent translate_inotify_event(int inotify_mask)
 
 static void dispatch_event(VFSFileMonitor* monitor, VFSFileMonitorEvent evt, const char* file_name)
 {
-    VFSFileMonitorCallbackEntry* cb;
-    VFSFileMonitorCallback func;
-    int i;
     /* Call the callback functions */
     if (monitor->callbacks && monitor->callbacks->len)
     {
-        cb = (VFSFileMonitorCallbackEntry*)monitor->callbacks->data;
+        int i;
+        VFSFileMonitorCallbackEntry* cb = (VFSFileMonitorCallbackEntry*)monitor->callbacks->data;
         for (i = 0; i < monitor->callbacks->len; ++i)
         {
-            func = cb[i].callback;
+            VFSFileMonitorCallback func = cb[i].callback;
             func(monitor, evt, file_name, cb[i].user_data);
         }
     }
@@ -314,8 +309,7 @@ static gboolean on_inotify_event(GIOChannel* channel, GIOCondition cond, gpointe
                                     it has been removed by disconnect_from_inotify(). */
     }
 
-    while ((len = read(inotify_fd, buf, BUF_LEN)) < 0 && errno == EINTR)
-        ;
+    while ((len = read(inotify_fd, buf, BUF_LEN)) < 0 && errno == EINTR);
     if (G_UNLIKELY(len < 0))
     {
         g_warning("Error reading inotify event: %s", g_strerror(errno));

@@ -230,9 +230,8 @@ void on_popup_sort_extra(GtkMenuItem* menuitem, PtkFileBrowser* file_browser, XS
 void on_popup_sortby(GtkMenuItem* menuitem, PtkFileBrowser* file_browser, int order)
 {
     char* val;
-    int v;
-
     int sort_order;
+
     if (menuitem)
         sort_order = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), "sortorder"));
     else
@@ -240,6 +239,7 @@ void on_popup_sortby(GtkMenuItem* menuitem, PtkFileBrowser* file_browser, int or
 
     if (sort_order < 0)
     {
+        int v;
         if (sort_order == -1)
             v = GTK_SORT_ASCENDING;
         else
@@ -329,12 +329,13 @@ void on_permission(GtkMenuItem* menuitem, PtkFileMenu* data)
 
 void ptk_file_menu_add_panel_view_menu(PtkFileBrowser* browser, GtkWidget* menu, GtkAccelGroup* accel_group)
 {
+    if (!browser || !menu || !browser->file_list)
+        return;
+
     XSet* set;
     XSet* set_radio;
     char* desc;
 
-    if (!browser || !menu || !browser->file_list)
-        return;
     int p = browser->mypanel;
 
     FMMainWindow* main_window = (FMMainWindow*)browser->main_window;
@@ -539,32 +540,19 @@ static void ptk_file_menu_free(PtkFileMenu* data)
 GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFSFileInfo* info, const char* cwd,
                              GList* sel_files)
 { // either desktop or browser must be non-NULL
-    GtkWidget* popup = NULL;
     VFSMimeType* mime_type;
-    GtkWidget* app_menu_item;
-    GtkWidget* submenu;
-    gboolean is_dir;
-    gboolean is_text;
     gboolean is_clip;
-    char **apps, **app;
-    const char* app_name = NULL;
-    VFSAppDesktop* desktop_file;
+    char** apps;
     char* name;
-    char* desc;
     char* str;
-    XSet* set_radio;
-    GdkPixbuf* app_icon;
-    int icon_w, icon_h;
-    GtkWidget* app_img;
+    int icon_w;
+    int icon_h;
     int i;
-    PtkFileMenu* data;
-    int no_write_access = 0;
-    // int no_read_access = 0;
-    XSet *set, *set2;
+    XSet* set;
+    XSet* set2;
     GtkMenuItem* item;
-    GSList* handlers_slist;
 
-    data = g_slice_new0(PtkFileMenu);
+    PtkFileMenu* data = g_slice_new0(PtkFileMenu);
 
     data->cwd = g_strdup(cwd);
     data->browser = browser;
@@ -578,20 +566,20 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
 
     data->accel_group = gtk_accel_group_new();
 
-    popup = gtk_menu_new();
+    GtkWidget* popup = gtk_menu_new();
     GtkAccelGroup* accel_group = gtk_accel_group_new();
     g_object_weak_ref(G_OBJECT(popup), (GWeakNotify)ptk_file_menu_free, data);
     g_signal_connect_after((gpointer)popup, "selection-done", G_CALLBACK(gtk_widget_destroy), NULL);
 
     // is_dir = file_path && g_file_test( file_path, G_FILE_TEST_IS_DIR );
-    is_dir = (info && vfs_file_info_is_dir(info));
+    gboolean is_dir = (info && vfs_file_info_is_dir(info));
     // Note: network filesystems may become unresponsive here
-    is_text = info && file_path && vfs_file_info_is_text(info, file_path);
+    gboolean is_text = info && file_path && vfs_file_info_is_text(info, file_path);
 
     // test R/W access to cwd instead of selected file
     // Note: network filesystems may become unresponsive here
-    // no_read_access = access( cwd, R_OK );
-    no_write_access = access(cwd, W_OK);
+    // int no_read_access = access( cwd, R_OK );
+    int no_write_access = access(cwd, W_OK);
 
     GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     if (!gtk_clipboard_wait_is_target_available(clip, gdk_atom_intern("x-special/gnome-copied-files", FALSE)) &&
@@ -661,7 +649,7 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
     item = GTK_MENU_ITEM(xset_add_menuitem(browser, popup, accel_group, set));
     if (sel_files)
     {
-        submenu = gtk_menu_item_get_submenu(item);
+        GtkWidget* submenu = gtk_menu_item_get_submenu(item);
 
         // Execute
         if (!is_dir && info && file_path &&
@@ -675,7 +663,7 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
 
         // Prepare archive commands
         XSet *set_arc_extract = NULL, *set_arc_extractto, *set_arc_list;
-        handlers_slist =
+        GSList* handlers_slist =
             ptk_handler_file_has_handlers(HANDLER_MODE_ARC, HANDLER_EXTRACT, file_path, mime_type, FALSE, FALSE, FALSE);
         if (handlers_slist)
         {
@@ -695,7 +683,7 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
             // do NOT use set = xset_set_cb here or wrong set is passed
             xset_set_cb("arc_def_open", on_archive_default, set);
             xset_set_ob2(set, NULL, NULL);
-            set_radio = set;
+            XSet* set_radio = set;
 
             set = xset_get("arc_def_ex");
             xset_set_cb("arc_def_ex", on_archive_default, set);
@@ -753,6 +741,8 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
         }
 
         // file handlers
+        GtkWidget* app_menu_item;
+        GtkWidget* app_img;
         handlers_slist =
             ptk_handler_file_has_handlers(HANDLER_MODE_FILE, HANDLER_MOUNT, file_path, mime_type, FALSE, TRUE, FALSE);
         if (handlers_slist)
@@ -760,6 +750,7 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
             GSList* sl;
             for (sl = handlers_slist; sl; sl = sl->next)
             {
+
                 set = (XSet*)sl->data;
 #if (GTK_MAJOR_VERSION == 3)
                 app_menu_item = gtk_menu_item_new_with_label(set->menu_label);
@@ -795,24 +786,26 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
         gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &icon_w, &icon_h);
         if (is_text)
         {
-            char **tmp, **txt_apps;
+            char** txt_apps;
             VFSMimeType* txt_type;
-            int len1, len2;
             txt_type = vfs_mime_type_get_from_type(XDG_MIME_TYPE_PLAIN_TEXT);
             txt_apps = vfs_mime_type_get_actions(txt_type);
             if (txt_apps)
             {
-                len1 = apps ? g_strv_length(apps) : 0;
-                len2 = g_strv_length(txt_apps);
-                tmp = apps;
+                int len1 = apps ? g_strv_length(apps) : 0;
+                int len2 = g_strv_length(txt_apps);
+                char** tmp = apps;
                 apps = vfs_mime_type_join_actions(apps, len1, txt_apps, len2);
                 g_strfreev(txt_apps);
                 g_strfreev(tmp);
             }
             vfs_mime_type_unref(txt_type);
         }
+
+        GdkPixbuf* app_icon;
         if (apps)
         {
+            char** app;
             for (app = apps; *app; ++app)
             {
                 if ((app - apps) == 1 && !handlers_slist)
@@ -822,8 +815,8 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
                     gtk_widget_show(GTK_WIDGET(item));
                     gtk_container_add(GTK_CONTAINER(submenu), GTK_WIDGET(item));
                 }
-                desktop_file = vfs_app_desktop_new(*app);
-                app_name = vfs_app_desktop_get_disp_name(desktop_file);
+                VFSAppDesktop* desktop_file = vfs_app_desktop_new(*app);
+                const char* app_name = vfs_app_desktop_get_disp_name(desktop_file);
 #if (GTK_MAJOR_VERSION == 3)
                 if (app_name)
                     app_menu_item = gtk_menu_item_new_with_label(app_name);
@@ -1123,7 +1116,6 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
         set = xset_get("move_panel_next");
         set->disable = (panel_count < 2);
 
-        gboolean b;
         for (i = 1; i < 11; i++)
         {
             str = g_strdup_printf("copy_tab_%d", i);
@@ -1139,7 +1131,7 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
             if (i > 4)
                 continue;
 
-            b = main_window_panel_is_visible(browser, i);
+            gboolean b = main_window_panel_is_visible(browser, i);
 
             str = g_strdup_printf("copy_panel_%d", i);
             set = xset_get(str);
@@ -1221,6 +1213,7 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
         set->disable = !sel_files;
 
         set = xset_get("con_prop");
+        char* desc;
         if (geteuid() == 0)
             desc = g_strdup_printf("prop_info prop_perm prop_root");
         else
@@ -1249,7 +1242,6 @@ void on_popup_open_activate(GtkMenuItem* menuitem, PtkFileMenu* data)
 
 void on_popup_open_with_another_activate(GtkMenuItem* menuitem, PtkFileMenu* data)
 {
-    char* app = NULL;
     VFSMimeType* mime_type;
 
     if (data->info)
@@ -1268,7 +1260,7 @@ void on_popup_open_with_another_activate(GtkMenuItem* menuitem, PtkFileMenu* dat
     GtkWindow* parent_win = NULL;
     if (data->browser)
         parent_win = GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(data->browser)));
-    app = (char*)ptk_choose_app_for_mime_type(parent_win, mime_type, FALSE, TRUE, TRUE, FALSE);
+    char* app = (char*)ptk_choose_app_for_mime_type(parent_win, mime_type, FALSE, TRUE, TRUE, FALSE);
     if (app)
     {
         GList* sel_files = data->sel_files;
@@ -1292,9 +1284,7 @@ void on_popup_open_all(GtkMenuItem* menuitem, PtkFileMenu* data)
     if (xset_opener(data->browser, 1))
         return;
 
-    GList* sel_files;
-
-    sel_files = data->sel_files;
+    GList* sel_files = data->sel_files;
     if (!sel_files)
         sel_files = g_list_prepend(sel_files, data->info);
     ptk_open_files_with_app(data->cwd, sel_files, NULL, data->browser, FALSE, TRUE);
@@ -1304,10 +1294,8 @@ void on_popup_open_all(GtkMenuItem* menuitem, PtkFileMenu* data)
 
 void on_popup_run_app(GtkMenuItem* menuitem, PtkFileMenu* data)
 {
-    VFSAppDesktop* desktop_file;
     const char* app = NULL;
     char* set_app = NULL;
-    GList* sel_files;
 
     XSet* handler_set = (XSet*)g_object_get_data(G_OBJECT(menuitem), "handler_set");
     if (handler_set)
@@ -1317,13 +1305,13 @@ void on_popup_run_app(GtkMenuItem* menuitem, PtkFileMenu* data)
     }
     else
     {
-        desktop_file = (VFSAppDesktop*)g_object_get_data(G_OBJECT(menuitem), "desktop_file");
+        VFSAppDesktop* desktop_file = (VFSAppDesktop*)g_object_get_data(G_OBJECT(menuitem), "desktop_file");
         if (!desktop_file)
             return;
         app = vfs_app_desktop_get_name(desktop_file);
     }
 
-    sel_files = data->sel_files;
+    GList* sel_files = data->sel_files;
     if (!sel_files)
         sel_files = g_list_prepend(sel_files, data->info);
     ptk_open_files_with_app(data->cwd, sel_files, (char*)app, data->browser, FALSE, FALSE);
@@ -1355,12 +1343,10 @@ enum
 
 char* get_shared_desktop_file_location(const char* name)
 {
-    const char* const* dirs;
-    char* ret;
-
-    dirs = g_get_system_data_dirs();
+    const char* const* dirs = g_get_system_data_dirs();
     for (; *dirs; ++dirs)
     {
+        char* ret;
         if ((ret = vfs_mime_type_locate_desktop_file(*dirs, name)))
             return ret;
     }
@@ -1811,7 +1797,6 @@ static void show_app_menu(GtkWidget* menu, GtkWidget* app_item, PtkFileMenu* dat
     GtkWidget* newitem;
     GtkWidget* submenu;
     char* str;
-    char* str2;
     char* path;
     char* icon;
     const char* type;
@@ -1869,7 +1854,7 @@ static void show_app_menu(GtkWidget* menu, GtkWidget* app_item, PtkFileMenu* dat
         }
         else
         {
-            str2 = replace_string(desktop_file->file_name, ".desktop", "._desktop", FALSE);
+            char* str2 = replace_string(desktop_file->file_name, ".desktop", "._desktop", FALSE);
             str = g_strdup_printf("%s (*%s)", str2, _("copy"));
             g_free(str2);
             icon = GTK_STOCK_NEW;
@@ -2123,15 +2108,13 @@ gboolean on_app_button_press(GtkWidget* item, GdkEventButton* event, PtkFileMenu
 void on_popup_open_in_new_tab_activate(GtkMenuItem* menuitem, PtkFileMenu* data)
 {
     GList* sel;
-    VFSFileInfo* file;
-    char* full_path;
 
     if (data->sel_files)
     {
         for (sel = data->sel_files; sel; sel = sel->next)
         {
-            file = (VFSFileInfo*)sel->data;
-            full_path = g_build_filename(data->cwd, vfs_file_info_get_name(file), NULL);
+            VFSFileInfo* file = (VFSFileInfo*)sel->data;
+            char* full_path = g_build_filename(data->cwd, vfs_file_info_get_name(file), NULL);
             if (data->browser && g_file_test(full_path, G_FILE_TEST_IS_DIR))
             {
                 ptk_file_browser_emit_open(data->browser, full_path, PTK_OPEN_NEW_TAB);
@@ -2305,7 +2288,6 @@ void on_popup_extract_list_activate(GtkMenuItem* menuitem, PtkFileMenu* data)
 
 void on_autoopen_create_cb(gpointer task, AutoOpenCreate* ao)
 {
-    VFSFileInfo* file;
     if (!ao)
         return;
 
@@ -2314,6 +2296,7 @@ void on_autoopen_create_cb(gpointer task, AutoOpenCreate* ao)
         char* cwd = g_path_get_dirname(ao->path);
 
         // select file
+        VFSFileInfo* file;
         if (!g_strcmp0(cwd, ptk_file_browser_get_cwd(ao->file_browser)))
         {
             file = vfs_file_info_new();

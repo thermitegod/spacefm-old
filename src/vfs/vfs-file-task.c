@@ -167,7 +167,6 @@ char* vfs_file_task_get_unique_name(const char* dest_dir, const char* base_name,
 static gboolean check_overwrite(VFSFileTask* task, const char* dest_file, gboolean* dest_exists, char** new_dest_file)
 {
     struct stat dest_stat;
-    const char* use_dest_file;
     char* new_dest;
 
     while (1)
@@ -218,7 +217,7 @@ static gboolean check_overwrite(VFSFileTask* task, const char* dest_file, gboole
         // dest exists - query user
         if (!task->state_cb) // failsafe
             return FALSE;
-        use_dest_file = dest_file;
+        const char* use_dest_file = dest_file;
         do
         {
             // destination file exists
@@ -327,10 +326,6 @@ void update_file_display(const char* path)
 
 static gboolean vfs_file_task_do_copy(VFSFileTask* task, const char* src_file, const char* dest_file)
 {
-    GDir* dir;
-    const char* file_name;
-    char* sub_src_file;
-    char* sub_dest_file;
     struct stat file_stat;
     char buffer[4096];
     int rfd;
@@ -384,15 +379,16 @@ static gboolean vfs_file_task_do_copy(VFSFileTask* task, const char* src_file, c
             vfs_file_task_unlock(task);
 
             error = NULL;
-            dir = g_dir_open(src_file, 0, &error);
+            GDir* dir = g_dir_open(src_file, 0, &error);
             if (dir)
             {
+                const char* file_name;
                 while ((file_name = g_dir_read_name(dir)))
                 {
                     if (should_abort(task))
                         break;
-                    sub_src_file = g_build_filename(src_file, file_name, NULL);
-                    sub_dest_file = g_build_filename(dest_file, file_name, NULL);
+                    char* sub_src_file = g_build_filename(src_file, file_name, NULL);
+                    char* sub_dest_file = g_build_filename(dest_file, file_name, NULL);
                     if (!vfs_file_task_do_copy(task, sub_src_file, sub_dest_file) && !copy_fail)
                         copy_fail = TRUE;
                     g_free(sub_dest_file);
@@ -611,11 +607,8 @@ _return_:
 
 static void vfs_file_task_copy(char* src_file, VFSFileTask* task)
 {
-    char* file_name;
-    char* dest_file;
-
-    file_name = g_path_get_basename(src_file);
-    dest_file = g_build_filename(task->dest_dir, file_name, NULL);
+    char* file_name = g_path_get_basename(src_file);
+    char* dest_file = g_build_filename(task->dest_dir, file_name, NULL);
     g_free(file_name);
     vfs_file_task_do_copy(task, src_file, dest_file);
     g_free(dest_file);
@@ -627,8 +620,6 @@ static int vfs_file_task_do_move(VFSFileTask* task, const char* src_file,
     char* new_dest_file = NULL;
     gboolean dest_exists;
     struct stat file_stat;
-    GDir* dir;
-    int result;
     GError* error;
 
     if (should_abort(task))
@@ -668,18 +659,16 @@ static int vfs_file_task_do_move(VFSFileTask* task, const char* src_file,
     {
         // moving a directory onto a directory that exists
         error = NULL;
-        dir = g_dir_open(src_file, 0, &error);
+        GDir* dir = g_dir_open(src_file, 0, &error);
         if (dir)
         {
             const char* file_name;
-            char* sub_src_file;
-            char* sub_dest_file;
             while ((file_name = g_dir_read_name(dir)))
             {
                 if (should_abort(task))
                     break;
-                sub_src_file = g_build_filename(src_file, file_name, NULL);
-                sub_dest_file = g_build_filename(dest_file, file_name, NULL);
+                char* sub_src_file = g_build_filename(src_file, file_name, NULL);
+                char* sub_dest_file = g_build_filename(dest_file, file_name, NULL);
                 vfs_file_task_do_move(task, sub_src_file, sub_dest_file);
                 g_free(sub_dest_file);
                 g_free(sub_src_file);
@@ -699,7 +688,7 @@ static int vfs_file_task_do_move(VFSFileTask* task, const char* src_file,
         return 0;
     }
 
-    result = rename(src_file, dest_file);
+    int result = rename(src_file, dest_file);
 
     if (result != 0)
     {
@@ -731,8 +720,6 @@ static void vfs_file_task_move(char* src_file, VFSFileTask* task)
 {
     struct stat src_stat;
     struct stat dest_stat;
-    char* file_name;
-    char* dest_file;
 
     if (should_abort(task))
         return;
@@ -741,9 +728,8 @@ static void vfs_file_task_move(char* src_file, VFSFileTask* task)
     string_copy_free(&task->current_file, src_file);
     vfs_file_task_unlock(task);
 
-    file_name = g_path_get_basename(src_file);
-
-    dest_file = g_build_filename(task->dest_dir, file_name, NULL);
+    char* file_name = g_path_get_basename(src_file);
+    char* dest_file = g_build_filename(task->dest_dir, file_name, NULL);
 
     g_free(file_name);
 
@@ -779,12 +765,8 @@ static void vfs_file_task_move(char* src_file, VFSFileTask* task)
 
 static void vfs_file_task_delete(char* src_file, VFSFileTask* task)
 {
-    GDir* dir;
-    const char* file_name;
-    char* sub_src_file;
     struct stat file_stat;
     int result;
-    GError* error;
 
     if (should_abort(task))
         return;
@@ -802,15 +784,16 @@ static void vfs_file_task_delete(char* src_file, VFSFileTask* task)
 
     if (S_ISDIR(file_stat.st_mode))
     {
-        error = NULL;
-        dir = g_dir_open(src_file, 0, &error);
+        GError* error = NULL;
+        GDir* dir = g_dir_open(src_file, 0, &error);
         if (dir)
         {
+            const char* file_name;
             while ((file_name = g_dir_read_name(dir)))
             {
                 if (should_abort(task))
                     break;
-                sub_src_file = g_build_filename(src_file, file_name, NULL);
+                char* sub_src_file = g_build_filename(src_file, file_name, NULL);
                 vfs_file_task_delete(sub_src_file, task);
                 g_free(sub_src_file);
             }
@@ -853,18 +836,15 @@ static void vfs_file_task_link(char* src_file, VFSFileTask* task)
 {
     struct stat src_stat;
     int result;
-    char* old_dest_file;
-    char* dest_file;
-    char* file_name;
     gboolean dest_exists;       // MOD
     char* new_dest_file = NULL; // MOD
 
     if (should_abort(task))
         return;
-    file_name = g_path_get_basename(src_file);
-    old_dest_file = g_build_filename(task->dest_dir, file_name, NULL);
+    char* file_name = g_path_get_basename(src_file);
+    char* old_dest_file = g_build_filename(task->dest_dir, file_name, NULL);
     g_free(file_name);
-    dest_file = old_dest_file;
+    char* dest_file = old_dest_file;
 
     // MOD  setup task for check overwrite
     if (should_abort(task))
@@ -931,13 +911,6 @@ static void vfs_file_task_link(char* src_file, VFSFileTask* task)
 static void vfs_file_task_chown_chmod(char* src_file, VFSFileTask* task)
 {
     struct stat src_stat;
-    int i;
-    GDir* dir;
-    char* sub_src_file;
-    const char* file_name;
-    mode_t new_mode;
-    int result;
-    GError* error;
 
     if (should_abort(task))
         return;
@@ -950,6 +923,7 @@ static void vfs_file_task_chown_chmod(char* src_file, VFSFileTask* task)
     if (lstat(src_file, &src_stat) == 0)
     {
         /* chown */
+        int result;
         if (task->uid != -1 || task->gid != -1)
         {
             result = chown(src_file, task->uid, task->gid);
@@ -964,7 +938,8 @@ static void vfs_file_task_chown_chmod(char* src_file, VFSFileTask* task)
         /* chmod */
         if (task->chmod_actions)
         {
-            new_mode = src_stat.st_mode;
+            mode_t new_mode = src_stat.st_mode;
+            int i;
             for (i = 0; i < N_CHMOD_ACTIONS; ++i)
             {
                 if (task->chmod_actions[i] == 2) /* Don't change */
@@ -995,15 +970,16 @@ static void vfs_file_task_chown_chmod(char* src_file, VFSFileTask* task)
 
         if (S_ISDIR(src_stat.st_mode) && task->recursive)
         {
-            error = NULL;
-            dir = g_dir_open(src_file, 0, &error);
+            GError* error = NULL;
+            GDir* dir = g_dir_open(src_file, 0, &error);
             if (dir)
             {
+                const char* file_name;
                 while ((file_name = g_dir_read_name(dir)))
                 {
                     if (should_abort(task))
                         break;
-                    sub_src_file = g_build_filename(src_file, file_name, NULL);
+                    char* sub_src_file = g_build_filename(src_file, file_name, NULL);
                     vfs_file_task_chown_chmod(sub_src_file, task);
                     g_free(sub_src_file);
                 }
@@ -1032,14 +1008,7 @@ static void vfs_file_task_chown_chmod(char* src_file, VFSFileTask* task)
 
 char* vfs_file_task_get_cpids(GPid pid)
 { // get child pids recursively as multi-line string
-    char* nl;
-    char* pids;
-    char* pida;
-    GPid pidi;
     char* stdout = NULL;
-    char* cpids;
-    char* gcpids;
-    char* old_cpids;
 
     if (!pid)
         return NULL;
@@ -1050,22 +1019,24 @@ char* vfs_file_task_get_cpids(GPid pid)
     g_free(command);
     if (ret && stdout && stdout[0] != '\0' && strchr(stdout, '\n'))
     {
-        cpids = g_strdup(stdout);
+        char* cpids = g_strdup(stdout);
         // get grand cpids recursively
-        pids = stdout;
+        char* pids = stdout;
+        char* nl;
         while ((nl = strchr(pids, '\n')))
         {
             nl[0] = '\0';
-            pida = g_strdup(pids);
+            char* pida = g_strdup(pids);
             nl[0] = '\n';
             pids = nl + 1;
-            pidi = atoi(pida);
+            GPid pidi = atoi(pida);
             g_free(pida);
             if (pidi)
             {
+                char* gcpids;
                 if ((gcpids = vfs_file_task_get_cpids(pidi)))
                 {
-                    old_cpids = cpids;
+                    char* old_cpids = cpids;
                     cpids = g_strdup_printf("%s%s", old_cpids, gcpids);
                     g_free(old_cpids);
                     g_free(gcpids);
@@ -1084,21 +1055,18 @@ char* vfs_file_task_get_cpids(GPid pid)
 void vfs_file_task_kill_cpids(char* cpids, int signal)
 {
     char* nl;
-    char* pids;
-    char* pida;
-    GPid pidi;
 
     if (!signal || !cpids || cpids[0] == '\0')
         return;
 
-    pids = cpids;
+    char* pids = cpids;
     while ((nl = strchr(pids, '\n')))
     {
         nl[0] = '\0';
-        pida = g_strdup(pids);
+        char* pida = g_strdup(pids);
         nl[0] = '\n';
         pids = nl + 1;
-        pidi = atoi(pida);
+        GPid pidi = atoi(pida);
         g_free(pida);
         if (pidi)
         {
@@ -1950,8 +1918,7 @@ _exit_thread:
  */
 VFSFileTask* vfs_task_new(VFSFileTaskType type, GList* src_files, const char* dest_dir)
 {
-    VFSFileTask* task;
-    task = g_slice_new0(VFSFileTask);
+    VFSFileTask* task = g_slice_new0(VFSFileTask);
 
     task->type = type;
     task->src_paths = src_files;
@@ -2148,9 +2115,6 @@ void add_task_dev(VFSFileTask* task, dev_t dev)
  */
 void get_total_size_of_dir(VFSFileTask* task, const char* path, off_t* size, struct stat* have_stat)
 {
-    GDir* dir;
-    const char* name;
-    char* full_path;
     struct stat file_stat;
 
     if (task->abort)
@@ -2173,14 +2137,15 @@ void get_total_size_of_dir(VFSFileTask* task, const char* path, off_t* size, str
     if (S_ISLNK(file_stat.st_mode) || !S_ISDIR(file_stat.st_mode))
         return;
 
-    dir = g_dir_open(path, 0, NULL);
+    GDir* dir = g_dir_open(path, 0, NULL);
     if (dir)
     {
+        const char* name;
         while ((name = g_dir_read_name(dir)))
         {
             if (task->state == VFS_FILE_TASK_SIZE_TIMEOUT || task->abort)
                 break;
-            full_path = g_build_filename(path, name, NULL);
+            char* full_path = g_build_filename(path, name, NULL);
             if (lstat(full_path, &file_stat) != -1)
             {
                 if (S_ISDIR(file_stat.st_mode))

@@ -309,8 +309,6 @@ void load_settings(char* config_dir)
 {
     FILE* file;
     char* path = NULL;
-    char line[2048];
-    SettingsParseFunc func = NULL;
     gboolean git_backed_settings = TRUE;
 
     xset_cmd_history = NULL;
@@ -436,6 +434,8 @@ void load_settings(char* config_dir)
 
     if (file)
     {
+        SettingsParseFunc func = NULL;
+        char line[2048];
         while (fgets(line, sizeof(line), file))
         {
             strtok(line, "\r\n");
@@ -481,13 +481,13 @@ void load_settings(char* config_dir)
         g_free(set_su);
 
     // MOD terminal discovery
-    int i;
-    char* term;
     char* terminal = xset_get_s("main_terminal");
     if (!terminal || terminal[0] == '\0')
     {
+        int i;
         for (i = 0; i < G_N_ELEMENTS(terminal_programs); i++)
         {
+            char* term;
             if ((term = g_find_program_in_path(terminal_programs[i])))
             {
                 xset_set("main_terminal", "s", terminal_programs[i]);
@@ -561,11 +561,8 @@ void load_settings(char* config_dir)
 
 void save_settings(gpointer main_window_ptr)
 {
-    int p, pages, g;
+    int p;
     XSet* set;
-    PtkFileBrowser* file_browser;
-    char* tabs;
-    char* old_tabs;
     FMMainWindow* main_window;
     // g_printf("save_settings\n");
 
@@ -585,7 +582,7 @@ void save_settings(gpointer main_window_ptr)
             set = xset_get_panel(p, "show");
             if (GTK_IS_NOTEBOOK(main_window->panel[p - 1]))
             {
-                pages = gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_window->panel[p - 1]));
+                int pages = gtk_notebook_get_n_pages(GTK_NOTEBOOK(main_window->panel[p - 1]));
                 if (pages) // panel was shown
                 {
                     if (set->s)
@@ -593,12 +590,13 @@ void save_settings(gpointer main_window_ptr)
                         g_free(set->s);
                         set->s = NULL;
                     }
-                    tabs = g_strdup("");
+                    char* tabs = g_strdup("");
+                    int g;
                     for (g = 0; g < pages; g++)
                     {
-                        file_browser =
+                        PtkFileBrowser* file_browser =
                             PTK_FILE_BROWSER(gtk_notebook_get_nth_page(GTK_NOTEBOOK(main_window->panel[p - 1]), g));
-                        old_tabs = tabs;
+                        char* old_tabs = tabs;
                         tabs = g_strdup_printf("%s///%s", old_tabs, ptk_file_browser_get_cwd(file_browser));
                         g_free(old_tabs);
                     }
@@ -784,12 +782,11 @@ void xset_autosave_cancel()
 
 void xset_free_all()
 {
-    XSet* set;
     GList* l;
 
     for (l = xsets; l; l = l->next)
     {
-        set = l->data;
+        XSet* set = l->data;
         if (set->ob2_data && g_str_has_prefix(set->name, "evt_"))
         {
             g_list_foreach((GList*)set->ob2_data, (GFunc)g_free, NULL);
@@ -943,11 +940,10 @@ XSet* xset_new(const char* name)
 
 XSet* xset_get(const char* name)
 {
-    GList* l;
-
     if (!name)
         return NULL;
 
+    GList* l;
     for (l = xsets; l; l = l->next)
     {
         if (!strcmp(name, ((XSet*)l->data)->name))
@@ -1026,11 +1022,10 @@ gboolean xset_get_b_set(XSet* set)
 
 XSet* xset_is(const char* name)
 {
-    GList* l;
-
     if (!name)
         return NULL;
 
+    GList* l;
     for (l = xsets; l; l = l->next)
     {
         if (!strcmp(name, ((XSet*)l->data)->name))
@@ -1156,7 +1151,7 @@ int xset_get_int_panel(int panel, const char* name, const char* var)
 
 XSet* xset_is_main_bookmark(XSet* set)
 {
-    XSet* set_parent = NULL;
+
 
     // is this xset in main_book ?  returns immediate parent set
     XSet* set_prev = set;
@@ -1166,6 +1161,7 @@ XSet* xset_is_main_bookmark(XSet* set)
             set_prev = xset_is(set_prev->prev);
         else if (set_prev->parent)
         {
+            XSet* set_parent = NULL;
             set_prev = xset_is(set_prev->parent);
             if (!set_parent)
                 set_parent = set_prev;
@@ -1609,14 +1605,13 @@ XSet* xset_set_panel_mode(int panel, const char* name, char mode, const char* va
 XSet* xset_find_custom(const char* search)
 {
     // find a custom command or submenu by label or xset name
-    XSet* set;
     GList* l;
     char* str;
 
     char* label = clean_label(search, TRUE, FALSE);
     for (l = xsets; l; l = l->next)
     {
-        set = l->data;
+        XSet* set = l->data;
         if (!set->lock && ((set->menu_style == XSET_MENU_SUBMENU && set->child) ||
                            (set->menu_style < XSET_MENU_SUBMENU && xset_get_int_set(set, "x") <= XSET_CMD_BOOKMARK)))
         {
@@ -1638,18 +1633,17 @@ XSet* xset_find_custom(const char* search)
 
 gboolean xset_opener(PtkFileBrowser* file_browser, char job)
 { // find an opener for job
-    XSet *set, *mset, *open_all_set, *tset, *open_all_tset;
-    GList *l, *ll;
-    XSetContext* context = NULL;
-    int context_action;
+    GList *l;
     gboolean found = FALSE;
-    char pinned;
 
     for (l = xsets; l; l = l->next)
     {
         if (!((XSet*)l->data)->lock && ((XSet*)l->data)->opener == job && !((XSet*)l->data)->tool &&
             ((XSet*)l->data)->menu_style != XSET_MENU_SUBMENU && ((XSet*)l->data)->menu_style != XSET_MENU_SEP)
         {
+            XSet* set;
+            XSet* mset;
+            XSet* open_all_set;
             if (((XSet*)l->data)->desc && !strcmp(((XSet*)l->data)->desc, "@plugin@mirror@"))
             {
                 // is a plugin mirror
@@ -1666,6 +1660,7 @@ gboolean xset_opener(PtkFileBrowser* file_browser, char job)
             else
                 set = mset = (XSet*)l->data;
 
+            XSetContext* context = NULL;
             if (!context)
             {
                 if (!(context = xset_context_new()))
@@ -1696,7 +1691,7 @@ gboolean xset_opener(PtkFileBrowser* file_browser, char job)
             // test context
             if (mset->context)
             {
-                context_action = xset_context_test(context, mset->context, FALSE);
+                int context_action = xset_context_test(context, mset->context, FALSE);
                 if (context_action == CONTEXT_HIDE || context_action == CONTEXT_DISABLE)
                     continue;
             }
@@ -1707,12 +1702,14 @@ gboolean xset_opener(PtkFileBrowser* file_browser, char job)
                 continue;
 
             // is set pinned to open_all_type for pre-context?
-            pinned = 0;
+            char pinned = 0;
+            GList *ll;
             for (ll = xsets; ll && !pinned; ll = ll->next)
             {
                 if (((XSet*)ll->data)->next && g_str_has_prefix(((XSet*)ll->data)->name, "open_all_type_"))
                 {
-                    tset = open_all_tset = (XSet*)ll->data;
+                    XSet* open_all_tset;
+                    XSet* tset = open_all_tset = (XSet*)ll->data;
                     while (tset->next)
                     {
                         if (!strcmp(set->name, tset->next))
@@ -2007,9 +2004,6 @@ GtkWidget* xset_get_image(const char* icon, int icon_size)
 
 void xset_add_menu(PtkFileBrowser* file_browser, GtkWidget* menu, GtkAccelGroup* accel_group, char* elements)
 {
-    char* space;
-    XSet* set;
-
     if (!elements)
         return;
 
@@ -2018,10 +2012,10 @@ void xset_add_menu(PtkFileBrowser* file_browser, GtkWidget* menu, GtkAccelGroup*
 
     while (elements && elements[0] != '\0')
     {
-        space = strchr(elements, ' ');
+        char* space = strchr(elements, ' ');
         if (space)
             space[0] = '\0';
-        set = xset_get(elements);
+        XSet* set = xset_get(elements);
         if (space)
             space[0] = ' ';
         elements = space;
@@ -2037,7 +2031,6 @@ void xset_add_menu(PtkFileBrowser* file_browser, GtkWidget* menu, GtkAccelGroup*
 GtkWidget* xset_new_menuitem(const char* label, const char* icon)
 {
     GtkWidget* item;
-
     if (label && strstr(label, "\\_"))
     {
         // allow escape of underscore
@@ -2061,12 +2054,12 @@ GtkWidget* xset_new_menuitem(const char* label, const char* icon)
 char* xset_custom_get_app_name_icon(XSet* set, GdkPixbuf** icon, int icon_size)
 {
     char* menu_label = NULL;
-    VFSAppDesktop* app = NULL;
     GdkPixbuf* icon_new = NULL;
     GtkIconTheme* icon_theme = gtk_icon_theme_get_default();
 
     if (!set->lock && xset_get_int_set(set, "x") == XSET_CMD_APP)
     {
+        VFSAppDesktop* app = NULL;
         if (set->z && g_str_has_suffix(set->z, ".desktop") && (app = vfs_app_desktop_new(set->z)))
         {
             if (!(set->menu_label && set->menu_label[0]))
@@ -2119,18 +2112,15 @@ char* xset_custom_get_app_name_icon(XSet* set, GdkPixbuf** icon, int icon_size)
 GtkWidget* xset_add_menuitem(PtkFileBrowser* file_browser, GtkWidget* menu, GtkAccelGroup* accel_group, XSet* set)
 {
     GtkWidget* item = NULL;
-    GtkWidget* submenu;
-    XSet* keyset;
     XSet* set_next;
     char* icon_name = NULL;
     char* context = NULL;
     int context_action = CONTEXT_SHOW;
-    XSet* mset;
     char* icon_file = NULL;
     // g_printf("xset_add_menuitem %s\n", set->name );
 
     // plugin?
-    mset = xset_get_plugin_mirror(set);
+    XSet* mset = xset_get_plugin_mirror(set);
     if (set->plugin && set->shared_key)
     {
         icon_name = mset->icon;
@@ -2186,7 +2176,7 @@ GtkWidget* xset_add_menuitem(PtkFileBrowser* file_browser, GtkWidget* menu, GtkA
             }
             else if (set->menu_style == XSET_MENU_SUBMENU)
             {
-                submenu = gtk_menu_new();
+                GtkWidget* submenu = gtk_menu_new();
                 item = xset_new_menuitem(set->menu_label, icon_name);
                 gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), submenu);
                 g_signal_connect(submenu, "key-press-event", G_CALLBACK(xset_menu_keypress), NULL);
@@ -2216,7 +2206,8 @@ GtkWidget* xset_add_menuitem(PtkFileBrowser* file_browser, GtkWidget* menu, GtkA
         if (!item)
         {
             // get menu icon size
-            int icon_w, icon_h;
+            int icon_w;
+            int icon_h;
             gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &icon_w, &icon_h);
             int icon_size = icon_w > icon_h ? icon_w : icon_h;
 
@@ -2268,6 +2259,7 @@ GtkWidget* xset_add_menuitem(PtkFileBrowser* file_browser, GtkWidget* menu, GtkA
             }
 
             // key accel
+            XSet* keyset;
             if (set->shared_key)
                 keyset = xset_get(set->shared_key);
             else
@@ -2356,7 +2348,6 @@ char* xset_custom_get_script(XSet* set, gboolean create)
 char* xset_custom_get_help(GtkWidget* parent, XSet* set)
 {
     char* dir;
-    char* path;
 
     if (!set || strncmp(set->name, "cstm_", 5))
         return NULL;
@@ -2373,7 +2364,7 @@ char* xset_custom_get_help(GtkWidget* parent, XSet* set)
     }
 
     const char* readme = "README";
-    path = g_build_filename(dir, readme, NULL);
+    char* path = g_build_filename(dir, readme, NULL);
 
     if (!g_file_test(path, G_FILE_TEST_EXISTS))
     {
@@ -2439,13 +2430,11 @@ char* xset_custom_get_help(GtkWidget* parent, XSet* set)
 
 char* xset_custom_new_name()
 {
-    char* hex8 = NULL;
     char* setname;
-    char* path1;
-    char* path2;
 
     do
     {
+        char* hex8 = NULL;
         if (hex8)
             g_free(hex8);
         hex8 = randhex8();
@@ -2457,8 +2446,8 @@ char* xset_custom_new_name()
         }
         else
         {
-            path1 = g_build_filename(settings_config_dir, "scripts", setname, NULL);
-            path2 = g_build_filename(settings_config_dir, "plugin-data", setname, NULL);
+            char* path1 = g_build_filename(settings_config_dir, "scripts", setname, NULL);
+            char* path2 = g_build_filename(settings_config_dir, "plugin-data", setname, NULL);
             if (g_file_test(path1, G_FILE_TEST_EXISTS) || g_file_test(path2, G_FILE_TEST_EXISTS))
             {
                 g_free(setname);
@@ -2624,18 +2613,17 @@ XSet* xset_custom_copy(XSet* set, gboolean copy_next, gboolean delete_set)
 
 void clean_plugin_mirrors()
 { // remove plugin mirrors for non-existent plugins
-    GList* l;
-    XSet* set;
     gboolean redo = TRUE;
 
     while (redo)
     {
         redo = FALSE;
+        GList* l;
         for (l = xsets; l; l = l->next)
         {
             if (((XSet*)l->data)->desc && !strcmp(((XSet*)l->data)->desc, "@plugin@mirror@"))
             {
-                set = (XSet*)l->data;
+                XSet* set = (XSet*)l->data;
                 if (!set->shared_key || !xset_is(set->shared_key))
                 {
                     xset_free(set);
@@ -2681,14 +2669,12 @@ _redo:
 
 void xset_set_plugin_mirror(XSet* pset)
 {
-    XSet* set;
     GList* l;
-
     for (l = xsets; l; l = l->next)
     {
         if (((XSet*)l->data)->desc && !strcmp(((XSet*)l->data)->desc, "@plugin@mirror@"))
         {
-            set = (XSet*)l->data;
+            XSet* set = (XSet*)l->data;
             if (set->parent && set->child)
             {
                 if (!strcmp(set->child, pset->plug_name) && !strcmp(set->parent, pset->plug_dir))
@@ -2742,15 +2728,14 @@ int compare_plugin_sets(XSet* a, XSet* b)
 
 GList* xset_get_plugins(gboolean included)
 { // return list of plugin sets (included or not ) sorted by menu_label
-    GList* l;
     GList* plugins = NULL;
-    XSet* set;
 
+    GList* l;
     for (l = xsets; l; l = l->next)
     {
         if (((XSet*)l->data)->plugin && ((XSet*)l->data)->plugin_top && ((XSet*)l->data)->plug_dir)
         {
-            set = (XSet*)l->data;
+            XSet* set = (XSet*)l->data;
             if (strstr(set->plug_dir, "/included/"))
             {
                 if (included)
@@ -2766,10 +2751,10 @@ GList* xset_get_plugins(gboolean included)
 
 XSet* xset_get_by_plug_name(const char* plug_dir, const char* plug_name)
 {
-    GList* l;
     if (!plug_name)
         return NULL;
 
+    GList* l;
     for (l = xsets; l; l = l->next)
     {
         if (((XSet*)l->data)->plugin && !strcmp(plug_name, ((XSet*)l->data)->plug_name) &&
@@ -2792,10 +2777,7 @@ void xset_parse_plugin(const char* plug_dir, char* line, int use)
     char* sep = strchr(line, '=');
     char* name;
     char* value;
-    XSet* set;
-    XSet* set2;
     const char* prefix;
-    const char* handler_prefix[] = {"hand_arc_", "hand_fs_", "hand_net_", "hand_f_"};
 
     if (!sep)
         return;
@@ -2811,6 +2793,7 @@ void xset_parse_plugin(const char* plug_dir, char* line, int use)
     if (use < PLUGIN_USE_BOOKMARKS)
     {
         // handler
+        const char* handler_prefix[] = {"hand_arc_", "hand_fs_", "hand_net_", "hand_f_"};
         prefix = handler_prefix[use];
     }
     else
@@ -2818,12 +2801,13 @@ void xset_parse_plugin(const char* plug_dir, char* line, int use)
 
     if (g_str_has_prefix(name, prefix))
     {
-        set = xset_get_by_plug_name(plug_dir, name);
+        XSet* set = xset_get_by_plug_name(plug_dir, name);
         xset_set_set(set, var, value);
 
         if (use >= PLUGIN_USE_BOOKMARKS)
         {
             // map plug names to new set names (does not apply to handlers)
+            XSet* set2;
             if (set->prev && !strcmp(var, "prev"))
             {
                 if (!strncmp(set->prev, "cstm_", 5))
@@ -2887,9 +2871,7 @@ void xset_parse_plugin(const char* plug_dir, char* line, int use)
 XSet* xset_import_plugin(const char* plug_dir, int* use)
 {
     char line[2048];
-    gboolean func;
     GList* l;
-    XSet* set;
 
     if (use)
         *use = PLUGIN_USE_NORMAL;
@@ -2923,6 +2905,7 @@ XSet* xset_import_plugin(const char* plug_dir, int* use)
 
     while (fgets(line, sizeof(line), file))
     {
+        gboolean func;
         strtok(line, "\r\n");
         if (!line[0])
             continue;
@@ -2970,7 +2953,7 @@ XSet* xset_import_plugin(const char* plug_dir, int* use)
     {
         if (((XSet*)l->data)->plugin && !strcmp(plug_dir, ((XSet*)l->data)->plug_dir))
         {
-            set = (XSet*)l->data;
+            XSet* set = (XSet*)l->data;
             set->key = set->keymod = set->tool = set->opener = 0;
             xset_set_plugin_mirror(set);
             if ((set->plugin_top = top))
@@ -2994,8 +2977,6 @@ typedef struct _PluginData
 
 void on_install_plugin_cb(VFSFileTask* task, PluginData* plugin_data)
 {
-    XSet* set;
-    char* msg;
     // g_printf("on_install_plugin_cb\n");
     if (plugin_data->job == PLUGIN_JOB_REMOVE) // uninstall
     {
@@ -3011,8 +2992,9 @@ void on_install_plugin_cb(VFSFileTask* task, PluginData* plugin_data)
         char* plugin = g_build_filename(plugin_data->plug_dir, "plugin", NULL);
         if (g_file_test(plugin, G_FILE_TEST_EXISTS))
         {
+            char* msg;
             int use = PLUGIN_USE_NORMAL;
-            set = xset_import_plugin(plugin_data->plug_dir, &use);
+            XSet* set = xset_import_plugin(plugin_data->plug_dir, &use);
             if (!set)
             {
                 msg = g_strdup_printf(_("The imported plugin folder does not contain a valid plugin.\n\n(%s/)"),
@@ -3157,8 +3139,6 @@ void on_install_plugin_cb(VFSFileTask* task, PluginData* plugin_data)
 
 void xset_remove_plugin(GtkWidget* parent, PtkFileBrowser* file_browser, XSet* set)
 {
-    char* msg;
-
     if (!file_browser || !set || !set->plugin_top || !set->plug_dir)
         return;
 
@@ -3168,7 +3148,7 @@ void xset_remove_plugin(GtkWidget* parent, PtkFileBrowser* file_browser, XSet* s
     if (!app_settings.no_confirm)
     {
         char* label = clean_label(set->menu_label, FALSE, FALSE);
-        msg = g_strdup_printf(_("Uninstall the '%s' plugin?\n\n( %s )"), label, set->plug_dir);
+        char* msg = g_strdup_printf(_("Uninstall the '%s' plugin?\n\n( %s )"), label, set->plug_dir);
         g_free(label);
         if (xset_msg_dialog(parent,
                             GTK_MESSAGE_WARNING,
@@ -3363,9 +3343,6 @@ void xset_custom_export(GtkWidget* parent, PtkFileBrowser* file_browser, XSet* s
 {
     const char* deffolder;
     char* deffile;
-    char* type;
-    char* s1;
-    char* s2;
 
     // get new plugin filename
     XSet* save = xset_get("plug_cfile");
@@ -3379,13 +3356,14 @@ void xset_custom_export(GtkWidget* parent, PtkFileBrowser* file_browser, XSet* s
 
     if (!set->plugin)
     {
-        s1 = clean_label(set->menu_label, TRUE, FALSE);
-        s2 = plain_ascii_name(s1);
+        char* s1 = clean_label(set->menu_label, TRUE, FALSE);
+        char* s2 = plain_ascii_name(s1);
         if (s2[0] == '\0')
         {
             g_free(s2);
             s2 = g_strdup("Plugin");
         }
+        char* type;
         if (!strcmp(set->name, "main_book"))
             type = g_strdup_printf("bookmarks");
         else if (g_str_has_prefix(set->name, "hand_arc_"))
@@ -3407,7 +3385,7 @@ void xset_custom_export(GtkWidget* parent, PtkFileBrowser* file_browser, XSet* s
     }
     else
     {
-        s1 = g_path_get_basename(set->plug_dir);
+        char* s1 = g_path_get_basename(set->plug_dir);
         deffile = g_strdup_printf("%s.spacefm-plugin.tar.xz", s1);
         g_free(s1);
     }
@@ -3422,15 +3400,14 @@ void xset_custom_export(GtkWidget* parent, PtkFileBrowser* file_browser, XSet* s
 
     // get or create tmp plugin dir
     char* plug_dir = NULL;
-    char* hex8;
     if (!set->plugin)
     {
-        s1 = (char*)xset_get_user_tmp_dir();
+        char* s1 = (char*)xset_get_user_tmp_dir();
         if (!s1)
             goto _export_error;
         while (!plug_dir || g_file_test(plug_dir, G_FILE_TEST_EXISTS))
         {
-            hex8 = randhex8();
+            char* hex8 = randhex8();
             if (plug_dir)
                 g_free(plug_dir);
             plug_dir = g_build_filename(s1, hex8, NULL);
@@ -3629,7 +3606,6 @@ void xset_custom_activate(GtkWidget* item, XSet* set)
     const char* cwd;
     char* command;
     char* value = NULL;
-    XSet* mset;
 
     // builtin toolitem?
     if (set->tool > XSET_TOOL_CUSTOM)
@@ -3639,7 +3615,7 @@ void xset_custom_activate(GtkWidget* item, XSet* set)
     }
 
     // plugin?
-    mset = xset_get_plugin_mirror(set);
+    XSet* mset = xset_get_plugin_mirror(set);
 
     if (set->browser)
     {
@@ -3802,10 +3778,10 @@ void xset_custom_activate(GtkWidget* item, XSet* set)
         else
         {
             // parse semi-colon separated list
-            char* sep;
-            char* url;
             while (specs && specs[0])
             {
+                char* url;
+                char* sep;
                 if ((sep = strchr(specs, ';')))
                     sep[0] = '\0';
                 url = g_strdup(specs);
@@ -3861,8 +3837,6 @@ void xset_custom_activate(GtkWidget* item, XSet* set)
 
 void xset_custom_delete(XSet* set, gboolean delete_next)
 {
-    char* path1;
-    char* path2;
     char* command;
 
     if (set->menu_style == XSET_MENU_SUBMENU && set->child)
@@ -3880,8 +3854,8 @@ void xset_custom_delete(XSet* set, gboolean delete_next)
     if (set == set_clipboard)
         set_clipboard = NULL;
 
-    path1 = g_build_filename(settings_config_dir, "scripts", set->name, NULL);
-    path2 = g_build_filename(settings_config_dir, "plugin-data", set->name, NULL);
+    char* path1 = g_build_filename(settings_config_dir, "scripts", set->name, NULL);
+    char* path2 = g_build_filename(settings_config_dir, "plugin-data", set->name, NULL);
     if (g_file_test(path1, G_FILE_TEST_EXISTS) || g_file_test(path2, G_FILE_TEST_EXISTS))
         command = g_strdup_printf("rm -rf %s %s", path1, path2);
     else
@@ -3899,10 +3873,7 @@ void xset_custom_delete(XSet* set, gboolean delete_next)
 
 XSet* xset_custom_remove(XSet* set)
 {
-    XSet* set_prev;
-    XSet* set_next;
     XSet* set_parent;
-    XSet* set_child;
 
     /*
     g_printf("xset_custom_remove %s (%s)\n", set->name, set->menu_label );
@@ -3912,7 +3883,7 @@ XSet* xset_custom_remove(XSet* set)
     */
     if (set->prev)
     {
-        set_prev = xset_get(set->prev);
+        XSet* set_prev = xset_get(set->prev);
         // g_printf("        set->prev = %s (%s)\n", set_prev->name, set_prev->menu_label );
         if (set_prev->next)
             g_free(set_prev->next);
@@ -3923,7 +3894,7 @@ XSet* xset_custom_remove(XSet* set)
     }
     if (set->next)
     {
-        set_next = xset_get(set->next);
+        XSet* set_next = xset_get(set->next);
         if (set_next->prev)
             g_free(set_next->prev);
         if (set->prev)
@@ -3943,6 +3914,7 @@ XSet* xset_custom_remove(XSet* set)
     }
     if (!set->prev && !set->next && set->parent)
     {
+        XSet* set_child;
         set_parent = xset_get(set->parent);
         if (set->tool)
             set_child = xset_new_builtin_toolitem(XSET_TOOL_HOME);
@@ -3962,8 +3934,6 @@ XSet* xset_custom_remove(XSet* set)
 
 void xset_custom_insert_after(XSet* target, XSet* set)
 { // inserts single set 'set', no next
-    XSet* target_next;
-
     if (!set)
     {
         g_warning("xset_custom_insert_after set == NULL");
@@ -3987,7 +3957,7 @@ void xset_custom_insert_after(XSet* target, XSet* set)
     set->next = target->next; // steal string
     if (target->next)
     {
-        target_next = xset_get(target->next);
+        XSet* target_next = xset_get(target->next);
         if (target_next->prev)
             g_free(target_next->prev);
         target_next->prev = g_strdup(set->name);
@@ -4043,13 +4013,10 @@ gboolean xset_clipboard_in_set(XSet* set)
 
 XSet* xset_custom_new()
 {
-    char* setname;
-    XSet* set;
-
-    setname = xset_custom_new_name();
+    char* setname = xset_custom_new_name();
 
     // create set
-    set = xset_get(setname);
+    XSet* set = xset_get(setname);
     g_free(setname);
     set->lock = FALSE;
     set->keep_terminal = XSET_B_TRUE;
@@ -4064,7 +4031,6 @@ void xset_edit(GtkWidget* parent, const char* path, gboolean force_root, gboolea
     gboolean as_root = FALSE;
     gboolean terminal;
     char* editor;
-    char* quoted_path;
     GtkWidget* dlgparent = NULL;
     if (!path)
         return;
@@ -4100,7 +4066,7 @@ void xset_edit(GtkWidget* parent, const char* path, gboolean force_root, gboolea
         terminal = xset_get_b("root_editor");
     }
     // replacements
-    quoted_path = bash_quote(path);
+    char* quoted_path = bash_quote(path);
     if (strstr(editor, "%f"))
         editor = replace_string(editor, "%f", quoted_path, FALSE);
     else if (strstr(editor, "%F"))
@@ -4129,10 +4095,9 @@ void xset_edit(GtkWidget* parent, const char* path, gboolean force_root, gboolea
 
 void xset_open_url(GtkWidget* parent, const char* url)
 {
-    const char* browser;
     char* command = NULL;
 
-    browser = xset_get_s("main_help_browser");
+    const char* browser = xset_get_s("main_help_browser");
     if (browser)
     {
         if (strstr(browser, "%u"))
@@ -4148,13 +4113,13 @@ void xset_open_url(GtkWidget* parent, const char* url)
         else
         {
             int ii = 0;
-            char* program;
             if (g_str_has_prefix(url, "file://") || g_str_has_prefix(url, "/"))
                 ii = 3; // xdg,gnome,exo-open use editor for html files so skip at start
             const char* programs[] = {"xdg-open", "gnome-open", "exo-open"};
             int i;
             for (i = ii; i < G_N_ELEMENTS(programs); ++i)
             {
+                char* program;
                 if ((program = g_find_program_in_path(programs[i])))
                 {
                     command = g_strdup_printf("%s '%s'", program, url);
@@ -4186,8 +4151,7 @@ void xset_open_url(GtkWidget* parent, const char* url)
 char* xset_get_manual_url()
 {
     char* path;
-    char* url;
-    url = xset_get_s("main_help_url");
+    char* url = xset_get_s("main_help_url");
     if (url)
     {
         if (url[0] == '/')
@@ -4195,8 +4159,7 @@ char* xset_get_manual_url()
         return g_strdup(url);
     }
 
-    GList* names = NULL;
-    names = g_list_append(names, g_strdup("spacefm-manual-en.html"));
+    GList* names = g_list_append(names, g_strdup("spacefm-manual-en.html"));
 
     // get potential locations
     GList* locations = NULL;
@@ -4217,9 +4180,9 @@ char* xset_get_manual_url()
         locations = g_list_append(locations, g_strdup("/usr/share/spacefm"));
 
     GList* loc;
-    GList* ln;
     for (loc = locations; loc && !url; loc = loc->next)
     {
+        GList* ln;
         for (ln = names; ln; ln = ln->next)
         {
             path = g_build_filename((char*)loc->data, (char*)ln->data, NULL);
@@ -4319,7 +4282,8 @@ void xset_show_help(GtkWidget* parent, XSet* set, const char* anchor)
 
 char* xset_get_keyname(XSet* set, int key_val, int key_mod)
 {
-    int keyval, keymod;
+    int keyval;
+    int keymod;
     if (set)
     {
         keyval = set->key;
@@ -4337,9 +4301,9 @@ char* xset_get_keyname(XSet* set, int key_val, int key_mod)
         mod[0] = g_ascii_toupper(mod[0]);
     else if (!mod)
         mod = g_strdup("NA");
-    char* str;
     if (keymod)
     {
+        char* str;
         if (keymod & GDK_SUPER_MASK)
         {
             str = mod;
@@ -4382,14 +4346,9 @@ char* xset_get_keyname(XSet* set, int key_val, int key_mod)
 
 gboolean on_set_key_keypress(GtkWidget* widget, GdkEventKey* event, GtkWidget* dlg)
 {
-    GList* l;
     int* newkey = (int*)g_object_get_data(G_OBJECT(dlg), "newkey");
     int* newkeymod = (int*)g_object_get_data(G_OBJECT(dlg), "newkeymod");
     GtkWidget* btn = (GtkWidget*)g_object_get_data(G_OBJECT(dlg), "btn");
-    XSet* set = (XSet*)g_object_get_data(G_OBJECT(dlg), "set");
-    XSet* set2;
-    XSet* keyset = NULL;
-    char* keyname;
 
     int keymod = (event->state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD1_MASK | GDK_SUPER_MASK | GDK_HYPER_MASK |
                                   GDK_META_MASK));
@@ -4434,12 +4393,16 @@ gboolean on_set_key_keypress(GtkWidget* widget, GdkEventKey* event, GtkWidget* d
 
     *newkey = 0;
     *newkeymod = 0;
+    XSet* set = (XSet*)g_object_get_data(G_OBJECT(dlg), "set");
+    XSet* keyset = NULL;
     if (set->shared_key)
         keyset = xset_get(set->shared_key);
 
+    char* keyname;
+    GList* l;
     for (l = xsets; l; l = l->next)
     {
-        set2 = l->data;
+        XSet* set2 = l->data;
         if (set2 && set2 != set && set2->key > 0 && set2->key == event->keyval && set2->keymod == keymod &&
             set2 != keyset)
         {
@@ -4502,9 +4465,9 @@ gboolean on_set_key_keypress(GtkWidget* widget, GdkEventKey* event, GtkWidget* d
 void xset_set_key(GtkWidget* parent, XSet* set)
 {
     char* name;
-    char* keymsg;
     XSet* keyset;
-    int newkey = 0, newkeymod = 0;
+    int newkey = 0;
+    int newkeymod = 0;
     GtkWidget* dlgparent = NULL;
 
     if (set->menu_label)
@@ -4521,7 +4484,7 @@ void xset_set_key(GtkWidget* parent, XSet* set)
     }
     else
         name = g_strdup("( no name )");
-    keymsg = g_strdup_printf(_("Press your key combination for item '%s' then click Set.  To remove the current key "
+    char* keymsg = g_strdup_printf(_("Press your key combination for item '%s' then click Set.  To remove the current key "
                                "assignment, click Unset."),
                              name);
     g_free(name);
@@ -4575,10 +4538,9 @@ void xset_set_key(GtkWidget* parent, XSet* set)
         {
             // clear duplicate key assignments
             GList* l;
-            XSet* set2;
             for (l = xsets; l; l = l->next)
             {
-                set2 = l->data;
+                XSet* set2 = l->data;
                 if (set2 && set2->key > 0 && set2->key == newkey && set2->keymod == newkeymod)
                 {
                     set2->key = 0;
@@ -4611,21 +4573,15 @@ void xset_design_job(GtkWidget* item, XSet* set)
     XSet* childset;
     XSet* set_next;
     char* msg;
-    int response;
     char* folder;
     char* file = NULL;
-    char* custom_file;
     char* cscript;
     char* name;
-    char* prog;
-    int buttons;
     GtkWidget* dlgparent = NULL;
-    GtkWidget* dlg;
     GtkClipboard* clip;
-    GtkWidget* parent = NULL;
     gboolean update_toolbars = FALSE;
 
-    parent = gtk_widget_get_toplevel(set->browser);
+    GtkWidget* parent = gtk_widget_get_toplevel(set->browser);
 
     int job = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(item), "job"));
     int cmd_type = xset_get_int_set(set, "x");
@@ -4748,6 +4704,7 @@ void xset_design_job(GtkWidget* item, XSet* set)
             folder = g_strdup_printf("/usr/bin");
             file = NULL;
         }
+        char* custom_file;
         if ((custom_file =
                  xset_file_dialog(parent, GTK_FILE_CHOOSER_ACTION_OPEN, _("Choose Custom Executable"), folder, file)))
         {
@@ -4976,11 +4933,10 @@ void xset_design_job(GtkWidget* item, XSet* set)
             g_free(file);
             break;
         }
-        char* hex8;
         folder = NULL;
         while (!folder || g_file_test(folder, G_FILE_TEST_EXISTS))
         {
-            hex8 = randhex8();
+            char* hex8 = randhex8();
             if (folder)
                 g_free(folder);
             folder = g_build_filename(user_tmp, hex8, NULL);
@@ -5093,6 +5049,7 @@ void xset_design_job(GtkWidget* item, XSet* set)
             else
                 name = g_strdup(_("( no name )"));
         }
+        int buttons;
         if (set->child && set->menu_style == XSET_MENU_SUBMENU)
         {
             msg = g_strdup_printf(_("Permanently remove the '%s' SUBMENU AND ALL ITEMS WITHIN IT?\n\nThis action will "
@@ -5116,7 +5073,7 @@ void xset_design_job(GtkWidget* item, XSet* set)
         {
             if (parent)
                 dlgparent = gtk_widget_get_toplevel(parent);
-            dlg = gtk_message_dialog_new(GTK_WINDOW(dlgparent),
+            GtkWidget* dlg = gtk_message_dialog_new(GTK_WINDOW(dlgparent),
                                          GTK_DIALOG_MODAL,
                                          GTK_MESSAGE_WARNING,
                                          buttons,
@@ -5125,7 +5082,7 @@ void xset_design_job(GtkWidget* item, XSet* set)
             xset_set_window_icon(GTK_WINDOW(dlg));
             gtk_window_set_title(GTK_WINDOW(dlg), _("Confirm Remove"));
             gtk_widget_show_all(dlg);
-            response = gtk_dialog_run(GTK_DIALOG(dlg));
+            int response = gtk_dialog_run(GTK_DIALOG(dlg));
             gtk_widget_destroy(dlg);
             if (response != GTK_RESPONSE_OK && response != GTK_RESPONSE_YES)
                 break;
@@ -5134,7 +5091,7 @@ void xset_design_job(GtkWidget* item, XSet* set)
 
         // remove
         name = g_strdup(set->name);
-        prog = g_strdup(set->parent);
+        char* prog = g_strdup(set->parent);
 
         if (job == XSET_JOB_REMOVE && set->parent /* maybe only item in sub */
             && xset_is_main_bookmark(set))
@@ -5731,11 +5688,9 @@ GtkWidget* xset_design_show_menu(GtkWidget* menu, XSet* set, XSet* book_insert, 
     GtkWidget* submenu2;
     gboolean no_remove = FALSE;
     gboolean no_paste = FALSE;
-    XSet* insert_set;
-    int i;
 
     // book_insert is a bookmark set to be used for Paste, etc
-    insert_set = book_insert ? book_insert : set;
+    XSet* insert_set = book_insert ? book_insert : set;
     // to signal this is a bookmark, pass book_insert = set
     gboolean is_bookmark = !!book_insert;
     gboolean show_keys = !is_bookmark && !set->tool;
@@ -5870,6 +5825,7 @@ GtkWidget* xset_design_show_menu(GtkWidget* menu, XSet* set, XSet* book_insert, 
         g_object_set_data(G_OBJECT(newitem), "job", GINT_TO_POINTER(XSET_JOB_HELP_ADD));
         g_signal_connect(submenu, "key_press_event", G_CALLBACK(xset_design_menu_keypress), set);
 
+        int i;
         for (i = XSET_TOOL_DEVICES; i < G_N_ELEMENTS(builtin_tool_name); i++)
         {
             newitem = xset_design_additem(submenu,
@@ -6190,7 +6146,6 @@ gboolean xset_menu_keypress(GtkWidget* widget, GdkEventKey* event, gpointer user
 
 void xset_menu_cb(GtkWidget* item, XSet* set)
 {
-    GtkWidget* parent;
     void (*cb_func)() = NULL;
     gpointer cb_data = NULL;
     char* title;
@@ -6206,7 +6161,7 @@ void xset_menu_cb(GtkWidget* item, XSet* set)
         cb_data = g_object_get_data(G_OBJECT(item), "cb_data");
     }
 
-    parent = set->browser;
+    GtkWidget* parent = set->browser;
 
     if (set->plugin)
     {
@@ -6454,9 +6409,9 @@ int xset_msg_dialog(GtkWidget* parent, int action, const char* title, GtkWidget*
 
 void on_multi_input_insert(GtkTextBuffer* buf)
 { // remove linefeeds from pasted text
-    GtkTextIter iter, siter;
+    GtkTextIter iter;
+    GtkTextIter siter;
     // gboolean changed = FALSE;
-    int x;
 
     // buffer contains linefeeds?
     gtk_text_buffer_get_start_iter(buf, &siter);
@@ -6480,6 +6435,7 @@ void on_multi_input_insert(GtkTextBuffer* buf)
     gtk_text_buffer_get_end_iter(buf, &siter);
     char* a = gtk_text_buffer_get_text(buf, &iter, &siter, FALSE);
 
+    int  x;
     if (strchr(b, '\n'))
     {
         x = 0;
@@ -6555,7 +6511,8 @@ void on_multi_input_popup(GtkTextView* input, GtkMenu* menu, gpointer user_data)
 
 char* multi_input_get_text(GtkWidget* input)
 { // returns a new allocated string or NULL if input is empty
-    GtkTextIter iter, siter;
+    GtkTextIter iter;
+    GtkTextIter siter;
 
     if (!GTK_IS_TEXT_VIEW(input))
         return NULL;
@@ -6574,7 +6531,8 @@ char* multi_input_get_text(GtkWidget* input)
 
 void multi_input_select_region(GtkWidget* input, int start, int end)
 {
-    GtkTextIter iter, siter;
+    GtkTextIter iter;
+    GtkTextIter siter;
 
     if (start < 0 || !GTK_IS_TEXT_VIEW(input))
         return;
@@ -6634,7 +6592,8 @@ static gboolean on_input_keypress(GtkWidget* widget, GdkEventKey* event, GtkWidg
 
 static void on_icon_buffer_changed(GtkTextBuffer* buf, GtkWidget* button)
 {
-    GtkTextIter iter, siter;
+    GtkTextIter iter;
+    GtkTextIter siter;
     gtk_text_buffer_get_start_iter(buf, &siter);
     gtk_text_buffer_get_end_iter(buf, &iter);
     char* icon = gtk_text_buffer_get_text(buf, &siter, &iter, FALSE);
@@ -6646,7 +6605,6 @@ static void on_icon_buffer_changed(GtkTextBuffer* buf, GtkWidget* button)
 char* xset_icon_chooser_dialog(GtkWindow* parent, const char* def_icon)
 {
     GtkAllocation allocation;
-    int width, height;
     char* icon = NULL;
 
     // set busy cursor
@@ -6672,8 +6630,8 @@ char* xset_icon_chooser_dialog(GtkWindow* parent, const char* def_icon)
                                                           GTK_RESPONSE_ACCEPT,
                                                           NULL);
     // Set icon chooser dialog size
-    width = xset_get_int("main_icon", "x");
-    height = xset_get_int("main_icon", "y");
+    int width = xset_get_int("main_icon", "x");
+    int height = xset_get_int("main_icon", "y");
     if (width && height)
         gtk_window_set_default_size(GTK_WINDOW(icon_chooser), width, height);
 
@@ -6712,9 +6670,9 @@ gboolean xset_text_dialog(GtkWidget* parent, const char* title, GtkWidget* image
                           const char* msg2, const char* defstring, char** answer, const char* defreset,
                           gboolean edit_care, const char* help)
 {
-    GtkTextIter iter, siter;
     GtkAllocation allocation;
-    int width, height;
+    int width;
+    int height;
     GtkWidget* dlgparent = NULL;
 
     if (parent)
@@ -6848,18 +6806,17 @@ gboolean xset_text_dialog(GtkWidget* parent, const char* title, GtkWidget* image
             gtk_widget_set_sensitive(btn_default, FALSE);
     }
 
-    char* ans;
-    char* trim_ans;
     int response;
-    char* icon;
     gboolean ret = FALSE;
     while ((response = gtk_dialog_run(GTK_DIALOG(dlg))))
     {
+        GtkTextIter iter;
+        GtkTextIter siter;
         if (response == GTK_RESPONSE_OK)
         {
             gtk_text_buffer_get_start_iter(buf, &siter);
             gtk_text_buffer_get_end_iter(buf, &iter);
-            ans = gtk_text_buffer_get_text(buf, &siter, &iter, FALSE);
+            char* ans = gtk_text_buffer_get_text(buf, &siter, &iter, FALSE);
             if (strchr(ans, '\n'))
             {
                 ptk_show_error(GTK_WINDOW(dlgparent),
@@ -6868,6 +6825,7 @@ gboolean xset_text_dialog(GtkWidget* parent, const char* title, GtkWidget* image
             }
             else
             {
+                char* trim_ans;
                 if (*answer)
                     g_free(*answer);
                 trim_ans = g_strdup(ans);
@@ -6897,7 +6855,7 @@ gboolean xset_text_dialog(GtkWidget* parent, const char* title, GtkWidget* image
             // get current icon
             gtk_text_buffer_get_start_iter(buf, &siter);
             gtk_text_buffer_get_end_iter(buf, &iter);
-            icon = gtk_text_buffer_get_text(buf, &siter, &iter, FALSE);
+            char* icon = gtk_text_buffer_get_text(buf, &siter, &iter, FALSE);
 
             // show icon chooser
             char* new_icon = xset_icon_chooser_dialog(GTK_WINDOW(dlg), icon);
@@ -7876,9 +7834,6 @@ void xset_fill_toolbar(GtkWidget* parent, PtkFileBrowser* file_browser, GtkWidge
                                   XSET_TOOL_FWD_MENU,
                                   XSET_TOOL_UP,
                                   XSET_TOOL_DEFAULT};
-    int i, stop_b4;
-    XSet* set;
-    XSet* set_target;
 
     // g_printf("xset_fill_toolbar %s\n", set_parent->name );
     if (!(file_browser && toolbar && set_parent))
@@ -7901,14 +7856,16 @@ void xset_fill_toolbar(GtkWidget* parent, PtkFileBrowser* file_browser, GtkWidge
         set_child->parent = g_strdup(set_parent->name);
         if (!strstr(set_parent->name, "tool_r"))
         {
+            int stop_b4;
             if (strstr(set_parent->name, "tool_s"))
                 stop_b4 = 2;
             else
                 stop_b4 = G_N_ELEMENTS(default_tools);
-            set_target = set_child;
+            XSet* set_target = set_child;
+            int i;
             for (i = 0; i < stop_b4; i++)
             {
-                set = xset_new_builtin_toolitem(default_tools[i]);
+                XSet* set = xset_new_builtin_toolitem(default_tools[i]);
                 xset_custom_insert_after(set_target, set);
                 set_target = set;
             }
@@ -7969,8 +7926,6 @@ void xset_set_window_icon(GtkWindow* win)
 
 void xset_defaults()
 {
-    XSet* set;
-
     srand((unsigned int)time(0) + getpid());
 
     // set_last must be set (to anything)
@@ -7978,7 +7933,7 @@ void xset_defaults()
     set_last->menu_style = XSET_MENU_SEP;
 
     // dev menu
-    set = xset_get("sep_dm1");
+    XSet* set = xset_get("sep_dm1");
     set->menu_style = XSET_MENU_SEP;
 
     set = xset_get("sep_dm2");

@@ -165,12 +165,10 @@ void save_progress_dialog_size(PtkFileTask* ptask)
 {
     // save dialog size  - do this here now because as of GTK 3.8,
     // allocation == 1,1 in destroy event
-    char* s;
     GtkAllocation allocation;
-
     gtk_widget_get_allocation(GTK_WIDGET(ptask->progress_dlg), &allocation);
 
-    s = g_strdup_printf("%d", allocation.width);
+    char* s = g_strdup_printf("%d", allocation.width);
     if (ptask->task->type == VFS_FILE_TASK_EXEC)
         xset_set("task_pop_top", "s", s);
     else
@@ -477,7 +475,6 @@ void set_button_states(PtkFileTask* ptask)
     const char* icon;
     const char* iconset;
     char* label;
-    gboolean sens = !ptask->complete;
 
     if (!ptask->progress_dlg)
         return;
@@ -500,6 +497,7 @@ void set_button_states(PtkFileTask* ptask)
         iconset = "task_pause";
         icon = GTK_STOCK_MEDIA_PAUSE;
     }
+    gboolean sens = !ptask->complete;
     sens = sens && !(ptask->task->type == VFS_FILE_TASK_EXEC && !ptask->task->exec_pid);
 
     XSet* set = xset_get(iconset);
@@ -706,7 +704,6 @@ void ptk_file_task_progress_open(PtkFileTask* ptask)
 {
     GtkTable* table;
     GtkLabel* label;
-    int i;
 
     const char* actions[] = {N_("Move: "), N_("Copy: "), N_("Delete: "), N_("Link: "), N_("Change: "), N_("Run: ")};
     const char* titles[] =
@@ -896,6 +893,7 @@ void ptk_file_task_progress_open(PtkFileTask* ptask)
     GtkWidget* overwrite_align;
     if (task->type != VFS_FILE_TASK_EXEC)
     {
+        int i;
         static const char* overwrite_options[] = {N_("Ask"), N_("Overwrite All"), N_("Skip All"), N_("Auto Rename")};
         static const char* error_options[] = {N_("Stop If Error First"), N_("Stop On Any Error"), N_("Continue")};
 
@@ -1023,13 +1021,7 @@ void ptk_file_task_progress_open(PtkFileTask* ptask)
 void ptk_file_task_progress_update(PtkFileTask* ptask)
 {
     char* ufile_path;
-    char* usrc_dir;
-    char* udest;
-    char* window_title;
     char* str;
-    char* str2;
-    char percent_str[16];
-    char* stats;
     char* errs;
 
     if (!ptask->progress_dlg)
@@ -1044,10 +1036,11 @@ void ptk_file_task_progress_update(PtkFileTask* ptask)
     VFSFileTask* task = ptask->task;
 
     // current file
-    usrc_dir = NULL;
-    udest = NULL;
+    char* usrc_dir = NULL;
+    char* udest = NULL;
     if (ptask->complete)
     {
+        char* window_title;
         gtk_widget_set_sensitive(ptask->progress_btn_stop, FALSE);
         gtk_widget_set_sensitive(ptask->progress_btn_pause, FALSE);
         gtk_widget_set_sensitive(ptask->progress_btn_close, TRUE);
@@ -1098,7 +1091,7 @@ void ptk_file_task_progress_update(PtkFileTask* ptask)
             if (task->current_dest)
             {
                 str = g_path_get_basename(task->current_file);
-                str2 = g_path_get_basename(task->current_dest);
+                char* str2 = g_path_get_basename(task->current_dest);
                 if (strcmp(str, str2))
                 {
                     // source and dest filenames differ, user renamed - show all
@@ -1163,6 +1156,7 @@ void ptk_file_task_progress_update(PtkFileTask* ptask)
     {
         if (task->percent >= 0)
         {
+            char percent_str[16];
             if (task->percent > 100)
                 task->percent = 100;
             gtk_progress_bar_set_fraction(ptask->progress_bar, ((gdouble)task->percent) / 100);
@@ -1199,6 +1193,7 @@ void ptk_file_task_progress_update(PtkFileTask* ptask)
     // progress
     if (task->type != VFS_FILE_TASK_EXEC)
     {
+        char* stats;
         if (ptask->complete)
         {
             if (ptask->pop_detail)
@@ -1802,7 +1797,6 @@ static void on_multi_input_changed(GtkWidget* input_buf, GtkWidget* query_input)
 
 void query_overwrite_response(GtkDialog* dlg, int response, PtkFileTask* ptask)
 {
-    char* dir_name;
     char* str;
 
     switch (response)
@@ -1842,7 +1836,7 @@ void query_overwrite_response(GtkDialog* dlg, int response, PtkFileTask* ptask)
         }
         if (str && ptask->task->current_dest)
         {
-            dir_name = g_path_get_dirname(ptask->task->current_dest);
+            char* dir_name = g_path_get_dirname(ptask->task->current_dest);
             *ptask->query_new_dest = g_build_filename(dir_name, str, NULL);
             g_free(dir_name);
         }
@@ -1918,7 +1912,7 @@ static void query_overwrite(PtkFileTask* ptask)
     // g_printf("query_overwrite ptask=%#x\n", ptask);
     const char* title;
     GtkWidget* dlg;
-    GtkWidget* parent_win;
+
     GtkTextIter iter;
 
     gboolean has_overwrite_btn = TRUE;
@@ -2068,6 +2062,7 @@ static void query_overwrite(PtkFileTask* ptask)
     g_free(new_name_plain);
 
     // create dialog
+    GtkWidget* parent_win;
     if (ptask->progress_dlg)
         parent_win = GTK_WIDGET(ptask->progress_dlg);
     else

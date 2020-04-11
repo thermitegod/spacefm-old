@@ -271,37 +271,30 @@ GtkCellRenderer* ptk_file_icon_renderer_new(void)
 
 static GdkPixbuf* create_colorized_pixbuf(GdkPixbuf* src, GdkColor* new_color)
 {
-    int i, j;
-    int width, height, has_alpha, src_row_stride, dst_row_stride;
-    int red_value, green_value, blue_value;
-    guchar* target_pixels;
-    guchar* original_pixels;
-    guchar* pixsrc;
-    guchar* pixdest;
-    GdkPixbuf* dest;
+    int red_value = new_color->red / 255.0;
+    int green_value = new_color->green / 255.0;
+    int blue_value = new_color->blue / 255.0;
 
-    red_value = new_color->red / 255.0;
-    green_value = new_color->green / 255.0;
-    blue_value = new_color->blue / 255.0;
+    GdkPixbuf* dest = gdk_pixbuf_new(gdk_pixbuf_get_colorspace(src),
+                                     gdk_pixbuf_get_has_alpha(src),
+                                     gdk_pixbuf_get_bits_per_sample(src),
+                                     gdk_pixbuf_get_width(src),
+                                     gdk_pixbuf_get_height(src));
 
-    dest = gdk_pixbuf_new(gdk_pixbuf_get_colorspace(src),
-                          gdk_pixbuf_get_has_alpha(src),
-                          gdk_pixbuf_get_bits_per_sample(src),
-                          gdk_pixbuf_get_width(src),
-                          gdk_pixbuf_get_height(src));
+    int has_alpha = gdk_pixbuf_get_has_alpha(src);
+    int width = gdk_pixbuf_get_width(src);
+    int height = gdk_pixbuf_get_height(src);
+    int src_row_stride = gdk_pixbuf_get_rowstride(src);
+    int dst_row_stride = gdk_pixbuf_get_rowstride(dest);
+    guchar* target_pixels = gdk_pixbuf_get_pixels(dest);
+    guchar* original_pixels = gdk_pixbuf_get_pixels(src);
 
-    has_alpha = gdk_pixbuf_get_has_alpha(src);
-    width = gdk_pixbuf_get_width(src);
-    height = gdk_pixbuf_get_height(src);
-    src_row_stride = gdk_pixbuf_get_rowstride(src);
-    dst_row_stride = gdk_pixbuf_get_rowstride(dest);
-    target_pixels = gdk_pixbuf_get_pixels(dest);
-    original_pixels = gdk_pixbuf_get_pixels(src);
-
+    int i;
     for (i = 0; i < height; i++)
     {
-        pixdest = target_pixels + i * dst_row_stride;
-        pixsrc = original_pixels + i * src_row_stride;
+        guchar* pixdest = target_pixels + i * dst_row_stride;
+        guchar* pixsrc = original_pixels + i * src_row_stride;
+        int j;
         for (j = 0; j < width; j++)
         {
             *pixdest++ = (*pixsrc++ * red_value) >> 8;
@@ -342,7 +335,8 @@ static void ptk_file_icon_renderer_render(GtkCellRenderer* cell, GdkWindow* wind
     GdkRectangle pix_rect;
     GdkRectangle draw_rect;
     VFSFileInfo* file;
-    int xpad, ypad;
+    int xpad;
+    int ypad;
     gboolean is_expander, is_expanded;
 
     GtkCellRendererClass* parent_renderer_class;

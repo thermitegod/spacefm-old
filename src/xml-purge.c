@@ -13,7 +13,8 @@ static void purge_file(const char* file)
 {
     struct stat statbuf;
     int fd;
-    char *buf, *pbuf;
+    char* buf;
+    char* pbuf;
     int in_tag = 0, in_quote = 0;
     FILE* fo;
 

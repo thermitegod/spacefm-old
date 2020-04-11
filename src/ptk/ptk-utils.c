@@ -22,8 +22,7 @@
 
 GtkWidget* ptk_menu_new_from_data(PtkMenuItemEntry* entries, gpointer cb_data, GtkAccelGroup* accel_group)
 {
-    GtkWidget* menu;
-    menu = gtk_menu_new();
+    GtkWidget* menu = gtk_menu_new();
     ptk_menu_add_items_from_data(menu, entries, cb_data, accel_group);
     return menu;
 }
@@ -32,17 +31,13 @@ void ptk_menu_add_items_from_data(GtkWidget* menu, PtkMenuItemEntry* entries, gp
                                   GtkAccelGroup* accel_group)
 {
     PtkMenuItemEntry* ent;
-    GtkWidget* menu_item = NULL;
-    GtkWidget* sub_menu;
-    GSList* radio_group = NULL;
-    const char* signal;
-
     for (ent = entries;; ++ent)
     {
+        GtkWidget* menu_item = NULL;
         if (G_LIKELY(ent->label))
         {
             /* Stock item */
-            signal = "activate";
+            const char* signal = "activate";
             if (G_UNLIKELY(PTK_IS_STOCK_ITEM(ent)))
             {
                 menu_item = gtk_image_menu_item_new_from_stock(ent->label, accel_group);
@@ -64,6 +59,7 @@ void ptk_menu_add_items_from_data(GtkWidget* menu, PtkMenuItemEntry* entries, gp
                 }
                 else if (G_UNLIKELY(PTK_IS_RADIO_MENU_ITEM(ent)))
                 {
+                    GSList* radio_group = NULL;
                     menu_item = gtk_radio_menu_item_new_with_mnemonic(radio_group, _(ent->label));
                     if (G_LIKELY(PTK_IS_RADIO_MENU_ITEM((ent + 1))))
                         radio_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(menu_item));
@@ -89,7 +85,7 @@ void ptk_menu_add_items_from_data(GtkWidget* menu, PtkMenuItemEntry* entries, gp
 
             if (G_UNLIKELY(ent->sub_menu))
             { /* Sub menu */
-                sub_menu = ptk_menu_new_from_data(ent->sub_menu, cb_data, accel_group);
+                GtkWidget* sub_menu = ptk_menu_new_from_data(ent->sub_menu, cb_data, accel_group);
                 gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_item), sub_menu);
                 ent->menu = sub_menu; // MOD
             }
@@ -190,7 +186,6 @@ void transpose_nonlatin_keypress(GdkEventKey* event)
     uint* keyvals;
     int n_entries;
     int level;
-    int n;
 
     if (gdk_keymap_translate_keyboard_state(gdk_keymap_get_default(),
                                             event->hardware_keycode,
@@ -206,6 +201,7 @@ void transpose_nonlatin_keypress(GdkEventKey* event)
                                            &keyvals,
                                            &n_entries))
     {
+        int n;
         for (n = 0; n < n_entries; n++)
         {
             if (keys[n].group == event->group)

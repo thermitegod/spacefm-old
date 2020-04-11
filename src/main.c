@@ -170,19 +170,16 @@ char* get_inode_tag()
 
 gboolean on_socket_event(GIOChannel* ioc, GIOCondition cond, gpointer data)
 {
-    int client, r;
-    socklen_t addr_len = 0;
-    struct sockaddr_un client_addr = {0};
-    static char buf[1024];
-    GString* args;
-    char** file;
-
     if (cond & G_IO_IN)
     {
-        client = accept(g_io_channel_unix_get_fd(ioc), (struct sockaddr*)&client_addr, &addr_len);
+        socklen_t addr_len = 0;
+        struct sockaddr_un client_addr = {0};
+        int client = accept(g_io_channel_unix_get_fd(ioc), (struct sockaddr*)&client_addr, &addr_len);
         if (client != -1)
         {
-            args = g_string_new_len(NULL, 2048);
+            int r;
+            static char buf[1024];
+            GString* args = g_string_new_len(NULL, 2048);
             while ((r = read(client, buf, sizeof(buf))) > 0)
             {
                 g_string_append_len(args, buf, r);
@@ -280,6 +277,7 @@ gboolean on_socket_event(GIOChannel* ioc, GIOCondition cond, gpointer data)
 
             if (files)
             {
+                char** file;
                 for (file = files; *file; ++file)
                 {
                     if (!**file) /* remove empty string at tail */
@@ -316,7 +314,6 @@ gboolean single_instance_check()
     struct sockaddr_un addr;
     int addr_len;
     int ret;
-    int reuse;
 
     if ((sock = socket(AF_UNIX, SOCK_STREAM, 0)) == -1)
     {
@@ -337,7 +334,6 @@ gboolean single_instance_check()
     if (sock && connect(sock, (struct sockaddr*)&addr, addr_len) == 0)
     {
         /* connected successfully */
-        char** file;
         char cmd = CMD_OPEN_TAB;
 
         if (no_tabs)
@@ -389,6 +385,7 @@ gboolean single_instance_check()
         {
             if (files)
             {
+                char** file;
                 for (file = files; *file; ++file)
                 {
                     char* real_path;
@@ -420,7 +417,7 @@ gboolean single_instance_check()
     /* There is no existing server, and we are in the first instance. */
 
     unlink(addr.sun_path); /* delete old socket file if it exists. */
-    reuse = 1;
+    int reuse = 1;
     ret = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
     if (bind(sock, (struct sockaddr*)&addr, addr_len) == -1)
     {
@@ -676,7 +673,9 @@ static void init_daemon()
 
 char* dup_to_absolute_file_path(char** file)
 {
-    char *file_path, *real_path, *cwd_path;
+    char* file_path;
+    char* real_path;
+    char* cwd_path;
     const size_t cwd_size = PATH_MAX;
 
     if (g_str_has_prefix(*file, "file:")) /* It's a URI */
@@ -705,10 +704,11 @@ char* dup_to_absolute_file_path(char** file)
 static void open_in_tab(FMMainWindow** main_window, const char* real_path)
 {
     XSet* set;
-    int p;
+
     // create main window if needed
     if (G_UNLIKELY(!*main_window))
     {
+        int p;
         // initialize things required by folder view
         if (G_UNLIKELY(!daemon_mode))
             init_folder();
@@ -781,10 +781,7 @@ static void open_in_tab(FMMainWindow** main_window, const char* real_path)
 gboolean handle_parsed_commandline_args()
 {
     FMMainWindow* main_window = NULL;
-    char** file;
     gboolean ret = TRUE;
-    XSet* set;
-    struct stat statbuf;
 
     app_settings.load_saved_tabs = !no_tabs;
 
@@ -821,6 +818,7 @@ gboolean handle_parsed_commandline_args()
             init_daemon();
         else if (files != default_files)
         {
+            char** file;
             /* open files passed in command line arguments */
             ret = FALSE;
             for (file = files; *file; ++file)
@@ -839,6 +837,7 @@ gboolean handle_parsed_commandline_args()
                 }
                 else if (g_file_test(real_path, G_FILE_TEST_EXISTS))
                 {
+                    struct stat statbuf;
                     if (stat(real_path, &statbuf) == 0 && S_ISBLK(statbuf.st_mode))
                     {
                         // open block device eg /dev/sda1
@@ -895,6 +894,7 @@ gboolean handle_parsed_commandline_args()
                 if (!gtk_widget_get_visible(main_window->panel[panel - 1]))
                 {
                     // show panel
+                    XSet* set;
                     set = xset_get_panel(panel, "show");
                     set->b = XSET_B_TRUE;
                     show_panels_all_windows(NULL, main_window);
@@ -931,7 +931,6 @@ int main(int argc, char* argv[])
     check_locale();
 
     gboolean run = FALSE;
-    GError* err = NULL;
 
     // separate instance options
     if (argc > 1)
@@ -975,6 +974,7 @@ int main(int argc, char* argv[])
     }
 
     /* initialize GTK+ and parse the command line arguments */
+    GError* err = NULL;
     if (G_UNLIKELY(!gtk_init_with_args(&argc, &argv, "", opt_entries, NULL, &err)))
     {
         g_printf("spacefm: %s\n", err->message);
@@ -1101,7 +1101,7 @@ int main(int argc, char* argv[])
 void open_file(const char* path)
 {
     GError* err;
-    char *msg, *error_msg;
+
     VFSFileInfo* file;
     VFSMimeType* mime_type;
     gboolean opened;
@@ -1110,7 +1110,6 @@ void open_file(const char* path)
     file = vfs_file_info_new();
     vfs_file_info_get(file, path, NULL);
     mime_type = vfs_file_info_get_mime_type(file);
-    opened = FALSE;
     err = NULL;
 
     app_name = vfs_mime_type_get_default_action(mime_type);
@@ -1121,16 +1120,14 @@ void open_file(const char* path)
     }
     else
     {
-        VFSAppDesktop* app;
-        GList* files;
 
         app_name = (char*)ptk_choose_app_for_mime_type(NULL, mime_type, TRUE, TRUE, TRUE, FALSE);
         if (app_name)
         {
-            app = vfs_app_desktop_new(app_name);
+            VFSAppDesktop* app = vfs_app_desktop_new(app_name);
             if (!vfs_app_desktop_get_exec(app))
                 app->exec = g_strdup(app_name); /* This is a command line */
-            files = g_list_prepend(NULL, (gpointer)path);
+            GList* files = g_list_prepend(NULL, (gpointer)path);
             opened = vfs_app_desktop_open_files(gdk_screen_get_default(), NULL, app, files, &err);
             g_free(files->data);
             g_list_free(files);
@@ -1143,6 +1140,8 @@ void open_file(const char* path)
 
     if (!opened)
     {
+        char* msg;
+        char* error_msg;
         char* disp_path;
         if (err && err->message)
         {

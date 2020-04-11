@@ -241,8 +241,6 @@ static void _ptk_file_list_file_created(VFSDir* dir, VFSFileInfo* file, PtkFileL
 
 void ptk_file_list_set_dir(PtkFileList* list, VFSDir* dir)
 {
-    GList* l;
-
     if (list->dir == dir)
         return;
 
@@ -276,6 +274,7 @@ void ptk_file_list_set_dir(PtkFileList* list, VFSDir* dir)
 
     if (dir && dir->file_list)
     {
+        GList* l;
         for (l = dir->file_list; l; l = l->next)
         {
             if (list->show_hidden || ((VFSFileInfo*)l->data)->disp_name[0] != '.')
@@ -307,14 +306,10 @@ GType ptk_file_list_get_column_type(GtkTreeModel* tree_model, int index)
 
 gboolean ptk_file_list_get_iter(GtkTreeModel* tree_model, GtkTreeIter* iter, GtkTreePath* path)
 {
-    PtkFileList* list;
-    int n;
-    GList* l;
-
     g_assert(PTK_IS_FILE_LIST(tree_model));
     g_assert(path != NULL);
 
-    list = PTK_FILE_LIST(tree_model);
+    PtkFileList* list = PTK_FILE_LIST(tree_model);
 
     int* indices = gtk_tree_path_get_indices(path);
     int depth = gtk_tree_path_get_depth(path);
@@ -322,12 +317,12 @@ gboolean ptk_file_list_get_iter(GtkTreeModel* tree_model, GtkTreeIter* iter, Gtk
     /* we do not allow children */
     g_assert(depth == 1); /* depth 1 = top level; a list only has top level nodes and no children */
 
-    n = indices[0]; /* the n-th top level row */
+    int n = indices[0]; /* the n-th top level row */
 
     if (n >= list->n_files || n < 0)
         return FALSE;
 
-    l = g_list_nth(list->files, n);
+    GList* l = g_list_nth(list->files, n);
 
     g_assert(l != NULL);
 
@@ -360,9 +355,7 @@ GtkTreePath* ptk_file_list_get_path(GtkTreeModel* tree_model, GtkTreeIter* iter)
 
 void ptk_file_list_get_value(GtkTreeModel* tree_model, GtkTreeIter* iter, int column, GValue* value)
 {
-    GList* l;
     PtkFileList* list = PTK_FILE_LIST(tree_model);
-    VFSFileInfo* info;
     GdkPixbuf* icon;
 
     g_return_if_fail(PTK_IS_FILE_LIST(tree_model));
@@ -371,10 +364,10 @@ void ptk_file_list_get_value(GtkTreeModel* tree_model, GtkTreeIter* iter, int co
 
     g_value_init(value, column_types[column]);
 
-    l = (GList*)iter->user_data;
+    GList* l = (GList*)iter->user_data;
     g_return_if_fail(l != NULL);
 
-    info = (VFSFileInfo*)iter->user_data2;
+    VFSFileInfo* info = (VFSFileInfo*)iter->user_data2;
 
     switch (column)
     {
@@ -439,16 +432,13 @@ void ptk_file_list_get_value(GtkTreeModel* tree_model, GtkTreeIter* iter, int co
 
 gboolean ptk_file_list_iter_next(GtkTreeModel* tree_model, GtkTreeIter* iter)
 {
-    GList* l;
-    PtkFileList* list;
-
     g_return_val_if_fail(PTK_IS_FILE_LIST(tree_model), FALSE);
 
     if (iter == NULL || iter->user_data == NULL)
         return FALSE;
 
-    list = PTK_FILE_LIST(tree_model);
-    l = (GList*)iter->user_data;
+    PtkFileList* list = PTK_FILE_LIST(tree_model);
+    GList* l = (GList*)iter->user_data;
 
     /* Is this the last l in the list? */
     if (!l->next)
@@ -463,7 +453,6 @@ gboolean ptk_file_list_iter_next(GtkTreeModel* tree_model, GtkTreeIter* iter)
 
 gboolean ptk_file_list_iter_children(GtkTreeModel* tree_model, GtkTreeIter* iter, GtkTreeIter* parent)
 {
-    PtkFileList* list;
     g_return_val_if_fail(parent == NULL || parent->user_data != NULL, FALSE);
 
     /* this is a list, nodes have no children */
@@ -472,7 +461,7 @@ gboolean ptk_file_list_iter_children(GtkTreeModel* tree_model, GtkTreeIter* iter
 
     /* parent == NULL is a special case; we need to return the first top-level row */
     g_return_val_if_fail(PTK_IS_FILE_LIST(tree_model), FALSE);
-    list = PTK_FILE_LIST(tree_model);
+    PtkFileList* list = PTK_FILE_LIST(tree_model);
 
     /* No rows => no first row */
     if (list->dir->n_files == 0)
@@ -492,10 +481,9 @@ gboolean ptk_file_list_iter_has_child(GtkTreeModel* tree_model, GtkTreeIter* ite
 
 int ptk_file_list_iter_n_children(GtkTreeModel* tree_model, GtkTreeIter* iter)
 {
-    PtkFileList* list;
     g_return_val_if_fail(PTK_IS_FILE_LIST(tree_model), -1);
     g_return_val_if_fail(iter == NULL || iter->user_data != NULL, FALSE);
-    list = PTK_FILE_LIST(tree_model);
+    PtkFileList* list = PTK_FILE_LIST(tree_model);
     /* special case: if iter == NULL, return number of top-level rows */
     if (!iter)
         return list->n_files;
@@ -504,11 +492,8 @@ int ptk_file_list_iter_n_children(GtkTreeModel* tree_model, GtkTreeIter* iter)
 
 gboolean ptk_file_list_iter_nth_child(GtkTreeModel* tree_model, GtkTreeIter* iter, GtkTreeIter* parent, int n)
 {
-    GList* l;
-    PtkFileList* list;
-
     g_return_val_if_fail(PTK_IS_FILE_LIST(tree_model), FALSE);
-    list = PTK_FILE_LIST(tree_model);
+    PtkFileList* list = PTK_FILE_LIST(tree_model);
 
     /* a list has only top-level rows */
     if (parent)
@@ -518,7 +503,7 @@ gboolean ptk_file_list_iter_nth_child(GtkTreeModel* tree_model, GtkTreeIter* ite
     if (n >= list->n_files || n < 0)
         return FALSE;
 
-    l = g_list_nth(list->files, n);
+    GList* l = g_list_nth(list->files, n);
     g_assert(l != NULL);
 
     iter->stamp = list->stamp;
@@ -654,17 +639,13 @@ static int ptk_file_list_compare(gconstpointer a, gconstpointer b, gpointer user
 
 void ptk_file_list_sort(PtkFileList* list)
 {
-    GHashTable* old_order;
-    int* new_order;
-    GtkTreePath* path;
-    GList* l;
-    int i;
-
     if (list->n_files <= 1)
         return;
 
-    old_order = g_hash_table_new(g_direct_hash, g_direct_equal);
+    GHashTable* old_order = g_hash_table_new(g_direct_hash, g_direct_equal);
     /* save old order */
+    GList* l;
+    int i;
     for (i = 0, l = list->files; l; l = l->next, ++i)
         g_hash_table_insert(old_order, l, GINT_TO_POINTER(i));
 
@@ -672,11 +653,11 @@ void ptk_file_list_sort(PtkFileList* list)
     list->files = g_list_sort_with_data(list->files, ptk_file_list_compare, list);
 
     /* save new order */
-    new_order = g_new(int, list->n_files);
+    int* new_order = g_new(int, list->n_files);
     for (i = 0, l = list->files; l; l = l->next, ++i)
         new_order[i] = GPOINTER_TO_INT(g_hash_table_lookup(old_order, l));
     g_hash_table_destroy(old_order);
-    path = gtk_tree_path_new();
+    GtkTreePath* path = gtk_tree_path_new();
     gtk_tree_model_rows_reordered(GTK_TREE_MODEL(list), path, NULL, new_order);
     gtk_tree_path_free(path);
     g_free(new_order);
@@ -701,10 +682,10 @@ gboolean ptk_file_list_find_iter(PtkFileList* list, GtkTreeIter* it, VFSFileInfo
 
 void ptk_file_list_file_created(VFSDir* dir, VFSFileInfo* file, PtkFileList* list)
 {
-    GList *l, *ll = NULL;
+    GList* l;
+    GList* ll = NULL;
     GtkTreeIter it;
     GtkTreePath* path;
-    VFSFileInfo* file2;
 
     if (!list->show_hidden && vfs_file_info_get_name(file)[0] == '.')
         return;
@@ -714,7 +695,7 @@ void ptk_file_list_file_created(VFSDir* dir, VFSFileInfo* file, PtkFileList* lis
 
     for (l = list->files; l; l = l->next)
     {
-        file2 = (VFSFileInfo*)l->data;
+        VFSFileInfo* file2 = (VFSFileInfo*)l->data;
         if (G_UNLIKELY(file == file2))
         {
             /* The file is already in the list */
@@ -845,14 +826,13 @@ void on_thumbnail_loaded(VFSDir* dir, VFSFileInfo* file, PtkFileList* list)
 
 void ptk_file_list_show_thumbnails(PtkFileList* list, gboolean is_big, int max_file_size)
 {
-    GList* l;
-    VFSFileInfo* file;
-    int old_max_thumbnail;
-
     if (!list)
         return;
 
-    old_max_thumbnail = list->max_thumbnail;
+    GList* l;
+    VFSFileInfo* file;
+
+    int old_max_thumbnail = list->max_thumbnail;
     list->max_thumbnail = max_file_size;
     list->big_thumbnail = is_big;
     /* FIXME: This is buggy!!! Further testing might be needed.

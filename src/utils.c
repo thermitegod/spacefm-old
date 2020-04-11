@@ -55,9 +55,7 @@ void print_task_command_spawn(const char* argv[], int pid)
 char* randhex8()
 {
     char hex[9];
-    uint n;
-
-    n = rand();
+    uint n = rand();
     g_snprintf(hex, sizeof(hex), "%08x", n);
     return g_strdup(hex);
 }
@@ -78,9 +76,6 @@ void check_for_errno()
 
 char* replace_line_subs(const char* line)
 {
-    char* old_s;
-    char* s;
-    int i;
     const char* perc[] = {"%f", "%F", "%n", "%N", "%d", "%D", "%v", "%l", "%m", "%y", "%b", "%t", "%p", "%a"};
     const char* var[] = {"\"${fm_file}\"",
                          "\"${fm_files[@]}\"",
@@ -97,13 +92,14 @@ char* replace_line_subs(const char* line)
                          "\"${fm_task_pid}\"",
                          "\"${fm_value}\""};
 
-    s = g_strdup(line);
+    char* s = g_strdup(line);
     int num = G_N_ELEMENTS(perc);
+    int i;
     for (i = 0; i < num; i++)
     {
         if (strstr(line, perc[i]))
         {
-            old_s = s;
+            char* old_s = s;
             s = replace_string(old_s, perc[i], var[i], FALSE);
             g_free(old_s);
         }
@@ -125,13 +121,12 @@ gboolean have_rw_access(const char* path)
 
 gboolean dir_has_files(const char* path)
 {
-    GDir* dir;
     gboolean ret = FALSE;
 
     if (!(path && g_file_test(path, G_FILE_TEST_IS_DIR)))
         return FALSE;
 
-    dir = g_dir_open(path, 0, NULL);
+    GDir* dir = g_dir_open(path, 0, NULL);
     if (dir)
     {
         if (g_dir_read_name(dir))
@@ -143,13 +138,10 @@ gboolean dir_has_files(const char* path)
 
 char* get_name_extension(char* full_name, gboolean is_dir, char** ext)
 {
-    char* dot;
     char* str;
-    char* final_ext;
-    char* full;
-
-    full = g_strdup(full_name);
+    char* full = g_strdup(full_name);
     // get last dot
+    char* dot;
     if (is_dir || !(dot = strrchr(full, '.')) || dot == full)
     {
         // dir or no dots or one dot first
@@ -157,7 +149,7 @@ char* get_name_extension(char* full_name, gboolean is_dir, char** ext)
         return full;
     }
     dot[0] = '\0';
-    final_ext = dot + 1;
+    char*  final_ext = dot + 1;
     // get previous dot
     dot = strrchr(full, '.');
     uint final_ext_len = strlen(final_ext);
@@ -207,7 +199,6 @@ void open_in_prog(const char* path)
 char* replace_string(const char* orig, const char* str, const char* replace, gboolean quote)
 { // replace all occurrences of str in orig with replace, optionally quoting
     char* rep;
-    const char* cur;
     char* result = NULL;
     char* old_result;
     char* s;
@@ -227,7 +218,7 @@ char* replace_string(const char* orig, const char* str, const char* replace, gbo
     else
         rep = g_strdup(replace);
 
-    cur = orig;
+    const char* cur = orig;
     do
     {
         if (result)

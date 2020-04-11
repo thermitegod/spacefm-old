@@ -147,16 +147,13 @@ static gboolean open_file(char* dir, GList* files, PtkFileBrowser* file_browser)
         if (file_browser)
         {
             GList* l;
-            char* full_path;
-            VFSFileInfo* file;
-
             for (l = files; l; l = l->next)
             {
-                file = (VFSFileInfo*)l->data;
+                VFSFileInfo* file = (VFSFileInfo*)l->data;
                 if (G_UNLIKELY(!file))
                     continue;
 
-                full_path = g_build_filename(dir, vfs_file_info_get_name(file), NULL);
+                char* full_path = g_build_filename(dir, vfs_file_info_get_name(file), NULL);
                 if (G_LIKELY(full_path))
                 {
                     if (g_file_test(full_path, G_FILE_TEST_IS_DIR))
@@ -181,36 +178,32 @@ static void open_dir(char* dir, GList* files, FMMainWindow* w)
 static void on_open_files(GtkAction* action, FindFile* data)
 {
     GtkTreeModel* model;
-    GtkTreeSelection* sel;
-    GtkTreeIter it;
-    GList *row, *rows;
-    GHashTable* hash;
     GtkWidget* w;
-    VFSFileInfo* fi;
     gboolean open_files_has_dir = FALSE; // sfm
-    PtkFileBrowser* file_browser = NULL; // sfm
     gboolean open_files = TRUE;
 
     if (action)
         open_files = (0 == strcmp(gtk_action_get_name(action), "OpenAction"));
 
-    sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->result_view));
-    rows = gtk_tree_selection_get_selected_rows(sel, &model);
+    GtkTreeSelection* sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->result_view));
+    GList* rows = gtk_tree_selection_get_selected_rows(sel, &model);
     if (!rows)
         return;
 
     // sfm this frees list when new value inserted - caused segfault
     // hash = g_hash_table_new_full( g_str_hash, g_str_equal, (GDestroyNotify)g_free, open_files ?
     // (GDestroyNotify)vfs_file_info_list_free : NULL );
-    hash = g_hash_table_new_full(g_str_hash, g_str_equal, (GDestroyNotify)g_free, NULL);
+    GHashTable* hash = g_hash_table_new_full(g_str_hash, g_str_equal, (GDestroyNotify)g_free, NULL);
 
+    GList* row;
     for (row = rows; row; row = row->next)
     {
         char* dir;
         GtkTreePath* tp = (GtkTreePath*)row->data;
-
+        GtkTreeIter it;
         if (gtk_tree_model_get_iter(model, &it, tp))
         {
+            VFSFileInfo* fi;
             if (open_files) /* open files */
                 gtk_tree_model_get(model, &it, COL_INFO, &fi, COL_DIR, &dir, -1);
             else /* open containing folders */
@@ -238,6 +231,7 @@ static void on_open_files(GtkAction* action, FindFile* data)
 
     if (open_files)
     {
+        PtkFileBrowser* file_browser = NULL; // sfm
         if (open_files_has_dir)
         {
             w = GTK_WIDGET(fm_main_window_get_on_current_desktop());
@@ -276,19 +270,18 @@ static GtkActionEntry menu_actions[] = {
 static int get_date_offset(GtkCalendar* calendar)
 {
     /* FIXME: I think we need a better implementation for this */
-    GDate* date;
-    GDate* today;
-    uint y, m, d;
-    int offset;
+    uint y;
+    uint m;
+    uint d;
     time_t timeval = time(NULL);
     struct tm* lt = localtime(&timeval);
 
     gtk_calendar_get_date(calendar, &y, &m, &d);
 
-    date = g_date_new_dmy(d, m, y);
-    today = g_date_new_dmy(lt->tm_mday, lt->tm_mon, lt->tm_year + 1900);
+    GDate* date = g_date_new_dmy(d, m, y);
+    GDate* today = g_date_new_dmy(lt->tm_mday, lt->tm_mon, lt->tm_year + 1900);
 
-    offset = g_date_days_between(date, today);
+    int offset = g_date_days_between(date, today);
 
     g_date_free(date);
     g_date_free(today);
@@ -298,13 +291,12 @@ static int get_date_offset(GtkCalendar* calendar)
 static char** compose_command(FindFile* data)
 {
     GArray* argv = g_array_sized_new(TRUE, TRUE, sizeof(char*), 10);
-    char *arg, *tmp;
+    char* tmp;
     GtkTreeIter it;
     char size_units[] = {"ckMG"};
-    int idx;
     gboolean print = FALSE;
 
-    arg = g_strdup("find");
+    char* arg = g_strdup("find");
     g_array_append_val(argv, arg);
     arg = g_strdup("-H");
     g_array_append_val(argv, arg);
@@ -420,7 +412,7 @@ static char** compose_command(FindFile* data)
     }
 
     /* match by mtime */
-    idx = gtk_combo_box_get_active((GtkComboBox*)data->date_limit);
+    int idx = gtk_combo_box_get_active((GtkComboBox*)data->date_limit);
     if (idx > 0)
     {
         if (idx == 5) /* range */
@@ -544,16 +536,12 @@ static void finish_search(FindFile* data)
 
 static void process_found_files(FindFile* data, GQueue* queue, const char* path)
 {
-    char* name;
-    GtkTreeIter it;
-    VFSFileInfo* fi;
-    GdkPixbuf* icon;
     FoundFile* ff;
 
     if (path)
     {
-        name = g_filename_display_basename(path);
-        fi = vfs_file_info_new();
+        char* name = g_filename_display_basename(path);
+        VFSFileInfo* fi = vfs_file_info_new();
         if (vfs_file_info_get(fi, path, name))
         {
             ff = g_slice_new0(FoundFile);
@@ -581,8 +569,9 @@ static void process_found_files(FindFile* data, GQueue* queue, const char* path)
     while ((ff = (FoundFile*)g_queue_pop_head(queue)))
     {
         GDK_THREADS_ENTER();
+        GtkTreeIter it;
         gtk_list_store_append(data->result_list, &it);
-        icon = vfs_file_info_get_small_icon(ff->fi);
+        GdkPixbuf* icon = vfs_file_info_get_small_icon(ff->fi);
         gtk_list_store_set(data->result_list,
                            &it,
                            COL_ICON,
@@ -615,12 +604,12 @@ static gpointer search_thread(VFSAsyncTask* task, FindFile* data)
 
     while (!data->task->cancel && (rlen = read(data->stdo, buf, sizeof(buf) - 1)) > 0)
     {
-        char *pbuf, *eol;
-        buf[rlen] = '\0';
-        pbuf = buf;
-
         while (!data->task->cancel)
         {
+            char* eol;
+            char* pbuf;
+            buf[rlen] = '\0';
+            pbuf = buf;
             if ((eol = strchr(pbuf, '\n'))) /* end of line is reached */
             {
                 *eol = '\0';
@@ -824,14 +813,13 @@ static void on_add_search_desktop(GtkWidget* menu, FindFile* data)
 
 static void on_add_search_volumes(GtkWidget* menu, FindFile* data)
 {
-    const char* path;
     const GList *vols = vfs_volume_get_all_volumes(), *l;
     for (l = vols; l; l = l->next)
     {
         VFSVolume* vol = (VFSVolume*)l->data;
         if (vfs_volume_is_mounted(vol))
         {
-            path = vfs_volume_get_mount_point(vol);
+            const char* path = vfs_volume_get_mount_point(vol);
             if (path && path[0] != '\0')
                 add_search_dir(data, path);
         }
@@ -1039,9 +1027,6 @@ void on_use_size_upper_toggled(GtkWidget* widget, FindFile* data)
 void fm_find_files(const char** search_dirs)
 {
     FindFile* data = g_slice_new0(FindFile);
-    GtkTreeIter it;
-    GtkTreeViewColumn* col;
-    GtkWidget *add_folder_btn, *remove_folder_btn, *img;
 
 #if (GTK_MAJOR_VERSION == 3)
     GtkBuilder* builder = _gtk_builder_new_from_file(PACKAGE_UI_DIR, "/find-files3.ui", NULL);
@@ -1106,8 +1091,8 @@ void fm_find_files(const char** search_dirs)
     /* places */
     data->places_list = gtk_list_store_new(1, G_TYPE_STRING);
     data->places_view = (GtkWidget*)gtk_builder_get_object(builder, "places_view");
-    add_folder_btn = (GtkWidget*)gtk_builder_get_object(builder, "add_folder_btn");
-    remove_folder_btn = (GtkWidget*)gtk_builder_get_object(builder, "remove_folder_btn");
+    GtkWidget* add_folder_btn = (GtkWidget*)gtk_builder_get_object(builder, "add_folder_btn");
+    GtkWidget* remove_folder_btn = (GtkWidget*)gtk_builder_get_object(builder, "remove_folder_btn");
     data->include_sub = (GtkWidget*)gtk_builder_get_object(builder, "include_sub");
 
     if (search_dirs)
@@ -1116,13 +1101,16 @@ void fm_find_files(const char** search_dirs)
         for (dir = search_dirs; *dir; ++dir)
         {
             if (g_file_test(*dir, G_FILE_TEST_IS_DIR))
+            {
+                GtkTreeIter it;
                 gtk_list_store_insert_with_values(data->places_list, &it, 0, 0, *dir, -1);
+            }
         }
     }
 
     gtk_tree_view_set_model((GtkTreeView*)data->places_view, (GtkTreeModel*)data->places_list);
     g_object_unref(data->places_list);
-    col = gtk_tree_view_column_new_with_attributes(NULL, gtk_cell_renderer_text_new(), "text", 0, NULL);
+    GtkTreeViewColumn* col = gtk_tree_view_column_new_with_attributes(NULL, gtk_cell_renderer_text_new(), "text", 0, NULL);
     gtk_tree_view_append_column((GtkTreeView*)data->places_view, col);
 
     g_signal_connect(add_folder_btn, "clicked", G_CALLBACK(on_add_search_folder), data);
@@ -1146,7 +1134,7 @@ void fm_find_files(const char** search_dirs)
     data->start_btn = (GtkWidget*)gtk_builder_get_object(builder, "start_btn");
     data->stop_btn = (GtkWidget*)gtk_builder_get_object(builder, "stop_btn");
     data->again_btn = (GtkWidget*)gtk_builder_get_object(builder, "again_btn");
-    img = gtk_image_new_from_icon_name(GTK_STOCK_REFRESH, GTK_ICON_SIZE_BUTTON);
+    GtkWidget* img = gtk_image_new_from_icon_name(GTK_STOCK_REFRESH, GTK_ICON_SIZE_BUTTON);
     gtk_button_set_image((GtkButton*)data->again_btn, img);
 
     g_signal_connect(data->start_btn, "clicked", G_CALLBACK(on_start_search), data);

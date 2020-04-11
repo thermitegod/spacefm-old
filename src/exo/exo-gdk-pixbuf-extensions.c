@@ -498,8 +498,6 @@ GdkPixbuf* exo_gdk_pixbuf_spotlight(const GdkPixbuf* source)
 GdkPixbuf* exo_gdk_pixbuf_scale_down(GdkPixbuf* source, gboolean preserve_aspect_ratio, int dest_width,
                                      int dest_height)
 {
-    double wratio;
-    double hratio;
     int source_width;
     int source_height;
 
@@ -517,6 +515,8 @@ GdkPixbuf* exo_gdk_pixbuf_scale_down(GdkPixbuf* source, gboolean preserve_aspect
     /* check if aspect ratio should be preserved */
     if (G_LIKELY(preserve_aspect_ratio))
     {
+        double wratio;
+        double hratio;
         /* calculate the new dimensions */
         wratio = (gdouble)source_width / (gdouble)dest_width;
         hratio = (gdouble)source_height / (gdouble)dest_height;

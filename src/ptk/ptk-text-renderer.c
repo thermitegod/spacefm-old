@@ -639,14 +639,12 @@ static void add_attr(PangoAttrList* attr_list, PangoAttribute* attr)
 static PangoLayout* get_layout(PtkTextRenderer* celltext, GtkWidget* widget, gboolean will_render,
                                GtkCellRendererState flags)
 {
-    PangoAttrList* attr_list;
-    PangoLayout* layout;
     PangoUnderline uline;
 
-    layout = gtk_widget_create_pango_layout(widget, celltext->text);
+    PangoLayout* layout = gtk_widget_create_pango_layout(widget, celltext->text);
     pango_layout_set_alignment(layout, PANGO_ALIGN_CENTER);
 
-    attr_list = pango_attr_list_new();
+    PangoAttrList* attr_list = pango_attr_list_new();
 
     if (will_render)
     {

@@ -66,16 +66,14 @@ gboolean seek_path(GtkEntry* entry)
     if (!xset_get_b("path_seek"))
         return FALSE;
 
-    char* seek_dir;
     char* seek_name = NULL;
-    char* full_path;
     const char* path = gtk_entry_get_text(entry);
     if (!path || path[0] == '$' || path[0] == '+' || path[0] == '&' || path[0] == '!' || path[0] == '\0' ||
         path[0] == ' ' || path[0] == '%')
         return FALSE;
 
     // get dir and name prefix
-    seek_dir = get_cwd(entry);
+    char* seek_dir = get_cwd(entry);
     if (!(seek_dir && g_file_test(seek_dir, G_FILE_TEST_IS_DIR)))
     {
         // entry does not contain a valid dir
@@ -91,15 +89,15 @@ gboolean seek_path(GtkEntry* entry)
         {
             // complete dir path is in entry - is it unique?
             GDir* dir;
-            const char* name;
             int count = 0;
             if ((dir = g_dir_open(seek_dir, 0, NULL)))
             {
+                const char* name;
                 while (count < 2 && (name = g_dir_read_name(dir)))
                 {
                     if (g_str_has_prefix(name, seek_name))
                     {
-                        full_path = g_build_filename(seek_dir, name, NULL);
+                        char* full_path = g_build_filename(seek_dir, name, NULL);
                         if (g_file_test(full_path, G_FILE_TEST_IS_DIR))
                             count++;
                         g_free(full_path);
@@ -199,19 +197,16 @@ static void update_completion(GtkEntry* entry, GtkEntryCompletion* completion)
     else
     {
         // dir completion
-        char *new_dir, *fn;
-        const char* old_dir;
-        const char* sep;
-
-        sep = strrchr(text, '/');
+        char* fn;
+        const char* sep = strrchr(text, '/');
         if (sep)
             fn = (char*)sep + 1;
         else
             fn = (char*)text;
         g_object_set_data_full(G_OBJECT(completion), "fn", g_strdup(fn), (GDestroyNotify)g_free);
 
-        new_dir = get_cwd(entry);
-        old_dir = (const char*)g_object_get_data((GObject*)completion, "cwd");
+        char* new_dir = get_cwd(entry);
+        const char* old_dir = (const char*)g_object_get_data((GObject*)completion, "cwd");
         if (old_dir && new_dir && 0 == g_ascii_strcasecmp(old_dir, new_dir))
         {
             g_free(new_dir);
@@ -238,11 +233,10 @@ static void update_completion(GtkEntry* entry, GtkEntryCompletion* completion)
 
                 // add sorted list to liststore
                 GSList* l;
-                char* disp_name;
                 name_list = g_slist_sort(name_list, (GCompareFunc)g_strcmp0);
                 for (l = name_list; l; l = l->next)
                 {
-                    disp_name = g_filename_display_basename((char*)l->data);
+                    char* disp_name = g_filename_display_basename((char*)l->data);
                     gtk_list_store_append(list, &it);
                     gtk_list_store_set(list, &it, COL_NAME, disp_name, COL_PATH, (char*)l->data, -1);
                     g_free(disp_name);
@@ -528,18 +522,16 @@ static gboolean on_button_release(GtkEntry* entry, GdkEventButton* evt, gpointer
 
     if (1 == evt->button && keymod == GDK_CONTROL_MASK)
     {
-        int pos;
-        const char *text, *sep;
-        char* path;
+        const char* text;
 
         text = gtk_entry_get_text(entry);
         if (!(text[0] == '$' || text[0] == '+' || text[0] == '&' || text[0] == '!' || text[0] == '%' ||
               text[0] == '\0'))
         {
-            pos = gtk_editable_get_position(GTK_EDITABLE(entry));
+            int pos = gtk_editable_get_position(GTK_EDITABLE(entry));
             if (G_LIKELY(text && *text))
             {
-                sep = g_utf8_offset_to_pointer(text, pos);
+                const char* sep = g_utf8_offset_to_pointer(text, pos);
                 if (G_LIKELY(sep))
                 {
                     while (*sep && *sep != '/')
@@ -551,7 +543,7 @@ static gboolean on_button_release(GtkEntry* entry, GdkEventButton* evt, gpointer
                         else
                             return FALSE;
                     }
-                    path = g_strndup(text, (sep - text));
+                    char* path = g_strndup(text, (sep - text));
                     gtk_entry_set_text(entry, path);
                     gtk_editable_set_position((GtkEditable*)entry, -1);
                     g_free(path);

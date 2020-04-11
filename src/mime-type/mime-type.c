@@ -85,7 +85,7 @@ static gboolean mime_type_is_data_plain_text(const char* data, int len);
  */
 const char* mime_type_get_by_filename(const char* filename, struct stat* statbuf)
 {
-    const char *type = NULL, *suffix_pos = NULL, *prev_suffix_pos = (const char*)-1;
+    const char* type = NULL;
     int i;
     MimeCache* cache;
 
@@ -98,6 +98,8 @@ const char* mime_type_get_by_filename(const char* filename, struct stat* statbuf
         type = mime_cache_lookup_literal(cache, filename);
         if (G_LIKELY(!type))
         {
+            char* suffix_pos = NULL;
+            char* prev_suffix_pos = (const char*)-1;
             const char* _type = mime_cache_lookup_suffix(cache, filename, &suffix_pos);
             if (_type && suffix_pos < prev_suffix_pos)
             {
@@ -143,13 +145,13 @@ const char* mime_type_get_by_filename(const char* filename, struct stat* statbuf
 const char* mime_type_get_by_file(const char* filepath, struct stat* statbuf, const char* basename)
 {
     const char* type;
-    struct stat _statbuf;
 
     /* IMPORTANT!! vfs-file-info.c:vfs_file_info_reload_mime_type() depends
      * on this function only using the st_mode from statbuf.
      * Also see vfs-dir.c:vfs_dir_load_thread */
     if (statbuf == NULL || G_UNLIKELY(S_ISLNK(statbuf->st_mode)))
     {
+        struct stat _statbuf;
         statbuf = &_statbuf;
         if (stat(filepath, statbuf) == -1)
             return XDG_MIME_TYPE_UNKNOWN;
@@ -179,12 +181,12 @@ const char* mime_type_get_by_file(const char* filepath, struct stat* statbuf, co
     if (G_LIKELY(statbuf->st_size > 0 && (S_ISREG(statbuf->st_mode) || S_ISLNK(statbuf->st_mode))))
     {
         int fd = -1;
-        char* data;
 
         /* Open the file and map it into memory */
         fd = open(filepath, O_RDONLY, 0);
         if (fd != -1)
         {
+            char* data;
             int len = mime_cache_max_extent < statbuf->st_size ? mime_cache_max_extent : statbuf->st_size;
 #ifdef HAVE_MMAP
             data = (char*)mmap(NULL, len, PROT_READ, MAP_SHARED, fd, 0);
@@ -300,8 +302,11 @@ static char* parse_xml_icon(const char* buf, size_t len, gboolean is_local)
 
 static char* parse_xml_desc(const char* buf, size_t len)
 {
-    const char *comment = NULL, *comment_end, *eng_comment;
-    size_t eng_comment_len = 0, comment_len = 0;
+    const char* comment = NULL;
+    const char* comment_end;
+    const char* eng_comment;
+    size_t eng_comment_len = 0;
+    size_t comment_len = 0;
     // char target[64];
     static const char end_comment_tag[] = "</comment>";
 
@@ -324,7 +329,8 @@ static char* _mime_type_get_desc_icon(const char* file_path, gboolean is_local, 
 {
     int fd;
     struct stat statbuf; // skip stat
-    char *buffer, *desc;
+    char* buffer;
+    char* desc;
     // char file_path[ 256 ];  //sfm to improve speed, file_path is passed
 
     // g_snprintf( file_path, 256, "%s/mime/%s.xml", data_dir, type );
@@ -507,9 +513,9 @@ gboolean mime_cache_reload(MimeCache* cache)
 
 gboolean mime_type_is_data_plain_text(const char* data, int len)
 {
-    int i;
     if (G_LIKELY(len >= 0 && data))
     {
+        int i;
         for (i = 0; i < len; ++i)
         {
             if (data[i] == '\0')
@@ -522,8 +528,6 @@ gboolean mime_type_is_data_plain_text(const char* data, int len)
 
 gboolean mime_type_is_text_file(const char* file_path, const char* mime_type)
 {
-    int file;
-    int rlen;
     gboolean ret = FALSE;
 
     if (mime_type)
@@ -540,7 +544,7 @@ gboolean mime_type_is_text_file(const char* file_path, const char* mime_type)
     if (!file_path)
         return FALSE;
 
-    file = open(file_path, O_RDONLY);
+    int file = open(file_path, O_RDONLY);
     if (file != -1)
     {
         struct stat statbuf;
@@ -556,7 +560,7 @@ gboolean mime_type_is_text_file(const char* file_path, const char* mime_type)
                 munmap((char*)data, rlen);
 #else
                 unsigned char data[TEXT_MAX_EXTENT];
-                rlen = read(file, data, sizeof(data));
+                int rlen = read(file, data, sizeof(data));
                 ret = mime_type_is_data_plain_text((char*)data, rlen);
 #endif
             }
@@ -594,19 +598,17 @@ gboolean mime_type_is_executable_file(const char* file_path, const char* mime_ty
 /* Check if the specified mime_type is the subclass of the specified parent type */
 gboolean mime_type_is_subclass(const char* type, const char* parent)
 {
-    int i;
-    const char** parents = NULL;
-    const char** p;
-
     /* special case, the type specified is identical to the parent type. */
     if (G_UNLIKELY(0 == strcmp(type, parent)))
         return TRUE;
 
+    int i;
     for (i = 0; i < n_caches; ++i)
     {
-        parents = mime_cache_lookup_parents(caches[i], type);
+        const char** parents = mime_cache_lookup_parents(caches[i], type);
         if (parents)
         {
+            const char** p;
             for (p = parents; *p; ++p)
             {
                 if (0 == strcmp(parent, *p))
@@ -624,15 +626,14 @@ gboolean mime_type_is_subclass(const char* type, const char* parent)
 char** mime_type_get_parents(const char* type)
 {
     int i;
-    const char** parents = NULL;
-    const char** p;
     GArray* ret = g_array_sized_new(TRUE, TRUE, sizeof(char*), 5);
 
     for (i = 0; i < n_caches; ++i)
     {
-        parents = mime_cache_lookup_parents(caches[i], type);
+        const char** parents = mime_cache_lookup_parents(caches[i], type);
         if (parents)
         {
+            const char** p;
             for (p = parents; *p; ++p)
             {
                 char* parent = g_strdup(*p);
@@ -650,15 +651,14 @@ char** mime_type_get_parents(const char* type)
 char** mime_type_get_alias(const char* type)
 {
     int i;
-    const char** alias = NULL;
-    const char** p;
     GArray* ret = g_array_sized_new(TRUE, TRUE, sizeof(char*), 5);
 
     for (i = 0; i < n_caches; ++i)
     {
-        alias = (const char**)mime_cache_lookup_alias(caches[i], type);
+        const char** alias = (const char**)mime_cache_lookup_alias(caches[i], type);
         if (alias)
         {
+            const char** p;
             for (p = alias; *p; ++p)
             {
                 char* type = g_strdup(*p);

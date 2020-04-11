@@ -358,7 +358,6 @@ static void exo_cell_renderer_icon_render(GtkCellRenderer* renderer,
 {
     const ExoCellRendererIconPrivate* priv =
         exo_cell_renderer_icon_get_instance_private(EXO_CELL_RENDERER_ICON(renderer));
-    GtkIconSource* icon_source;
     GtkStateType state;
     GtkIconTheme* icon_theme;
     GdkRectangle icon_area;
@@ -528,6 +527,7 @@ static void exo_cell_renderer_icon_render(GtkCellRenderer* renderer,
         if (G_UNLIKELY(gtk_widget_get_state(widget) == GTK_STATE_INSENSITIVE ||
                        !gtk_cell_renderer_get_sensitive(renderer)))
         {
+            GtkIconSource* icon_source;
             /* Allocate an icon source */
             icon_source = gtk_icon_source_new();
             gtk_icon_source_set_pixbuf(icon_source, icon);

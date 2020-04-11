@@ -676,16 +676,14 @@ char* ptk_handler_load_script(int mode, int cmd, XSet* handler_set, GtkTextView*
         return g_strdup(_("Error: unable to save command (can't get script path?)"));
     }
     // name script
-    char* script;
-    char* str;
-    str = g_strdup_printf("/hand-%s-%s.sh", modes[mode], mode == HANDLER_MODE_ARC ? cmds_arc[cmd] : cmds_mnt[cmd]);
-    script = replace_string(def_script, "/exec.sh", str, FALSE);
+    char* str = g_strdup_printf("/hand-%s-%s.sh", modes[mode], mode == HANDLER_MODE_ARC ? cmds_arc[cmd] : cmds_mnt[cmd]);
+    char* script = replace_string(def_script, "/exec.sh", str, FALSE);
     g_free(str);
     g_free(def_script);
     // load script
     // gboolean modified = FALSE;
     char line[4096];
-    FILE* file = 0;
+    FILE* file;
     gboolean start = TRUE;
 
     if (!view)
@@ -843,14 +841,12 @@ gboolean ptk_handler_values_in_list(const char* list, GSList* values, char** msg
 
     // test each element for match
     int i;
-    GSList* l;
-    char* element;
     char* ret_msg = NULL;
-    char* str;
-    gboolean required, match;
     gboolean ret = FALSE;
     for (i = 0; elements[i]; i++)
     {
+        gboolean required;
+        char* element;
         if (!elements[i][0])
             continue;
         if (elements[i][0] == '+')
@@ -864,7 +860,8 @@ gboolean ptk_handler_values_in_list(const char* list, GSList* values, char** msg
             element = elements[i];
             required = FALSE;
         }
-        match = FALSE;
+        gboolean match = FALSE;
+        GSList* l;
         for (l = values; l; l = l->next)
         {
             if (fnmatch(element, (char*)l->data, 0) == 0)
@@ -883,7 +880,7 @@ gboolean ptk_handler_values_in_list(const char* list, GSList* values, char** msg
         }
         if (msg)
         {
-            str = ret_msg;
+            char* str = ret_msg;
             ret_msg = g_strdup_printf("%s%s%s%s%s",
                                       ret_msg ? ret_msg : "",
                                       ret_msg ? " " : "",
@@ -904,14 +901,13 @@ gboolean ptk_handler_values_in_list(const char* list, GSList* values, char** msg
 static gboolean value_in_list(const char* list, const char* value)
 { // this function must be FAST - is run multiple times on menu popup
     char* ptr;
-    char* delim;
-    char ch;
 
     // value in space-separated list with wildcards?
     if (value && (ptr = (char*)list) && ptr[0])
     {
         while (1)
         {
+            char* delim;
             while (ptr[0] == ' ')
                 ptr++;
             if (!ptr[0])
@@ -919,7 +915,7 @@ static gboolean value_in_list(const char* list, const char* value)
             delim = ptr;
             while (delim[0] != ' ' && delim[0])
                 delim++;
-            ch = delim[0];
+            char ch = delim[0];
             delim[0] = '\0'; // set temporary end of string
             if (fnmatch(ptr, value, 0) == 0)
             {
@@ -942,7 +938,6 @@ GSList* ptk_handler_file_has_handlers(int mode, int cmd, const char* path, VFSMi
     const char* type;
     char* delim;
     char* ptr;
-    XSet* handler_set;
     char* under_path;
     char* new_path = NULL;
     GSList* handlers = NULL;
@@ -974,7 +969,7 @@ GSList* ptk_handler_file_has_handlers(int mode, int cmd, const char* path, VFSMi
                 delim[0] = '\0'; // set temporary end of string
 
             // Fetching handler
-            handler_set = xset_is(ptr);
+            XSet* handler_set = xset_is(ptr);
             if (delim)
                 delim[0] = ' '; // remove temporary end of string
 
@@ -1023,7 +1018,8 @@ void ptk_handler_add_new_default(int mode, const char* default_name, gboolean st
 {
     // This function adds a new default handler to the handlers list
     // If start, it adds it to the start of the list, otherwise end
-    int i, nelements;
+    int i;
+    int nelements;
     char* list;
     char* str;
     XSet* set;
@@ -1118,11 +1114,11 @@ void ptk_handler_add_new_default(int mode, const char* default_name, gboolean st
 
 void ptk_handler_add_defaults(int mode, gboolean overwrite, gboolean add_missing)
 {
-    int i, nelements;
+    int i;
+    int nelements;
     char* list;
     char* str;
-    char* testlist;
-    char* testname;
+
     XSet* set;
     XSet* set_conf;
     const Handler* handler;
@@ -1167,8 +1163,8 @@ void ptk_handler_add_defaults(int mode, gboolean overwrite, gboolean add_missing
 
         // add a space to end of list and end of name before testing to avoid
         // substring false positive
-        testlist = g_strdup_printf("%s ", list);
-        testname = g_strdup_printf("%s ", handler->xset_name);
+        char* testlist = g_strdup_printf("%s ", list);
+        char* testname = g_strdup_printf("%s ", handler->xset_name);
         if (add_missing && !strstr(testlist, testname))
         {
             // add a missing default handler to the list
@@ -1213,14 +1209,13 @@ XSet* add_new_handler(int mode)
 {
     // creates a new xset for a custom handler type
     XSet* set;
-    char* rand;
     char* name = NULL;
 
     // get a unique new xset name
     do
     {
         g_free(name);
-        rand = randhex8();
+        char* rand = randhex8();
         name = g_strconcat(handler_cust_prefix[mode], rand, NULL);
         g_free(rand);
     } while (xset_is(name));
@@ -1555,14 +1550,13 @@ static void on_configure_drag_end(GtkWidget* widget, GdkDragContext* drag_contex
     }
 
     // Looping for all handlers
-    char* xset_name;
     char* archive_handlers = g_strdup("");
-    char* archive_handlers_temp;
     do
     {
+        char* xset_name;
         gtk_tree_model_get(GTK_TREE_MODEL(hnd->list), &iter, COL_XSET_NAME, &xset_name, -1);
 
-        archive_handlers_temp = archive_handlers;
+        char* archive_handlers_temp = archive_handlers;
         if (g_strcmp0(archive_handlers, "") == 0)
         {
             archive_handlers = g_strdup(xset_name);
@@ -1825,7 +1819,6 @@ static void on_configure_button_press(GtkButton* widget, HandlerData* hnd)
         const char* archive_handlers_s = xset_get_s(handler_conf_xset[hnd->mode]);
         char** archive_handlers = archive_handlers_s ? g_strsplit(archive_handlers_s, " ", -1) : NULL;
         char* new_archive_handlers_s = g_strdup("");
-        char* new_archive_handlers_s_temp;
 
         // Looping for handlers (NULL-terminated list)
         if (archive_handlers)
@@ -1841,7 +1834,7 @@ static void on_configure_button_press(GtkButton* widget, HandlerData* hnd)
                     // g_message("archive_handlers[i]: %s\nxset_name: %s",
                     //                        archive_handlers[i], xset_name);
 
-                    new_archive_handlers_s_temp = new_archive_handlers_s;
+                    char* new_archive_handlers_s_temp = new_archive_handlers_s;
                     if (g_strcmp0(new_archive_handlers_s, "") == 0)
                     {
                         new_archive_handlers_s = g_strdup(archive_handlers[i]);
@@ -2045,7 +2038,6 @@ static gboolean on_handlers_key_press(GtkWidget* widget, GdkEventKey* evt, Handl
 
 static gboolean on_handlers_button_press(GtkWidget* view, GdkEventButton* evt, HandlerData* hnd)
 {
-    GtkTreeModel* model;
     GtkTreePath* tree_path = NULL;
     GtkTreeIter it;
     GtkTreeSelection* selection;
@@ -2055,7 +2047,7 @@ static gboolean on_handlers_button_press(GtkWidget* view, GdkEventButton* evt, H
     // get clicked item
     if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(view), evt->x, evt->y, &tree_path, NULL, NULL, NULL))
     {
-        model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+        GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
         if (gtk_tree_model_get_iter(model, &it, tree_path))
             item_clicked = TRUE;
     }
@@ -2249,7 +2241,9 @@ static gboolean validate_archive_handler(HandlerData* hnd)
         return FALSE;
     }
 
-    char *handler_compress, *handler_extract, *handler_list;
+    char* handler_compress;
+    char* handler_extract;
+    char* handler_list;
 
     handler_compress = ptk_handler_get_text_view(GTK_TEXT_VIEW(hnd->view_handler_compress));
     handler_extract = ptk_handler_get_text_view(GTK_TEXT_VIEW(hnd->view_handler_extract));
@@ -2619,11 +2613,10 @@ void on_option_cb(GtkMenuItem* item, HandlerData* hnd)
         g_free(file);
         return;
     }
-    char* hex8;
     folder = NULL;
     while (!folder || g_file_test(folder, G_FILE_TEST_EXISTS))
     {
-        hex8 = randhex8();
+        char* hex8 = randhex8();
         if (folder)
             g_free(folder);
         folder = g_build_filename(user_tmp, hex8, NULL);

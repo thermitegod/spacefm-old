@@ -83,13 +83,10 @@ static void get_window_size(GtkWidget* dlg, int* width, int* height)
 
 static void get_width_height_pad(char* val, int* width, int* height, int* pad)
 { // modifies val
-    char* str;
-    char* sep;
-    int i;
-
     *width = *height = -1;
     if (val)
     {
+        char* sep;
         if ((sep = strchr(val, 'x')))
             sep[0] = '\0';
         else if ((sep = strchr(val, ' ')))
@@ -97,6 +94,7 @@ static void get_width_height_pad(char* val, int* width, int* height, int* pad)
         *width = atoi(val);
         if (sep)
         {
+            char* str;
             sep[0] = 'x';
             str = sep + 1;
             if ((sep = strchr(str, 'x')))
@@ -106,6 +104,7 @@ static void get_width_height_pad(char* val, int* width, int* height, int* pad)
             *height = atoi(str);
             if (sep)
             {
+                int i;
                 sep[0] = ' ';
                 i = atoi(sep + 1);
                 // ignore pad == -1
@@ -126,10 +125,6 @@ static void get_width_height_pad(char* val, int* width, int* height, int* pad)
 
 static void fill_combo_box(CustomElement* el, GList* arglist)
 {
-    GList* args;
-    char* arg;
-    GtkTreeIter iter;
-    GtkTreeModel* model;
     char* default_value = NULL;
     int default_row = -1;
     int set_default = -1;
@@ -150,17 +145,19 @@ static void fill_combo_box(CustomElement* el, GList* arglist)
     }
 
     // clear list
-    model = gtk_combo_box_get_model(GTK_COMBO_BOX(combo));
+    GtkTreeIter iter;
+    GtkTreeModel* model = gtk_combo_box_get_model(GTK_COMBO_BOX(combo));
     while (gtk_tree_model_get_iter_first(model, &iter))
         gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
     if (el->type == CDLG_COMBO)
         gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(combo))), "");
 
     // fill list
-    args = arglist;
+    GList* args = arglist;
     int row = 0;
     while (args)
     {
+        char* arg;
         arg = (char*)args->data;
         args = args->next;
         if (!strcmp(arg, "--"))
@@ -199,8 +196,6 @@ static void fill_combo_box(CustomElement* el, GList* arglist)
 static void select_in_combo_box(CustomElement* el, const char* value)
 {
     GtkTreeIter iter;
-    GtkTreeModel* model;
-    char* str;
 
     if (!el->widgets->next)
         return;
@@ -208,7 +203,7 @@ static void select_in_combo_box(CustomElement* el, const char* value)
     if (!GTK_IS_COMBO_BOX(combo))
         return;
 
-    model = gtk_combo_box_get_model(GTK_COMBO_BOX(combo));
+    GtkTreeModel* model = gtk_combo_box_get_model(GTK_COMBO_BOX(combo));
     if (!model)
         return;
 
@@ -217,6 +212,7 @@ static void select_in_combo_box(CustomElement* el, const char* value)
 
     do
     {
+        char* str;
         gtk_tree_model_get(model, &iter, 0, &str, -1);
         if (!g_strcmp0(str, value))
         {
@@ -259,8 +255,6 @@ char* get_column_value(GtkTreeModel* model, GtkTreeIter* iter, int col_index)
 char* get_tree_view_selected(CustomElement* el, const char* prefix)
 {
     GtkTreeIter iter;
-    GtkTreeModel* model;
-    GtkTreeSelection* tree_sel;
     char* selected = NULL;
     char* indices = NULL;
     char* str;
@@ -271,8 +265,8 @@ char* get_tree_view_selected(CustomElement* el, const char* prefix)
     if (!GTK_IS_TREE_VIEW(view))
         goto _return_value;
 
-    tree_sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
-    model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+    GtkTreeSelection* tree_sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+    GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
     if (!GTK_IS_TREE_MODEL(model))
         goto _return_value;
 
@@ -331,18 +325,9 @@ _return_value:
 
 static void fill_tree_view(CustomElement* el, GList* arglist)
 {
-    GList* l;
-    GList* args;
     char* arg;
-    char* sep;
-    char* str;
-    GtkTreeIter iter;
-    GtkListStore* list;
-    GtkTreeModel* model;
-    GtkTreeViewColumn* col;
     GtkCellRenderer* renderer;
     GType coltypes[MAX_LIST_COLUMNS];
-    int colcount;
     int i;
     gboolean headers = FALSE;
 
@@ -353,11 +338,12 @@ static void fill_tree_view(CustomElement* el, GList* arglist)
         return;
 
     // clear list
-    model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+    GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
     if (model)
         gtk_list_store_clear(GTK_LIST_STORE(model));
     // remove columns
-    args = gtk_tree_view_get_columns(GTK_TREE_VIEW(view));
+    GList* args = gtk_tree_view_get_columns(GTK_TREE_VIEW(view));
+    GList* l;
     for (l = args; l; l = l->next)
     {
         gtk_tree_view_remove_column(GTK_TREE_VIEW(view), GTK_TREE_VIEW_COLUMN((GtkTreeViewColumn*)l->data));
@@ -366,10 +352,11 @@ static void fill_tree_view(CustomElement* el, GList* arglist)
 
     // fill list
     args = arglist;
-    col = NULL;
-    colcount = 0;
+    GtkTreeViewColumn* col = NULL;
+    int colcount = 0;
     while (args)
     {
+        char* str;
         arg = (char*)args->data;
         args = args->next;
         if (!strcmp(arg, "--"))
@@ -415,7 +402,7 @@ static void fill_tree_view(CustomElement* el, GList* arglist)
             if (arg[0] == '^')
             {
                 // column header
-                sep = strrchr(arg, ':');
+                char* sep = strrchr(arg, ':');
                 if (sep && sep[1] == '\0')
                     sep = NULL;
                 if (sep)
@@ -465,7 +452,7 @@ static void fill_tree_view(CustomElement* el, GList* arglist)
         return;
 
     // list store
-    list = gtk_list_store_newv(colcount, coltypes);
+    GtkListStore* list = gtk_list_store_newv(colcount, coltypes);
     gtk_tree_view_set_model(GTK_TREE_VIEW(view), GTK_TREE_MODEL(list));
     // gtk_tree_view_set_model adds a ref
     g_object_unref(list);
@@ -476,6 +463,7 @@ static void fill_tree_view(CustomElement* el, GList* arglist)
     args = arglist;
     while (args)
     {
+        GtkTreeIter iter;
         arg = (char*)args->data;
         args = args->next;
         if (!strcmp(arg, "--"))
@@ -553,11 +541,8 @@ static void fill_tree_view(CustomElement* el, GList* arglist)
 
 static void select_in_tree_view(CustomElement* el, const char* value, gboolean select)
 {
-    GtkTreeModel* model;
     GtkTreePath* tree_path;
     GtkTreeIter iter;
-    GtkTreeSelection* tree_sel;
-    char* str;
 
     if (!el || !el->widgets->next || !value)
         return;
@@ -566,11 +551,11 @@ static void select_in_tree_view(CustomElement* el, const char* value, gboolean s
     if (!GTK_IS_TREE_VIEW(view))
         return;
 
-    model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+    GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
     if (!model)
         return;
 
-    tree_sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+    GtkTreeSelection* tree_sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
 
     if (value[0] == '\0')
     {
@@ -597,6 +582,7 @@ static void select_in_tree_view(CustomElement* el, const char* value, gboolean s
 
     do
     {
+        char* str;
         str = get_column_value(model, &iter, 0);
         if (!g_strcmp0(str, value))
         {
@@ -653,13 +639,12 @@ GList* args_from_file(const char* path)
 
 static CustomElement* el_from_name(CustomElement* el, const char* name)
 {
-    GList* l;
-
     if (!el || !name)
         return NULL;
 
     GList* elements = (GList*)g_object_get_data(G_OBJECT(el->widgets->data), "elements");
     CustomElement* el_name = NULL;
+    GList* l;
     for (l = elements; l; l = l->next)
     {
         if (!strcmp(((CustomElement*)l->data)->name, name))
@@ -678,7 +663,6 @@ static void set_element_value(CustomElement* el, const char* name, char* value)
     GdkPixbuf* pixbuf;
     GtkWidget* image_box;
     GtkTextBuffer* buf;
-    char* sep;
     char* str;
     int i, width, height;
     GList* l;
@@ -724,6 +708,7 @@ static void set_element_value(CustomElement* el, const char* name, char* value)
     case CDLG_FREE_BUTTON:
         if (el_name->widgets->next && (w = GTK_WIDGET(el_name->widgets->next->data)))
         {
+            char* sep;
             g_free(el_name->val);
             el_name->val = unescape(value);
             if ((sep = strrchr(el_name->val, ':')))
@@ -1009,9 +994,9 @@ static void set_element_value(CustomElement* el, const char* name, char* value)
 
 static char* get_element_value(CustomElement* el, const char* name)
 {
-    int width, height, pad;
-    char* str;
-    char* str2;
+    int width;
+    int height;
+    int pad;
     CustomElement* el_name;
 
     if (!g_strcmp0(el->name, name))
@@ -1083,8 +1068,8 @@ static char* get_element_value(CustomElement* el, const char* name)
             {
                 for (sl = files; sl; sl = sl->next)
                 {
-                    str = ret;
-                    str2 = bash_quote((char*)sl->data);
+                    char* str = ret;
+                    char* str2 = bash_quote((char*)sl->data);
                     ret = g_strdup_printf("%s%s%s", str ? str : "", str ? " " : "", str2);
                     g_free(str);
                     g_free(str2);
@@ -1105,7 +1090,6 @@ static char* get_element_value(CustomElement* el, const char* name)
 static char* get_command_value(CustomElement* el, char* cmdline, char* xvalue)
 {
     char* stdout = NULL;
-    gboolean ret;
     GError* error = NULL;
     char* argv[4];
 
@@ -1118,7 +1102,7 @@ static char* get_command_value(CustomElement* el, char* cmdline, char* xvalue)
     argv[1] = g_strdup("-c");
     argv[2] = line;
     argv[3] = NULL;
-    ret = g_spawn_sync(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, &stdout, NULL, NULL, &error);
+    gboolean ret = g_spawn_sync(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, &stdout, NULL, NULL, &error);
     if (!ret && error)
     {
         dlg_warn("%s", error->message, NULL);
@@ -1130,19 +1114,17 @@ static char* get_command_value(CustomElement* el, char* cmdline, char* xvalue)
 static char* replace_vars(CustomElement* el, char* value, char* xvalue)
 {
     char* str;
-    char* str2;
-    char* str3;
-    char* ptr;
     char* sep;
-    char c;
 
     if (!el || !value)
         return g_strdup(value);
 
     char* newval = NULL;
-    ptr = value;
+    char* ptr = value;
     while ((sep = strchr(ptr, '%')))
     {
+        char* str2;
+        char* str3;
         sep[0] = '\0';
         if (ptr[0] != '\0')
         {
@@ -1190,7 +1172,7 @@ static char* replace_vars(CustomElement* el, char* value, char* xvalue)
         {
             // %VAR
             ptr = str;
-            c = str[0];
+            char c = str[0];
             str[0] = '\0';
             if (!strcmp(sep + 1, "n"))
             {
@@ -1416,17 +1398,14 @@ static void internal_command(CustomElement* el, int icmd, GList* args, char* xva
 
 static void run_command(CustomElement* el, GList* argslist, char* xvalue)
 {
-    int i, icmd = -1;
-    GList* args;
-    GError* error;
-
     if (!argslist)
         return;
 
-    args = argslist;
+    GList* args = argslist;
     while (args)
     {
-        icmd = -1;
+        int icmd = -1;
+        int i;
         for (i = 0; i < G_N_ELEMENTS(cdlg_cmd) / 3; i++)
         {
             if (!strcmp((char*)args->data, cdlg_cmd[i * 3]))
@@ -1461,7 +1440,7 @@ static void run_command(CustomElement* el, GList* argslist, char* xvalue)
                     g_fprintf( stderr, "%s%s", i == 0 ? "" : "  ", argv[i] );
                 g_fprintf( stderr, "\n" );
                 */
-                error = NULL;
+                GError* error = NULL;
                 if (!g_spawn_async(NULL,
                                    argv,
                                    NULL,
@@ -1490,7 +1469,6 @@ static void run_command(CustomElement* el, GList* argslist, char* xvalue)
 
 static void run_command_line(CustomElement* el, char* line)
 {
-    char* sep;
     GList* args = NULL;
     char* str = line;
     int i = 0;
@@ -1499,6 +1477,7 @@ static void run_command_line(CustomElement* el, char* line)
     {
         if (i < 2)
         {
+            char* sep;
             if ((sep = strchr(str, ' ')))
                 sep[0] = '\0';
             args = g_list_append(args, g_strdup(str));
@@ -1567,8 +1546,7 @@ static void write_file_value(const char* path, const char* val)
 
 static char* read_file_value(const char* path, gboolean multi)
 {
-    FILE* file;
-    int f, bytes;
+    int f;
     const char* end;
 
     if (!g_file_test(path, G_FILE_TEST_EXISTS))
@@ -1585,6 +1563,7 @@ static char* read_file_value(const char* path, gboolean multi)
     char line[4096];
     if (multi)
     {
+        int bytes;
         // read up to 4K of file
         if ((f = open(path, O_RDONLY)) == -1)
         {
@@ -1597,6 +1576,7 @@ static char* read_file_value(const char* path, gboolean multi)
     }
     else
     {
+        FILE* file;
         // read first line of file
         file = fopen(path, "r");
         if (!file)
@@ -1801,7 +1781,6 @@ static void cb_file_value_change(VFSFileMonitor* fm, VFSFileMonitorEvent event, 
 static void fill_buffer_from_file(CustomElement* el, GtkTextBuffer* buf, char* path, gboolean watch)
 {
     char line[4096];
-    FILE* file;
 
     char* pathx = path;
     if (pathx[0] == '@')
@@ -1809,7 +1788,7 @@ static void fill_buffer_from_file(CustomElement* el, GtkTextBuffer* buf, char* p
 
     gtk_text_buffer_set_text(buf, "", -1);
 
-    file = fopen(pathx, "r");
+    FILE* file = fopen(pathx, "r");
     if (!file)
     {
         dlg_warn(_("error reading file %s: %s"), pathx, g_strerror(errno));
@@ -1872,11 +1851,9 @@ static void get_text_value(CustomElement* el, const char* val, gboolean multi, g
 static void free_elements(GList* elements)
 {
     GList* l;
-    CustomElement* el;
-
     for (l = elements; l; l = l->next)
     {
-        el = (CustomElement*)l->data;
+        CustomElement* el = (CustomElement*)l->data;
         g_free(el->name);
         g_free(el->val);
         if (el->monitor)
@@ -1918,15 +1895,17 @@ static void write_value(FILE* file, const char* prefix, const char* name, const 
 
 static void write_source(GtkWidget* dlg, CustomElement* el_pressed, FILE* out, gboolean is_cancel)
 {
-    GList* l;
     CustomElement* el;
     char* str;
     const char* prefix = "dialog";
-    int width, height, pad = -1;
+    int width;
+    int height;
+    int pad = -1;
 
     GList* elements = (GList*)g_object_get_data(G_OBJECT(dlg), "elements");
 
     // get custom prefix
+    GList* l;
     for (l = elements; l; l = l->next)
     {
         if (((CustomElement*)l->data)->type == CDLG_PREFIX)
@@ -2203,7 +2182,6 @@ static gboolean on_timeout_timer(CustomElement* el)
 
 void on_widget_grab_focus(GtkWidget* widget, CustomElement* el)
 {
-    GList* l;
     char* val;
 
     if (!enable_click_event)
@@ -2216,6 +2194,7 @@ void on_widget_grab_focus(GtkWidget* widget, CustomElement* el)
         val = g_strdup(el->name);
 
     GList* elements = (GList*)g_object_get_data(G_OBJECT(el->widgets->data), "elements");
+    GList* l;
     for (l = elements; l; l = l->next)
     {
         if (((CustomElement*)l->data)->type == CDLG_CLICK && ((CustomElement*)l->data)->cmd_args)
@@ -2240,8 +2219,6 @@ void on_combo_changed(GtkComboBox* box, CustomElement* el)
 
 static void on_list_row_activated(GtkTreeView* view, GtkTreePath* tree_path, GtkTreeViewColumn* col, CustomElement* el)
 {
-    GtkTreeIter iter;
-
     if (!el->cmd_args)
     {
         press_last_button(el->widgets->data);
@@ -2250,6 +2227,7 @@ static void on_list_row_activated(GtkTreeView* view, GtkTreePath* tree_path, Gtk
 
     // get iter
     GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+    GtkTreeIter iter;
     if (!gtk_tree_model_get_iter(model, &iter, tree_path))
         return;
 
@@ -2323,11 +2301,10 @@ static gboolean press_last_button(GtkWidget* dlg)
     if (!elements)
         return FALSE;
     GList* l;
-    CustomElement* el;
     CustomElement* el_button = NULL;
     for (l = elements; l; l = l->next)
     {
-        el = (CustomElement*)l->data;
+        CustomElement* el = (CustomElement*)l->data;
         if (el->type == CDLG_BUTTON)
             el_button = el;
     }
@@ -2425,7 +2402,6 @@ static gboolean on_input_key_press(GtkWidget* entry, GdkEventKey* evt, CustomEle
 static void update_element(CustomElement* el, GtkWidget* box, GSList** radio, int pad)
 {
     GtkWidget* w;
-    GdkPixbuf* pixbuf;
     GtkWidget* dlg = (GtkWidget*)el->widgets->data;
     char* str;
     char* sep;
@@ -2524,6 +2500,7 @@ static void update_element(CustomElement* el, GtkWidget* box, GSList** radio, in
     case CDLG_WINDOW_ICON:
         if (args)
         {
+            GdkPixbuf* pixbuf;
             get_text_value(el, (char*)args->data, FALSE, TRUE);
             if (el->val)
                 pixbuf = gtk_icon_theme_load_icon(gtk_icon_theme_get_default(),
@@ -3403,11 +3380,6 @@ static void update_element(CustomElement* el, GtkWidget* box, GSList** radio, in
 
 static void build_dialog(GList* elements)
 {
-    GList* l;
-    GtkWidget* dlg;
-    CustomElement* el;
-    CustomElement* focus_el = NULL;
-    GSList* radio = NULL;
     GtkWidget* box;
     int pad = DEFAULT_PAD;
     int width = DEFAULT_WIDTH;
@@ -3418,7 +3390,7 @@ static void build_dialog(GList* elements)
     gboolean has_delete_handler = FALSE;
 
     // create dialog
-    dlg = gtk_dialog_new();
+    GtkWidget* dlg = gtk_dialog_new();
     gtk_window_set_default_size(GTK_WINDOW(dlg), width, height);
     gtk_window_set_title(GTK_WINDOW(dlg), DEFAULT_TITLE);
     gtk_window_set_position(GTK_WINDOW(dlg), GTK_WIN_POS_CENTER);
@@ -3454,9 +3426,12 @@ static void build_dialog(GList* elements)
 #endif
 
     // add elements
+    CustomElement* focus_el = NULL;
+    GList* l;
     for (l = elements; l; l = l->next)
     {
-        el = (CustomElement*)l->data;
+        GSList* radio = NULL;
+        CustomElement* el = (CustomElement*)l->data;
         el->widgets = g_list_append(NULL, dlg);
         update_element(el, box, &radio, pad);
         if (!focus_el && (el->type == CDLG_INPUT || el->type == CDLG_INPUT_LARGE || el->type == CDLG_EDITOR ||
@@ -3557,13 +3532,12 @@ void signal_handler()
 
 int custom_dialog_init(int argc, char* argv[])
 {
-    int ac, i, j;
     GList* elements = NULL;
     CustomElement* el = NULL;
-    char* num;
-    char* str;
     int type_count[G_N_ELEMENTS(cdlg_option) / 3] = {0};
 
+    int ac;
+    int j;
     for (ac = 2; ac < argc; ac++)
     {
         if (!g_utf8_validate(argv[ac], -1, NULL))
@@ -3575,6 +3549,7 @@ int custom_dialog_init(int argc, char* argv[])
         else if (g_str_has_prefix(argv[ac], "--"))
         {
             j = 0;
+            int i;
             for (i = 0; i < G_N_ELEMENTS(cdlg_option); i += 3)
             {
                 if (!strcmp(argv[ac] + 2, cdlg_option[i]))
@@ -3582,8 +3557,8 @@ int custom_dialog_init(int argc, char* argv[])
                     el = g_slice_new(CustomElement);
                     el->type = j;
                     type_count[j]++;
-                    num = g_strdup_printf("%d", type_count[j]);
-                    str = replace_string(cdlg_option[i], "-", "", FALSE);
+                    char* num = g_strdup_printf("%d", type_count[j]);
+                    char* str = replace_string(cdlg_option[i], "-", "", FALSE);
                     el->name = g_strdup_printf("%s%s", str, num ? num : "");
                     g_free(num);
                     g_free(str);

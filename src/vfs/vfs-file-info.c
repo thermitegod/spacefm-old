@@ -216,7 +216,6 @@ VFSMimeType* vfs_file_info_get_mime_type(VFSFileInfo* fi)
 
 void vfs_file_info_reload_mime_type(VFSFileInfo* fi, const char* full_path)
 {
-    VFSMimeType* old_mime_type;
     struct stat file_stat;
 
     /* convert VFSFileInfo to struct stat */
@@ -235,7 +234,7 @@ void vfs_file_info_reload_mime_type(VFSFileInfo* fi, const char* full_path)
     file_stat.st_blksize = fi->blksize;
     file_stat.st_blocks = fi->blocks;
     */
-    old_mime_type = fi->mime_type;
+    VFSMimeType* old_mime_type = fi->mime_type;
     fi->mime_type = vfs_mime_type_get_from_file(full_path, fi->name, &file_stat);
     vfs_file_info_load_special_info(fi, full_path);
     vfs_mime_type_unref(old_mime_type); /* FIXME: is vfs_mime_type_unref needed ?*/
@@ -253,7 +252,8 @@ GdkPixbuf* vfs_file_info_get_big_icon(VFSFileInfo* fi)
 
     if (G_UNLIKELY(fi->flags != VFS_FILE_INFO_NONE))
     {
-        int w, h;
+        int w;
+        int h;
         int icon_size;
         vfs_mime_type_get_icon_size(&icon_size, NULL);
         if (fi->big_thumbnail)
@@ -314,30 +314,28 @@ GdkPixbuf* vfs_file_info_get_small_thumbnail(VFSFileInfo* fi)
 
 const char* vfs_file_info_get_disp_owner(VFSFileInfo* fi)
 {
-    struct passwd* puser;
-    struct group* pgroup;
-    char uid_str_buf[32];
-    char* user_name;
-    char gid_str_buf[32];
-    char* group_name;
 
     /* FIXME: user names should be cached */
     if (!fi->disp_owner)
     {
-        puser = getpwuid(fi->uid);
+        char* user_name;
+        struct passwd* puser = getpwuid(fi->uid);
         if (puser && puser->pw_name && *puser->pw_name)
             user_name = puser->pw_name;
         else
         {
+            char uid_str_buf[32];
             g_snprintf(uid_str_buf, sizeof(uid_str_buf), "%d", fi->uid);
             user_name = uid_str_buf;
         }
 
-        pgroup = getgrgid(fi->gid);
+        char* group_name;
+        struct group* pgroup = getgrgid(fi->gid);
         if (pgroup && pgroup->gr_name && *pgroup->gr_name)
             group_name = pgroup->gr_name;
         else
         {
+            char gid_str_buf[32];
             g_snprintf(gid_str_buf, sizeof(gid_str_buf), "%d", fi->gid);
             group_name = gid_str_buf;
         }
@@ -687,29 +685,25 @@ gboolean vfs_file_info_is_text(VFSFileInfo* fi, const char* file_path)
  */
 gboolean vfs_file_info_open_file(VFSFileInfo* fi, const char* file_path, GError** err)
 {
-    VFSMimeType* mime_type;
-    char* app_name;
-    VFSAppDesktop* app;
-    GList* files = NULL;
     gboolean ret = FALSE;
-    char* argv[2];
 
     if (vfs_file_info_is_executable(fi, file_path))
     {
+        char* argv[2];
         argv[0] = (char*)file_path;
         argv[1] = NULL;
         ret = g_spawn_async(NULL, argv, NULL, G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, err);
     }
     else
     {
-        mime_type = vfs_file_info_get_mime_type(fi);
-        app_name = vfs_mime_type_get_default_action(mime_type);
+        VFSMimeType* mime_type = vfs_file_info_get_mime_type(fi);
+        char* app_name = vfs_mime_type_get_default_action(mime_type);
         if (app_name)
         {
-            app = vfs_app_desktop_new(app_name);
+            VFSAppDesktop* app = vfs_app_desktop_new(app_name);
             if (!vfs_app_desktop_get_exec(app))
                 app->exec = g_strdup(app_name); /* FIXME: app->exec */
-            files = g_list_prepend(files, (gpointer)file_path);
+            GList* files = g_list_prepend(files, (gpointer)file_path);
             /* FIXME: working dir is needed */
             ret = vfs_app_desktop_open_files(gdk_screen_get_default(), NULL, app, files, err);
             g_list_free(files);
@@ -735,8 +729,6 @@ gboolean vfs_file_info_is_thumbnail_loaded(VFSFileInfo* fi, gboolean big)
 
 gboolean vfs_file_info_load_thumbnail(VFSFileInfo* fi, const char* full_path, gboolean big)
 {
-    GdkPixbuf* thumbnail;
-
     if (big)
     {
         if (fi->big_thumbnail)
@@ -747,7 +739,7 @@ gboolean vfs_file_info_load_thumbnail(VFSFileInfo* fi, const char* full_path, gb
         if (fi->small_thumbnail)
             return TRUE;
     }
-    thumbnail = vfs_thumbnail_load_for_file(full_path, big ? big_thumb_size : small_thumb_size, fi->mtime);
+    GdkPixbuf* thumbnail = vfs_thumbnail_load_for_file(full_path, big ? big_thumb_size : small_thumb_size, fi->mtime);
     if (G_LIKELY(thumbnail))
     {
         if (big)
@@ -776,14 +768,12 @@ void vfs_file_info_load_special_info(VFSFileInfo* fi, const char* file_path)
     /*if ( G_LIKELY(fi->type) && G_UNLIKELY(fi->type->name, "application/x-desktop") ) */
     if (G_UNLIKELY(g_str_has_suffix(fi->name, ".desktop")))
     {
-        VFSAppDesktop* desktop;
-
         if (!desktop_dir)
             desktop_dir = vfs_get_desktop_dir();
         char* file_dir = g_path_get_dirname(file_path);
 
         fi->flags |= VFS_FILE_INFO_DESKTOP_ENTRY;
-        desktop = vfs_app_desktop_new(file_path);
+        VFSAppDesktop* desktop = vfs_app_desktop_new(file_path);
 
         // MOD  display real filenames of .desktop files not in desktop folder
         if (desktop_dir && !strcmp(file_dir, desktop_dir))
@@ -826,13 +816,11 @@ void vfs_file_info_list_free(GList* list)
 char* vfs_file_resolve_path(const char* cwd, const char* relative_path)
 {
     GString* ret = g_string_sized_new(4096);
-    int len;
-    gboolean strip_tail;
 
     g_return_val_if_fail(G_LIKELY(relative_path), NULL);
 
-    len = strlen(relative_path);
-    strip_tail = (0 == len || relative_path[len - 1] != '/');
+    int len = strlen(relative_path);
+    gboolean strip_tail = (0 == len || relative_path[len - 1] != '/');
 
     if (G_UNLIKELY(*relative_path != '/')) /* relative path */
     {

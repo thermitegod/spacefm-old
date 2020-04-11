@@ -99,28 +99,12 @@ static void dir_unload_thumbnails(const char* path, VFSDir* dir, gpointer user_d
 
 static void on_response(GtkDialog* dlg, int response, FMPrefDlg* user_data)
 {
-    int i, n;
-    int ibig_icon = -1, ismall_icon = -1, itool_icon = -1;
-
-    int max_thumb;
     gboolean show_thumbnail;
-    int big_icon;
-    int small_icon;
-    int tool_icon;
-    // gboolean show_desktop;
     gboolean single_click;
-    // gboolean single_hover;
-    // gboolean rubberband;
     gboolean root_bar;
-    const GList* l;
-    PtkFileBrowser* file_browser;
     gboolean use_si_prefix;
-    GtkNotebook* notebook;
-    int p;
-    FMMainWindow* a_window;
-    char* str;
+    const GList* l;
 
-    GtkWidget* tab_label;
     /* interface settings */
     gboolean always_show_tabs;
     gboolean hide_close_tab_buttons;
@@ -131,6 +115,24 @@ static void on_response(GtkDialog* dlg, int response, FMPrefDlg* user_data)
 
     if (response == GTK_RESPONSE_OK)
     {
+        int ibig_icon = -1;
+        int ismall_icon = -1;
+        int itool_icon = -1;
+
+        int i;
+        int n;
+        int p;
+        int max_thumb;
+        int big_icon;
+        int small_icon;
+        int tool_icon;
+
+        char* str;
+
+        PtkFileBrowser* file_browser;
+        GtkNotebook* notebook;
+        FMMainWindow* a_window;
+
         show_thumbnail = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->show_thumbnail));
         max_thumb = ((int)gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->max_thumb_size))) << 10;
 
@@ -170,7 +172,7 @@ static void on_response(GtkDialog* dlg, int response, FMPrefDlg* user_data)
                     for (i = 0; i < n; ++i)
                     {
                         file_browser = PTK_FILE_BROWSER(gtk_notebook_get_nth_page(notebook, i));
-                        tab_label = fm_main_window_create_tab_label(a_window, file_browser);
+                        GtkWidget* tab_label = fm_main_window_create_tab_label(a_window, file_browser);
                         gtk_notebook_set_tab_label(notebook, GTK_WIDGET(file_browser), tab_label);
                         fm_main_window_update_tab_label(a_window, file_browser, file_browser->dir->disp_path);
                     }
@@ -197,6 +199,9 @@ static void on_response(GtkDialog* dlg, int response, FMPrefDlg* user_data)
         itool_icon = gtk_combo_box_get_active(GTK_COMBO_BOX(data->tool_icon_size));
         if (itool_icon >= 0 && itool_icon <= GTK_ICON_SIZE_DIALOG)
             tool_icon = tool_icon_sizes[itool_icon];
+        else
+            tool_icon = 0;
+
 
         if (big_icon != app_settings.big_icon_size || small_icon != app_settings.small_icon_size)
         {
@@ -411,12 +416,14 @@ void on_show_thumbnail_toggled(GtkWidget* widget, FMPrefDlg* data)
 
 gboolean fm_edit_preference(GtkWindow* parent, int page)
 {
-    int i;
-    int ibig_icon = -1, ismall_icon = -1, itool_icon = -1;
     GtkWidget* dlg;
 
     if (!data)
     {
+        int ibig_icon = -1;
+        int ismall_icon = -1;
+        int itool_icon = -1;
+
         GtkTreeModel* model;
         // this invokes GVFS-RemoteVolumeMonitor via IsSupported
 #if (GTK_MAJOR_VERSION == 3)
@@ -466,6 +473,7 @@ gboolean fm_edit_preference(GtkWindow* parent, int page)
         gtk_widget_set_sensitive(data->thumb_label1, app_settings.show_thumbnail);
         gtk_widget_set_sensitive(data->thumb_label2, app_settings.show_thumbnail);
 
+        int i;
         for (i = 0; i < G_N_ELEMENTS(terminal_programs); ++i)
         {
             gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(data->terminal), terminal_programs[i]);

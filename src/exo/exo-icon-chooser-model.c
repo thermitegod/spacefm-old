@@ -304,7 +304,8 @@ static gboolean exo_icon_chooser_model_merge_symlinks(gpointer key, gpointer val
     ExoIconChooserModelItem* item;
     char* target;
     const char* filename;
-    char *p, *name;
+    char* p;
+    char* name;
     gboolean merged = FALSE;
 
     /* get the location the symlink points to */

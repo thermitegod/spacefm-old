@@ -271,8 +271,7 @@ static char* get_element_next(char** s)
 
 gboolean get_rule_next(char** s, int* sub, int* comp, char** value)
 {
-    char* vs;
-    vs = get_element_next(s);
+    char* vs = get_element_next(s);
     if (!vs)
         return FALSE;
     *sub = atoi(vs);
@@ -292,12 +291,9 @@ gboolean get_rule_next(char** s, int* sub, int* comp, char** value)
 int xset_context_test(XSetContext* context, char* rules, gboolean def_disable)
 {
     // assumes valid xset_context and rules != NULL and no global ignore
-    int i, sep_type, sub, comp;
+    int sub;
+    int comp;
     char* value;
-    int match, action;
-    char* s;
-    char* eleval;
-    char* sep;
     gboolean test;
     enum
     {
@@ -308,17 +304,18 @@ int xset_context_test(XSetContext* context, char* rules, gboolean def_disable)
     };
 
     // get valid action and match
+    char* s;
     char* elements = rules;
     if (!(s = get_element_next(&elements)))
         return 0;
-    action = atoi(s);
+    int action = atoi(s);
     g_free(s);
     if (action < 0 || action > 3)
         return 0;
 
     if (!(s = get_element_next(&elements)))
         return 0;
-    match = atoi(s);
+    int match = atoi(s);
     g_free(s);
     if (match < 0 || match > 3)
         return 0;
@@ -335,9 +332,11 @@ int xset_context_test(XSetContext* context, char* rules, gboolean def_disable)
     {
         is_rules = TRUE;
 
-        eleval = value;
+        char* eleval = value;
         do
         {
+            int sep_type;
+            char* sep;
             if ((sep = strstr(eleval, "||")))
                 sep_type = 1;
             else if ((sep = strstr(eleval, "&&")))
@@ -346,7 +345,7 @@ int xset_context_test(XSetContext* context, char* rules, gboolean def_disable)
             if (sep)
             {
                 sep[0] = '\0';
-                i = -1;
+                int i = -1;
                 // remove trailing spaces from eleval
                 while (sep + i >= eleval && sep[i] == ' ')
                 {
@@ -474,10 +473,7 @@ int xset_context_test(XSetContext* context, char* rules, gboolean def_disable)
 char* context_build(ContextData* ctxt)
 {
     GtkTreeIter it;
-    char* value;
-    int sub, comp;
     char* new_context = NULL;
-    char* old_context;
 
     GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ctxt->view));
     if (gtk_tree_model_get_iter_first(model, &it))
@@ -487,6 +483,9 @@ char* context_build(ContextData* ctxt)
                                       gtk_combo_box_get_active(GTK_COMBO_BOX(ctxt->box_match)));
         do
         {
+            char* value;
+            int sub;
+            int comp;
             gtk_tree_model_get(model,
                                &it,
                                CONTEXT_COL_VALUE,
@@ -496,7 +495,7 @@ char* context_build(ContextData* ctxt)
                                CONTEXT_COL_COMP,
                                &comp,
                                -1);
-            old_context = new_context;
+            char* old_context = new_context;
             new_context = g_strdup_printf("%s%%%%%%%%%%%d%%%%%%%%%%%d%%%%%%%%%%%s", old_context, sub, comp, value);
             g_free(old_context);
         } while (gtk_tree_model_iter_next(model, &it));
@@ -793,14 +792,13 @@ void load_command_script(ContextData* ctxt, XSet* set)
         gtk_text_buffer_set_text(buf, "", -1);
     else
     {
-        char line[4096];
-
         gtk_text_buffer_set_text(buf, "", -1);
         file = fopen(script, "r");
         if (!file)
             g_warning(_("error reading file %s: %s"), script, g_strerror(errno));
         else
         {
+            char line[4096];
             // read file one line at a time to prevent splitting UTF-8 characters
             while (fgets(line, sizeof(line), file))
             {
@@ -1235,13 +1233,13 @@ void on_browse_button_clicked(GtkWidget* widget, ContextData* ctxt)
 
 void replace_item_props(ContextData* ctxt)
 {
-    int x;
     XSet* rset = ctxt->set;
     XSet* mset = xset_get_plugin_mirror(rset);
 
     if (!rset->lock && rset->menu_style != XSET_MENU_SUBMENU && rset->menu_style != XSET_MENU_SEP &&
         rset->tool <= XSET_TOOL_CUSTOM)
     {
+        int x;
         // custom bookmark, app, or command
         gboolean is_bookmark_or_app = FALSE;
         int item_type = gtk_combo_box_get_active(GTK_COMBO_BOX(ctxt->item_type));
@@ -1451,10 +1449,8 @@ void on_prop_notebook_switch_page(GtkNotebook* notebook, GtkWidget* page, uint p
 static void on_icon_choose_button_clicked(GtkWidget* widget, ContextData* ctxt)
 {
     // get current icon
-    char* new_icon;
     const char* icon = gtk_entry_get_text(GTK_ENTRY(ctxt->item_icon));
-
-    new_icon = xset_icon_chooser_dialog(GTK_WINDOW(ctxt->dlg), icon);
+    char*  new_icon = xset_icon_chooser_dialog(GTK_WINDOW(ctxt->dlg), icon);
 
     if (new_icon)
     {
@@ -1507,10 +1503,7 @@ static gboolean on_dlg_keypress(GtkWidget* widget, GdkEventKey* event, ContextDa
 
 void xset_item_prop_dlg(XSetContext* context, XSet* set, int page)
 {
-    GtkTreeViewColumn* col;
-    GtkCellRenderer* renderer;
-    int i, x;
-    char* str;
+    int i;
 
     if (!context || !set)
         return;
@@ -1730,9 +1723,9 @@ void xset_item_prop_dlg(XSetContext* context, XSet* set, int page)
                      ctxt);
 
     // col display
-    col = gtk_tree_view_column_new();
+    GtkTreeViewColumn* col = gtk_tree_view_column_new();
     gtk_tree_view_column_set_sizing(col, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
-    renderer = gtk_cell_renderer_text_new();
+    GtkCellRenderer* renderer = gtk_cell_renderer_text_new();
     gtk_tree_view_column_pack_start(col, renderer, TRUE);
     gtk_tree_view_column_set_attributes(col, renderer, "text", CONTEXT_COL_DISP, NULL);
     gtk_tree_view_append_column(GTK_TREE_VIEW(ctxt->view), col);
@@ -1997,12 +1990,11 @@ void xset_item_prop_dlg(XSetContext* context, XSet* set, int page)
     // set rules
     int sub, comp;
     char* value;
-    char* disp;
     GtkTreeIter it;
     // gboolean is_rules = FALSE;
     while (get_rule_next(&elements, &sub, &comp, &value))
     {
-        disp = context_display(sub, comp, value);
+        char* disp = context_display(sub, comp, value);
         gtk_list_store_append(GTK_LIST_STORE(list), &it);
         gtk_list_store_set(GTK_LIST_STORE(list),
                            &it,
@@ -2219,6 +2211,7 @@ void xset_item_prop_dlg(XSetContext* context, XSet* set, int page)
 #endif
 
     char* path;
+    char* str;
     if (rset->plugin)
         path = g_build_filename(rset->plug_dir, rset->plug_name, NULL);
     else
@@ -2268,7 +2261,7 @@ void xset_item_prop_dlg(XSetContext* context, XSet* set, int page)
         // custom command
         for (i = 0; i < G_N_ELEMENTS(item_types); i++)
             gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ctxt->item_type), _(item_types[i]));
-        x = rset->x ? atoi(rset->x) : 0;
+        int x = rset->x ? atoi(rset->x) : 0;
         if (x < XSET_CMD_APP) // line or script
             item_type = ITEM_TYPE_COMMAND;
         else if (x == XSET_CMD_APP)

@@ -51,7 +51,6 @@ static gboolean on_output(GIOChannel* ch, GIOCondition cond, gpointer user_data)
     char buffer[4096];
     size_t rlen = 0;
     GtkAdjustment* adj;
-    int status;
     PtkConsoleOutputData* data = (PtkConsoleOutputData*)user_data;
 
     if (cond & G_IO_IN)
@@ -82,7 +81,7 @@ static gboolean on_output(GIOChannel* ch, GIOCondition cond, gpointer user_data)
 
             if (data->pid)
             {
-                status = 0;
+                int status = 0;
                 waitpid(data->pid, &status, 0);
                 data->pid = 0;
 
