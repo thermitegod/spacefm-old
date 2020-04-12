@@ -2331,25 +2331,23 @@ char* xset_custom_get_script(XSet* set, gboolean create)
     if (create && !g_file_test(path, G_FILE_TEST_EXISTS))
     {
         FILE* file;
-        int i;
-        char* script_head = g_strdup_printf("#!%s\n%s\n\n#import file manager variables\n$fm_import\n\n#For all "
-                                            "spacefm variables see man page: spacefm-scripts\n\n#Start script\n",
-                                            BASHPATH,
-                                            SHELL_SETTINGS);
-        const char* script_tail = "#End script\nexit $?";
         file = fopen(path, "w");
 
         if (file)
         {
             // write default script
-            fputs(script_head, file);
+            //head
+            fputs(g_strdup_printf("#!%s\n%s\n\n#import file manager variables\n$fm_import\n\n#For all "
+                                  "spacefm variables see man page: spacefm-scripts\n\n#Start script\n",
+                                  BASHPATH,
+                                  SHELL_SETTINGS), file);
+            int i;
             for (i = 0; i < 14; i++)
                 fputs("\n", file);
-            fputs(script_tail, file);
+            // tail
+            fputs("#End script\nexit $?", file);
             fclose(file);
         }
-        g_free(script_head);
-
         chmod(path, 0700);
     }
     return path;
