@@ -777,7 +777,6 @@ void vfs_file_info_load_special_info(VFSFileInfo* fi, const char* file_path)
     if (G_UNLIKELY(g_str_has_suffix(fi->name, ".desktop")))
     {
         VFSAppDesktop* desktop;
-        const char* icon_name;
 
         if (!desktop_dir)
             desktop_dir = vfs_get_desktop_dir();
@@ -795,7 +794,7 @@ void vfs_file_info_load_special_info(VFSFileInfo* fi, const char* file_path)
             }
         }
 
-        if ((icon_name = vfs_app_desktop_get_icon_name(desktop)))
+        if (vfs_app_desktop_get_icon_name(desktop))
         {
             GdkPixbuf* icon;
             int big_size, small_size;

@@ -45,15 +45,6 @@ static gboolean on_dir_tree_view_key_press(GtkWidget* view, GdkEventKey* evt, Pt
 static gboolean sel_func(GtkTreeSelection* selection, GtkTreeModel* model, GtkTreePath* path,
                          gboolean path_currently_selected, gpointer data);
 
-struct _DirTreeNode
-{
-    VFSFileInfo* file;
-    GList* children;
-    int n_children;
-    VFSFileMonitor* monitor;
-    int n_expand;
-};
-
 /*  Drag & Drop/Clipboard targets  */
 static GtkTargetEntry drag_targets[] = {{"text/uri-list", 0, 0}};
 

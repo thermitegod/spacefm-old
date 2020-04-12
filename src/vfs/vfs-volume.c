@@ -2522,7 +2522,6 @@ int split_network_url(const char* url, netmount_t** netmount)
     }
     while (xurl[0] == '/')
         xurl++;
-    char* trim_url = g_strdup(xurl);
 
     // user:pass
     if ((str = strchr(xurl, '@')))
@@ -2577,7 +2576,6 @@ int split_network_url(const char* url, netmount_t** netmount)
             nm->host = g_strdup(xurl);
         }
     }
-    g_free(trim_url);
     g_free(orig_url);
 
     // check host

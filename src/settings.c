@@ -7534,7 +7534,6 @@ GtkWidget* xset_add_toolitem(GtkWidget* parent, PtkFileBrowser* file_browser, Gt
     GdkPixbuf* pixbuf = NULL;
     char* icon_file = NULL;
     int cmd_type;
-    char* str;
 
     if (set->lock)
         return NULL;

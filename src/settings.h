@@ -369,7 +369,6 @@ XSet* xset_custom_new();
 GList* xset_get_plugins(gboolean included);
 void install_plugin_file(gpointer main_win, GtkWidget* handler_dlg, const char* path, const char* plug_dir, int type,
                          int job, XSet* insert_set);
-XSet* xset_import_plugin(const char* plug_dir, gboolean* is_bookmarks);
 void clean_plugin_mirrors();
 void xset_show_help(GtkWidget* parent, XSet* set, const char* anchor);
 gboolean xset_opener(PtkFileBrowser* file_browser, char job);

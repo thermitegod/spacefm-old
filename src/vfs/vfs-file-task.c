@@ -464,7 +464,7 @@ static gboolean vfs_file_task_do_copy(VFSFileTask* task, const char* src_file, c
                 }
             }
 
-            if ((wfd = symlink(buffer, dest_file)) == 0)
+            if (symlink(buffer, dest_file) == 0)
             {
                 /* Move files to different device: Need to delete source files */
                 if ((task->type == VFS_FILE_TASK_MOVE) && !copy_fail)
