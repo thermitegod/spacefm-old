@@ -3651,7 +3651,6 @@ void xset_custom_activate(GtkWidget* item, XSet* set)
     {
         g_warning("xset_custom_activate !browser !desktop");
         return;
-        cwd = vfs_get_desktop_dir();
     }
 
     // name
