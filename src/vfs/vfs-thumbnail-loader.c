@@ -33,7 +33,7 @@ struct _VFSThumbnailLoader
     VFSDir* dir;
     GQueue* queue;
     VFSAsyncTask* task;
-    guint idle_handler;
+    uint idle_handler;
     GQueue* update_queue;
 };
 

@@ -27,14 +27,14 @@
 static GHashTable* mime_hash = NULL;
 GRWLock mime_hash_lock;
 
-static guint reload_callback_id = 0;
+static uint reload_callback_id = 0;
 static GList* reload_cb = NULL;
 
 static int big_icon_size = 32, small_icon_size = 16;
 
 static VFSFileMonitor** mime_caches_monitor = NULL;
 
-static guint theme_change_notify = 0;
+static uint theme_change_notify = 0;
 
 static void on_icon_theme_changed(GtkIconTheme* icon_theme, gpointer user_data);
 
@@ -413,7 +413,7 @@ const char* vfs_mime_type_get_description(VFSMimeType* mime_type)
  */
 char** vfs_mime_type_join_actions(char** list1, gsize len1, char** list2, gsize len2)
 {
-    gchar** ret = NULL;
+    char** ret = NULL;
     int i, j, k;
 
     if (len1 > 0 || len2 > 0)

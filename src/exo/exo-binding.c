@@ -115,8 +115,8 @@ struct _ExoMutualBinding
 static void exo_bind_properties_transfer(GObject* src_object, GParamSpec* src_pspec, GObject* dst_object,
                                          GParamSpec* dst_pspec, ExoBindingTransform transform, gpointer user_data)
 {
-    const gchar* src_name;
-    const gchar* dst_name;
+    const char* src_name;
+    const char* dst_name;
     gboolean result;
     GValue src_value = {
         0,
@@ -230,11 +230,11 @@ static void exo_mutual_binding_on_disconnect_object2(gpointer data, GClosure* cl
     }
 }
 
-static void exo_binding_link_init(ExoBindingLink* blink, GObject* src_object, const gchar* src_property,
+static void exo_binding_link_init(ExoBindingLink* blink, GObject* src_object, const char* src_property,
                                   GObject* dst_object, GParamSpec* dst_pspec, ExoBindingTransform transform,
                                   GClosureNotify destroy_notify, gpointer user_data)
 {
-    gchar* signal_name;
+    char* signal_name;
 
     blink->dst_object = dst_object;
     blink->dst_pspec = dst_pspec;
@@ -268,8 +268,8 @@ static void exo_binding_link_init(ExoBindingLink* blink, GObject* src_object, co
  * Returns: The descriptor of the binding. It is automatically
  *          removed if one of the objects is finalized.
  **/
-ExoBinding* exo_binding_new(GObject* src_object, const gchar* src_property, GObject* dst_object,
-                            const gchar* dst_property)
+ExoBinding* exo_binding_new(GObject* src_object, const char* src_property, GObject* dst_object,
+                            const char* dst_property)
 {
     return exo_binding_new_full(src_object, src_property, dst_object, dst_property, NULL, NULL, NULL);
 }
@@ -293,8 +293,8 @@ ExoBinding* exo_binding_new(GObject* src_object, const gchar* src_property, GObj
  * Returns: The descriptor of the binding. It is automatically
  *          removed if one of the objects is finalized.
  **/
-ExoBinding* exo_binding_new_full(GObject* src_object, const gchar* src_property, GObject* dst_object,
-                                 const gchar* dst_property, ExoBindingTransform transform,
+ExoBinding* exo_binding_new_full(GObject* src_object, const char* src_property, GObject* dst_object,
+                                 const char* dst_property, ExoBindingTransform transform,
                                  GDestroyNotify destroy_notify, gpointer user_data)
 {
     ExoBinding* binding;
@@ -345,8 +345,8 @@ ExoBinding* exo_binding_new_full(GObject* src_object, const gchar* src_property,
  * Returns: The descriptor of the binding. It is automatically
  *          removed if one of the objects is finalized.
  **/
-ExoMutualBinding* exo_mutual_binding_new(GObject* object1, const gchar* property1, GObject* object2,
-                                         const gchar* property2)
+ExoMutualBinding* exo_mutual_binding_new(GObject* object1, const char* property1, GObject* object2,
+                                         const char* property2)
 {
     return exo_mutual_binding_new_full(object1, property1, object2, property2, NULL, NULL, NULL, NULL);
 }
@@ -374,8 +374,8 @@ ExoMutualBinding* exo_mutual_binding_new(GObject* object1, const gchar* property
  * Returns: The descriptor of the binding. It is automatically
  *          removed if one of the objects is finalized.
  **/
-ExoMutualBinding* exo_mutual_binding_new_full(GObject* object1, const gchar* property1, GObject* object2,
-                                              const gchar* property2, ExoBindingTransform transform,
+ExoMutualBinding* exo_mutual_binding_new_full(GObject* object1, const char* property1, GObject* object2,
+                                              const char* property2, ExoBindingTransform transform,
                                               ExoBindingTransform reverse_transform, GDestroyNotify destroy_notify,
                                               gpointer user_data)
 {

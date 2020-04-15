@@ -70,8 +70,8 @@ GtkWidget* exo_tree_view_new(void) G_GNUC_MALLOC;
 gboolean exo_tree_view_get_single_click(const ExoTreeView* tree_view);
 void exo_tree_view_set_single_click(ExoTreeView* tree_view, gboolean single_click);
 
-guint exo_tree_view_get_single_click_timeout(const ExoTreeView* tree_view);
-void exo_tree_view_set_single_click_timeout(ExoTreeView* tree_view, guint single_click_timeout);
+uint exo_tree_view_get_single_click_timeout(const ExoTreeView* tree_view);
+void exo_tree_view_set_single_click_timeout(ExoTreeView* tree_view, uint single_click_timeout);
 
 /* 2008.07.16 added by Hong Jen Yee for PCManFM.
  * If activable column is set, only the specified column can be activated.

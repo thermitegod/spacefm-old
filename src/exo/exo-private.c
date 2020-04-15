@@ -71,8 +71,8 @@ void _exo_gtk_widget_send_focus_change(GtkWidget* widget, gboolean in)
  *
  * Return value: the newly registered #GType.
  **/
-GType _exo_g_type_register_simple(GType type_parent, const gchar* type_name_static, guint class_size,
-                                  gpointer class_init, guint instance_size, gpointer instance_init)
+GType _exo_g_type_register_simple(GType type_parent, const char* type_name_static, uint class_size,
+                                  gpointer class_init, uint instance_size, gpointer instance_init)
 {
     /* generate the type info (on the stack) */
     GTypeInfo info = {

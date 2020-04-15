@@ -66,7 +66,7 @@ void exo_noop(void)
  *
  * Since: 0.3.1
  **/
-gint exo_noop_one(void)
+int exo_noop_one(void)
 {
     return 1;
 }
@@ -84,7 +84,7 @@ gint exo_noop_one(void)
  *
  * Since: 0.3.1
  **/
-gint exo_noop_zero(void)
+int exo_noop_zero(void)
 {
     return 0;
 }

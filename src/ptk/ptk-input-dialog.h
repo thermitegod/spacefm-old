@@ -27,7 +27,7 @@ GtkWidget* ptk_input_dialog_new(const char* title, const char* prompt, const cha
  * The returned string should be freed when no longer needed.
  * widget: the input dialog
  */
-gchar* ptk_input_dialog_get_text(GtkWidget* input_dialog);
+char* ptk_input_dialog_get_text(GtkWidget* input_dialog);
 
 /*
  * Get the prompt label of the input dialog.

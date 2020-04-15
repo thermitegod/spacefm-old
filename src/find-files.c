@@ -147,7 +147,7 @@ static gboolean open_file(char* dir, GList* files, PtkFileBrowser* file_browser)
         if (file_browser)
         {
             GList* l;
-            gchar* full_path;
+            char* full_path;
             VFSFileInfo* file;
 
             for (l = files; l; l = l->next)
@@ -278,7 +278,7 @@ static int get_date_offset(GtkCalendar* calendar)
     /* FIXME: I think we need a better implementation for this */
     GDate* date;
     GDate* today;
-    guint y, m, d;
+    uint y, m, d;
     int offset;
     time_t timeval = time(NULL);
     struct tm* lt = localtime(&timeval);

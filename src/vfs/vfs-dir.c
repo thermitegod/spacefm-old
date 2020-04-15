@@ -31,8 +31,8 @@
 static void vfs_dir_class_init(VFSDirClass* klass);
 static void vfs_dir_init(VFSDir* dir);
 static void vfs_dir_finalize(GObject* obj);
-static void vfs_dir_set_property(GObject* obj, guint prop_id, const GValue* value, GParamSpec* pspec);
-static void vfs_dir_get_property(GObject* obj, guint prop_id, GValue* value, GParamSpec* pspec);
+static void vfs_dir_set_property(GObject* obj, uint prop_id, const GValue* value, GParamSpec* pspec);
+static void vfs_dir_get_property(GObject* obj, uint prop_id, GValue* value, GParamSpec* pspec);
 
 /* constructor is private */
 static VFSDir* vfs_dir_new(const char* path);
@@ -61,13 +61,13 @@ enum
     N_SIGNALS
 };
 
-static guint signals[N_SIGNALS] = {0};
+static uint signals[N_SIGNALS] = {0};
 static GObjectClass* parent_class = NULL;
 
 static GHashTable* dir_hash = NULL;
 static GList* mime_cb = NULL;
-static guint change_notify_timeout = 0;
-static guint theme_change_notify = 0;
+static uint change_notify_timeout = 0;
+static uint theme_change_notify = 0;
 
 static gboolean is_desktop_set = FALSE;
 
@@ -288,11 +288,11 @@ void vfs_dir_finalize(GObject* obj)
     G_OBJECT_CLASS(parent_class)->finalize(obj);
 }
 
-void vfs_dir_get_property(GObject* obj, guint prop_id, GValue* value, GParamSpec* pspec)
+void vfs_dir_get_property(GObject* obj, uint prop_id, GValue* value, GParamSpec* pspec)
 {
 }
 
-void vfs_dir_set_property(GObject* obj, guint prop_id, const GValue* value, GParamSpec* pspec)
+void vfs_dir_set_property(GObject* obj, uint prop_id, const GValue* value, GParamSpec* pspec)
 {
 }
 
@@ -484,7 +484,7 @@ void vfs_dir_load(VFSDir* dir)
 
 gpointer vfs_dir_load_thread(VFSAsyncTask* task, VFSDir* dir)
 {
-    const gchar* file_name;
+    const char* file_name;
     char* full_path;
     GDir* dir_content;
     VFSFileInfo* file;
@@ -906,7 +906,7 @@ void vfs_dir_unload_thumbnails(VFSDir* dir, gboolean is_big)
 }
 
 // sfm added mime change timer
-guint mime_change_timer = 0;
+uint mime_change_timer = 0;
 VFSDir* mime_dir = NULL;
 
 gboolean on_mime_change_timer(gpointer user_data)

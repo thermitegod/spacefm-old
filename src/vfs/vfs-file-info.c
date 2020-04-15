@@ -434,7 +434,7 @@ const char* vfs_file_info_get_disp_perm(VFSFileInfo* fi)
 void vfs_file_size_to_string_format(char* buf, guint64 size, char* format) // MOD added
 { // if format == NULL uses automatic format based on size
     char* unit;
-    gfloat val;
+    float val;
 
     /*
        FIXME: Is floating point calculation slower than integer division?
@@ -446,17 +446,17 @@ void vfs_file_size_to_string_format(char* buf, guint64 size, char* format) // MO
         {
             /*
             size /= ( ( ( guint64 ) 1 << 40 ) / 10 );
-            point = ( guint ) ( size % 10 );
+            point = ( uint ) ( size % 10 );
             size /= 10;
             */
             if (app_settings.use_si_prefix == TRUE)
             {
-                val = ((gfloat)size) / ((guint64)1000000000000);
+                val = ((float)size) / ((guint64)1000000000000);
                 unit = _("T");
             }
             else
             {
-                val = ((gfloat)size) / ((guint64)1 << 40);
+                val = ((float)size) / ((guint64)1 << 40);
                 unit = _("T"); // MOD was TiB
             }
         }
@@ -464,17 +464,17 @@ void vfs_file_size_to_string_format(char* buf, guint64 size, char* format) // MO
         {
             /*
             size /= ( ( 1 << 30 ) / 10 );
-            point = ( guint ) ( size % 10 );
+            point = ( uint ) ( size % 10 );
             size /= 10;
             */
             if (app_settings.use_si_prefix == TRUE)
             {
-                val = ((gfloat)size) / ((guint64)1000000000);
+                val = ((float)size) / ((guint64)1000000000);
                 unit = _("G");
             }
             else
             {
-                val = ((gfloat)size) / ((guint64)1 << 30);
+                val = ((float)size) / ((guint64)1 << 30);
                 unit = _("G"); // MOD was GiB
             }
         }
@@ -483,17 +483,17 @@ void vfs_file_size_to_string_format(char* buf, guint64 size, char* format) // MO
     {
         /*
         size /= ( ( 1 << 20 ) / 10 );
-        point = ( guint ) ( size % 10 );
+        point = ( uint ) ( size % 10 );
         size /= 10;
         */
         if (app_settings.use_si_prefix == TRUE)
         {
-            val = ((gfloat)size) / ((guint64)1000000);
+            val = ((float)size) / ((guint64)1000000);
             unit = _("M");
         }
         else
         {
-            val = ((gfloat)size) / ((guint64)1 << 20);
+            val = ((float)size) / ((guint64)1 << 20);
             unit = _("M"); // MOD was MiB
         }
     }
@@ -506,12 +506,12 @@ void vfs_file_size_to_string_format(char* buf, guint64 size, char* format) // MO
         */
         if (app_settings.use_si_prefix == TRUE)
         {
-            val = ((gfloat)size) / ((guint64)1000);
+            val = ((float)size) / ((guint64)1000);
             unit = _("K"); // MOD was KB
         }
         else
         {
-            val = ((gfloat)size) / ((guint64)1 << 10);
+            val = ((float)size) / ((guint64)1 << 10);
             unit = _("K"); // MOD was KiB
         }
     }
@@ -532,8 +532,8 @@ void vfs_file_size_to_string_format(char* buf, guint64 size, char* format) // MO
 void vfs_file_size_to_string(char* buf, guint64 size)
 {
     char* unit;
-    /* guint point; */
-    gfloat val;
+    /* uint point; */
+    float val;
 
     /*
        FIXME: Is floating point calculation slower than integer division?
@@ -545,17 +545,17 @@ void vfs_file_size_to_string(char* buf, guint64 size)
         {
             /*
             size /= ( ( ( guint64 ) 1 << 40 ) / 10 );
-            point = ( guint ) ( size % 10 );
+            point = ( uint ) ( size % 10 );
             size /= 10;
             */
             if (app_settings.use_si_prefix == TRUE)
             {
-                val = ((gfloat)size) / ((guint64)1000000000000);
+                val = ((float)size) / ((guint64)1000000000000);
                 unit = _("T");
             }
             else
             {
-                val = ((gfloat)size) / ((guint64)1 << 40);
+                val = ((float)size) / ((guint64)1 << 40);
                 unit = _("T"); // MOD was TiB
             }
         }
@@ -563,17 +563,17 @@ void vfs_file_size_to_string(char* buf, guint64 size)
         {
             /*
             size /= ( ( 1 << 30 ) / 10 );
-            point = ( guint ) ( size % 10 );
+            point = ( uint ) ( size % 10 );
             size /= 10;
             */
             if (app_settings.use_si_prefix == TRUE)
             {
-                val = ((gfloat)size) / ((guint64)1000000000);
+                val = ((float)size) / ((guint64)1000000000);
                 unit = _("G");
             }
             else
             {
-                val = ((gfloat)size) / ((guint64)1 << 30);
+                val = ((float)size) / ((guint64)1 << 30);
                 unit = _("G"); // MOD was GiB
             }
         }
@@ -582,17 +582,17 @@ void vfs_file_size_to_string(char* buf, guint64 size)
     {
         /*
         size /= ( ( 1 << 20 ) / 10 );
-        point = ( guint ) ( size % 10 );
+        point = ( uint ) ( size % 10 );
         size /= 10;
         */
         if (app_settings.use_si_prefix == TRUE)
         {
-            val = ((gfloat)size) / ((guint64)1000000);
+            val = ((float)size) / ((guint64)1000000);
             unit = _("M");
         }
         else
         {
-            val = ((gfloat)size) / ((guint64)1 << 20);
+            val = ((float)size) / ((guint64)1 << 20);
             unit = _("M"); // MOD was MiB
         }
     }
@@ -605,12 +605,12 @@ void vfs_file_size_to_string(char* buf, guint64 size)
         */
         if (app_settings.use_si_prefix == TRUE)
         {
-            val = ((gfloat)size) / ((guint64)1000);
+            val = ((float)size) / ((guint64)1000);
             unit = _("K"); // MOD was KB
         }
         else
         {
-            val = ((gfloat)size) / ((guint64)1 << 10);
+            val = ((float)size) / ((guint64)1 << 10);
             unit = _("K"); // MOD was KiB
         }
     }

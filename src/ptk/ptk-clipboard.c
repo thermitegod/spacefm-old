@@ -24,14 +24,14 @@
 static GdkDragAction clipboard_action = GDK_ACTION_DEFAULT;
 static GList* clipboard_file_list = NULL;
 
-static void clipboard_get_data(GtkClipboard* clipboard, GtkSelectionData* selection_data, guint info,
+static void clipboard_get_data(GtkClipboard* clipboard, GtkSelectionData* selection_data, uint info,
                                gpointer user_data)
 {
     GdkAtom uri_list_target = gdk_atom_intern("text/uri-list", FALSE);
     GdkAtom gnome_target = gdk_atom_intern("x-special/gnome-copied-files", FALSE);
     GList* l;
-    gchar* file_name;
-    const gchar* action;
+    char* file_name;
+    const char* action;
     gboolean use_uri = FALSE;
 
     GString* list;
@@ -127,7 +127,7 @@ void ptk_clipboard_copy_name(const char* working_dir,
     GList* l;
     VFSFileInfo* file;
     char* file_text;
-    gint fcount = 0;
+    int fcount = 0;
     char* str;
 
     file_text = g_strdup("");
@@ -161,7 +161,7 @@ void ptk_clipboard_cut_or_copy_files(const char* working_dir, GList* files, gboo
 {
     GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     GtkTargetList* target_list = gtk_target_list_new(NULL, 0);
-    gint n_targets;
+    int n_targets;
     GtkTargetEntry* new_target;
     GtkTargetEntry* targets;
     GList* l;
@@ -205,7 +205,7 @@ void ptk_clipboard_copy_file_list(char** path, gboolean copy)
 {
     GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     GtkTargetList* target_list = gtk_target_list_new(NULL, 0);
-    gint n_targets;
+    int n_targets;
     GtkTargetEntry* new_target;
     GtkTargetEntry* targets;
     char** file_path;
@@ -249,10 +249,10 @@ void ptk_clipboard_paste_files(GtkWindow* parent_win, const char* dest_dir, GtkT
     GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     GdkAtom gnome_target;
     GdkAtom uri_list_target;
-    gchar **uri_list, **puri;
+    char **uri_list, **puri;
     GtkSelectionData* sel_data = NULL;
     GList* files = NULL;
-    gchar* file_path;
+    char* file_path;
 
     PtkFileTask* task;
     VFSFileTaskType action;
@@ -341,10 +341,10 @@ void ptk_clipboard_paste_links(GtkWindow* parent_win, const char* dest_dir, GtkT
     GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     GdkAtom gnome_target;
     GdkAtom uri_list_target;
-    gchar **uri_list, **puri;
+    char **uri_list, **puri;
     GtkSelectionData* sel_data = NULL;
     GList* files = NULL;
-    gchar* file_path;
+    char* file_path;
 
     PtkFileTask* task;
     VFSFileTaskType action;
@@ -416,11 +416,11 @@ void ptk_clipboard_paste_targets(GtkWindow* parent_win, const char* dest_dir, Gt
     GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     GdkAtom gnome_target;
     GdkAtom uri_list_target;
-    gchar **uri_list, **puri;
+    char **uri_list, **puri;
     GtkSelectionData* sel_data = NULL;
     GList* files = NULL;
-    gchar* file_path;
-    gint missing_targets = 0;
+    char* file_path;
+    int missing_targets = 0;
     char* str;
     struct stat stat;
 
@@ -516,15 +516,15 @@ void ptk_clipboard_paste_targets(GtkWindow* parent_win, const char* dest_dir, Gt
     gtk_selection_data_free(sel_data);
 }
 
-GList* ptk_clipboard_get_file_paths(const char* cwd, gboolean* is_cut, gint* missing_targets)
+GList* ptk_clipboard_get_file_paths(const char* cwd, gboolean* is_cut, int* missing_targets)
 {
     GtkClipboard* clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     GdkAtom gnome_target;
     GdkAtom uri_list_target;
-    gchar **uri_list, **puri;
+    char **uri_list, **puri;
     GtkSelectionData* sel_data = NULL;
     GList* files = NULL;
-    gchar* file_path;
+    char* file_path;
     char* uri_list_str;
 
     *is_cut = FALSE;

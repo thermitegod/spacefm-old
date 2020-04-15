@@ -38,18 +38,18 @@ enum
     COL_HANDLER_EXTENSIONS = 1
 };
 
-static gchar* archive_handler_get_first_extension(XSet* handler_xset)
+static char* archive_handler_get_first_extension(XSet* handler_xset)
 {
     // Function deals with the possibility that a handler is responsible
     // for multiple MIME types and therefore file extensions. Functions
     // like archive creation need only one extension
-    gchar* first_ext = NULL;
-    gchar* name;
+    char* first_ext = NULL;
+    char* name;
     int i;
     if (handler_xset && handler_xset->x)
     {
         // find first extension
-        gchar** pathnames = g_strsplit(handler_xset->x, " ", -1);
+        char** pathnames = g_strsplit(handler_xset->x, " ", -1);
         if (pathnames)
         {
             for (i = 0; pathnames[i]; ++i)
@@ -135,7 +135,7 @@ static void on_format_changed(GtkComboBox* combo, gpointer user_data)
 
     // Loop through available handlers
     XSet* handler_xset;
-    gchar *xset_name = NULL, *extension;
+    char *xset_name = NULL, *extension;
     do
     {
         gtk_tree_model_get(GTK_TREE_MODEL(list),
@@ -417,14 +417,14 @@ void ptk_file_archiver_create(PtkFileBrowser* file_browser, GList* files, const 
     }
 
     // Splitting archive handlers
-    gchar** archive_handlers = g_strsplit(archive_handlers_s, " ", -1);
+    char** archive_handlers = g_strsplit(archive_handlers_s, " ", -1);
 
     // Debug code
     // g_message("archive_handlers_s: %s", archive_handlers_s);
 
     // Looping for handlers (NULL-terminated list)
     GtkTreeIter iter;
-    gchar *xset_name, *extensions;
+    char *xset_name, *extensions;
     XSet* handler_xset;
     // Get xset name of last used handler
     xset_name = xset_get_s("arc_dlg"); // do not free
@@ -595,7 +595,7 @@ void ptk_file_archiver_create(PtkFileBrowser* file_browser, GList* files, const 
     }
 
     // Displaying dialog
-    gchar* command = NULL;
+    char* command = NULL;
     gboolean run_in_terminal;
     gtk_widget_show_all(dlg);
 
@@ -1176,7 +1176,7 @@ void ptk_file_archiver_extract(PtkFileBrowser* file_browser, GList* files, const
 
     // Fetching available archive handlers and splitting
     char* archive_handlers_s = xset_get_s("arc_conf2");
-    gchar** archive_handlers = archive_handlers_s ? g_strsplit(archive_handlers_s, " ", -1) : NULL;
+    char** archive_handlers = archive_handlers_s ? g_strsplit(archive_handlers_s, " ", -1) : NULL;
     XSet* handler_xset = NULL;
 
     // Looping for all files to attempt to list/extract
@@ -1221,8 +1221,8 @@ void ptk_file_archiver_extract(PtkFileBrowser* file_browser, GList* files, const
 
         // Archive to list or extract:
         full_quote = bash_quote(full_path); // %x
-        gchar* extract_target = NULL;       // %g or %G
-        gchar* mkparent = g_strdup("");
+        char* extract_target = NULL;       // %g or %G
+        char* mkparent = g_strdup("");
         perm = g_strdup("");
 
         if (list_contents)
@@ -1243,13 +1243,13 @@ void ptk_file_archiver_extract(PtkFileBrowser* file_browser, GList* files, const
              * needed if a parent directory must be created, and if the
              * extraction target is a file without the handler extension
              * filename is g_strdup'd to get rid of the const */
-            gchar* filename = g_strdup(vfs_file_info_get_name(file));
-            gchar* filename_no_archive_ext = NULL;
+            char* filename = g_strdup(vfs_file_info_get_name(file));
+            char* filename_no_archive_ext = NULL;
 
             /* Looping for all extensions registered with the current
              * archive handler (NULL-terminated list) */
-            gchar** pathnames = handler_xset->x ? g_strsplit(handler_xset->x, " ", -1) : NULL;
-            gchar* filename_no_ext;
+            char** pathnames = handler_xset->x ? g_strsplit(handler_xset->x, " ", -1) : NULL;
+            char* filename_no_ext;
             if (pathnames)
             {
                 for (i = 0; pathnames[i]; ++i)
@@ -1314,13 +1314,13 @@ void ptk_file_archiver_extract(PtkFileBrowser* file_browser, GList* files, const
             /* Dealing with creation of parent directory if needed -
              * never create a parent directory if '%G' is used - this is
              * an override substitution for the sake of gzip */
-            gchar* parent_path = NULL;
+            char* parent_path = NULL;
             if (create_parent && !g_strstr_len(cmd, -1, "%G"))
             {
                 /* Determining full path of parent directory to make
                  * (also used later in '%g' substitution) */
                 parent_path = g_build_filename(dest, filename_no_archive_ext, NULL);
-                gchar* parent_orig = g_strdup(parent_path);
+                char* parent_orig = g_strdup(parent_path);
                 n = 1;
 
                 // Looping to find a path that doesnt exist

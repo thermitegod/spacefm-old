@@ -60,7 +60,7 @@ struct _PtkFileList
     /* <private> */
     VFSDir* dir;
     GList* files;
-    guint n_files;
+    uint n_files;
 
     gboolean show_hidden : 1;
     gboolean big_thumbnail : 1;
@@ -73,7 +73,7 @@ struct _PtkFileList
     gboolean sort_hidden_first; // sfm
     char sort_dir;              // sfm
     /* Random integer to check whether an iter belongs to our model */
-    gint stamp;
+    int stamp;
 };
 
 struct _PtkFileListClass

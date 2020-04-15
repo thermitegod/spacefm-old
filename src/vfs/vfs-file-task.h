@@ -114,8 +114,8 @@ struct _VFSFileTask
     off_t last_speed;
     off_t last_progress;
     GTimer* timer;
-    gdouble last_elapsed;
-    guint current_item;
+    double last_elapsed;
+    uint current_item;
     int err_count;
 
     char* current_file; /* copy of Current processed file */
@@ -166,7 +166,7 @@ struct _VFSFileTask
     char* exec_icon;
     GPid exec_pid;
     int exec_exit_status;
-    guint child_watch;
+    uint child_watch;
     gboolean exec_is_error;
     GIOChannel* exec_channel_out;
     GIOChannel* exec_channel_err;

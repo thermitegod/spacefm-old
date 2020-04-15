@@ -37,17 +37,17 @@ typedef struct _ExoIconChooserModelItem ExoIconChooserModelItem;
 static void exo_icon_chooser_model_tree_model_init(GtkTreeModelIface* iface);
 static void exo_icon_chooser_model_finalize(GObject* object);
 static GtkTreeModelFlags exo_icon_chooser_model_get_flags(GtkTreeModel* tree_model);
-static gint exo_icon_chooser_model_get_n_columns(GtkTreeModel* tree_model);
-static GType exo_icon_chooser_model_get_column_type(GtkTreeModel* tree_model, gint idx);
+static int exo_icon_chooser_model_get_n_columns(GtkTreeModel* tree_model);
+static GType exo_icon_chooser_model_get_column_type(GtkTreeModel* tree_model, int idx);
 static gboolean exo_icon_chooser_model_get_iter(GtkTreeModel* tree_model, GtkTreeIter* iter, GtkTreePath* path);
 static GtkTreePath* exo_icon_chooser_model_get_path(GtkTreeModel* tree_model, GtkTreeIter* iter);
-static void exo_icon_chooser_model_get_value(GtkTreeModel* tree_model, GtkTreeIter* iter, gint column, GValue* value);
+static void exo_icon_chooser_model_get_value(GtkTreeModel* tree_model, GtkTreeIter* iter, int column, GValue* value);
 static gboolean exo_icon_chooser_model_iter_next(GtkTreeModel* tree_model, GtkTreeIter* iter);
 static gboolean exo_icon_chooser_model_iter_children(GtkTreeModel* tree_model, GtkTreeIter* iter, GtkTreeIter* parent);
 static gboolean exo_icon_chooser_model_iter_has_child(GtkTreeModel* tree_model, GtkTreeIter* iter);
-static gint exo_icon_chooser_model_iter_n_children(GtkTreeModel* tree_model, GtkTreeIter* iter);
+static int exo_icon_chooser_model_iter_n_children(GtkTreeModel* tree_model, GtkTreeIter* iter);
 static gboolean exo_icon_chooser_model_iter_nth_child(GtkTreeModel* tree_model, GtkTreeIter* iter, GtkTreeIter* parent,
-                                                      gint n);
+                                                      int n);
 static gboolean exo_icon_chooser_model_iter_parent(GtkTreeModel* tree_model, GtkTreeIter* iter, GtkTreeIter* child);
 static void exo_icon_chooser_model_icon_theme_changed(GtkIconTheme* icon_theme, ExoIconChooserModel* model);
 static void exo_icon_chooser_model_item_to_list(gpointer key, gpointer value, gpointer data);
@@ -63,12 +63,12 @@ struct _ExoIconChooserModel
     GObject __parent__;
     GtkIconTheme* icon_theme;
     GList* items;
-    gint stamp;
+    int stamp;
 };
 
 struct _ExoIconChooserModelItem
 {
-    gchar* icon_name;
+    char* icon_name;
     ExoIconChooserContext context;
 
     /* storage for symlink icons merge */
@@ -78,7 +78,7 @@ struct _ExoIconChooserModelItem
     GPtrArray* other_names;
 };
 
-static const gchar CONTEXT_NAMES[][14] = {
+static const char CONTEXT_NAMES[][14] = {
     "Actions",       /* EXO_ICON_CHOOSER_CONTEXT_ACTIONS */
     "Animations",    /* EXO_ICON_CHOOSER_CONTEXT_ANIMATIONS */
     "Applications",  /* EXO_ICON_CHOOSER_CONTEXT_APPLICATIONS */
@@ -151,12 +151,12 @@ static GtkTreeModelFlags exo_icon_chooser_model_get_flags(GtkTreeModel* tree_mod
     return GTK_TREE_MODEL_ITERS_PERSIST | GTK_TREE_MODEL_LIST_ONLY;
 }
 
-static gint exo_icon_chooser_model_get_n_columns(GtkTreeModel* tree_model)
+static int exo_icon_chooser_model_get_n_columns(GtkTreeModel* tree_model)
 {
     return EXO_ICON_CHOOSER_MODEL_N_COLUMNS;
 }
 
-static GType exo_icon_chooser_model_get_column_type(GtkTreeModel* tree_model, gint idx)
+static GType exo_icon_chooser_model_get_column_type(GtkTreeModel* tree_model, int idx)
 {
     switch (idx)
     {
@@ -194,7 +194,7 @@ static gboolean exo_icon_chooser_model_get_iter(GtkTreeModel* tree_model, GtkTre
 static GtkTreePath* exo_icon_chooser_model_get_path(GtkTreeModel* tree_model, GtkTreeIter* iter)
 {
     ExoIconChooserModel* model = EXO_ICON_CHOOSER_MODEL(tree_model);
-    gint idx;
+    int idx;
 
     _exo_return_val_if_fail(EXO_IS_ICON_CHOOSER_MODEL(model), NULL);
     _exo_return_val_if_fail(iter->stamp == model->stamp, NULL);
@@ -207,7 +207,7 @@ static GtkTreePath* exo_icon_chooser_model_get_path(GtkTreeModel* tree_model, Gt
     return NULL;
 }
 
-static void exo_icon_chooser_model_get_value(GtkTreeModel* tree_model, GtkTreeIter* iter, gint column, GValue* value)
+static void exo_icon_chooser_model_get_value(GtkTreeModel* tree_model, GtkTreeIter* iter, int column, GValue* value)
 {
     ExoIconChooserModelItem* item;
     ExoIconChooserModel* model = EXO_ICON_CHOOSER_MODEL(tree_model);
@@ -266,7 +266,7 @@ static gboolean exo_icon_chooser_model_iter_has_child(GtkTreeModel* tree_model, 
     return FALSE;
 }
 
-static gint exo_icon_chooser_model_iter_n_children(GtkTreeModel* tree_model, GtkTreeIter* iter)
+static int exo_icon_chooser_model_iter_n_children(GtkTreeModel* tree_model, GtkTreeIter* iter)
 {
     ExoIconChooserModel* model = EXO_ICON_CHOOSER_MODEL(tree_model);
 
@@ -276,7 +276,7 @@ static gint exo_icon_chooser_model_iter_n_children(GtkTreeModel* tree_model, Gtk
 }
 
 static gboolean exo_icon_chooser_model_iter_nth_child(GtkTreeModel* tree_model, GtkTreeIter* iter, GtkTreeIter* parent,
-                                                      gint n)
+                                                      int n)
 {
     ExoIconChooserModel* model = EXO_ICON_CHOOSER_MODEL(tree_model);
 
@@ -302,9 +302,9 @@ static gboolean exo_icon_chooser_model_merge_symlinks(gpointer key, gpointer val
     GHashTable* items = data;
     ExoIconChooserModelItem* sym_item = value;
     ExoIconChooserModelItem* item;
-    gchar* target;
-    const gchar* filename;
-    gchar *p, *name;
+    char* target;
+    const char* filename;
+    char *p, *name;
     gboolean merged = FALSE;
 
     /* get the location the symlink points to */
@@ -362,7 +362,7 @@ static void exo_icon_chooser_model_icon_theme_changed(GtkIconTheme* icon_theme, 
     GHashTable* items;
     GHashTable* symlink_items;
     GList *icons, *lp;
-    const gchar* filename;
+    const char* filename;
     ExoIconChooserContext context;
     GtkTreePath* path;
     GtkTreeIter iter;
@@ -465,7 +465,7 @@ static void exo_icon_chooser_model_icon_theme_changed(GtkIconTheme* icon_theme, 
     gtk_tree_path_free(path);
 }
 
-static gint exo_icon_chooser_model_item_compare(gconstpointer data_a, gconstpointer data_b)
+static int exo_icon_chooser_model_item_compare(gconstpointer data_a, gconstpointer data_b)
 {
     const ExoIconChooserModelItem* item_a = data_a;
     const ExoIconChooserModelItem* item_b = data_b;
@@ -576,13 +576,13 @@ ExoIconChooserModel* _exo_icon_chooser_model_get_for_icon_theme(GtkIconTheme* ic
  * Since: 0.3.1.9
  **/
 gboolean _exo_icon_chooser_model_get_iter_for_icon_name(ExoIconChooserModel* model, GtkTreeIter* iter,
-                                                        const gchar* icon_name)
+                                                        const char* icon_name)
 {
     ExoIconChooserModelItem* item;
     GList* lp;
-    guint i;
+    uint i;
     gboolean found;
-    const gchar* other_name;
+    const char* other_name;
 
     _exo_return_val_if_fail(EXO_IS_ICON_CHOOSER_MODEL(model), FALSE);
     _exo_return_val_if_fail(icon_name != NULL, FALSE);

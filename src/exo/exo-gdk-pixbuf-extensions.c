@@ -90,11 +90,11 @@ GdkPixbuf* exo_gdk_pixbuf_colorize(const GdkPixbuf* source, const GdkColor* colo
 {
     GdkPixbuf* dst;
     gboolean has_alpha;
-    gint dst_row_stride;
-    gint src_row_stride;
-    gint width;
-    gint height;
-    gint i;
+    int dst_row_stride;
+    int src_row_stride;
+    int width;
+    int height;
+    int i;
 
     /* determine source parameters */
     width = gdk_pixbuf_get_width(source);
@@ -168,10 +168,10 @@ GdkPixbuf* exo_gdk_pixbuf_colorize(const GdkPixbuf* source, const GdkColor* colo
         guchar* src_pixels = gdk_pixbuf_get_pixels(source);
         guchar* pixdst;
         guchar* pixsrc;
-        gint red_value = color->red / 255.0;
-        gint green_value = color->green / 255.0;
-        gint blue_value = color->blue / 255.0;
-        gint j;
+        int red_value = color->red / 255.0;
+        int green_value = color->green / 255.0;
+        int blue_value = color->blue / 255.0;
+        int j;
 
         for (i = height; --i >= 0;)
         {
@@ -193,13 +193,13 @@ GdkPixbuf* exo_gdk_pixbuf_colorize(const GdkPixbuf* source, const GdkColor* colo
     return dst;
 }
 
-static inline void draw_frame_row(const GdkPixbuf* frame_image, gint target_width, gint source_width,
-                                  gint source_v_position, gint dest_v_position, GdkPixbuf* result_pixbuf,
-                                  gint left_offset, gint height)
+static inline void draw_frame_row(const GdkPixbuf* frame_image, int target_width, int source_width,
+                                  int source_v_position, int dest_v_position, GdkPixbuf* result_pixbuf,
+                                  int left_offset, int height)
 {
-    gint remaining_width;
-    gint slab_width;
-    gint h_offset;
+    int remaining_width;
+    int slab_width;
+    int h_offset;
 
     for (h_offset = 0, remaining_width = target_width; remaining_width > 0;
          h_offset += slab_width, remaining_width -= slab_width)
@@ -216,13 +216,13 @@ static inline void draw_frame_row(const GdkPixbuf* frame_image, gint target_widt
     }
 }
 
-static inline void draw_frame_column(const GdkPixbuf* frame_image, gint target_height, gint source_height,
-                                     gint source_h_position, gint dest_h_position, GdkPixbuf* result_pixbuf,
-                                     gint top_offset, gint width)
+static inline void draw_frame_column(const GdkPixbuf* frame_image, int target_height, int source_height,
+                                     int source_h_position, int dest_h_position, GdkPixbuf* result_pixbuf,
+                                     int top_offset, int width)
 {
-    gint remaining_height;
-    gint slab_height;
-    gint v_offset;
+    int remaining_height;
+    int slab_height;
+    int v_offset;
 
     for (v_offset = 0, remaining_height = target_height; remaining_height > 0;
          v_offset += slab_height, remaining_height -= slab_height)
@@ -256,16 +256,16 @@ static inline void draw_frame_column(const GdkPixbuf* frame_image, gint target_h
  *
  * Since: 0.3.1.9
  **/
-GdkPixbuf* exo_gdk_pixbuf_frame(const GdkPixbuf* source, const GdkPixbuf* frame, gint left_offset, gint top_offset,
-                                gint right_offset, gint bottom_offset)
+GdkPixbuf* exo_gdk_pixbuf_frame(const GdkPixbuf* source, const GdkPixbuf* frame, int left_offset, int top_offset,
+                                int right_offset, int bottom_offset)
 {
     GdkPixbuf* dst;
-    gint dst_width;
-    gint dst_height;
-    gint frame_width;
-    gint frame_height;
-    gint src_width;
-    gint src_height;
+    int dst_width;
+    int dst_height;
+    int frame_width;
+    int frame_height;
+    int src_width;
+    int src_height;
 
     g_return_val_if_fail(GDK_IS_PIXBUF(frame), NULL);
     g_return_val_if_fail(GDK_IS_PIXBUF(source), NULL);
@@ -345,7 +345,7 @@ GdkPixbuf* exo_gdk_pixbuf_frame(const GdkPixbuf* source, const GdkPixbuf* frame,
 
 static inline guchar lighten_channel(guchar cur_value)
 {
-    gint new_value = cur_value;
+    int new_value = cur_value;
 
     new_value += 24 + (new_value >> 3);
     if (G_UNLIKELY(new_value > 255))
@@ -372,11 +372,11 @@ GdkPixbuf* exo_gdk_pixbuf_spotlight(const GdkPixbuf* source)
 {
     GdkPixbuf* dst;
     gboolean has_alpha;
-    gint dst_row_stride;
-    gint src_row_stride;
-    gint width;
-    gint height;
-    gint i;
+    int dst_row_stride;
+    int src_row_stride;
+    int width;
+    int height;
+    int i;
 
     /* determine source parameters */
     width = gdk_pixbuf_get_width(source);
@@ -450,7 +450,7 @@ GdkPixbuf* exo_gdk_pixbuf_spotlight(const GdkPixbuf* source)
         guchar* src_pixels = gdk_pixbuf_get_pixels(source);
         guchar* pixdst;
         guchar* pixsrc;
-        gint j;
+        int j;
 
         for (i = height; --i >= 0;)
         {
@@ -495,13 +495,13 @@ GdkPixbuf* exo_gdk_pixbuf_spotlight(const GdkPixbuf* source)
  *
  * Since: 0.3.1.1
  **/
-GdkPixbuf* exo_gdk_pixbuf_scale_down(GdkPixbuf* source, gboolean preserve_aspect_ratio, gint dest_width,
-                                     gint dest_height)
+GdkPixbuf* exo_gdk_pixbuf_scale_down(GdkPixbuf* source, gboolean preserve_aspect_ratio, int dest_width,
+                                     int dest_height)
 {
-    gdouble wratio;
-    gdouble hratio;
-    gint source_width;
-    gint source_height;
+    double wratio;
+    double hratio;
+    int source_width;
+    int source_height;
 
     g_return_val_if_fail(GDK_IS_PIXBUF(source), NULL);
     g_return_val_if_fail(dest_width > 0, NULL);

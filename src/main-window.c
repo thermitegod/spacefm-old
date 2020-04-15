@@ -73,8 +73,8 @@ void rebuild_menus(FMMainWindow* main_window);
 static void fm_main_window_class_init(FMMainWindowClass* klass);
 static void fm_main_window_init(FMMainWindow* main_window);
 static void fm_main_window_finalize(GObject* obj);
-static void fm_main_window_get_property(GObject* obj, guint prop_id, GValue* value, GParamSpec* pspec);
-static void fm_main_window_set_property(GObject* obj, guint prop_id, const GValue* value, GParamSpec* pspec);
+static void fm_main_window_get_property(GObject* obj, uint prop_id, GValue* value, GParamSpec* pspec);
+static void fm_main_window_set_property(GObject* obj, uint prop_id, const GValue* value, GParamSpec* pspec);
 static gboolean fm_main_window_delete_event(GtkWidget* widget, GdkEvent* event);
 
 // static gboolean fm_main_window_key_press_event ( GtkWidget *widget,
@@ -82,7 +82,7 @@ static gboolean fm_main_window_delete_event(GtkWidget* widget, GdkEvent* event);
 
 static gboolean fm_main_window_window_state_event(GtkWidget* widget, GdkEventWindowState* event);
 
-static void on_folder_notebook_switch_pape(GtkNotebook* notebook, GtkWidget* page, guint page_num, gpointer user_data);
+static void on_folder_notebook_switch_pape(GtkNotebook* notebook, GtkWidget* page, uint page_num, gpointer user_data);
 
 // static void on_file_browser_before_chdir( PtkFileBrowser* file_browser,
 //                                          const char* path, gboolean* cancel,
@@ -94,7 +94,7 @@ static void on_file_browser_after_chdir(PtkFileBrowser* file_browser, FMMainWind
 static void on_file_browser_content_change(PtkFileBrowser* file_browser, FMMainWindow* main_window);
 static void on_file_browser_sel_change(PtkFileBrowser* file_browser, FMMainWindow* main_window);
 void on_file_browser_panel_change(PtkFileBrowser* file_browser, FMMainWindow* main_window);
-static gboolean on_tab_drag_motion(GtkWidget* widget, GdkDragContext* drag_context, gint x, gint y, guint time,
+static gboolean on_tab_drag_motion(GtkWidget* widget, GdkDragContext* drag_context, int x, int y, uint time,
                                    PtkFileBrowser* file_browser);
 static gboolean on_main_window_focus(GtkWidget* main_window, GdkEventFocus* event, gpointer user_data);
 
@@ -133,7 +133,7 @@ static GtkWindowClass* parent_class = NULL;
 static int n_windows = 0;
 static GList* all_windows = NULL;
 
-static guint theme_change_notify = 0;
+static uint theme_change_notify = 0;
 
 //  Drag & Drop/Clipboard targets
 static GtkTargetEntry drag_targets[] = {{"text/uri-list", 0, 0}};
@@ -1891,11 +1891,11 @@ void fm_main_window_finalize(GObject* obj)
     G_OBJECT_CLASS(parent_class)->finalize(obj);
 }
 
-void fm_main_window_get_property(GObject* obj, guint prop_id, GValue* value, GParamSpec* pspec)
+void fm_main_window_get_property(GObject* obj, uint prop_id, GValue* value, GParamSpec* pspec)
 {
 }
 
-void fm_main_window_set_property(GObject* obj, guint prop_id, const GValue* value, GParamSpec* pspec)
+void fm_main_window_set_property(GObject* obj, uint prop_id, const GValue* value, GParamSpec* pspec)
 {
 }
 
@@ -2525,7 +2525,6 @@ void fm_main_window_update_tab_label(FMMainWindow* main_window, PtkFileBrowser* 
     GtkContainer* hbox;
     GtkLabel* text;
     GList* children;
-    gchar* name;
 
     label = gtk_notebook_get_tab_label(GTK_NOTEBOOK(main_window->notebook), GTK_WIDGET(file_browser));
     if (label)
@@ -2535,8 +2534,7 @@ void fm_main_window_update_tab_label(FMMainWindow* main_window, PtkFileBrowser* 
         text = GTK_LABEL(children->next->data);
 
         // TODO: Change the icon
-
-        name = g_path_get_basename(path);
+        char* name = g_path_get_basename(path);
         gtk_label_set_text(text, name);
 #if (GTK_MAJOR_VERSION == 3)
         gtk_label_set_ellipsize(text, PANGO_ELLIPSIZE_MIDDLE);
@@ -2557,7 +2555,7 @@ void fm_main_window_update_tab_label(FMMainWindow* main_window, PtkFileBrowser* 
 void fm_main_window_add_new_tab(FMMainWindow* main_window, const char* folder_path)
 {
     GtkWidget* tab_label;
-    gint idx;
+    int idx;
     GtkWidget* notebook = main_window->notebook;
 
     PtkFileBrowser* curfb = PTK_FILE_BROWSER(fm_main_window_get_current_file_browser(main_window));
@@ -2636,7 +2634,7 @@ GtkWidget* fm_main_window_get_current_file_browser(FMMainWindow* main_window)
     }
     if (main_window->notebook)
     {
-        gint idx = gtk_notebook_get_current_page(GTK_NOTEBOOK(main_window->notebook));
+        int idx = gtk_notebook_get_current_page(GTK_NOTEBOOK(main_window->notebook));
         if (idx >= 0)
             return gtk_notebook_get_nth_page(GTK_NOTEBOOK(main_window->notebook), idx);
     }
@@ -2964,7 +2962,7 @@ void update_window_title(GtkMenuItem* item, FMMainWindow* main_window)
         set_window_title(main_window, file_browser);
 }
 
-void on_folder_notebook_switch_pape(GtkNotebook* notebook, GtkWidget* page, guint page_num, gpointer user_data)
+void on_folder_notebook_switch_pape(GtkNotebook* notebook, GtkWidget* page, uint page_num, gpointer user_data)
 {
     FMMainWindow* main_window = FM_MAIN_WINDOW(user_data);
     PtkFileBrowser* file_browser;
@@ -3247,11 +3245,11 @@ void on_file_browser_content_change(PtkFileBrowser* file_browser, FMMainWindow* 
     fm_main_window_update_status_bar(main_window, file_browser);
 }
 
-gboolean on_tab_drag_motion(GtkWidget* widget, GdkDragContext* drag_context, gint x, gint y, guint time,
+gboolean on_tab_drag_motion(GtkWidget* widget, GdkDragContext* drag_context, int x, int y, uint time,
                             PtkFileBrowser* file_browser)
 {
     GtkNotebook* notebook;
-    gint idx;
+    int idx;
 
     notebook = GTK_NOTEBOOK(gtk_widget_get_parent(GTK_WIDGET(file_browser)));
     // TODO: Add a timeout here and don't set current page immediately
@@ -3312,7 +3310,7 @@ static gboolean on_main_window_keypress(FMMainWindow* main_window, GdkEventKey* 
     GList* l;
     XSet* set;
     PtkFileBrowser* browser;
-    guint nonlatin_key = 0;
+    uint nonlatin_key = 0;
 
     if (known_set)
     {
@@ -3554,11 +3552,11 @@ static long get_desktop_index(GtkWindow* win)
 
     // find out what desktop (workspace) window is on   #include <gdk/gdkx.h>
     Atom type;
-    gint format;
+    int format;
     gulong nitems;
     gulong bytes_after;
     guchar* data;
-    const gchar* atom_name = win ? "_NET_WM_DESKTOP" : "_NET_CURRENT_DESKTOP";
+    const char* atom_name = win ? "_NET_WM_DESKTOP" : "_NET_CURRENT_DESKTOP";
     Atom net_wm_desktop = gdk_x11_get_xatom_by_name_for_display(display, atom_name);
 
     if (net_wm_desktop == None)
@@ -4444,7 +4442,7 @@ void on_task_columns_changed(GtkWidget* view, gpointer user_data)
 
 void on_task_destroy(GtkWidget* view, gpointer user_data)
 {
-    guint id = g_signal_lookup("columns-changed", G_TYPE_FROM_INSTANCE(view));
+    uint id = g_signal_lookup("columns-changed", G_TYPE_FROM_INSTANCE(view));
     if (id)
     {
         gulong hand = g_signal_handler_find((gpointer)view, G_SIGNAL_MATCH_ID, id, 0, NULL, NULL, NULL);
@@ -7243,7 +7241,7 @@ gboolean run_event(FMMainWindow* main_window, PtkFileBrowser* file_browser, XSet
     char* cmd;
     gboolean inhibit;
     char* argv[4];
-    gint exit_status;
+    int exit_status;
 
     if (!ucmd)
         return FALSE;

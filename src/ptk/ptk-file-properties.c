@@ -74,16 +74,16 @@ typedef struct
     GtkLabel* count_label;
     off_t total_size;
     off_t size_on_disk;
-    guint total_count;
-    guint total_count_dir;
+    uint total_count;
+    uint total_count_dir;
     gboolean cancel;
     gboolean done;
     GThread* calc_size_thread;
-    guint update_label_timer;
+    uint update_label_timer;
     GtkWidget* recurse;
 } FilePropertiesDialogData;
 
-static void on_dlg_response(GtkDialog* dialog, gint response_id, gpointer user_data);
+static void on_dlg_response(GtkDialog* dialog, int response_id, gpointer user_data);
 
 /*
  * void get_total_size_of_dir( const char* path, off_t* size )
@@ -349,8 +349,8 @@ GtkWidget* file_properties_dlg_new(GtkWindow* parent, const char* dir_path, GLis
     char buf2[32];
     const char* time_format = "%Y-%m-%d %H:%M:%S";
 
-    gchar* disp_path;
-    gchar* file_type;
+    char* disp_path;
+    char* file_type;
 
     int i;
     GList* l;
@@ -706,7 +706,7 @@ gid_t gid_from_name(const char* group_name)
     return gid;
 }
 
-void on_dlg_response(GtkDialog* dialog, gint response_id, gpointer user_data)
+void on_dlg_response(GtkDialog* dialog, int response_id, gpointer user_data)
 {
     FilePropertiesDialogData* data;
     PtkFileTask* task;

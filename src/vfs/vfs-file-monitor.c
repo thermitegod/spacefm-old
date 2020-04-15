@@ -40,7 +40,7 @@ typedef struct
 
 static GHashTable* monitor_hash = NULL;
 static GIOChannel* inotify_io_channel = NULL;
-static guint inotify_io_watch = 0;
+static uint inotify_io_watch = 0;
 static int inotify_fd = -1;
 
 /* event handler of all inotify events */

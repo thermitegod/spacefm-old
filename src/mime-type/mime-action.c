@@ -50,7 +50,7 @@ typedef char* (*DataDirFunc)(const char* dir, const char* mime_type, gpointer us
 static char* data_dir_foreach(DataDirFunc func, const char* mime_type, gpointer user_data)
 {
     char* ret;
-    const gchar* const* dirs;
+    const char* const* dirs;
     char* dir;
 
     // $XDG_CONFIG_HOME=[~/.config]/mimeapps.list
@@ -84,7 +84,7 @@ static char* data_dir_foreach(DataDirFunc func, const char* mime_type, gpointer 
 static char* apps_dir_foreach(DataDirFunc func, const char* mime_type, gpointer user_data)
 {
     char* ret = NULL;
-    const gchar* const* dirs;
+    const char* const* dirs;
     const char* dir = g_get_user_data_dir();
 
     if ((ret = func(dir, mime_type, user_data)))
@@ -417,7 +417,7 @@ static char* make_custom_desktop_file(const char* desktop_id, const char* mime_t
     char *name = NULL, *cust_template = NULL, *cust = NULL, *path, *dir;
     char* file_content = NULL;
     gsize len = 0;
-    guint i;
+    uint i;
 
     if (G_LIKELY(g_str_has_suffix(desktop_id, ".desktop")))
     {

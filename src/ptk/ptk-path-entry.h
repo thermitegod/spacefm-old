@@ -21,7 +21,7 @@ G_BEGIN_DECLS
 typedef struct
 {
     PtkFileBrowser* browser;
-    guint seek_timer;
+    uint seek_timer;
 } EntryData;
 
 GtkWidget* ptk_path_entry_new(PtkFileBrowser* file_browser);

@@ -49,7 +49,7 @@
 
 gboolean on_app_button_press(GtkWidget* item, GdkEventButton* event, PtkFileMenu* data);
 gboolean app_menu_keypress(GtkWidget* widget, GdkEventKey* event, PtkFileMenu* data);
-static void show_app_menu(GtkWidget* menu, GtkWidget* app_item, PtkFileMenu* data, guint button, guint32 time);
+static void show_app_menu(GtkWidget* menu, GtkWidget* app_item, PtkFileMenu* data, uint button, guint32 time);
 
 /* Signal handlers for popup menu */
 static void on_popup_open_activate(GtkMenuItem* menuitem, PtkFileMenu* data);
@@ -1364,7 +1364,7 @@ enum
 
 char* get_shared_desktop_file_location(const char* name)
 {
-    const gchar* const* dirs;
+    const char* const* dirs;
     char* ret;
 
     dirs = g_get_system_data_dirs();
@@ -1788,7 +1788,7 @@ void on_app_menu_hide(GtkWidget* widget, GtkWidget* app_menu)
     gtk_menu_shell_deactivate(GTK_MENU_SHELL(app_menu));
 }
 
-GtkWidget* app_menu_additem(GtkWidget* menu, char* label, gchar* stock_icon, int job, GtkWidget* app_item,
+GtkWidget* app_menu_additem(GtkWidget* menu, char* label, char* stock_icon, int job, GtkWidget* app_item,
                             PtkFileMenu* data)
 {
     GtkWidget* item;
@@ -1815,7 +1815,7 @@ GtkWidget* app_menu_additem(GtkWidget* menu, char* label, gchar* stock_icon, int
     return item;
 }
 
-static void show_app_menu(GtkWidget* menu, GtkWidget* app_item, PtkFileMenu* data, guint button, guint32 time)
+static void show_app_menu(GtkWidget* menu, GtkWidget* app_item, PtkFileMenu* data, uint button, guint32 time)
 {
     GtkWidget* newitem;
     GtkWidget* submenu;

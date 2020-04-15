@@ -66,15 +66,15 @@ enum
 };
 
 static void exo_cell_renderer_icon_finalize(GObject* object);
-static void exo_cell_renderer_icon_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec);
-static void exo_cell_renderer_icon_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec);
+static void exo_cell_renderer_icon_get_property(GObject* object, uint prop_id, GValue* value, GParamSpec* pspec);
+static void exo_cell_renderer_icon_set_property(GObject* object, uint prop_id, const GValue* value, GParamSpec* pspec);
 static void exo_cell_renderer_icon_get_size(GtkCellRenderer* renderer, GtkWidget* widget,
 #if (GTK_MAJOR_VERSION == 3)
                                             const GdkRectangle* cell_area,
 #elif (GTK_MAJOR_VERSION == 2)
                                             GdkRectangle* cell_area,
 #endif
-                                            gint* x_offset, gint* y_offset, gint* width, gint* height);
+                                            int* x_offset, int* y_offset, int* width, int* height);
 static void exo_cell_renderer_icon_render(GtkCellRenderer* renderer,
 #if (GTK_MAJOR_VERSION == 3)
                                           cairo_t* cr,
@@ -94,11 +94,11 @@ static void exo_cell_renderer_icon_render(GtkCellRenderer* renderer,
 
 struct _ExoCellRendererIconPrivate
 {
-    guint follow_state : 1;
-    guint icon_static : 1;
-    gchar* icon;
+    uint follow_state : 1;
+    uint icon_static : 1;
+    char* icon;
     GIcon* gicon;
-    gint size;
+    int size;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE(ExoCellRendererIcon, exo_cell_renderer_icon, GTK_TYPE_CELL_RENDERER)
@@ -217,7 +217,7 @@ static void exo_cell_renderer_icon_finalize(GObject* object)
     (*G_OBJECT_CLASS(exo_cell_renderer_icon_parent_class)->finalize)(object);
 }
 
-static void exo_cell_renderer_icon_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec)
+static void exo_cell_renderer_icon_get_property(GObject* object, uint prop_id, GValue* value, GParamSpec* pspec)
 {
     const ExoCellRendererIconPrivate* priv =
         exo_cell_renderer_icon_get_instance_private(EXO_CELL_RENDERER_ICON(object));
@@ -246,10 +246,10 @@ static void exo_cell_renderer_icon_get_property(GObject* object, guint prop_id, 
     }
 }
 
-static void exo_cell_renderer_icon_set_property(GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec)
+static void exo_cell_renderer_icon_set_property(GObject* object, uint prop_id, const GValue* value, GParamSpec* pspec)
 {
     ExoCellRendererIconPrivate* priv = exo_cell_renderer_icon_get_instance_private(EXO_CELL_RENDERER_ICON(object));
-    const gchar* icon;
+    const char* icon;
 
     switch (prop_id)
     {
@@ -292,14 +292,14 @@ static void exo_cell_renderer_icon_get_size(GtkCellRenderer* renderer, GtkWidget
                                             GdkRectangle* cell_area,
 #endif
 
-                                            gint* x_offset, gint* y_offset, gint* width, gint* height)
+                                            int* x_offset, int* y_offset, int* width, int* height)
 {
     const ExoCellRendererIconPrivate* priv =
         exo_cell_renderer_icon_get_instance_private(EXO_CELL_RENDERER_ICON(renderer));
 
-    gfloat xalign, yalign;
-    gint xpad = 0;
-    gint ypad = 0;
+    float xalign, yalign;
+    int xpad = 0;
+    int ypad = 0;
     gtk_cell_renderer_get_alignment(renderer, &xalign, &yalign);
 
     if (cell_area != NULL)
@@ -363,15 +363,15 @@ static void exo_cell_renderer_icon_render(GtkCellRenderer* renderer,
     GtkIconTheme* icon_theme;
     GdkRectangle icon_area;
     GdkRectangle draw_area;
-    const gchar* filename;
+    const char* filename;
     GtkIconInfo* icon_info = NULL;
     GdkPixbuf* icon = NULL;
     GdkPixbuf* temp;
     GError* err = NULL;
-    gchar* display_name = NULL;
-    gint* icon_sizes;
-    gint icon_size;
-    gint n;
+    char* display_name = NULL;
+    int* icon_sizes;
+    int icon_size;
+    int n;
 
 #if (GTK_MAJOR_VERSION == 3)
     GdkRectangle* expose_area = NULL;

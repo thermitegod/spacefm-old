@@ -44,8 +44,8 @@ void _exo_i18n_init(void) G_GNUC_INTERNAL;
 
 void _exo_gtk_widget_send_focus_change(GtkWidget* widget, gboolean in) G_GNUC_INTERNAL;
 
-GType _exo_g_type_register_simple(GType type_parent, const gchar* type_name_static, guint class_size,
-                                  gpointer class_init, guint instance_size, gpointer instance_init) G_GNUC_INTERNAL;
+GType _exo_g_type_register_simple(GType type_parent, const char* type_name_static, uint class_size,
+                                  gpointer class_init, uint instance_size, gpointer instance_init) G_GNUC_INTERNAL;
 
 void _exo_g_type_add_interface_simple(GType instance_type, GType interface_type,
                                       GInterfaceInitFunc interface_init_func) G_GNUC_INTERNAL;

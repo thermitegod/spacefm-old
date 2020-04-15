@@ -45,7 +45,7 @@
 
 static GtkTreeModel* model = NULL;
 static int n_vols = 0;
-static guint theme_changed = 0; /* GtkIconTheme::"changed" handler */
+static uint theme_changed = 0; /* GtkIconTheme::"changed" handler */
 
 GdkPixbuf* global_icon_bookmark = NULL;
 GdkPixbuf* global_icon_submenu = NULL;
@@ -67,17 +67,17 @@ static void on_bookmark_row_inserted(GtkTreeModel* list, GtkTreePath* tree_path,
                                      PtkFileBrowser* file_browser);
 /*
 static gboolean update_drag_dest_row( GtkWidget *widget, GdkDragContext *drag_context,
-                                      gint x, gint y, guint time, gpointer user_data );
+                                      int x, int y, uint time, gpointer user_data );
 
 static gboolean on_drag_motion( GtkWidget *widget, GdkDragContext *drag_context,
-                                gint x, gint y, guint time, gpointer user_data );
+                                int x, int y, uint time, gpointer user_data );
 
 static gboolean on_drag_drop( GtkWidget *widget, GdkDragContext *drag_context,
-                              gint x, gint y, guint time, gpointer user_data );
+                              int x, int y, uint time, gpointer user_data );
 
 static void on_drag_data_received( GtkWidget *widget, GdkDragContext *drag_context,
-                                   gint x, gint y, GtkSelectionData *data, guint info,
-                                   guint time, gpointer user_data);
+                                   int x, int y, GtkSelectionData *data, uint info,
+                                   uint time, gpointer user_data);
 */
 
 static gboolean try_mount(GtkTreeView* view, VFSVolume* vol);
@@ -732,7 +732,7 @@ void ptk_location_view_clean_mount_points()
      * build also requires it. */
 
     GDir* dir;
-    const gchar* name;
+    const char* name;
     char* del_path;
     char* path;
     int i;
@@ -2555,7 +2555,7 @@ void ptk_location_view_on_action(GtkWidget* view, XSet* set)
     }
 }
 
-static void show_devices_menu(GtkTreeView* view, VFSVolume* vol, PtkFileBrowser* file_browser, guint button,
+static void show_devices_menu(GtkTreeView* view, VFSVolume* vol, PtkFileBrowser* file_browser, uint button,
                               guint32 time)
 {
     XSet* set;
@@ -2784,7 +2784,7 @@ void on_dev_menu_hide(GtkWidget* widget, GtkWidget* dev_menu)
     gtk_menu_shell_deactivate(GTK_MENU_SHELL(dev_menu));
 }
 
-static void show_dev_design_menu(GtkWidget* menu, GtkWidget* dev_item, VFSVolume* vol, guint button, guint32 time)
+static void show_dev_design_menu(GtkWidget* menu, GtkWidget* dev_item, VFSVolume* vol, uint button, guint32 time)
 {
     PtkFileBrowser* file_browser;
 
@@ -2994,7 +2994,7 @@ gboolean on_dev_menu_button_press(GtkWidget* item, GdkEventButton* event, VFSVol
     return TRUE;
 }
 
-gint cmp_dev_name(VFSVolume* a, VFSVolume* b)
+int cmp_dev_name(VFSVolume* a, VFSVolume* b)
 {
     return g_strcmp0(vfs_volume_get_disp_name(a), vfs_volume_get_disp_name(b));
 }
@@ -3082,7 +3082,7 @@ VFSVolume* ptk_location_view_get_volume(GtkTreeView* location_view, GtkTreeIter*
 
 /*
 gboolean update_drag_dest_row( GtkWidget *widget, GdkDragContext *drag_context,
-                               gint x, gint y, guint time, gpointer user_data )
+                               int x, int y, uint time, gpointer user_data )
 {
     GtkTreeView* view = (GtkTreeView*)widget;
     GtkTreePath* tree_path;
@@ -3123,7 +3123,7 @@ gboolean update_drag_dest_row( GtkWidget *widget, GdkDragContext *drag_context,
 
 /*
 gboolean on_drag_motion( GtkWidget *widget, GdkDragContext *drag_context,
-                         gint x, gint y, guint time, gpointer user_data )
+                         int x, int y, uint time, gpointer user_data )
 {
     // stop the default handler of GtkTreeView
     g_signal_stop_emission_by_name( widget, "drag-motion" );
@@ -3131,7 +3131,7 @@ gboolean on_drag_motion( GtkWidget *widget, GdkDragContext *drag_context,
 }
 
 gboolean on_drag_drop( GtkWidget *widget, GdkDragContext *drag_context,
-                       gint x, gint y, guint time, gpointer user_data )
+                       int x, int y, uint time, gpointer user_data )
 {
     GdkAtom target = gdk_atom_intern( "text/uri-list", FALSE );
     update_drag_dest_row( widget, drag_context, x, y, time, user_data );
@@ -3141,8 +3141,8 @@ gboolean on_drag_drop( GtkWidget *widget, GdkDragContext *drag_context,
 }
 
 void on_drag_data_received( GtkWidget *widget, GdkDragContext *drag_context,
-                            gint x, gint y, GtkSelectionData *data, guint info,
-                            guint time, gpointer user_data)
+                            int x, int y, GtkSelectionData *data, uint info,
+                            uint time, gpointer user_data)
 {
     char** uris, **uri, *file, *name;
     GtkTreeView* view;
@@ -3947,7 +3947,7 @@ static void on_bookmark_row_activated(GtkTreeView* view, GtkTreePath* path, GtkT
     activate_bookmark_item(get_selected_bookmark_set(view), view, file_browser, FALSE);
 }
 
-static void show_bookmarks_menu(GtkTreeView* view, PtkFileBrowser* file_browser, guint button, guint32 time)
+static void show_bookmarks_menu(GtkTreeView* view, PtkFileBrowser* file_browser, uint button, guint32 time)
 {
     GtkWidget* popup;
     XSet* set;

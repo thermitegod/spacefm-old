@@ -95,7 +95,7 @@ void mime_cache_free(MimeCache* cache)
 
 gboolean mime_cache_load(MimeCache* cache, const char* file_path)
 {
-    guint majv, minv;
+    uint majv, minv;
     int fd = -1;
     struct stat statbuf;
     char* buffer = NULL;
@@ -230,7 +230,7 @@ static gboolean magic_rule_match(const char* buf, const char* rule, const char* 
             if (n_children > 0)
             {
                 guint32 first_child_off = VAL32(rule, 28);
-                guint i;
+                uint i;
                 rule = buf + first_child_off;
                 for (i = 0; i < n_children; ++i, rule += 32)
                 {

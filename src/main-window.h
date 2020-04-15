@@ -59,7 +59,7 @@ typedef struct _FMMainWindow
     //  GtkEntry* address_bar;
     //  GtkWidget *bookmarks;
     //  GtkWidget *status_bar;
-    //  gint splitter_pos;
+    //  int splitter_pos;
 
     /* Check menu items & tool items */
     /*
@@ -91,7 +91,7 @@ typedef struct _FMMainWindow
 
     GtkWindowGroup* wgroup;
     int n_busy_tasks;
-    guint configure_evt_timer;
+    uint configure_evt_timer;
     gboolean maximized;
     gboolean opened_maximized;
     gboolean fullscreen;

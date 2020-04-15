@@ -90,10 +90,10 @@ struct _ExoIconChooserDialogPrivate
     GtkWidget* icon_chooser;
     GtkWidget* file_chooser;
     GtkWidget* file_preview;
-    gchar* casefolded_text;
+    char* casefolded_text;
 };
 
-static const gchar CONTEXT_TITLES[][80] = {
+static const char CONTEXT_TITLES[][80] = {
     /* EXO_ICON_CHOOSER_CONTEXT_ACTIONS */
     N_("Action Icons"),
     /* EXO_ICON_CHOOSER_CONTEXT_ANIMATIONS */
@@ -435,7 +435,7 @@ static void exo_icon_chooser_dialog_set_model(ExoIconChooserDialog* dialog)
 static gboolean exo_icon_chooser_dialog_separator_func(GtkTreeModel* model, GtkTreeIter* iter, gpointer user_data)
 {
     gboolean separator;
-    gchar* title;
+    char* title;
 
     /* check if we have a separator here */
     gtk_tree_model_get(model, iter, 0, &title, -1);
@@ -449,11 +449,11 @@ static gboolean exo_icon_chooser_dialog_visible_func(GtkTreeModel* model, GtkTre
 {
     ExoIconChooserDialogPrivate* priv =
         exo_icon_chooser_dialog_get_instance_private(EXO_ICON_CHOOSER_DIALOG(user_data));
-    guint icon_chooser_context;
-    guint item_context;
-    gchar* normalized;
-    gchar* name;
-    gchar* name_casefolded;
+    uint icon_chooser_context;
+    uint item_context;
+    char* normalized;
+    char* name;
+    char* name_casefolded;
     gboolean visible;
 
     /* check if we need to test the context */
@@ -545,8 +545,8 @@ static void exo_icon_chooser_dialog_combo_changed(GtkWidget* combo, ExoIconChoos
 static void exo_icon_chooser_dialog_entry_changed(GtkWidget* combo, ExoIconChooserDialog* icon_chooser_dialog)
 {
     ExoIconChooserDialogPrivate* priv = exo_icon_chooser_dialog_get_instance_private(icon_chooser_dialog);
-    const gchar* text;
-    gchar* normalized;
+    const char* text;
+    char* normalized;
     GtkTreeModel* model;
 
     g_free(priv->casefolded_text);
@@ -580,7 +580,7 @@ static void exo_icon_chooser_dialog_entry_clear(GtkEntry* entry, GtkEntryIconPos
 
 static void exo_icon_chooser_dialog_selection_changed(ExoIconChooserDialog* icon_chooser_dialog)
 {
-    gchar* icon;
+    char* icon;
 
     /* check if we have a valid icon in the chooser */
     icon = exo_icon_chooser_dialog_get_icon(icon_chooser_dialog);
@@ -609,9 +609,9 @@ static void exo_icon_chooser_dialog_selection_changed(ExoIconChooserDialog* icon
  *
  * Since: 0.3.1.9
  **/
-GtkWidget* exo_icon_chooser_dialog_new(const gchar* title, GtkWindow* parent, const gchar* first_button_text, ...)
+GtkWidget* exo_icon_chooser_dialog_new(const char* title, GtkWindow* parent, const char* first_button_text, ...)
 {
-    const gchar* button_text;
+    const char* button_text;
     GtkWidget* dialog;
     va_list var_args;
 
@@ -656,13 +656,13 @@ GtkWidget* exo_icon_chooser_dialog_new(const gchar* title, GtkWindow* parent, co
  *
  * Since: 0.3.1.9
  **/
-gchar* exo_icon_chooser_dialog_get_icon(ExoIconChooserDialog* icon_chooser_dialog)
+char* exo_icon_chooser_dialog_get_icon(ExoIconChooserDialog* icon_chooser_dialog)
 {
     ExoIconChooserDialogPrivate* priv = exo_icon_chooser_dialog_get_instance_private(icon_chooser_dialog);
     GtkTreeModel* model;
     GtkTreeIter iter;
     GList* selected_items;
-    gchar* icon = NULL;
+    char* icon = NULL;
 
     g_return_val_if_fail(EXO_IS_ICON_CHOOSER_DIALOG(icon_chooser_dialog), NULL);
 
@@ -711,7 +711,7 @@ gchar* exo_icon_chooser_dialog_get_icon(ExoIconChooserDialog* icon_chooser_dialo
  *
  * Since: 0.3.1.9
  **/
-gboolean exo_icon_chooser_dialog_set_icon(ExoIconChooserDialog* icon_chooser_dialog, const gchar* icon)
+gboolean exo_icon_chooser_dialog_set_icon(ExoIconChooserDialog* icon_chooser_dialog, const char* icon)
 {
     ExoIconChooserDialogPrivate* priv = EXO_ICON_CHOOSER_DIALOG_GET_PRIVATE(icon_chooser_dialog);
     GtkTreeModel* filter;
@@ -719,7 +719,7 @@ gboolean exo_icon_chooser_dialog_set_icon(ExoIconChooserDialog* icon_chooser_dia
     GtkTreePath* filter_path;
     GtkTreePath* model_path;
     GtkTreeIter model_iter;
-    guint context;
+    uint context;
 
     g_return_val_if_fail(EXO_IS_ICON_CHOOSER_DIALOG(icon_chooser_dialog), FALSE);
     g_return_val_if_fail(icon != NULL, FALSE);

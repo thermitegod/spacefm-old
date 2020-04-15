@@ -173,15 +173,15 @@ GtkWidget* _exo_thumbnail_preview_new(void)
  *
  * Updates the @thumbnail_preview to display a preview of the specified @uri.
  **/
-void _exo_thumbnail_preview_set_uri(ExoThumbnailPreview* thumbnail_preview, const gchar* uri)
+void _exo_thumbnail_preview_set_uri(ExoThumbnailPreview* thumbnail_preview, const char* uri)
 {
     struct stat statb;
     GdkPixbuf* thumbnail;
-    gchar* icon_name = NULL;
-    gchar* size_name = NULL;
-    gchar* displayname;
-    gchar* filename;
-    gchar* slash;
+    char* icon_name = NULL;
+    char* size_name = NULL;
+    char* displayname;
+    char* filename;
+    char* slash;
 
     _exo_return_if_fail(EXO_IS_THUMBNAIL_PREVIEW(thumbnail_preview));
 

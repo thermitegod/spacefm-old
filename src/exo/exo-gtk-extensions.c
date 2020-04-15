@@ -51,7 +51,7 @@
 
 static void update_preview(GtkFileChooser* chooser, ExoThumbnailPreview* thumbnail_preview)
 {
-    gchar* uri;
+    char* uri;
 
     _exo_return_if_fail(EXO_IS_THUMBNAIL_PREVIEW(thumbnail_preview));
     _exo_return_if_fail(GTK_IS_FILE_CHOOSER(chooser));

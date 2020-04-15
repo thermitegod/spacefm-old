@@ -35,7 +35,7 @@ typedef struct _VFSFileMonitor VFSFileMonitor;
 
 struct _VFSFileMonitor
 {
-    gchar* path;
+    char* path;
     /*<private>*/
     int n_ref;
     int wd;

@@ -31,7 +31,7 @@ struct _PtkMenuItemEntry
     const char* label;      /* or stock id */
     const char* stock_icon; /* or menu type  1: check, 2: radio */
     GCallback callback;
-    guint key;
+    uint key;
     GdkModifierType mod;
     struct _PtkMenuItemEntry* sub_menu;
     GtkWidget** ret;

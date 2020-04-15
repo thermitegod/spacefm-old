@@ -56,7 +56,7 @@ GtkWidget* ptk_input_dialog_new(const char* title, const char* prompt, const cha
  * The returned string should be freed when no longer needed.
  * input_dialog: the input dialog
  */
-gchar* ptk_input_dialog_get_text(GtkWidget* input_dialog)
+char* ptk_input_dialog_get_text(GtkWidget* input_dialog)
 {
     GtkWidget* entry = ptk_input_dialog_get_entry(input_dialog);
     return g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));

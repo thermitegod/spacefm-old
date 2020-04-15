@@ -44,12 +44,12 @@
  * Returns: A copy of @text without underscores. The returned string
  *          must be freed when no longer required.
  **/
-gchar* exo_str_elide_underscores(const gchar* text)
+char* exo_str_elide_underscores(const char* text)
 {
-    const gchar* s;
+    const char* s;
     gboolean last_underscore = FALSE;
-    gchar* result;
-    gchar* t;
+    char* result;
+    char* t;
 
     g_return_val_if_fail(text != NULL, NULL);
 
@@ -83,7 +83,7 @@ gchar* exo_str_elide_underscores(const gchar* text)
  *
  * Returns: %TRUE if @a equals @b, else %FALSE.
  **/
-gboolean exo_str_is_equal(const gchar* a, const gchar* b)
+gboolean exo_str_is_equal(const char* a, const char* b)
 {
     if (a == NULL || b == NULL)
         return (a == b);
@@ -108,10 +108,10 @@ gboolean exo_str_is_equal(const gchar* a, const gchar* b)
  *               freed using g_strfreev() when no
  *               longer needed.
  **/
-gchar** exo_strndupv(gchar** strv, guint num)
+char** exo_strndupv(char** strv, uint num)
 {
-    gchar** result;
-    guint i;
+    char** result;
+    uint i;
 
     /* return null when there is nothing to copy */
     if (G_UNLIKELY(strv == NULL || num == 0))

@@ -40,7 +40,7 @@ enum
     N_SIGNALS
 };
 
-static guint signals[N_SIGNALS] = {0};
+static uint signals[N_SIGNALS] = {0};
 
 GType vfs_async_task_get_type(void)
 {

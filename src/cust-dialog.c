@@ -232,7 +232,7 @@ char* get_column_value(GtkTreeModel* model, GtkTreeIter* iter, int col_index)
 {
     char* str = NULL;
     gint64 i64;
-    gdouble d;
+    double d;
     int i;
     switch (gtk_tree_model_get_column_type(model, col_index))
     {
@@ -1438,7 +1438,7 @@ static void run_command(CustomElement* el, GList* argslist, char* xvalue)
         if (icmd == -1)
         {
             // external command
-            gchar* argv[g_list_length(args) + 1];
+            char* argv[g_list_length(args) + 1];
             int a = 0;
             while (args && strcmp((char*)args->data, "--"))
             {
@@ -1569,7 +1569,7 @@ static char* read_file_value(const char* path, gboolean multi)
 {
     FILE* file;
     int f, bytes;
-    const gchar* end;
+    const char* end;
 
     if (!g_file_test(path, G_FILE_TEST_EXISTS))
     {
@@ -1646,7 +1646,7 @@ static gboolean cb_pipe_watch(GIOChannel* channel, GIOCondition cond, CustomElem
 
     if ( !( cond & G_IO_NVAL ) )
     {
-        gint fd = g_io_channel_unix_get_fd( channel );
+        int fd = g_io_channel_unix_get_fd( channel );
         g_fprintf( stderr, "    fd=%d\n", fd);
         if ( fcntl(fd, F_GETFL) != -1 || errno != EBADF )
         {
@@ -1682,7 +1682,7 @@ static gboolean cb_pipe_watch(GIOChannel* channel, GIOCondition cond, CustomElem
 
     // GError *error = NULL;
     gsize size;
-    gchar line[2048];
+    char line[2048];
     if (g_io_channel_read_chars(channel, line, sizeof(line), &size, NULL) == G_IO_STATUS_NORMAL && size > 0)
     {
         if (!g_utf8_validate(line, size, NULL))
@@ -2817,7 +2817,7 @@ static void update_element(CustomElement* el, GtkWidget* box, GSList** radio, in
                 GIOChannel* channel = g_io_channel_new_file((char*)args->data, "r+", NULL);
                 if (channel)
                 {
-                    gint fd = g_io_channel_unix_get_fd(channel);
+                    int fd = g_io_channel_unix_get_fd(channel);
                     // int fd = fcntl( g_io_channel_unix_get_fd( channel ), F_GETFL );
                     if (fd > 0)
                     {
@@ -2878,7 +2878,7 @@ static void update_element(CustomElement* el, GtkWidget* box, GSList** radio, in
                 GIOChannel* channel = g_io_channel_new_file((char*)args->data, "r+", NULL);
                 if (channel)
                 {
-                    gint fd = g_io_channel_unix_get_fd(channel);
+                    int fd = g_io_channel_unix_get_fd(channel);
                     // int fd = fcntl( g_io_channel_unix_get_fd( channel ), F_GETFL );
                     if (fd > 0)
                     {

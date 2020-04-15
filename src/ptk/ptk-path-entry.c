@@ -130,7 +130,7 @@ gboolean seek_path(GtkEntry* entry)
     return FALSE;
 }
 
-void seek_path_delayed(GtkEntry* entry, guint delay)
+void seek_path_delayed(GtkEntry* entry, uint delay)
 {
     EntryData* edata = (EntryData*)g_object_get_data(G_OBJECT(entry), "edata");
     if (!(edata && edata->browser))
@@ -141,7 +141,7 @@ void seek_path_delayed(GtkEntry* entry, guint delay)
     edata->seek_timer = g_timeout_add(delay ? delay : 250, (GSourceFunc)seek_path, entry);
 }
 
-static gboolean match_func_cmd(GtkEntryCompletion* completion, const gchar* key, GtkTreeIter* it, gpointer user_data)
+static gboolean match_func_cmd(GtkEntryCompletion* completion, const char* key, GtkTreeIter* it, gpointer user_data)
 {
     char* name = NULL;
     GtkTreeModel* model = gtk_entry_completion_get_model(completion);
@@ -156,7 +156,7 @@ static gboolean match_func_cmd(GtkEntryCompletion* completion, const gchar* key,
     return FALSE;
 }
 
-static gboolean match_func(GtkEntryCompletion* completion, const gchar* key, GtkTreeIter* it, gpointer user_data)
+static gboolean match_func(GtkEntryCompletion* completion, const char* key, GtkTreeIter* it, gpointer user_data)
 {
     char* name = NULL;
     GtkTreeModel* model = gtk_entry_completion_get_model(completion);
@@ -411,7 +411,7 @@ static gboolean on_key_press(GtkWidget* entry, GdkEventKey* evt, EntryData* edat
     return FALSE;
 }
 
-gboolean on_insert_prefix(GtkEntryCompletion* completion, gchar* prefix, GtkWidget* entry)
+gboolean on_insert_prefix(GtkEntryCompletion* completion, char* prefix, GtkWidget* entry)
 {
     // don't use the default handler because it inserts partial names
     return TRUE;
@@ -609,7 +609,7 @@ void on_populate_popup(GtkEntry* entry, GtkMenu* menu, PtkFileBrowser* file_brow
     g_signal_connect(menu, "key-press-event", G_CALLBACK(xset_menu_keypress), NULL);
 }
 
-void on_entry_insert(GtkEntryBuffer* buf, guint position, gchar* chars, guint n_chars, gpointer user_data)
+void on_entry_insert(GtkEntryBuffer* buf, uint position, char* chars, uint n_chars, gpointer user_data)
 {
     char* new_text = NULL;
     const char* text = gtk_entry_buffer_get_text(buf);

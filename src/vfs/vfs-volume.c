@@ -79,8 +79,8 @@ gboolean global_inhibit_auto = FALSE;
 
 typedef struct devmount_t
 {
-    guint major;
-    guint minor;
+    uint major;
+    uint minor;
     char* mount_points;
     char* fstype;
     GList* mounts;
@@ -184,19 +184,19 @@ static char* _dupv8(const char* s)
  * see volume_id_encode_string() in extras/volume_id/lib/volume_id.c in the
  * udev tree for the encoder
  */
-static gchar* decode_udev_encoded_string(const gchar* str)
+static char* decode_udev_encoded_string(const char* str)
 {
     GString* s;
-    gchar* ret;
-    const gchar* end_valid;
-    guint n;
+    char* ret;
+    const char* end_valid;
+    uint n;
 
     s = g_string_new(NULL);
     for (n = 0; str[n] != '\0'; n++)
     {
         if (str[n] == '\\')
         {
-            gint val;
+            int val;
 
             if (str[n + 1] != 'x' || str[n + 2] == '\0' || str[n + 3] == '\0')
             {
@@ -232,7 +232,7 @@ static gchar* decode_udev_encoded_string(const gchar* str)
     return ret;
 }
 
-static gint ptr_str_array_compare(const gchar** a, const gchar** b)
+static int ptr_str_array_compare(const char** a, const char** b)
 {
     return g_strcmp0(*a, *b);
 }
@@ -666,7 +666,7 @@ void info_drive_properties(device_t* device)
     gboolean drive_is_ejectable;
     gboolean drive_can_detach;
     char* decoded_string;
-    guint n;
+    uint n;
     const char* value;
 
     // drive identification
@@ -753,7 +753,7 @@ void info_drive_properties(device_t* device)
     /* special handling for SDIO since we don't yet have a sdio_id helper in udev to set properties */
     if (g_strcmp0(device->drive_connection_interface, "sdio") == 0)
     {
-        gchar* type;
+        char* type;
 
         type = sysfs_get_string(device->native_path, "../../type");
         g_strstrip(type);
@@ -844,9 +844,9 @@ void info_device_properties(device_t* device)
     device->device_automount_hint = g_strdup(udev_device_get_property_value(device->udevice, "UDISKS_AUTOMOUNT_HINT"));
 
     // filesystem properties
-    gchar* decoded_string;
-    const gchar* partition_scheme;
-    gint partition_type = 0;
+    char* decoded_string;
+    const char* partition_scheme;
+    int partition_type = 0;
 
     partition_scheme = udev_device_get_property_value(device->udevice, "UDISKS_PARTITION_SCHEME");
     if ((value = udev_device_get_property_value(device->udevice, "UDISKS_PARTITION_TYPE")))
@@ -957,16 +957,16 @@ void info_device_properties(device_t* device)
     }
 }
 
-gchar* info_mount_points(device_t* device)
+char* info_mount_points(device_t* device)
 {
-    gchar* contents;
-    gchar** lines;
+    char* contents;
+    char** lines;
     GError* error;
-    guint n;
+    uint n;
     GList* mounts = NULL;
 
-    guint dmajor = MAJOR(device->devnum);
-    guint dminor = MINOR(device->devnum);
+    uint dmajor = MAJOR(device->devnum);
+    uint dminor = MINOR(device->devnum);
 
     // if we have the mount point list, use this instead of reading mountinfo
     if (devmounts)
@@ -1001,12 +1001,12 @@ gchar* info_mount_points(device_t* device)
     lines = g_strsplit(contents, "\n", 0);
     for (n = 0; lines[n] != NULL; n++)
     {
-        guint mount_id;
-        guint parent_id;
-        guint major, minor;
-        gchar encoded_root[PATH_MAX];
-        gchar encoded_mount_point[PATH_MAX];
-        gchar* mount_point;
+        uint mount_id;
+        uint parent_id;
+        uint major, minor;
+        char encoded_root[PATH_MAX];
+        char encoded_mount_point[PATH_MAX];
+        char* mount_point;
         // dev_t dev;
 
         if (strlen(lines[n]) == 0)
@@ -1049,7 +1049,7 @@ gchar* info_mount_points(device_t* device)
 
     if (mounts)
     {
-        gchar *points, *old_points;
+        char *points, *old_points;
         GList* l;
         // Sort the list to ensure that shortest mount paths appear first
         mounts = g_list_sort(mounts, (GCompareFunc)g_strcmp0);
@@ -1100,14 +1100,14 @@ void info_partition_table(device_t* device)
      */
     if (!is_partition_table)
     {
-        gchar* s;
+        char* s;
         GDir* dir;
 
         s = g_path_get_basename(device->native_path);
         if ((dir = g_dir_open(device->native_path, 0, NULL)) != NULL)
         {
-            guint partition_count;
-            const gchar* name;
+            uint partition_count;
+            const char* name;
 
             partition_count = 0;
             while ((name = g_dir_read_name(dir)) != NULL)
@@ -1150,16 +1150,16 @@ void info_partition(device_t* device)
      */
     if (udev_device_get_property_value(device->udevice, "UDISKS_PARTITION"))
     {
-        const gchar* size;
-        const gchar* scheme;
-        const gchar* type;
-        const gchar* label;
-        const gchar* uuid;
-        const gchar* flags;
-        const gchar* offset;
-        const gchar* alignment_offset;
-        const gchar* slave_sysfs_path;
-        const gchar* number;
+        const char* size;
+        const char* scheme;
+        const char* type;
+        const char* label;
+        const char* uuid;
+        const char* flags;
+        const char* offset;
+        const char* alignment_offset;
+        const char* slave_sysfs_path;
+        const char* number;
 
         scheme = udev_device_get_property_value(device->udevice, "UDISKS_PARTITION_SCHEME");
         size = udev_device_get_property_value(device->udevice, "UDISKS_PARTITION_SIZE");
@@ -1199,8 +1199,8 @@ void info_partition(device_t* device)
         guint64 size;
         guint64 offset;
         guint64 alignment_offset;
-        gchar* s;
-        guint n;
+        char* s;
+        uint n;
 
         size = sysfs_get_uint64(device->native_path, "size");
         alignment_offset = sysfs_get_uint64(device->native_path, "alignment_offset");
@@ -1417,7 +1417,7 @@ gboolean device_get_info(device_t* device)
 
 char* device_show_info(device_t* device)
 {
-    gchar* line[140];
+    char* line[140];
     int i = 0;
 
     line[i++] = g_strdup_printf("Showing information for %s\n", device->devnode);
@@ -1528,7 +1528,7 @@ char* device_show_info(device_t* device)
                                         device->drive_connection_speed);
     }
     line[i] = NULL;
-    gchar* output = g_strjoinv(NULL, line);
+    char* output = g_strjoinv(NULL, line);
     i = 0;
     while (line[i])
         g_free(line[i++]);
@@ -1539,7 +1539,7 @@ char* device_show_info(device_t* device)
  * udev & mount monitors
  * ************************************************************************ */
 
-gint cmp_devmounts(devmount_t* a, devmount_t* b)
+int cmp_devmounts(devmount_t* a, devmount_t* b)
 {
     if (!a && !b)
         return 0;
@@ -1552,10 +1552,10 @@ gint cmp_devmounts(devmount_t* a, devmount_t* b)
 
 void parse_mounts(gboolean report)
 {
-    gchar* contents;
-    gchar** lines;
+    char* contents;
+    char** lines;
     GError* error;
-    guint n;
+    uint n;
     // g_printf("\n@@@@@@@@@@@@@ parse_mounts %s\n\n", report ? "TRUE" : "FALSE" );
     contents = NULL;
     lines = NULL;
@@ -1601,13 +1601,13 @@ void parse_mounts(gboolean report)
     lines = g_strsplit(contents, "\n", 0);
     for (n = 0; lines[n] != NULL; n++)
     {
-        guint mount_id;
-        guint parent_id;
-        guint major, minor;
-        gchar encoded_root[PATH_MAX];
-        gchar encoded_mount_point[PATH_MAX];
-        gchar* mount_point;
-        gchar* fstype;
+        uint mount_id;
+        uint parent_id;
+        uint major, minor;
+        char encoded_root[PATH_MAX];
+        char encoded_mount_point[PATH_MAX];
+        char* mount_point;
+        char* fstype;
 
         if (strlen(lines[n]) == 0)
             continue;
@@ -1632,9 +1632,9 @@ void parse_mounts(gboolean report)
         {
             // get mount source
             // g_printf("subdir_mount %u:%u %s root=%s\n", major, minor, encoded_mount_point, encoded_root );
-            gchar typebuf[PATH_MAX];
-            gchar mount_source[PATH_MAX];
-            const gchar* sep;
+            char typebuf[PATH_MAX];
+            char mount_source[PATH_MAX];
+            const char* sep;
             sep = strstr(lines[n], " - ");
             if (sep && sscanf(sep + 3, "%s %s", typebuf, mount_source) == 2)
             {
@@ -1743,7 +1743,7 @@ void parse_mounts(gboolean report)
     g_strfreev(lines);
     // g_printf("\nLINES DONE\n\n");
     // translate each mount points list to string
-    gchar *points, *old_points;
+    char *points, *old_points;
     GList* m;
     for (l = newmounts; l; l = l->next)
     {
@@ -1928,7 +1928,7 @@ static gboolean cb_udev_monitor_watch(GIOChannel* channel, GIOCondition cond, gp
 
     if ( !( cond & G_IO_NVAL ) )
     {
-        gint fd = g_io_channel_unix_get_fd( channel );
+        int fd = g_io_channel_unix_get_fd( channel );
         g_printf("    fd=%d\n", fd);
         if ( fcntl(fd, F_GETFL) != -1 || errno != EBADF )
         {
@@ -2347,15 +2347,15 @@ VFSVolume* vfs_volume_read_by_device(struct udev_device* udevice)
 
 gboolean path_is_mounted_mtab(const char* mtab_file, const char* path, char** device_file, char** fs_type)
 {
-    gchar* contents;
-    gchar** lines;
+    char* contents;
+    char** lines;
     GError* error;
-    guint n;
+    uint n;
     gboolean ret = FALSE;
     char* point;
-    gchar encoded_file[PATH_MAX];
-    gchar encoded_point[PATH_MAX];
-    gchar encoded_fstype[PATH_MAX];
+    char encoded_file[PATH_MAX];
+    char encoded_point[PATH_MAX];
+    char encoded_fstype[PATH_MAX];
 
     if (!path)
         return FALSE;
@@ -2427,7 +2427,7 @@ gboolean mtab_fstype_is_handled_by_protocol(const char* mtab_fstype)
         GSList* values = NULL;
         values = g_slist_prepend(values, g_strdup(mtab_fstype));
         values = g_slist_prepend(values, g_strconcat("mtab_fs=", mtab_fstype, NULL));
-        gchar** handlers = g_strsplit(handlers_list, " ", 0);
+        char** handlers = g_strsplit(handlers_list, " ", 0);
         if (handlers)
         {
             // test handlers
@@ -2841,7 +2841,7 @@ char* vfs_volume_handler_cmd(int mode, int action, VFSVolume* vol, const char* o
     // get handlers
     if (!(handlers_list = xset_get_s(mode == HANDLER_MODE_FS ? "dev_fs_cnf" : "dev_net_cnf")))
         return NULL;
-    gchar** handlers = g_strsplit(handlers_list, " ", 0);
+    char** handlers = g_strsplit(handlers_list, " ", 0);
     if (!handlers)
         return NULL;
 
@@ -3881,7 +3881,7 @@ gboolean vfs_volume_init()
         goto finish_;
     }
 
-    gint ufd = udev_monitor_get_fd(umonitor);
+    int ufd = udev_monitor_get_fd(umonitor);
     if (ufd == 0)
     {
         g_printf("spacefm: cannot get udev monitor socket file descriptor\n");

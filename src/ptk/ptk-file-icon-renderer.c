@@ -19,9 +19,9 @@ static void ptk_file_icon_renderer_init(PtkFileIconRenderer* renderer);
 
 static void ptk_file_icon_renderer_class_init(PtkFileIconRendererClass* klass);
 
-static void ptk_file_icon_renderer_get_property(GObject* object, guint param_id, GValue* value, GParamSpec* pspec);
+static void ptk_file_icon_renderer_get_property(GObject* object, uint param_id, GValue* value, GParamSpec* pspec);
 
-static void ptk_file_icon_renderer_set_property(GObject* object, guint param_id, const GValue* value,
+static void ptk_file_icon_renderer_set_property(GObject* object, uint param_id, const GValue* value,
                                                 GParamSpec* pspec);
 
 static void ptk_file_icon_renderer_finalize(GObject* gobject);
@@ -32,7 +32,7 @@ static void ptk_file_icon_renderer_get_size(GtkCellRenderer* cell, GtkWidget* wi
 #elif (GTK_MAJOR_VERSION == 2)
                                             GdkRectangle* cell_area,
 #endif
-                                            gint* x_offset, gint* y_offset, gint* width, gint* height);
+                                            int* x_offset, int* y_offset, int* width, int* height);
 
 #if (GTK_MAJOR_VERSION == 3)
 static void ptk_file_icon_renderer_render(GtkCellRenderer* cell, cairo_t* cr, GtkWidget* widget,
@@ -41,7 +41,7 @@ static void ptk_file_icon_renderer_render(GtkCellRenderer* cell, cairo_t* cr, Gt
 #elif (GTK_MAJOR_VERSION == 2)
 static void ptk_file_icon_renderer_render(GtkCellRenderer* cell, GdkWindow* window, GtkWidget* widget,
                                           GdkRectangle* background_area, GdkRectangle* cell_area,
-                                          GdkRectangle* expose_area, guint flags);
+                                          GdkRectangle* expose_area, uint flags);
 #endif
 
 enum
@@ -200,7 +200,7 @@ static void ptk_file_icon_renderer_finalize(GObject* object)
  *
  ***************************************************************************/
 
-static void ptk_file_icon_renderer_get_property(GObject* object, guint param_id, GValue* value, GParamSpec* psec)
+static void ptk_file_icon_renderer_get_property(GObject* object, uint param_id, GValue* value, GParamSpec* psec)
 {
     PtkFileIconRenderer* renderer = PTK_FILE_ICON_RENDERER(object);
 
@@ -230,7 +230,7 @@ static void ptk_file_icon_renderer_get_property(GObject* object, guint param_id,
  *
  ***************************************************************************/
 
-static void ptk_file_icon_renderer_set_property(GObject* object, guint param_id, const GValue* value, GParamSpec* pspec)
+static void ptk_file_icon_renderer_set_property(GObject* object, uint param_id, const GValue* value, GParamSpec* pspec)
 {
     PtkFileIconRenderer* renderer = PTK_FILE_ICON_RENDERER(object);
 
@@ -271,9 +271,9 @@ GtkCellRenderer* ptk_file_icon_renderer_new(void)
 
 static GdkPixbuf* create_colorized_pixbuf(GdkPixbuf* src, GdkColor* new_color)
 {
-    gint i, j;
-    gint width, height, has_alpha, src_row_stride, dst_row_stride;
-    gint red_value, green_value, blue_value;
+    int i, j;
+    int width, height, has_alpha, src_row_stride, dst_row_stride;
+    int red_value, green_value, blue_value;
     guchar* target_pixels;
     guchar* original_pixels;
     guchar* pixsrc;
@@ -329,7 +329,7 @@ static void ptk_file_icon_renderer_render(GtkCellRenderer* cell, cairo_t* cr, Gt
 #elif (GTK_MAJOR_VERSION == 2)
 static void ptk_file_icon_renderer_render(GtkCellRenderer* cell, GdkWindow* window, GtkWidget* widget,
                                           GdkRectangle* background_area, GdkRectangle* cell_area,
-                                          GdkRectangle* expose_area, guint flags)
+                                          GdkRectangle* expose_area, uint flags)
 #endif
 {
     GtkCellRendererPixbuf* cellpixbuf = (GtkCellRendererPixbuf*)cell;
@@ -342,7 +342,7 @@ static void ptk_file_icon_renderer_render(GtkCellRenderer* cell, GdkWindow* wind
     GdkRectangle pix_rect;
     GdkRectangle draw_rect;
     VFSFileInfo* file;
-    gint xpad, ypad;
+    int xpad, ypad;
     gboolean is_expander, is_expanded;
 
     GtkCellRendererClass* parent_renderer_class;
@@ -500,7 +500,7 @@ void ptk_file_icon_renderer_get_size(GtkCellRenderer* cell, GtkWidget* widget,
 #elif (GTK_MAJOR_VERSION == 2)
                                      GdkRectangle* cell_area,
 #endif
-                                     gint* x_offset, gint* y_offset, gint* width, gint* height)
+                                     int* x_offset, int* y_offset, int* width, int* height)
 {
     GTK_CELL_RENDERER_CLASS(parent_class)->get_size(cell, widget, cell_area, x_offset, y_offset, width, height);
     if (!width || !height)

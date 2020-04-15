@@ -33,15 +33,15 @@ static void ptk_text_renderer_init(PtkTextRenderer* celltext);
 static void ptk_text_renderer_class_init(PtkTextRendererClass* class);
 static void ptk_text_renderer_finalize(GObject* object);
 
-static void ptk_text_renderer_get_property(GObject* object, guint param_id, GValue* value, GParamSpec* pspec);
-static void ptk_text_renderer_set_property(GObject* object, guint param_id, const GValue* value, GParamSpec* pspec);
+static void ptk_text_renderer_get_property(GObject* object, uint param_id, GValue* value, GParamSpec* pspec);
+static void ptk_text_renderer_set_property(GObject* object, uint param_id, const GValue* value, GParamSpec* pspec);
 static void ptk_text_renderer_get_size(GtkCellRenderer* cell, GtkWidget* widget,
 #if (GTK_MAJOR_VERSION == 3)
                                        const GdkRectangle* cell_area,
 #elif (GTK_MAJOR_VERSION == 2)
                                        GdkRectangle* cell_area,
 #endif
-                                       gint* x_offset, gint* y_offset, gint* width, gint* height);
+                                       int* x_offset, int* y_offset, int* width, int* height);
 #if (GTK_MAJOR_VERSION == 3)
 static void ptk_text_renderer_render(GtkCellRenderer* cell, cairo_t* cr, GtkWidget* widget,
                                      const GdkRectangle* background_area, const GdkRectangle* cell_area,
@@ -286,7 +286,7 @@ static void ptk_text_renderer_finalize(GObject* object)
     (*G_OBJECT_CLASS(parent_class)->finalize)(object);
 }
 
-static void ptk_text_renderer_get_property(GObject* object, guint param_id, GValue* value, GParamSpec* pspec)
+static void ptk_text_renderer_get_property(GObject* object, uint param_id, GValue* value, GParamSpec* pspec)
 {
     PtkTextRenderer* celltext = PTK_TEXT_RENDERER(object);
 
@@ -325,7 +325,7 @@ static void ptk_text_renderer_get_property(GObject* object, guint param_id, GVal
         /* FIXME GValue imposes a totally gratuitous string copy
          * here, we could just hand off string ownership
          */
-        gchar* str = pango_font_description_to_string(celltext->font);
+        char* str = pango_font_description_to_string(celltext->font);
         g_value_set_string(value, str);
         g_free(str);
     }
@@ -485,7 +485,7 @@ static void set_font_description(PtkTextRenderer* celltext, PangoFontDescription
     g_object_thaw_notify(object);
 }
 
-static void ptk_text_renderer_set_property(GObject* object, guint param_id, const GValue* value, GParamSpec* pspec)
+static void ptk_text_renderer_set_property(GObject* object, uint param_id, const GValue* value, GParamSpec* pspec)
 {
     PtkTextRenderer* celltext = PTK_TEXT_RENDERER(object);
 
@@ -549,7 +549,7 @@ static void ptk_text_renderer_set_property(GObject* object, guint param_id, cons
     case PROP_FONT:
     {
         PangoFontDescription* font_desc = NULL;
-        const gchar* name;
+        const char* name;
 
         name = g_value_get_string(value);
 
@@ -728,12 +728,12 @@ static void get_size(GtkCellRenderer* cell, GtkWidget* widget,
 #elif (GTK_MAJOR_VERSION == 2)
                      GdkRectangle* cell_area,
 #endif
-                     PangoLayout* layout, gint* x_offset, gint* y_offset, gint* width, gint* height)
+                     PangoLayout* layout, int* x_offset, int* y_offset, int* width, int* height)
 {
     PtkTextRenderer* celltext = (PtkTextRenderer*)cell;
     PangoRectangle rect;
-    gint xpad, ypad;
-    gfloat xalign, yalign;
+    int xpad, ypad;
+    float xalign, yalign;
 
     gtk_cell_renderer_get_padding(cell, &xpad, &ypad);
     gtk_cell_renderer_get_alignment(cell, &xalign, &yalign);
@@ -758,7 +758,7 @@ static void get_size(GtkCellRenderer* cell, GtkWidget* widget,
         {
             PangoContext* context;
             PangoFontMetrics* metrics;
-            gint char_width;
+            int char_width;
 
             context = pango_layout_get_context(layout);
             metrics = pango_context_get_metrics(context,
@@ -804,7 +804,7 @@ static void ptk_text_renderer_get_size(GtkCellRenderer* cell, GtkWidget* widget,
 #elif (GTK_MAJOR_VERSION == 2)
                                        GdkRectangle* cell_area,
 #endif
-                                       gint* x_offset, gint* y_offset, gint* width, gint* height)
+                                       int* x_offset, int* y_offset, int* width, int* height)
 {
     get_size(cell, widget, cell_area, NULL, x_offset, y_offset, width, height);
 }
@@ -823,12 +823,12 @@ static void ptk_text_renderer_render(GtkCellRenderer* cell, GdkDrawable* window,
     PtkTextRenderer* celltext = (PtkTextRenderer*)cell;
     PangoLayout* layout;
     GtkStateType state;
-    gint x_offset;
-    gint y_offset;
-    gint width, height;
-    gint focus_pad, focus_width;
-    // gint x, y;
-    gint xpad, ypad;
+    int x_offset;
+    int y_offset;
+    int width, height;
+    int focus_pad, focus_width;
+    // int x, y;
+    int xpad, ypad;
 #if (GTK_MAJOR_VERSION == 3)
     cairo_save(cr);
 #elif (GTK_MAJOR_VERSION == 2)

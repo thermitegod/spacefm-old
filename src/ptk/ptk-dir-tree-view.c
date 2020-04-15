@@ -49,15 +49,15 @@ static gboolean sel_func(GtkTreeSelection* selection, GtkTreeModel* model, GtkTr
 static GtkTargetEntry drag_targets[] = {{"text/uri-list", 0, 0}};
 
 // MOD drag n drop...
-static void on_dir_tree_view_drag_data_received(GtkWidget* widget, GdkDragContext* drag_context, gint x, gint y,
-                                                GtkSelectionData* sel_data, guint info, guint time, gpointer user_data);
-static gboolean on_dir_tree_view_drag_motion(GtkWidget* widget, GdkDragContext* drag_context, gint x, gint y,
-                                             guint time, PtkFileBrowser* file_browser);
+static void on_dir_tree_view_drag_data_received(GtkWidget* widget, GdkDragContext* drag_context, int x, int y,
+                                                GtkSelectionData* sel_data, uint info, uint time, gpointer user_data);
+static gboolean on_dir_tree_view_drag_motion(GtkWidget* widget, GdkDragContext* drag_context, int x, int y,
+                                             uint time, PtkFileBrowser* file_browser);
 
-static gboolean on_dir_tree_view_drag_leave(GtkWidget* widget, GdkDragContext* drag_context, guint time,
+static gboolean on_dir_tree_view_drag_leave(GtkWidget* widget, GdkDragContext* drag_context, uint time,
                                             PtkFileBrowser* file_browser);
 
-static gboolean on_dir_tree_view_drag_drop(GtkWidget* widget, GdkDragContext* drag_context, gint x, gint y, guint time,
+static gboolean on_dir_tree_view_drag_drop(GtkWidget* widget, GdkDragContext* drag_context, int x, int y, uint time,
                                            PtkFileBrowser* file_browser);
 
 #define GDK_ACTION_ALL (GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK)
@@ -184,7 +184,7 @@ gboolean ptk_dir_tree_view_chdir(GtkTreeView* dir_tree_view, const char* path)
     GtkTreeModel* model;
     GtkTreeIter it, parent_it;
     GtkTreePath* tree_path = NULL;
-    gchar **dirs, **dir;
+    char **dirs, **dir;
     gboolean found;
     VFSFileInfo* info;
 
@@ -519,11 +519,11 @@ static char* dir_tree_view_get_drop_dir(GtkWidget* view, int x, int y)
     return dest_path;
 }
 
-void on_dir_tree_view_drag_data_received(GtkWidget* widget, GdkDragContext* drag_context, gint x, gint y,
-                                         GtkSelectionData* sel_data, guint info, guint time,
+void on_dir_tree_view_drag_data_received(GtkWidget* widget, GdkDragContext* drag_context, int x, int y,
+                                         GtkSelectionData* sel_data, uint info, uint time,
                                          gpointer user_data) // MOD added
 {
-    gchar **list, **puri;
+    char **list, **puri;
     GList* files = NULL;
     PtkFileTask* task;
     VFSFileTaskType file_action = VFS_FILE_TASK_MOVE;
@@ -647,7 +647,7 @@ void on_dir_tree_view_drag_data_received(GtkWidget* widget, GdkDragContext* drag
     gtk_drag_finish(drag_context, FALSE, FALSE, time);
 }
 
-gboolean on_dir_tree_view_drag_drop(GtkWidget* widget, GdkDragContext* drag_context, gint x, gint y, guint time,
+gboolean on_dir_tree_view_drag_drop(GtkWidget* widget, GdkDragContext* drag_context, int x, int y, uint time,
                                     PtkFileBrowser* file_browser) // MOD added
 {
     GdkAtom target = gdk_atom_intern("text/uri-list", FALSE);
@@ -659,7 +659,7 @@ gboolean on_dir_tree_view_drag_drop(GtkWidget* widget, GdkDragContext* drag_cont
     return TRUE;
 }
 
-gboolean on_dir_tree_view_drag_motion(GtkWidget* widget, GdkDragContext* drag_context, gint x, gint y, guint time,
+gboolean on_dir_tree_view_drag_motion(GtkWidget* widget, GdkDragContext* drag_context, int x, int y, uint time,
                                       PtkFileBrowser* file_browser) // MOD added
 {
     GdkDragAction suggested_action;
@@ -734,7 +734,7 @@ gboolean on_dir_tree_view_drag_motion(GtkWidget* widget, GdkDragContext* drag_co
              * different versions of GTK3 which causes the crash. It appears they
              * added/removed some variables from that struct.
              * https://github.com/IgnorantGuru/spacefm/issues/670 */
-            guint drop_done : 1; /* Whether gdk_drag_drop_done() was performed */
+            uint drop_done : 1; /* Whether gdk_drag_drop_done() was performed */
         };
         ((struct _GdkDragContext*)drag_context)->suggested_action = suggested_action;
 #elif (GTK_MAJOR_VERSION == 2)
@@ -745,7 +745,7 @@ gboolean on_dir_tree_view_drag_motion(GtkWidget* widget, GdkDragContext* drag_co
     return FALSE;
 }
 
-static gboolean on_dir_tree_view_drag_leave(GtkWidget* widget, GdkDragContext* drag_context, guint time,
+static gboolean on_dir_tree_view_drag_leave(GtkWidget* widget, GdkDragContext* drag_context, uint time,
                                             PtkFileBrowser* file_browser)
 {
     file_browser->drag_source_dev_tree = 0;

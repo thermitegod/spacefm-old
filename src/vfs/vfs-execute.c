@@ -44,17 +44,17 @@ static gboolean sn_timeout(gpointer user_data)
 }
 
 /* This function is taken from the code of thunar, written by Benedikt Meurer <benny@xfce.org> */
-static gint tvsn_get_active_workspace_number(GdkScreen* screen)
+static int tvsn_get_active_workspace_number(GdkScreen* screen)
 {
     GdkWindow* root;
     gulong bytes_after_ret = 0;
     gulong nitems_ret = 0;
-    guint* prop_ret = NULL;
+    uint* prop_ret = NULL;
     Atom _NET_CURRENT_DESKTOP;
     Atom _WIN_WORKSPACE;
     Atom type_ret = None;
-    gint format_ret;
-    gint ws_num = 0;
+    int format_ret;
+    int ws_num = 0;
 
     gdk_error_trap_push();
 
@@ -105,7 +105,7 @@ static gint tvsn_get_active_workspace_number(GdkScreen* screen)
         XFree(prop_ret);
     }
 
-    gint err = gdk_error_trap_pop();
+    int err = gdk_error_trap_pop();
 
     return ws_num;
 }

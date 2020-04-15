@@ -134,8 +134,8 @@ typedef struct
     const char* def_val;
     VFSFileMonitor* monitor;
     VFSFileMonitorCallback callback;
-    guint timeout;
-    guint update_timeout;
+    uint timeout;
+    uint update_timeout;
     const char* watch_file;
     int option;
     int option2;

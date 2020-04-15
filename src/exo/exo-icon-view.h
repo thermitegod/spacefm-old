@@ -64,7 +64,7 @@ typedef void (*ExoIconViewForeachFunc)(ExoIconView* icon_view, GtkTreePath* path
  *
  * Return value: %FALSE if the row matches, %TRUE otherwise.
  **/
-typedef gboolean (*ExoIconViewSearchEqualFunc)(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter,
+typedef gboolean (*ExoIconViewSearchEqualFunc)(GtkTreeModel* model, int column, const char* key, GtkTreeIter* iter,
                                                gpointer search_data);
 
 /**
@@ -139,7 +139,7 @@ struct _ExoIconViewClass
     void (*unselect_all)(ExoIconView* icon_view);
     void (*select_cursor_item)(ExoIconView* icon_view);
     void (*toggle_cursor_item)(ExoIconView* icon_view);
-    gboolean (*move_cursor)(ExoIconView* icon_view, GtkMovementStep step, gint count);
+    gboolean (*move_cursor)(ExoIconView* icon_view, GtkMovementStep step, int count);
     gboolean (*activate_cursor_item)(ExoIconView* icon_view);
     gboolean (*start_interactive_search)(ExoIconView* icon_view);
 
@@ -167,34 +167,34 @@ GtkTreeModel* exo_icon_view_get_model(const ExoIconView* icon_view);
 void exo_icon_view_set_model(ExoIconView* icon_view, GtkTreeModel* model);
 
 #ifndef EXO_DISABLE_DEPRECATED
-gint exo_icon_view_get_text_column(const ExoIconView* icon_view);
-void exo_icon_view_set_text_column(ExoIconView* icon_view, gint column);
-gint exo_icon_view_get_markup_column(const ExoIconView* icon_view);
-void exo_icon_view_set_markup_column(ExoIconView* icon_view, gint column);
-gint exo_icon_view_get_pixbuf_column(const ExoIconView* icon_view);
-void exo_icon_view_set_pixbuf_column(ExoIconView* icon_view, gint column);
+int exo_icon_view_get_text_column(const ExoIconView* icon_view);
+void exo_icon_view_set_text_column(ExoIconView* icon_view, int column);
+int exo_icon_view_get_markup_column(const ExoIconView* icon_view);
+void exo_icon_view_set_markup_column(ExoIconView* icon_view, int column);
+int exo_icon_view_get_pixbuf_column(const ExoIconView* icon_view);
+void exo_icon_view_set_pixbuf_column(ExoIconView* icon_view, int column);
 #endif
 
 GtkOrientation exo_icon_view_get_orientation(const ExoIconView* icon_view);
 void exo_icon_view_set_orientation(ExoIconView* icon_view, GtkOrientation orientation);
 
-gint exo_icon_view_get_columns(const ExoIconView* icon_view);
-void exo_icon_view_set_columns(ExoIconView* icon_view, gint columns);
+int exo_icon_view_get_columns(const ExoIconView* icon_view);
+void exo_icon_view_set_columns(ExoIconView* icon_view, int columns);
 
-gint exo_icon_view_get_item_width(const ExoIconView* icon_view);
-void exo_icon_view_set_item_width(ExoIconView* icon_view, gint item_width);
+int exo_icon_view_get_item_width(const ExoIconView* icon_view);
+void exo_icon_view_set_item_width(ExoIconView* icon_view, int item_width);
 
-gint exo_icon_view_get_spacing(const ExoIconView* icon_view);
-void exo_icon_view_set_spacing(ExoIconView* icon_view, gint spacing);
+int exo_icon_view_get_spacing(const ExoIconView* icon_view);
+void exo_icon_view_set_spacing(ExoIconView* icon_view, int spacing);
 
-gint exo_icon_view_get_row_spacing(const ExoIconView* icon_view);
-void exo_icon_view_set_row_spacing(ExoIconView* icon_view, gint row_spacing);
+int exo_icon_view_get_row_spacing(const ExoIconView* icon_view);
+void exo_icon_view_set_row_spacing(ExoIconView* icon_view, int row_spacing);
 
-gint exo_icon_view_get_column_spacing(const ExoIconView* icon_view);
-void exo_icon_view_set_column_spacing(ExoIconView* icon_view, gint column_spacing);
+int exo_icon_view_get_column_spacing(const ExoIconView* icon_view);
+void exo_icon_view_set_column_spacing(ExoIconView* icon_view, int column_spacing);
 
-gint exo_icon_view_get_margin(const ExoIconView* icon_view);
-void exo_icon_view_set_margin(ExoIconView* icon_view, gint margin);
+int exo_icon_view_get_margin(const ExoIconView* icon_view);
+void exo_icon_view_set_margin(ExoIconView* icon_view, int margin);
 
 GtkSelectionMode exo_icon_view_get_selection_mode(const ExoIconView* icon_view);
 void exo_icon_view_set_selection_mode(ExoIconView* icon_view, GtkSelectionMode mode);
@@ -205,14 +205,14 @@ void exo_icon_view_set_layout_mode(ExoIconView* icon_view, ExoIconViewLayoutMode
 gboolean exo_icon_view_get_single_click(const ExoIconView* icon_view);
 void exo_icon_view_set_single_click(ExoIconView* icon_view, gboolean single_click);
 
-guint exo_icon_view_get_single_click_timeout(const ExoIconView* icon_view);
-void exo_icon_view_set_single_click_timeout(ExoIconView* icon_view, guint single_click_timeout);
+uint exo_icon_view_get_single_click_timeout(const ExoIconView* icon_view);
+void exo_icon_view_set_single_click_timeout(ExoIconView* icon_view, uint single_click_timeout);
 
-void exo_icon_view_widget_to_icon_coords(const ExoIconView* icon_view, gint wx, gint wy, gint* ix, gint* iy);
-void exo_icon_view_icon_to_widget_coords(const ExoIconView* icon_view, gint ix, gint iy, gint* wx, gint* wy);
+void exo_icon_view_widget_to_icon_coords(const ExoIconView* icon_view, int wx, int wy, int* ix, int* iy);
+void exo_icon_view_icon_to_widget_coords(const ExoIconView* icon_view, int ix, int iy, int* wx, int* wy);
 
-GtkTreePath* exo_icon_view_get_path_at_pos(const ExoIconView* icon_view, gint x, gint y);
-gboolean exo_icon_view_get_item_at_pos(const ExoIconView* icon_view, gint x, gint y, GtkTreePath** path,
+GtkTreePath* exo_icon_view_get_path_at_pos(const ExoIconView* icon_view, int x, int y);
+gboolean exo_icon_view_get_item_at_pos(const ExoIconView* icon_view, int x, int y, GtkTreePath** path,
                                        GtkCellRenderer** cell);
 
 gboolean exo_icon_view_get_visible_range(const ExoIconView* icon_view, GtkTreePath** start_path,
@@ -230,13 +230,13 @@ void exo_icon_view_item_activated(ExoIconView* icon_view, GtkTreePath* path);
 gboolean exo_icon_view_get_cursor(const ExoIconView* icon_view, GtkTreePath** path, GtkCellRenderer** cell);
 void exo_icon_view_set_cursor(ExoIconView* icon_view, GtkTreePath* path, GtkCellRenderer* cell, gboolean start_editing);
 
-void exo_icon_view_scroll_to_path(ExoIconView* icon_view, GtkTreePath* path, gboolean use_align, gfloat row_align,
-                                  gfloat col_align);
+void exo_icon_view_scroll_to_path(ExoIconView* icon_view, GtkTreePath* path, gboolean use_align, float row_align,
+                                  float col_align);
 
 /* Drag-and-Drop support */
 void exo_icon_view_enable_model_drag_source(ExoIconView* icon_view, GdkModifierType start_button_mask,
-                                            const GtkTargetEntry* targets, gint n_targets, GdkDragAction actions);
-void exo_icon_view_enable_model_drag_dest(ExoIconView* icon_view, const GtkTargetEntry* targets, gint n_targets,
+                                            const GtkTargetEntry* targets, int n_targets, GdkDragAction actions);
+void exo_icon_view_enable_model_drag_dest(ExoIconView* icon_view, const GtkTargetEntry* targets, int n_targets,
                                           GdkDragAction actions);
 void exo_icon_view_unset_model_drag_source(ExoIconView* icon_view);
 void exo_icon_view_unset_model_drag_dest(ExoIconView* icon_view);
@@ -246,7 +246,7 @@ gboolean exo_icon_view_get_reorderable(ExoIconView* icon_view);
 /* These are useful to implement your own custom stuff. */
 void exo_icon_view_set_drag_dest_item(ExoIconView* icon_view, GtkTreePath* path, ExoIconViewDropPosition pos);
 void exo_icon_view_get_drag_dest_item(ExoIconView* icon_view, GtkTreePath** path, ExoIconViewDropPosition* pos);
-gboolean exo_icon_view_get_dest_item_at_pos(ExoIconView* icon_view, gint drag_x, gint drag_y, GtkTreePath** path,
+gboolean exo_icon_view_get_dest_item_at_pos(ExoIconView* icon_view, int drag_x, int drag_y, GtkTreePath** path,
                                             ExoIconViewDropPosition* pos);
 #if (GTK_MAJOR_VERSION == 3)
 cairo_surface_t* exo_icon_view_create_drag_icon(ExoIconView* icon_view,
@@ -258,8 +258,8 @@ GdkPixmap* exo_icon_view_create_drag_icon(ExoIconView* icon_view,
 /* Interactive search support */
 gboolean exo_icon_view_get_enable_search(const ExoIconView* icon_view);
 void exo_icon_view_set_enable_search(ExoIconView* icon_view, gboolean enable_search);
-gint exo_icon_view_get_search_column(const ExoIconView* icon_view);
-void exo_icon_view_set_search_column(ExoIconView* icon_view, gint search_column);
+int exo_icon_view_get_search_column(const ExoIconView* icon_view);
+void exo_icon_view_set_search_column(ExoIconView* icon_view, int search_column);
 ExoIconViewSearchEqualFunc exo_icon_view_get_search_equal_func(const ExoIconView* icon_view);
 void exo_icon_view_set_search_equal_func(ExoIconView* icon_view, ExoIconViewSearchEqualFunc search_equal_func,
                                          gpointer search_equal_data, GDestroyNotify search_equal_destroy);

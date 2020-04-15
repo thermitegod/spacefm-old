@@ -35,7 +35,7 @@ G_GNUC_INTERNAL GType exo_thumbnail_preview_get_type(void) G_GNUC_CONST;
 
 G_GNUC_INTERNAL GtkWidget* _exo_thumbnail_preview_new(void) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
 
-G_GNUC_INTERNAL void _exo_thumbnail_preview_set_uri(ExoThumbnailPreview* thumbnail_preview, const gchar* uri);
+G_GNUC_INTERNAL void _exo_thumbnail_preview_set_uri(ExoThumbnailPreview* thumbnail_preview, const char* uri);
 
 G_END_DECLS
 

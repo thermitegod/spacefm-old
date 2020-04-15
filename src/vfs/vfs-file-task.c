@@ -84,7 +84,7 @@ void vfs_file_task_clear(VFSFileTask* task)
     g_mutex_clear(&task->mutex);
 }
 
-void append_add_log(VFSFileTask* task, const char* msg, gint msg_len)
+void append_add_log(VFSFileTask* task, const char* msg, int msg_len)
 {
     vfs_file_task_lock(task);
     GtkTextIter iter;
@@ -164,7 +164,7 @@ char* vfs_file_task_get_unique_name(const char* dest_dir, const char* base_name,
  * skip/overwrite/auto-rename/all, pause, or cancel.
  * The returned string is the new destination file chosen by the user
  */
-static gboolean check_overwrite(VFSFileTask* task, const gchar* dest_file, gboolean* dest_exists, char** new_dest_file)
+static gboolean check_overwrite(VFSFileTask* task, const char* dest_file, gboolean* dest_exists, char** new_dest_file)
 {
     struct stat dest_stat;
     const char* use_dest_file;
@@ -328,9 +328,9 @@ void update_file_display(const char* path)
 static gboolean vfs_file_task_do_copy(VFSFileTask* task, const char* src_file, const char* dest_file)
 {
     GDir* dir;
-    const gchar* file_name;
-    gchar* sub_src_file;
-    gchar* sub_dest_file;
+    const char* file_name;
+    char* sub_src_file;
+    char* sub_dest_file;
     struct stat file_stat;
     char buffer[4096];
     int rfd;
@@ -611,8 +611,8 @@ _return_:
 
 static void vfs_file_task_copy(char* src_file, VFSFileTask* task)
 {
-    gchar* file_name;
-    gchar* dest_file;
+    char* file_name;
+    char* dest_file;
 
     file_name = g_path_get_basename(src_file);
     dest_file = g_build_filename(task->dest_dir, file_name, NULL);
@@ -624,7 +624,7 @@ static void vfs_file_task_copy(char* src_file, VFSFileTask* task)
 static int vfs_file_task_do_move(VFSFileTask* task, const char* src_file,
                                  const char* dest_file) // MOD void to int
 {
-    gchar* new_dest_file = NULL;
+    char* new_dest_file = NULL;
     gboolean dest_exists;
     struct stat file_stat;
     GDir* dir;
@@ -671,9 +671,9 @@ static int vfs_file_task_do_move(VFSFileTask* task, const char* src_file,
         dir = g_dir_open(src_file, 0, &error);
         if (dir)
         {
-            const gchar* file_name;
-            gchar* sub_src_file;
-            gchar* sub_dest_file;
+            const char* file_name;
+            char* sub_src_file;
+            char* sub_dest_file;
             while ((file_name = g_dir_read_name(dir)))
             {
                 if (should_abort(task))
@@ -731,8 +731,8 @@ static void vfs_file_task_move(char* src_file, VFSFileTask* task)
 {
     struct stat src_stat;
     struct stat dest_stat;
-    gchar* file_name;
-    gchar* dest_file;
+    char* file_name;
+    char* dest_file;
 
     if (should_abort(task))
         return;
@@ -780,8 +780,8 @@ static void vfs_file_task_move(char* src_file, VFSFileTask* task)
 static void vfs_file_task_delete(char* src_file, VFSFileTask* task)
 {
     GDir* dir;
-    const gchar* file_name;
-    gchar* sub_src_file;
+    const char* file_name;
+    char* sub_src_file;
     struct stat file_stat;
     int result;
     GError* error;
@@ -853,9 +853,9 @@ static void vfs_file_task_link(char* src_file, VFSFileTask* task)
 {
     struct stat src_stat;
     int result;
-    gchar* old_dest_file;
-    gchar* dest_file;
-    gchar* file_name;
+    char* old_dest_file;
+    char* dest_file;
+    char* file_name;
     gboolean dest_exists;       // MOD
     char* new_dest_file = NULL; // MOD
 
@@ -933,8 +933,8 @@ static void vfs_file_task_chown_chmod(char* src_file, VFSFileTask* task)
     struct stat src_stat;
     int i;
     GDir* dir;
-    gchar* sub_src_file;
-    const gchar* file_name;
+    char* sub_src_file;
+    const char* file_name;
     mode_t new_mode;
     int result;
     GError* error;
@@ -1108,7 +1108,7 @@ void vfs_file_task_kill_cpids(char* cpids, int signal)
     }
 }
 
-static void cb_exec_child_cleanup(GPid pid, gint status, char* tmp_file)
+static void cb_exec_child_cleanup(GPid pid, int status, char* tmp_file)
 {   // delete tmp files after async task terminates
     // g_printf("cb_exec_child_cleanup pid=%d status=%d file=%s\n", pid, status, tmp_file );
     g_spawn_close_pid(pid);
@@ -1120,7 +1120,7 @@ static void cb_exec_child_cleanup(GPid pid, gint status, char* tmp_file)
     g_printf("async child finished  pid=%d\n", pid);
 }
 
-static void cb_exec_child_watch(GPid pid, gint status, VFSFileTask* task)
+static void cb_exec_child_watch(GPid pid, int status, VFSFileTask* task)
 {
     gboolean bad_status = FALSE;
     g_spawn_close_pid(pid);
@@ -1177,7 +1177,7 @@ static gboolean cb_exec_out_watch(GIOChannel* channel, GIOCondition cond, VFSFil
 
     if ( !( cond & G_IO_NVAL ) )
     {
-        gint fd = g_io_channel_unix_get_fd( channel );
+        int fd = g_io_channel_unix_get_fd( channel );
         g_printf("    fd=%d\n", fd);
         if ( fcntl(fd, F_GETFL) != -1 || errno != EBADF )
         {
@@ -1210,7 +1210,7 @@ static gboolean cb_exec_out_watch(GIOChannel* channel, GIOCondition cond, VFSFil
         goto _unref_channel;
     }
 
-    gchar buf[2048];
+    char buf[2048];
     if (g_io_channel_read_chars(channel, buf, sizeof(buf), &size, NULL) == G_IO_STATUS_NORMAL && size > 0)
     {
         if (task->exec_type == VFS_EXEC_UDISKS && task->exec_show_error // prevent progress_cb opening taskmanager
@@ -1451,7 +1451,7 @@ static void vfs_file_task_exec(char* src_file, VFSFileTask* task)
         {
             // run as root command, clean up
             g_string_append_printf(buf,
-                                   "trap \"rm -f %s; exit\" EXIT SIGINT SIGTERM SIGQUIT SIGHUP\n\n",
+                                   "trap \"rm -f %s; exit\" EXIT SIint SIGTERM SIGQUIT SIGHUP\n\n",
                                    task->exec_script);
         }
 
@@ -1494,8 +1494,8 @@ static void vfs_file_task_exec(char* src_file, VFSFileTask* task)
 
     // Spawn
     GPid pid;
-    gchar* argv[35];
-    gint out, err;
+    char* argv[35];
+    int out, err;
     int a = 0;
     char* use_su;
     gboolean single_arg = FALSE;
@@ -1787,7 +1787,7 @@ static gpointer vfs_file_task_thread(VFSFileTask* task)
     // VFSFileTask* task = (VFSFileTask*)ptr;
 
     /* Calculate total size of all files */
-    guint size_timeout = 0;
+    uint size_timeout = 0;
 
     if (task->type < VFS_FILE_TASK_MOVE || task->type >= VFS_FILE_TASK_LAST)
         goto _exit_thread;

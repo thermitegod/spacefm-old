@@ -51,7 +51,7 @@ struct _PtkFileTask
     GtkTextBuffer* log_buf;
     GtkTextMark* log_end;
     gboolean log_appended;
-    guint err_count;
+    uint err_count;
     char err_mode;
 
     GMutex* mutex;
@@ -60,8 +60,8 @@ struct _PtkFileTask
         int percent;
         off_t total_size;     // Total size of the files to be processed, in bytes
         off_t progress;       // Total size of current processed files, in btytes
-        guint item_count;
-        guint old_err_count;
+        uint item_count;
+        uint old_err_count;
     */
     gboolean complete;
     gboolean aborted;
@@ -70,9 +70,9 @@ struct _PtkFileTask
     gboolean force_scroll;
 
     /* <private> */
-    guint timeout;
+    uint timeout;
     gboolean restart_timeout;
-    guint progress_timer;
+    uint progress_timer;
     char progress_count;
     GFunc complete_notify;
     gpointer user_data;

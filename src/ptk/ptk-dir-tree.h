@@ -47,7 +47,7 @@ struct _PtkDirTree
     PtkDirTreeNode* root;
     /* GtkSortType sort_order; */ /* I don't want to support this :-( */
     /* Random integer to check whether an iter belongs to our model */
-    gint stamp;
+    int stamp;
 };
 
 struct _PtkDirTreeClass

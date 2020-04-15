@@ -57,7 +57,7 @@ struct _PtkFileBrowser
     int max_thumbnail;
     int n_sel_files;
     off_t sel_size;
-    guint sel_change_idle;
+    uint sel_change_idle;
 
     // path bar auto seek
     gboolean inhibit_focus;
@@ -92,10 +92,10 @@ struct _PtkFileBrowser
     GtkWidget* folder_view;
     GtkWidget* folder_view_scroll;
     GtkCellRenderer* icon_render;
-    guint single_click_timeout;
+    uint single_click_timeout;
 
     glong prev_update_time;
-    guint update_timeout;
+    uint update_timeout;
 
     // MOD
     int mypanel;
@@ -171,10 +171,10 @@ const char* ptk_file_browser_get_cwd(PtkFileBrowser* file_browser);
  */
 const char* ptk_file_browser_get_cwd(PtkFileBrowser* file_browser);
 
-guint ptk_file_browser_get_n_all_files(PtkFileBrowser* file_browser);
-guint ptk_file_browser_get_n_visible_files(PtkFileBrowser* file_browser);
+uint ptk_file_browser_get_n_all_files(PtkFileBrowser* file_browser);
+uint ptk_file_browser_get_n_visible_files(PtkFileBrowser* file_browser);
 
-guint ptk_file_browser_get_n_sel(PtkFileBrowser* file_browser, guint64* sel_size);
+uint ptk_file_browser_get_n_sel(PtkFileBrowser* file_browser, guint64* sel_size);
 
 gboolean ptk_file_browser_can_back(PtkFileBrowser* file_browser);
 void ptk_file_browser_go_back(GtkWidget* item, PtkFileBrowser* file_browser);
@@ -194,7 +194,7 @@ GtkWidget* ptk_file_browser_get_folder_view(PtkFileBrowser* file_browser);
 void ptk_file_browser_show_hidden_files(PtkFileBrowser* file_browser, gboolean show);
 
 void ptk_file_browser_set_single_click(PtkFileBrowser* file_browser, gboolean single_click);
-void ptk_file_browser_set_single_click_timeout(PtkFileBrowser* file_browser, guint timeout);
+void ptk_file_browser_set_single_click_timeout(PtkFileBrowser* file_browser, uint timeout);
 
 void ptk_file_browser_show_shadow(PtkFileBrowser* file_browser);
 void ptk_file_browser_hide_shadow(PtkFileBrowser* file_browser);

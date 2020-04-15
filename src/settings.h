@@ -338,7 +338,7 @@ void xset_custom_activate(GtkWidget* item, XSet* set);
 XSet* xset_custom_remove(XSet* set);
 char* xset_custom_get_app_name_icon(XSet* set, GdkPixbuf** icon, int icon_size);
 void xset_custom_export(GtkWidget* parent, PtkFileBrowser* file_browser, XSet* set);
-GtkWidget* xset_design_show_menu(GtkWidget* menu, XSet* set, XSet* book_insert, guint button, guint32 time);
+GtkWidget* xset_design_show_menu(GtkWidget* menu, XSet* set, XSet* book_insert, uint button, guint32 time);
 void xset_add_menu(PtkFileBrowser* file_browser, GtkWidget* menu, GtkAccelGroup* accel_group, char* elements);
 GtkWidget* xset_add_menuitem(PtkFileBrowser* file_browser, GtkWidget* menu, GtkAccelGroup* accel_group, XSet* set);
 GtkWidget* xset_get_image(const char* icon, int icon_size);

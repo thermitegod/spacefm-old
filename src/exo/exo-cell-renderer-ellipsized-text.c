@@ -56,9 +56,9 @@ enum
     PROP_FOLLOW_STATE,
 };
 
-static void exo_cell_renderer_ellipsized_text_get_property(GObject* object, guint prop_id, GValue* value,
+static void exo_cell_renderer_ellipsized_text_get_property(GObject* object, uint prop_id, GValue* value,
                                                            GParamSpec* pspec);
-static void exo_cell_renderer_ellipsized_text_set_property(GObject* object, guint prop_id, const GValue* value,
+static void exo_cell_renderer_ellipsized_text_set_property(GObject* object, uint prop_id, const GValue* value,
                                                            GParamSpec* pspec);
 static void exo_cell_renderer_ellipsized_text_get_size(GtkCellRenderer* renderer, GtkWidget* widget,
 #if (GTK_MAJOR_VERSION == 3)
@@ -66,16 +66,16 @@ static void exo_cell_renderer_ellipsized_text_get_size(GtkCellRenderer* renderer
 #elif (GTK_MAJOR_VERSION == 2)
                                                        GdkRectangle* cell_area,
 #endif
-                                                       gint* x_offset, gint* y_offset, gint* width, gint* height);
+                                                       int* x_offset, int* y_offset, int* width, int* height);
 
 #if (GTK_MAJOR_VERSION == 3)
 static void exo_cell_renderer_ellipsized_text_get_preferred_width(GtkCellRenderer* renderer, GtkWidget* widget,
-                                                                  gint* minimal_size, gint* natural_size);
+                                                                  int* minimal_size, int* natural_size);
 static void exo_cell_renderer_ellipsized_text_get_preferred_height(GtkCellRenderer* renderer, GtkWidget* widget,
-                                                                   gint* minimal_size, gint* natural_size);
+                                                                   int* minimal_size, int* natural_size);
 static void exo_cell_renderer_ellipsized_text_get_preferred_height_for_width(GtkCellRenderer* renderer,
-                                                                             GtkWidget* widget, gint width,
-                                                                             gint* minimal_size, gint* natural_size);
+                                                                             GtkWidget* widget, int width,
+                                                                             int* minimal_size, int* natural_size);
 #endif
 
 static void exo_cell_renderer_ellipsized_text_render(GtkCellRenderer* renderer,
@@ -150,7 +150,7 @@ static void exo_cell_renderer_ellipsized_text_init(ExoCellRendererEllipsizedText
 {
 }
 
-static void exo_cell_renderer_ellipsized_text_get_property(GObject* object, guint prop_id, GValue* value,
+static void exo_cell_renderer_ellipsized_text_get_property(GObject* object, uint prop_id, GValue* value,
                                                            GParamSpec* pspec)
 {
     ExoCellRendererEllipsizedTextPrivate* priv =
@@ -168,7 +168,7 @@ static void exo_cell_renderer_ellipsized_text_get_property(GObject* object, guin
     }
 }
 
-static void exo_cell_renderer_ellipsized_text_set_property(GObject* object, guint prop_id, const GValue* value,
+static void exo_cell_renderer_ellipsized_text_set_property(GObject* object, uint prop_id, const GValue* value,
                                                            GParamSpec* pspec)
 {
     ExoCellRendererEllipsizedTextPrivate* priv =
@@ -194,16 +194,16 @@ static void exo_cell_renderer_ellipsized_text_get_size(GtkCellRenderer* renderer
                                                        GdkRectangle* cell_area,
 #endif
 
-                                                       gint* x_offset, gint* y_offset, gint* width, gint* height)
+                                                       int* x_offset, int* y_offset, int* width, int* height)
 {
     ExoCellRendererEllipsizedTextPrivate* priv =
         exo_cell_renderer_ellipsized_text_get_instance_private(EXO_CELL_RENDERER_ELLIPSIZED_TEXT(renderer));
-    gint focus_line_width;
-    gint focus_padding;
-    gint text_height;
-    gint text_width;
-    gfloat xalign = 0.0;
-    gfloat yalign = 0.0;
+    int focus_line_width;
+    int focus_padding;
+    int text_height;
+    int text_width;
+    float xalign = 0.0;
+    float yalign = 0.0;
 
     /* Determine the dimensions of the text from the GtkCellRendererText - see
      * in exo_cell_renderer_ellipsized_text_render for commentary on the GTK2
@@ -266,7 +266,7 @@ static void exo_cell_renderer_ellipsized_text_get_size(GtkCellRenderer* renderer
 
 #if (GTK_MAJOR_VERSION == 3)
 static void exo_cell_renderer_ellipsized_text_get_preferred_width(GtkCellRenderer* renderer, GtkWidget* widget,
-                                                                  gint* minimal_size, gint* natural_size)
+                                                                  int* minimal_size, int* natural_size)
 {
     // Calling the normal code to get width
     exo_cell_renderer_ellipsized_text_get_size(renderer, widget, NULL, NULL, NULL, minimal_size, NULL);
@@ -277,7 +277,7 @@ static void exo_cell_renderer_ellipsized_text_get_preferred_width(GtkCellRendere
 }
 
 static void exo_cell_renderer_ellipsized_text_get_preferred_height(GtkCellRenderer* renderer, GtkWidget* widget,
-                                                                   gint* minimal_size, gint* natural_size)
+                                                                   int* minimal_size, int* natural_size)
 {
     // Calling the normal code to get height
     exo_cell_renderer_ellipsized_text_get_size(renderer, widget, NULL, NULL, NULL, NULL, minimal_size);
@@ -288,8 +288,8 @@ static void exo_cell_renderer_ellipsized_text_get_preferred_height(GtkCellRender
 }
 
 static void exo_cell_renderer_ellipsized_text_get_preferred_height_for_width(GtkCellRenderer* renderer,
-                                                                             GtkWidget* widget, gint width,
-                                                                             gint* minimal_size, gint* natural_size)
+                                                                             GtkWidget* widget, int width,
+                                                                             int* minimal_size, int* natural_size)
 {
     // Ignoring specified width and just returning the normal height
     exo_cell_renderer_ellipsized_text_get_preferred_height(renderer, widget, minimal_size, natural_size);
@@ -320,12 +320,12 @@ static void exo_cell_renderer_ellipsized_text_render(GtkCellRenderer* renderer,
 #if (GTK_MAJOR_VERSION == 2)
     cairo_t* cr;
 #endif
-    gint focus_line_width;
-    gint focus_padding;
-    gint text_height;
-    gint text_width;
-    gint x0, x1;
-    gint y0, y1;
+    int focus_line_width;
+    int focus_padding;
+    int text_height;
+    int text_width;
+    int x0, x1;
+    int y0, y1;
 
     /* Determine the text cell areas */
     if (G_UNLIKELY(!priv->follow_state))

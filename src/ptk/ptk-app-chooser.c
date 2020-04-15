@@ -59,10 +59,10 @@ static void init_list_view(GtkTreeView* view)
     gtk_tree_view_append_column(view, col);
 }
 
-static gint sort_by_name(GtkTreeModel* model, GtkTreeIter* a, GtkTreeIter* b, gpointer user_data)
+static int sort_by_name(GtkTreeModel* model, GtkTreeIter* a, GtkTreeIter* b, gpointer user_data)
 {
     char *name_a, *name_b;
-    gint ret = 0;
+    int ret = 0;
     gtk_tree_model_get(model, a, COL_APP_NAME, &name_a, -1);
     if (name_a)
     {
@@ -270,7 +270,7 @@ static void on_load_all_apps_finish(VFSAsyncTask* task, gboolean is_cancelled, G
     gdk_window_set_cursor(gtk_widget_get_window(dlg), NULL);
 }
 
-void on_notebook_switch_page(GtkNotebook* notebook, GtkWidget* page, guint page_num, gpointer user_data)
+void on_notebook_switch_page(GtkNotebook* notebook, GtkWidget* page, uint page_num, gpointer user_data)
 {
     GtkWidget* dlg = (GtkWidget*)user_data;
     GtkTreeView* view;
@@ -313,9 +313,9 @@ void on_notebook_switch_page(GtkNotebook* notebook, GtkWidget* page, guint page_
  * These two can be separated by check if the returned string is ended
  * with ".desktop" postfix.
  */
-gchar* app_chooser_dialog_get_selected_app(GtkWidget* dlg)
+char* app_chooser_dialog_get_selected_app(GtkWidget* dlg)
 {
-    gchar* app = NULL;
+    char* app = NULL;
     GtkBuilder* builder = (GtkBuilder*)g_object_get_data(G_OBJECT(dlg), "builder");
     GtkEntry* entry = GTK_ENTRY((GtkWidget*)gtk_builder_get_object(builder, "cmdline"));
     GtkNotebook* notebook;
@@ -488,7 +488,7 @@ void ptk_app_chooser_has_handler_warn(GtkWidget* parent, VFSMimeType* mime_type)
     }
 }
 
-gchar* ptk_choose_app_for_mime_type(GtkWindow* parent, VFSMimeType* mime_type, gboolean focus_all_apps,
+char* ptk_choose_app_for_mime_type(GtkWindow* parent, VFSMimeType* mime_type, gboolean focus_all_apps,
                                     gboolean show_command, gboolean show_default, gboolean dir_default)
 {
     /*
@@ -498,8 +498,8 @@ gchar* ptk_choose_app_for_mime_type(GtkWindow* parent, VFSMimeType* mime_type, g
     dir_default         Show 'Set as default' also for type dir
     */
     GtkWidget* dlg;
-    gchar* app = NULL;
-    gchar* custom = NULL;
+    char* app = NULL;
+    char* custom = NULL;
 
     dlg = app_chooser_dialog_new(parent, mime_type, focus_all_apps, show_command, show_default, dir_default);
 
@@ -584,7 +584,7 @@ void load_all_apps_in_dir(const char* dir_path, GtkListStore* list, VFSAsyncTask
 
 gpointer load_all_known_apps_thread(VFSAsyncTask* task)
 {
-    gchar *dir, **dirs;
+    char *dir, **dirs;
     GtkListStore* list;
 
     GDK_THREADS_ENTER();

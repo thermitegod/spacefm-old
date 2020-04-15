@@ -1381,12 +1381,12 @@ void ptk_file_task_update(PtkFileTask* ptask)
 
     VFSFileTask* task = ptask->task;
     off_t cur_speed;
-    gdouble timer_elapsed = g_timer_elapsed(task->timer, NULL);
+    double timer_elapsed = g_timer_elapsed(task->timer, NULL);
 
     if (task->type == VFS_FILE_TASK_EXEC)
     {
         // test for zombie process
-        gint status = 0;
+        int status = 0;
         if (!ptask->complete && task->exec_pid && waitpid(task->exec_pid, &status, WNOHANG))
         {
             // process is no longer running (defunct zombie)
@@ -1422,7 +1422,7 @@ void ptk_file_task_update(PtkFileTask* ptask)
         // cur speed
         if (task->state_pause == VFS_FILE_TASK_RUNNING)
         {
-            gdouble since_last = timer_elapsed - task->last_elapsed;
+            double since_last = timer_elapsed - task->last_elapsed;
             if (since_last >= 2.0)
             {
                 cur_speed = (task->progress - task->last_progress) / since_last;
@@ -1441,7 +1441,7 @@ void ptk_file_task_update(PtkFileTask* ptask)
         int ipercent;
         if (task->total_size)
         {
-            gdouble dpercent = ((gdouble)task->progress) / task->total_size;
+            double dpercent = ((gdouble)task->progress) / task->total_size;
             ipercent = (int)(dpercent * 100);
         }
         else
@@ -1451,7 +1451,7 @@ void ptk_file_task_update(PtkFileTask* ptask)
     }
 
     // elapsed
-    guint hours = timer_elapsed / 3600.0;
+    uint hours = timer_elapsed / 3600.0;
     char* elapsed;
     char* elapsed2;
     char* elapsed3;
@@ -1459,14 +1459,14 @@ void ptk_file_task_update(PtkFileTask* ptask)
         elapsed = g_strdup("");
     else
         elapsed = g_strdup_printf("%d", hours);
-    guint mins = (timer_elapsed - (hours * 3600)) / 60;
+    uint mins = (timer_elapsed - (hours * 3600)) / 60;
     if (hours > 0)
         elapsed2 = g_strdup_printf("%s:%02d", elapsed, mins);
     else if (mins > 0)
         elapsed2 = g_strdup_printf("%d", mins);
     else
         elapsed2 = g_strdup(elapsed);
-    guint secs = (timer_elapsed - (hours * 3600) - (mins * 60));
+    uint secs = (timer_elapsed - (hours * 3600) - (mins * 60));
     elapsed3 = g_strdup_printf("%s:%02d", elapsed2, secs);
     g_free(elapsed);
     g_free(elapsed2);
@@ -1800,7 +1800,7 @@ static void on_multi_input_changed(GtkWidget* input_buf, GtkWidget* query_input)
     gtk_dialog_set_response_sensitive(GTK_DIALOG(dlg), RESPONSE_OVERWRITEALL, !can_rename);
 }
 
-void query_overwrite_response(GtkDialog* dlg, gint response, PtkFileTask* ptask)
+void query_overwrite_response(GtkDialog* dlg, int response, PtkFileTask* ptask)
 {
     char* dir_name;
     char* str;
@@ -1867,7 +1867,7 @@ void query_overwrite_response(GtkDialog* dlg, gint response, PtkFileTask* ptask)
     gtk_widget_get_allocation(GTK_WIDGET(dlg), &allocation);
     if (allocation.width && allocation.height)
     {
-        gint has_overwrite_btn = GPOINTER_TO_INT((gpointer)g_object_get_data(G_OBJECT(dlg), "has_overwrite_btn"));
+        int has_overwrite_btn = GPOINTER_TO_INT((gpointer)g_object_get_data(G_OBJECT(dlg), "has_overwrite_btn"));
         str = g_strdup_printf("%d", allocation.width);
         xset_set("task_popups", has_overwrite_btn ? "x" : "s", str);
         g_free(str);

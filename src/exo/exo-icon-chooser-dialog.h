@@ -55,12 +55,12 @@ struct _ExoIconChooserDialog
 
 GType exo_icon_chooser_dialog_get_type(void) G_GNUC_CONST;
 
-GtkWidget* exo_icon_chooser_dialog_new(const gchar* title, GtkWindow* parent, const gchar* first_button_text,
+GtkWidget* exo_icon_chooser_dialog_new(const char* title, GtkWindow* parent, const char* first_button_text,
                                        ...) G_GNUC_MALLOC G_GNUC_NULL_TERMINATED G_GNUC_WARN_UNUSED_RESULT;
 
 gchar*
 exo_icon_chooser_dialog_get_icon(ExoIconChooserDialog* icon_chooser_dialog) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
-gboolean exo_icon_chooser_dialog_set_icon(ExoIconChooserDialog* icon_chooser_dialog, const gchar* icon);
+gboolean exo_icon_chooser_dialog_set_icon(ExoIconChooserDialog* icon_chooser_dialog, const char* icon);
 
 G_END_DECLS
 
