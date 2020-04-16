@@ -300,7 +300,6 @@ static char* parse_xml_icon(const char* buf, size_t len, gboolean is_local)
 
 static char* parse_xml_desc(const char* buf, size_t len)
 {
-    // const char *buf_end = buf + len;
     const char *comment = NULL, *comment_end, *eng_comment;
     size_t eng_comment_len = 0, comment_len = 0;
     // char target[64];
@@ -315,22 +314,6 @@ static char* parse_xml_desc(const char* buf, size_t len)
     if (G_UNLIKELY(!comment_end))
         return NULL;
     eng_comment_len = comment_end - eng_comment;
-
-    /*
-        int target_len = g_snprintf( target, 64, "<comment xml:lang=\"C\">");
-        buf = comment_end + 10;
-        len = (buf_end - buf);
-        if( G_LIKELY( ( comment = g_strstr_len( buf, len, target ) ) ) )
-        {
-            len -= target_len;
-            comment += target_len;
-            comment_end = g_strstr_len( comment, len, end_comment_tag ); //find </comment>
-            if( G_LIKELY( comment_end ) )
-                comment_len = (comment_end - comment);
-            else
-                comment = NULL;
-        }
-    */
 
     if (G_LIKELY(comment))
         return g_strndup(comment, comment_len);

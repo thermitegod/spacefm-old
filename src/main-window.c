@@ -2936,29 +2936,6 @@ void set_window_title(FMMainWindow* main_window, PtkFileBrowser* file_browser)
 
     gtk_window_set_title(GTK_WINDOW(main_window), fmt);
     g_free(fmt);
-
-    /*
-        if ( file_browser->dir && ( disp_path = file_browser->dir->disp_path ) )
-        {
-            disp_name = g_path_get_basename( disp_path );
-            //gtk_entry_set_text( main_window->address_bar, disp_path );
-            gtk_window_set_title( GTK_WINDOW( main_window ), disp_name );
-            g_free( disp_name );
-        }
-        else
-        {
-            char* path = ptk_file_browser_get_cwd( file_browser );
-            if ( path )
-            {
-                disp_path = g_filename_display_name( path );
-                //gtk_entry_set_text( main_window->address_bar, disp_path );
-                disp_name = g_path_get_basename( disp_path );
-                g_free( disp_path );
-                gtk_window_set_title( GTK_WINDOW( main_window ), disp_name );
-                g_free( disp_name );
-            }
-        }
-    */
 }
 
 void update_window_title(GtkMenuItem* item, FMMainWindow* main_window)

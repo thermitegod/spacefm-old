@@ -412,26 +412,6 @@ GtkWidget* file_properties_dlg_new(GtkWindow* parent, const char* dir_path, GLis
     data->recurse = (GtkWidget*)gtk_builder_get_object(builder, "recursive");
     gtk_widget_set_sensitive(data->recurse, is_dirs);
 
-    /*  //MOD
-        for ( l = sel_files; l && l->next; l = l->next )
-        {
-            VFSMimeType *type, *type2;
-            file = ( VFSFileInfo* ) l->data;
-            file2 = ( VFSFileInfo* ) l->next->data;
-            type = vfs_file_info_get_mime_type( file );
-            type2 = vfs_file_info_get_mime_type( file2 );
-            if ( type != type2 )
-            {
-                vfs_mime_type_unref( type );
-                vfs_mime_type_unref( type2 );
-                same_type = FALSE;
-                break;
-            }
-            vfs_mime_type_unref( type );
-            vfs_mime_type_unref( type2 );
-        }
-    */
-
     file = (VFSFileInfo*)sel_files->data;
     if (same_type)
     {

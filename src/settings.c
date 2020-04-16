@@ -6206,19 +6206,6 @@ void xset_menu_cb(GtkWidget* item, XSet* set)
         cb_data = g_object_get_data(G_OBJECT(item), "cb_data");
     }
 
-    /*
-        if ( set->tool )
-        {
-            // get current browser for toolbar button
-            FMMainWindow* main_window = fm_main_window_get_last_active();
-            if ( main_window )
-                set->browser = PTK_FILE_BROWSER(
-                        fm_main_window_get_current_file_browser( main_window ) );
-            else
-                set->browser = NULL;
-        }
-    */
-
     parent = set->browser;
 
     if (set->plugin)
