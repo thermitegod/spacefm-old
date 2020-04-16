@@ -1031,11 +1031,8 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
         }
         set = xset_get("con_go");
         xset_add_menuitem(browser, popup, accel_group, set);
-    }
 
-    // New >
-    if (browser)
-    {
+        // New >
         set = xset_set_cb("new_file", on_popup_new_text_file_activate, data);
         set = xset_set_cb("new_folder", on_popup_new_folder_activate, data);
         set = xset_set_cb("new_link", on_popup_new_link_activate, data);
@@ -1056,11 +1053,8 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
 
         set = xset_get("sep_new");
         xset_add_menuitem(browser, popup, accel_group, set);
-    }
 
-    // Edit
-    if (browser)
-    {
+        // Edit
         set = xset_set_cb("copy_name", on_popup_copy_name_activate, data);
         set->disable = !sel_files;
         set = xset_set_cb("copy_path", on_popup_copy_text_activate, data);
@@ -1087,14 +1081,11 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
 
         set->disable = !sel_files || no_write_access || !browser;
 
-        if (browser)
-        {
-            xset_set_cb("select_all", ptk_file_browser_select_all, data->browser);
-            set = xset_set_cb("select_un", ptk_file_browser_unselect_all, browser);
-            set->disable = !sel_files;
-            xset_set_cb("select_invert", ptk_file_browser_invert_selection, browser);
-            xset_set_cb("select_patt", on_popup_select_pattern, data);
-        }
+        xset_set_cb("select_all", ptk_file_browser_select_all, data->browser);
+        set = xset_set_cb("select_un", ptk_file_browser_unselect_all, browser);
+        set->disable = !sel_files;
+        xset_set_cb("select_invert", ptk_file_browser_invert_selection, browser);
+        xset_set_cb("select_patt", on_popup_select_pattern, data);
 
         static const char* copycmd[] = {
             "copy_loc",     "copy_loc_last", "copy_tab_prev",   "copy_tab_next",   "copy_tab_1",      "copy_tab_2",
@@ -1193,13 +1184,13 @@ GtkWidget* ptk_file_menu_new(PtkFileBrowser* browser, const char* file_path, VFS
     set = xset_get("sep_edit");
     xset_add_menuitem(browser, popup, accel_group, set);
 
-    // View >
-    if (browser)
-        ptk_file_menu_add_panel_view_menu(browser, popup, accel_group);
 
-    // Properties
     if (browser)
     {
+        // View >
+        ptk_file_menu_add_panel_view_menu(browser, popup, accel_group);
+
+        // Properties
         set = xset_set_cb("prop_info", on_popup_file_properties_activate, data);
         set = xset_set_cb("prop_perm", on_popup_file_permissions_activate, data);
 
