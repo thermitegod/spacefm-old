@@ -98,7 +98,6 @@ spacefm_conf.set('ENABLE_NLS', false)
 #spacefm_conf.set(, 0)
 #spacefm_conf.set(, 0)
 
-
 sources = [
   'src/cust-dialog.c',
   'src/find-files.c',
@@ -181,19 +180,6 @@ spacefm = build_target(
   ],
 )
 
-desktop_files = [
-    'data/spacefm-folder-handler.desktop',
-    'data/spacefm.desktop',
-    'data/spacefm-find.desktop'
-    ]
-
-#icons = [
-#    '',
-#]
-
-#foreach i : icons
-#    install_data(i, install_dir : datadir / 'icons')
-#endforeach
-
-install_data(desktop_files, install_dir : datadir / 'applications')
+install_subdir('data/applications', install_dir : datadir )
 install_subdir('data/ui', install_dir : datadir / target_name)
+install_subdir('data/icons', install_dir : datadir )
