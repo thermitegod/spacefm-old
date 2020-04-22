@@ -449,7 +449,7 @@ void vfs_file_size_to_string_format(char* buf, guint64 size, char* format) // MO
             */
             if (app_settings.use_si_prefix == TRUE)
             {
-                val = ((float)size) / ((guint64)1000000000000);
+                val = ((float)size) / ((float)1000000000000);
                 unit = _("T");
             }
             else
@@ -467,7 +467,7 @@ void vfs_file_size_to_string_format(char* buf, guint64 size, char* format) // MO
             */
             if (app_settings.use_si_prefix == TRUE)
             {
-                val = ((float)size) / ((guint64)1000000000);
+                val = ((float)size) / ((float)1000000000);
                 unit = _("G");
             }
             else
@@ -486,7 +486,7 @@ void vfs_file_size_to_string_format(char* buf, guint64 size, char* format) // MO
         */
         if (app_settings.use_si_prefix == TRUE)
         {
-            val = ((float)size) / ((guint64)1000000);
+            val = ((float)size) / ((float)1000000);
             unit = _("M");
         }
         else
@@ -504,7 +504,7 @@ void vfs_file_size_to_string_format(char* buf, guint64 size, char* format) // MO
         */
         if (app_settings.use_si_prefix == TRUE)
         {
-            val = ((float)size) / ((guint64)1000);
+            val = ((float)size) / ((float)1000);
             unit = _("K"); // MOD was KB
         }
         else
@@ -548,7 +548,7 @@ void vfs_file_size_to_string(char* buf, guint64 size)
             */
             if (app_settings.use_si_prefix == TRUE)
             {
-                val = ((float)size) / ((guint64)1000000000000);
+                val = ((float)size) / ((float)1000000000000);
                 unit = _("T");
             }
             else
@@ -566,7 +566,7 @@ void vfs_file_size_to_string(char* buf, guint64 size)
             */
             if (app_settings.use_si_prefix == TRUE)
             {
-                val = ((float)size) / ((guint64)1000000000);
+                val = ((float)size) / ((float)1000000000);
                 unit = _("G");
             }
             else
@@ -585,7 +585,7 @@ void vfs_file_size_to_string(char* buf, guint64 size)
         */
         if (app_settings.use_si_prefix == TRUE)
         {
-            val = ((float)size) / ((guint64)1000000);
+            val = ((float)size) / ((float)1000000);
             unit = _("M");
         }
         else
@@ -603,7 +603,7 @@ void vfs_file_size_to_string(char* buf, guint64 size)
         */
         if (app_settings.use_si_prefix == TRUE)
         {
-            val = ((float)size) / ((guint64)1000);
+            val = ((float)size) / ((float)1000);
             unit = _("K"); // MOD was KB
         }
         else
