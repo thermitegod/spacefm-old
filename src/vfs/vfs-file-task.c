@@ -1261,7 +1261,6 @@ static void vfs_file_task_exec(char* src_file, VFSFileTask* task)
     char* su = NULL;
     char* str;
     const char* tmp;
-    char* hex8;
     char* hexname;
     int result;
     char* terminal = NULL;
@@ -1373,11 +1372,9 @@ static void vfs_file_task_exec(char* src_file, VFSFileTask* task)
         {
             if (task->exec_script)
                 g_free(task->exec_script);
-            hex8 = randhex8();
-            hexname = g_strdup_printf("%s-tmp.sh", hex8);
+            hexname = g_strdup_printf("%s-tmp.sh", randhex8());
             task->exec_script = g_build_filename(tmp, hexname, NULL);
             g_free(hexname);
-            g_free(hex8);
         } while (g_file_test(task->exec_script, G_FILE_TEST_EXISTS));
 
         // open buffer
