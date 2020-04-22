@@ -49,7 +49,7 @@ static gboolean on_output(GIOChannel* ch, GIOCondition cond, gpointer user_data)
 {
     GtkTextIter it;
     char buffer[4096];
-    gsize rlen = 0;
+    size_t rlen = 0;
     GtkAdjustment* adj;
     int status;
     PtkConsoleOutputData* data = (PtkConsoleOutputData*)user_data;

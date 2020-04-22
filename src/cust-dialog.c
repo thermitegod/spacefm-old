@@ -1681,7 +1681,7 @@ static gboolean cb_pipe_watch(GIOChannel* channel, GIOCondition cond, CustomElem
     }
 
     // GError *error = NULL;
-    gsize size;
+    size_t size;
     char line[2048];
     if (g_io_channel_read_chars(channel, line, sizeof(line), &size, NULL) == G_IO_STATUS_NORMAL && size > 0)
     {

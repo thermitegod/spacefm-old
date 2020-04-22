@@ -81,7 +81,7 @@ void vfs_mime_type_append_action(const char* type, const char* desktop_id);
 
 char** vfs_mime_type_get_all_known_apps();
 
-char** vfs_mime_type_join_actions(char** list1, gsize len1, char** list2, gsize len2);
+char** vfs_mime_type_join_actions(char** list1, size_t len1, char** list2, size_t len2);
 
 GList* vfs_mime_type_add_reload_cb(GFreeFunc cb, gpointer user_data);
 

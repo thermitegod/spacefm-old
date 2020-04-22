@@ -869,7 +869,7 @@ char* vfs_file_resolve_path(const char* cwd, const char* relative_path)
             }
             if (relative_path[1] == '.' && (relative_path[2] == '/' || relative_path[2] == '\0')) /* parent dir */
             {
-                gsize len = ret->len - 2;
+                size_t len = ret->len - 2;
                 while (ret->str[len] != '/')
                     --len;
                 g_string_truncate(ret, len + 1);

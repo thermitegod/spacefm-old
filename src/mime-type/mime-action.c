@@ -130,8 +130,6 @@ static int strv_index(char** strv, const char* str)
 static void remove_actions(const char* type, GArray* actions)
 { // sfm 0.7.7+ added
     char** removed = NULL;
-    gsize n_removed = 0, r;
-    int i;
 
     // g_print( "remove_actions( %s )\n", type );
     GKeyFile* file = g_key_file_new();
@@ -152,9 +150,11 @@ static void remove_actions(const char* type, GArray* actions)
     }
     g_free(path);
 
-    removed = g_key_file_get_string_list(file, "Removed Associations", type, &n_removed, NULL);
+    size_t n_removed = 0;
+    char** removed = g_key_file_get_string_list(file, "Removed Associations", type, &n_removed, NULL);
     if (removed)
     {
+        size_t r;
         for (r = 0; r < n_removed; ++r)
         {
             g_strstrip(removed[r]);

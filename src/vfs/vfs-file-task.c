@@ -1190,7 +1190,7 @@ static gboolean cb_exec_out_watch(GIOChannel* channel, GIOCondition cond, VFSFil
     }
     */
 
-    gsize size;
+    size_t size;
 
     if ((cond & G_IO_NVAL))
     {

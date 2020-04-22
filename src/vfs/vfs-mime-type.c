@@ -411,7 +411,7 @@ const char* vfs_mime_type_get_description(VFSMimeType* mime_type)
  * Join two string vector containing app lists to generate a new one.
  * Duplicated app will be removed.
  */
-char** vfs_mime_type_join_actions(char** list1, gsize len1, char** list2, gsize len2)
+char** vfs_mime_type_join_actions(char** list1, size_t len1, char** list2, size_t len2)
 {
     char** ret = NULL;
     int i, j, k;
