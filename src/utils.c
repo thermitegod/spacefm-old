@@ -33,12 +33,12 @@ void print_command(const char* cmd)
     g_printf("COMMAND=%s\n", cmd);
 }
 
-void print_task_command(const char* ptask, const char* cmd)
+void print_task_command(char* ptask, const char* cmd)
 {
     g_printf("\nTASK_COMMAND(%p)=%s\n", ptask, cmd);
 }
 
-void print_task_command_spawn(const char* argv[], int pid)
+void print_task_command_spawn(char* argv[], int pid)
 {
     g_printf("SPAWN=");
     int i = 0;

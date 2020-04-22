@@ -23,8 +23,8 @@ extern char* SYSCONFDIR;
 extern char* PACKAGE_UI_DIR;
 
 void print_command(const char* cmd);
-void print_task_command(const char* ptask, const char* cmd);
-void print_task_command_spawn(const char* argv[], int pid);
+void print_task_command(char* ptask, const char* cmd);
+void print_task_command_spawn(char* argv[], int pid);
 
 void check_for_errno();
 
