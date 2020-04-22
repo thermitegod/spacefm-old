@@ -98,8 +98,8 @@ const char* mime_type_get_by_filename(const char* filename, struct stat* statbuf
         type = mime_cache_lookup_literal(cache, filename);
         if (G_LIKELY(!type))
         {
-            char* suffix_pos = NULL;
-            char* prev_suffix_pos = (const char*)-1;
+            const char* suffix_pos = NULL;
+            const char* prev_suffix_pos = (const char*)-1;
             const char* _type = mime_cache_lookup_suffix(cache, filename, &suffix_pos);
             if (_type && suffix_pos < prev_suffix_pos)
             {

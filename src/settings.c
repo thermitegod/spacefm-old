@@ -2905,7 +2905,7 @@ XSet* xset_import_plugin(const char* plug_dir, int* use)
 
     while (fgets(line, sizeof(line), file))
     {
-        gboolean func;
+        gboolean func = TRUE;
         strtok(line, "\r\n");
         if (!line[0])
             continue;
@@ -4159,7 +4159,8 @@ char* xset_get_manual_url()
         return g_strdup(url);
     }
 
-    GList* names = g_list_append(names, g_strdup("spacefm-manual-en.html"));
+    GList* names = NULL;
+    names = g_list_append(names, g_strdup("spacefm-manual-en.html"));
 
     // get potential locations
     GList* locations = NULL;

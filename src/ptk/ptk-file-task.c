@@ -1797,7 +1797,7 @@ static void on_multi_input_changed(GtkWidget* input_buf, GtkWidget* query_input)
 
 void query_overwrite_response(GtkDialog* dlg, int response, PtkFileTask* ptask)
 {
-    char* str;
+    char* str = NULL;
 
     switch (response)
     {

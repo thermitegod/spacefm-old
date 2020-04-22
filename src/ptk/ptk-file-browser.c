@@ -3863,9 +3863,6 @@ static GtkWidget* create_folder_view(PtkFileBrowser* file_browser, PtkFBViewMode
 
 void init_list_view(PtkFileBrowser* file_browser, GtkTreeView* list_view)
 {
-    GtkTreeViewColumn* col;
-    GtkCellRenderer* renderer;
-
     int cols[] = {COL_FILE_NAME, COL_FILE_SIZE, COL_FILE_DESC, COL_FILE_PERM, COL_FILE_OWNER, COL_FILE_MTIME};
 
     FMMainWindow* main_window = (FMMainWindow*)file_browser->main_window;

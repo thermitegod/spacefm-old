@@ -17,8 +17,6 @@
 
 #include "utils.h"
 
-static const char* dir_path;
-
 static gboolean show_go_dialog(GtkWindow* parent, char* initial_path)
 {
     GtkBuilder* builder = _gtk_builder_new_from_file(PACKAGE_UI_DIR, "/godlg.ui", NULL);
@@ -35,6 +33,7 @@ static gboolean show_go_dialog(GtkWindow* parent, char* initial_path)
     gboolean ret = (gtk_dialog_run(GTK_DIALOG(dlg)) == GTK_RESPONSE_OK);
     if (ret)
     {
+        static const char* dir_path;
         dir_path = strdup(gtk_entry_get_text(path_entry));
     }
     gtk_widget_destroy(GTK_WIDGET(dlg));
@@ -53,6 +52,7 @@ gboolean fm_go(FMMainWindow* main_window)
         {
             if (show_go_dialog(GTK_WINDOW(main_window), disp_path))
             {
+                char* dir_path = NULL;
                 char* final_path = vfs_file_resolve_path(ptk_file_browser_get_cwd(file_browser), dir_path);
                 g_free(dir_path);
                 ptk_file_browser_chdir(file_browser, final_path, PTK_FB_CHDIR_ADD_HISTORY);
