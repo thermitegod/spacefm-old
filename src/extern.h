@@ -8,8 +8,7 @@
 #define _EXTERN_H_
 
 static const char* terminal_programs[] = // for pref-dialog.c
-    {"roxterm",
-     "terminal",
+    {"terminal",
      "xfce4-terminal",
      "aterm",
      "Eterm",
@@ -21,7 +20,6 @@ static const char* terminal_programs[] = // for pref-dialog.c
      "urxvt",
      "xterm",
      "x-terminal-emulator",
-     "lilyterm",
      "qterminal"};
 
 // clang-format off

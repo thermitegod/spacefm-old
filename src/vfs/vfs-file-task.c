@@ -1483,14 +1483,7 @@ static void vfs_file_task_exec(char* src_file, VFSFileTask* task)
         terminalv = NULL;
 
         // automatic terminal options
-        if (strstr(terminal, "roxterm"))
-        {
-            argv[a++] = g_strdup_printf("--disable-sm");
-            argv[a++] = g_strdup_printf("--separate");
-        }
-        else if (strstr(terminal, "lilyterm"))
-            argv[a++] = g_strdup_printf("--separate");
-        else if (strstr(terminal, "xfce4-terminal") || g_str_has_suffix(terminal, "/terminal"))
+        if (strstr(terminal, "xfce4-terminal") || g_str_has_suffix(terminal, "/terminal"))
             argv[a++] = g_strdup_printf("--disable-server");
 
         // add option to execute command in terminal
