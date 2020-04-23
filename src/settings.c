@@ -7927,7 +7927,7 @@ void xset_set_window_icon(GtkWindow* win)
 
 void xset_defaults()
 {
-    srand((unsigned int)time(0) + getpid());
+    srand((size_t)time(0) + getpid());
 
     // set_last must be set (to anything)
     set_last = xset_get("separator");
