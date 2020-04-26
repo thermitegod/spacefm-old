@@ -57,6 +57,9 @@ static void init_list_view(GtkTreeView* view)
     gtk_tree_view_column_set_attributes(col, renderer, "text", COL_APP_NAME, NULL);
 
     gtk_tree_view_append_column(view, col);
+
+    // add tooltip
+    gtk_tree_view_set_tooltip_column(view, COL_FULL_PATH);
 }
 
 static int sort_by_name(GtkTreeModel* model, GtkTreeIter* a, GtkTreeIter* b, gpointer user_data)
@@ -104,6 +107,13 @@ static void add_list_item(GtkListStore* list, VFSAppDesktop* desktop)
         } while (gtk_tree_model_iter_next(GTK_TREE_MODEL(list), &it));
     }
 
+    // tooltip
+    char* tooltip = g_markup_printf_escaped("%s\nName=%s\nExec=%s%s",
+                                            desktop->full_path,
+                                            vfs_app_desktop_get_disp_name(desktop),
+                                            desktop->exec,
+                                            desktop->terminal ? "\nTerminal=true" : "");
+
     icon = vfs_app_desktop_get_icon(desktop, 20, TRUE);
     gtk_list_store_append(list, &it);
     gtk_list_store_set(list,
@@ -115,7 +125,9 @@ static void add_list_item(GtkListStore* list, VFSAppDesktop* desktop)
                        COL_DESKTOP_FILE,
                        vfs_app_desktop_get_name(desktop),
                        COL_FULL_PATH,
+                       tooltip,
                        -1);
+    g_free(tooltip);
     if (icon)
         g_object_unref(icon);
 }
@@ -468,7 +480,7 @@ void ptk_app_chooser_has_handler_warn(GtkWidget* parent, VFSMimeType* mime_type)
 }
 
 char* ptk_choose_app_for_mime_type(GtkWindow* parent, VFSMimeType* mime_type, gboolean focus_all_apps,
-                                    gboolean show_command, gboolean show_default, gboolean dir_default)
+                                   gboolean show_command, gboolean show_default, gboolean dir_default)
 {
     /*
     focus_all_apps      Focus All Apps tab by default

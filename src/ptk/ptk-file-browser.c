@@ -827,6 +827,8 @@ static void rebuild_toolbox(GtkWidget* widget, PtkFileBrowser* file_browser)
     int p = file_browser->mypanel;
     char mode = main_window ? main_window->panel_context[p - 1] : 0;
 
+    gboolean show_tooltips = !xset_get_b_panel(1, "tool_l");
+
     // destroy
     if (file_browser->toolbar)
     {
@@ -851,7 +853,11 @@ static void rebuild_toolbox(GtkWidget* widget, PtkFileBrowser* file_browser)
         gtk_toolbar_set_icon_size(GTK_TOOLBAR(file_browser->toolbar), app_settings.tool_icon_size);
 
     // fill left toolbar
-    xset_fill_toolbar(GTK_WIDGET(file_browser), file_browser, file_browser->toolbar, xset_get_panel(p, "tool_l"));
+    xset_fill_toolbar(GTK_WIDGET(file_browser),
+                      file_browser,
+                      file_browser->toolbar,
+                      xset_get_panel(p, "tool_l"),
+                      show_tooltips);
 
     // add pathbar
 #if (GTK_MAJOR_VERSION == 3)
@@ -866,7 +872,11 @@ static void rebuild_toolbox(GtkWidget* widget, PtkFileBrowser* file_browser)
     gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(file_browser->path_bar), TRUE, TRUE, 5);
 
     // fill right toolbar
-    xset_fill_toolbar(GTK_WIDGET(file_browser), file_browser, file_browser->toolbar, xset_get_panel(p, "tool_r"));
+    xset_fill_toolbar(GTK_WIDGET(file_browser),
+                      file_browser,
+                      file_browser->toolbar,
+                      xset_get_panel(p, "tool_r"),
+                      show_tooltips);
 
     // show
     if (xset_get_b_panel_mode(p, "show_toolbox", mode))
@@ -878,6 +888,8 @@ static void rebuild_side_toolbox(GtkWidget* widget, PtkFileBrowser* file_browser
     FMMainWindow* main_window = (FMMainWindow*)file_browser->main_window;
     int p = file_browser->mypanel;
     char mode = main_window ? main_window->panel_context[p - 1] : 0;
+
+    gboolean show_tooltips = !xset_get_b_panel(1, "tool_l");
 
     // destroy
     if (file_browser->side_toolbar)
@@ -891,7 +903,11 @@ static void rebuild_side_toolbox(GtkWidget* widget, PtkFileBrowser* file_browser
     if (app_settings.tool_icon_size > 0 && app_settings.tool_icon_size <= GTK_ICON_SIZE_DIALOG)
         gtk_toolbar_set_icon_size(GTK_TOOLBAR(file_browser->side_toolbar), app_settings.tool_icon_size);
     // fill side toolbar
-    xset_fill_toolbar(GTK_WIDGET(file_browser), file_browser, file_browser->side_toolbar, xset_get_panel(p, "tool_s"));
+    xset_fill_toolbar(GTK_WIDGET(file_browser),
+                      file_browser,
+                      file_browser->side_toolbar,
+                      xset_get_panel(p, "tool_s"),
+                      show_tooltips);
 
     // show
     if (xset_get_b_panel_mode(p, "show_sidebar", mode))
@@ -3599,8 +3615,7 @@ void on_folder_view_destroy(GtkTreeView* view, PtkFileBrowser* file_browser)
     }
 }
 
-gboolean folder_view_search_equal(GtkTreeModel* model, int col, const char* key, GtkTreeIter* it,
-                                  gpointer search_data)
+gboolean folder_view_search_equal(GtkTreeModel* model, int col, const char* key, GtkTreeIter* it, gpointer search_data)
 {
     char* name;
     char* lower_name = NULL;

@@ -1151,8 +1151,6 @@ int xset_get_int_panel(int panel, const char* name, const char* var)
 
 XSet* xset_is_main_bookmark(XSet* set)
 {
-
-
     // is this xset in main_book ?  returns immediate parent set
     XSet* set_prev = set;
     while (set_prev)
@@ -1633,7 +1631,7 @@ XSet* xset_find_custom(const char* search)
 
 gboolean xset_opener(PtkFileBrowser* file_browser, char job)
 { // find an opener for job
-    GList *l;
+    GList* l;
     gboolean found = FALSE;
 
     for (l = xsets; l; l = l->next)
@@ -1703,7 +1701,7 @@ gboolean xset_opener(PtkFileBrowser* file_browser, char job)
 
             // is set pinned to open_all_type for pre-context?
             char pinned = 0;
-            GList *ll;
+            GList* ll;
             for (ll = xsets; ll && !pinned; ll = ll->next)
             {
                 if (((XSet*)ll->data)->next && g_str_has_prefix(((XSet*)ll->data)->name, "open_all_type_"))
@@ -2328,11 +2326,12 @@ char* xset_custom_get_script(XSet* set, gboolean create)
         if (file)
         {
             // write default script
-            //head
+            // head
             fputs(g_strdup_printf("#!%s\n%s\n\n#import file manager variables\n$fm_import\n\n#For all "
                                   "spacefm variables see man page: spacefm-scripts\n\n#Start script\n",
                                   BASHPATH,
-                                  SHELL_SETTINGS), file);
+                                  SHELL_SETTINGS),
+                  file);
             int i;
             for (i = 0; i < 14; i++)
                 fputs("\n", file);
@@ -4485,9 +4484,10 @@ void xset_set_key(GtkWidget* parent, XSet* set)
     }
     else
         name = g_strdup("( no name )");
-    char* keymsg = g_strdup_printf(_("Press your key combination for item '%s' then click Set.  To remove the current key "
-                               "assignment, click Unset."),
-                             name);
+    char* keymsg =
+        g_strdup_printf(_("Press your key combination for item '%s' then click Set.  To remove the current key "
+                          "assignment, click Unset."),
+                        name);
     g_free(name);
     if (parent)
         dlgparent = gtk_widget_get_toplevel(parent);
@@ -5075,11 +5075,11 @@ void xset_design_job(GtkWidget* item, XSet* set)
             if (parent)
                 dlgparent = gtk_widget_get_toplevel(parent);
             GtkWidget* dlg = gtk_message_dialog_new(GTK_WINDOW(dlgparent),
-                                         GTK_DIALOG_MODAL,
-                                         GTK_MESSAGE_WARNING,
-                                         buttons,
-                                         msg,
-                                         NULL);
+                                                    GTK_DIALOG_MODAL,
+                                                    GTK_MESSAGE_WARNING,
+                                                    buttons,
+                                                    msg,
+                                                    NULL);
             xset_set_window_icon(GTK_WINDOW(dlg));
             gtk_window_set_title(GTK_WINDOW(dlg), _("Confirm Remove"));
             gtk_widget_show_all(dlg);
@@ -5327,6 +5327,10 @@ void xset_design_job(GtkWidget* item, XSet* set)
             mset->scroll_lock = XSET_B_UNSET;
         else
             mset->scroll_lock = XSET_B_TRUE;
+        break;
+    case XSET_JOB_TOOLTIPS:
+        set_next = xset_get_panel(1, "tool_l");
+        set_next->b = set_next->b == XSET_B_TRUE ? XSET_B_UNSET : XSET_B_TRUE;
         break;
     default:
         break;
@@ -5577,6 +5581,9 @@ gboolean xset_design_menu_keypress(GtkWidget* widget, GdkEventKey* event, XSet* 
                 break;
             case XSET_JOB_SCROLL:
                 help = "#designmode-command-scroll";
+                break;
+            case XSET_JOB_TOOLTIPS:
+                help = "#designmode-designmenu-tooltips";
                 break;
             default:
                 break;
@@ -5850,6 +5857,14 @@ GtkWidget* xset_design_show_menu(GtkWidget* menu, XSet* set, XSet* book_insert, 
     gtk_widget_set_sensitive(newitem, !set->lock || set->line);
     if (show_keys)
         gtk_widget_add_accelerator(newitem, "activate", accel_group, GDK_KEY_F1, 0, GTK_ACCEL_VISIBLE);
+
+    // Tooltips (toolbar)
+    if (set->tool)
+    {
+        newitem = xset_design_additem(design_menu, _("T_ooltips"), "@check", XSET_JOB_TOOLTIPS, set);
+        if (!xset_get_b_panel(1, "tool_l"))
+            set_check_menu_item_block(newitem);
+    }
 
     // Key
     newitem = xset_design_additem(design_menu, _("_Key Shortcut"), GTK_STOCK_PROPERTIES, XSET_JOB_KEY, set);
@@ -6436,7 +6451,7 @@ void on_multi_input_insert(GtkTextBuffer* buf)
     gtk_text_buffer_get_end_iter(buf, &siter);
     char* a = gtk_text_buffer_get_text(buf, &iter, &siter, FALSE);
 
-    int  x;
+    int x;
     if (strchr(b, '\n'))
     {
         x = 0;
@@ -7469,7 +7484,7 @@ static void set_gtk3_widget_padding(GtkWidget* widget, int left_right, int top_b
 #endif
 
 GtkWidget* xset_add_toolitem(GtkWidget* parent, PtkFileBrowser* file_browser, GtkWidget* toolbar, int icon_size,
-                             XSet* set)
+                             XSet* set, gboolean show_tooltips)
 {
     GtkWidget* image = NULL;
     GtkWidget* item = NULL;
@@ -7481,6 +7496,7 @@ GtkWidget* xset_add_toolitem(GtkWidget* parent, PtkFileBrowser* file_browser, Gt
     char* new_menu_label = NULL;
     GdkPixbuf* pixbuf = NULL;
     char* icon_file = NULL;
+    char* str;
     int cmd_type;
 
     if (set->lock)
@@ -7609,6 +7625,13 @@ GtkWidget* xset_add_toolitem(GtkWidget* parent, PtkFileBrowser* file_browser, Gt
         g_object_set_data(G_OBJECT(ebox), "browser", file_browser);
         ptk_file_browser_add_toolbar_widget(set, btn);
 
+        // tooltip
+        if (show_tooltips)
+        {
+            str = clean_label(new_menu_label, FALSE, FALSE);
+            gtk_widget_set_tooltip_text(ebox, str);
+            g_free(str);
+        }
         g_free(new_menu_label);
     }
     else if (menu_style == XSET_MENU_CHECK)
@@ -7651,6 +7674,14 @@ GtkWidget* xset_add_toolitem(GtkWidget* parent, PtkFileBrowser* file_browser, Gt
         g_signal_connect(ebox, "button-press-event", G_CALLBACK(on_tool_icon_button_press), set);
         g_object_set_data(G_OBJECT(ebox), "browser", file_browser);
         ptk_file_browser_add_toolbar_widget(set, btn);
+
+        // tooltip
+        if (show_tooltips)
+        {
+            str = clean_label(menu_label, FALSE, FALSE);
+            gtk_widget_set_tooltip_text(ebox, str);
+            g_free(str);
+        }
     }
     else if (menu_style == XSET_MENU_SUBMENU)
     {
@@ -7738,8 +7769,15 @@ GtkWidget* xset_add_toolitem(GtkWidget* parent, PtkFileBrowser* file_browser, Gt
 #elif (GTK_MAJOR_VERSION == 2)
         GtkWidget* hbox = gtk_hbox_new(FALSE, 0);
 #endif
-        gtk_box_pack_start(GTK_BOX(hbox), ebox, FALSE, FALSE, 0);
 
+        gtk_box_pack_start(GTK_BOX(hbox), ebox, FALSE, FALSE, 0);
+        // tooltip
+        if (show_tooltips)
+        {
+            str = clean_label(menu_label, FALSE, FALSE);
+            gtk_widget_set_tooltip_text(ebox, str);
+            g_free(str);
+        }
         g_free(new_menu_label);
 
         // reset menu_label for below
@@ -7793,6 +7831,14 @@ GtkWidget* xset_add_toolitem(GtkWidget* parent, PtkFileBrowser* file_browser, Gt
         item = GTK_WIDGET(gtk_tool_item_new());
         gtk_container_add(GTK_CONTAINER(item), hbox);
         gtk_widget_show_all(item);
+
+        // tooltip
+        if (show_tooltips)
+        {
+            str = clean_label(menu_label, FALSE, FALSE);
+            gtk_widget_set_tooltip_text(ebox, str);
+            g_free(str);
+        }
     }
     else if (menu_style == XSET_MENU_SEP)
     {
@@ -7820,13 +7866,14 @@ _next_toolitem:
     if ((set_next = xset_is(set->next)))
     {
         // g_printf("    NEXT %s\n", set_next->name );
-        xset_add_toolitem(parent, file_browser, toolbar, icon_size, set_next);
+        xset_add_toolitem(parent, file_browser, toolbar, icon_size, set_next, show_tooltips);
     }
 
     return item;
 }
 
-void xset_fill_toolbar(GtkWidget* parent, PtkFileBrowser* file_browser, GtkWidget* toolbar, XSet* set_parent)
+void xset_fill_toolbar(GtkWidget* parent, PtkFileBrowser* file_browser, GtkWidget* toolbar, XSet* set_parent,
+                       gboolean show_tooltips)
 {
     const char default_tools[] = {XSET_TOOL_BOOKMARKS,
                                   XSET_TOOL_TREE,
@@ -7873,7 +7920,7 @@ void xset_fill_toolbar(GtkWidget* parent, PtkFileBrowser* file_browser, GtkWidge
         }
     }
 
-    xset_add_toolitem(parent, file_browser, toolbar, icon_size, set_child);
+    xset_add_toolitem(parent, file_browser, toolbar, icon_size, set_child, show_tooltips);
 
     // These don't seem to do anything
     gtk_container_set_border_width(GTK_CONTAINER(toolbar), 0);

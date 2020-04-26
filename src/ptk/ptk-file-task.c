@@ -545,7 +545,6 @@ void ptk_file_task_pause(PtkFileTask* ptask, int state)
             kill(ptask->task->exec_pid, sig);
             if (cpids)
                 vfs_file_task_kill_cpids(cpids, sig);
-
         }
     }
     else if (state == VFS_FILE_TASK_PAUSE)
@@ -1828,6 +1827,7 @@ void query_overwrite_response(GtkDialog* dlg, int response, PtkFileTask* ptask)
         if (response == RESPONSE_AUTO_RENAME)
         {
             GtkWidget* auto_button = (GtkWidget*)g_object_get_data(G_OBJECT(dlg), "auto_button");
+            str = gtk_widget_get_tooltip_text(auto_button);
         }
         else
         {
@@ -2216,6 +2216,7 @@ static void query_overwrite(PtkFileTask* ptask)
     g_signal_connect(G_OBJECT(rename_button), "clicked", G_CALLBACK(on_query_button_press), ptask);
     GtkWidget* auto_button = gtk_button_new_with_mnemonic(_(" A_uto Rename "));
     g_signal_connect(G_OBJECT(auto_button), "clicked", G_CALLBACK(on_query_button_press), ptask);
+    gtk_widget_set_tooltip_text(auto_button, new_name);
     GtkWidget* auto_all_button = gtk_button_new_with_mnemonic(_(" Auto Re_name All "));
     g_signal_connect(G_OBJECT(auto_all_button), "clicked", G_CALLBACK(on_query_button_press), ptask);
 #if (GTK_MAJOR_VERSION == 3)

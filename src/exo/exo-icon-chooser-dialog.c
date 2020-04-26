@@ -255,6 +255,7 @@ static void exo_icon_chooser_dialog_init(ExoIconChooserDialog* icon_chooser_dial
                      icon_chooser_dialog);
 #if (GTK_MAJOR_VERSION == 2)
     gtk_entry_set_icon_from_icon_name(GTK_ENTRY(priv->filter_entry), GTK_ENTRY_ICON_SECONDARY, "edit-clear");
+    gtk_entry_set_icon_tooltip_text(GTK_ENTRY(priv->filter_entry), GTK_ENTRY_ICON_SECONDARY, _("Clear search field"));
     gtk_entry_set_icon_sensitive(GTK_ENTRY(priv->filter_entry), GTK_ENTRY_ICON_SECONDARY, FALSE);
     g_signal_connect(G_OBJECT(priv->filter_entry),
                      "icon-release",

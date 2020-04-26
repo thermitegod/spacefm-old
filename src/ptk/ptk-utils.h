@@ -41,10 +41,11 @@ typedef struct _PtkMenuItemEntry PtkMenuItemEntry;
 
 struct _PtkToolItemEntry
 {
-    const char* label;      /* or stock id */
-    const char* stock_icon; /* or menu type  1: check, 2: radio */
+    const char* label; // or stock id
+    const char* stock_icon; // or menu type  1: check, 2: radio
+    const char* tooltip;
     GCallback callback;
-    struct _PtkMenuItemEntry* menu; /* NULL: normal, 1: check, 2: radio, 3: empty menu, > 3: menu */
+    struct _PtkMenuItemEntry* menu; // NULL: normal, 1: check, 2: radio, 3: empty menu, > 3: menu
     GtkWidget** ret;
 };
 typedef struct _PtkToolItemEntry PtkToolItemEntry;
