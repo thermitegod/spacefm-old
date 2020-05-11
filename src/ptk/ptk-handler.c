@@ -261,11 +261,11 @@ const Handler handlers_arc[] = {
      "Zstd",
      "application/x-zstd",
      "*.zst",
-     "zstd %N > %O",
+     "zstd --long=31 %N > %O",
      FALSE,
-     "zstd -d %x > %G",
+     "zstd -d --long=31 %x > %G",
      FALSE,
-     "zstd -tv %x",
+     "zstd -tv --long=31 %x",
      FALSE}};
 
 const Handler handlers_fs[] = {
